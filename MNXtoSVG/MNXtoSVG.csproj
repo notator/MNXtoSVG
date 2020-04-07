@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MNX_Common.cs" />
+    <Compile Include="MNXtoSVGGlobals.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

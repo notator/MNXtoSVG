@@ -38,9 +38,9 @@
             this.compileButton.Name = "compileButton";
             this.compileButton.Size = new System.Drawing.Size(110, 52);
             this.compileButton.TabIndex = 0;
-            this.compileButton.Text = "compile";
+            this.compileButton.Text = "convert";
             this.compileButton.UseVisualStyleBackColor = true;
-            this.compileButton.Click += new System.EventHandler(this.CompileButton_Click);
+            this.compileButton.Click += new System.EventHandler(this.ConvertButton_Click);
             // 
             // Form1
             // 
@@ -48,7 +48,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(244, 77);
             this.Controls.Add(this.compileButton);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MNXtoSVG";
             this.ResumeLayout(false);
 

@@ -60,5 +60,40 @@ namespace MNXtoSVG.Globals
                 throw new ApplicationException($"Condition failed.");
             }
         }
+
+        public enum MNXCommonProfile
+        {
+            undefined,
+            standard
+        }
+
+        /// <summary>
+        /// ji -- April 2020: Should three repeat barline types be defined as well? :
+        ///     repeat-begin,
+        ///     repeat-end,
+        ///     repeat-end-begin
+        /// </summary>
+        public enum MNXBarlineType
+        {
+            undefined,
+            regular,
+            dotted,
+            dashed,
+            heavy,
+            lightLight,
+            lightHeavy,
+            heavyLight,
+            heavyHeavy,
+            tick,
+            _short,
+            none,
+        }
+
+        public enum MNXOrientation
+        {
+            undefined,
+            up,
+            down
+        }
     }
 }

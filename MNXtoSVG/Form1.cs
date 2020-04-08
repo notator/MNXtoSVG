@@ -22,32 +22,45 @@ namespace MNXtoSVG
 
         private void ConvertButton_Click(object sender, EventArgs e)
         {
-            const string MNX_in_Directory = @"D:\Visual Studio\Projects\MNXtoSVG\MNXtoSVG\MNX_in\";
+            List<MNX> mnxs = GetMNXs();
+
             const string SVG_out_Directory = @"D:\Visual Studio\Projects\MNXtoSVG\MNXtoSVG\SVG_out\";
 
-            string[] mnxPathsArray = Directory.GetFiles(MNX_in_Directory, "*.mnx");
-            List<string> mnxCommonPaths = new List<string>(mnxPathsArray);
-            mnxCommonPaths.Sort();
-
-            // change the loop limits as required. (or add a control to Form1).
-            for(var i = 0; i < 1; i++) 
+            foreach(var mnx in mnxs)
             {
-                var mnxCommonPath = mnxCommonPaths[i];
-                MNX_Common mnxCommon = null;
+                var svgPath = SVG_out_Directory + mnx.FileName + ".svg";
+                mnx.WriteSVG(svgPath);
+            }  
+        }
+
+        private List<MNX> GetMNXs()
+        {
+            const string MNX_in_Directory = @"D:\Visual Studio\Projects\MNXtoSVG\MNXtoSVG\MNX_in\mnx";
+            string[] mnxPathsArray = Directory.GetFiles(MNX_in_Directory, "*.mnx");
+
+            List<string> mnxPaths = new List<string>(mnxPathsArray);
+            mnxPaths.Sort();
+
+            List<MNX> mnxs = new List<MNX>();
+
+            for(var i = 0; i < mnxPaths.Count; i++)
+            {
+                var mnxPath = mnxPaths[i];
+                MNX mnx = null;
                 try
                 {
-                    mnxCommon = new MNX_Common(mnxCommonPath);
+                    mnx = new MNX(mnxPath);
+                    mnxs.Add(mnx);
                 }
                 catch(Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error constructing MNX_Common object", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                var svgPath = SVG_out_Directory + Path.GetFileNameWithoutExtension(mnxCommonPath) + ".svg";
-
-                mnxCommon.WriteSVG(svgPath);
             }
-        }
 
+            return mnxs;
+        }
     }
+
+
 }

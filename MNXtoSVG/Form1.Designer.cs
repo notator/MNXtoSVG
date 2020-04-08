@@ -38,7 +38,7 @@
             this.compileButton.Name = "compileButton";
             this.compileButton.Size = new System.Drawing.Size(110, 52);
             this.compileButton.TabIndex = 0;
-            this.compileButton.Text = "convert";
+            this.compileButton.Text = "go";
             this.compileButton.UseVisualStyleBackColor = true;
             this.compileButton.Click += new System.EventHandler(this.ConvertButton_Click);
             // 

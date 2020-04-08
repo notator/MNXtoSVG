@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mnx xmlns="http://www.w3.org/mnx>">
-  <!--
-    Spec Example 5:
-        <mnx xmlns="http://www.w3.org/mnx">
-          <head>
-            ...head content...
-          </head>
-          <score>
-            ...musical body content...
-          </score>
-        </mnx>
-    -->
   <score>
     <mnx-common profile="standard">
       <global>

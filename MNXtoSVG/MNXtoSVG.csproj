@@ -46,14 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MNX_Common.cs" />
-    <Compile Include="Globals.cs" />
+    <Compile Include="Bevent.cs" />
+    <Compile Include="Sequence.cs" />
+    <Compile Include="Directions.cs" />
+    <Compile Include="Measure.cs" />
+    <Compile Include="ScoreAudio.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Part.cs" />
+    <Compile Include="MNX.cs" />
+    <Compile Include="Collection.cs" />
+    <Compile Include="Head.cs" />
+    <Compile Include="AppGlobals.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="CommonScore.cs" />
+    <Compile Include="Score.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -68,23 +79,23 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="MNX_in\_17_slurincomplete.mnx" />
-    <None Include="MNX_in\_16_slurnotes.mnx" />
-    <None Include="MNX_in\__1_helloworld.mnx" />
-    <None Include="MNX_in\_10_beamhooks.mnx" />
-    <None Include="MNX_in\_11_tuplets.mnx" />
-    <None Include="MNX_in\_12_voices.mnx" />
-    <None Include="MNX_in\_13_octaves.mnx" />
-    <None Include="MNX_in\_14_slurs.mnx" />
-    <None Include="MNX_in\_15_slurchords.mnx" />
-    <None Include="MNX_in\__2_cscale.mnx" />
-    <None Include="MNX_in\__3_chord.mnx" />
-    <None Include="MNX_in\__4_timesigs.mnx" />
-    <None Include="MNX_in\__5_keysigs.mnx" />
-    <None Include="MNX_in\__6_accidentals.mnx" />
-    <None Include="MNX_in\__7_dots.mnx" />
-    <None Include="MNX_in\__8_ties.mnx" />
-    <None Include="MNX_in\__9_beams.mnx" />
+    <None Include="MNX_in\mnx\_17_slurincomplete.mnx" />
+    <None Include="MNX_in\mnx\_16_slurnotes.mnx" />
+    <None Include="MNX_in\mnx\__1_helloworld.mnx" />
+    <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
+    <None Include="MNX_in\mnx\_11_tuplets.mnx" />
+    <None Include="MNX_in\mnx\_12_voices.mnx" />
+    <None Include="MNX_in\mnx\_13_octaves.mnx" />
+    <None Include="MNX_in\mnx\_14_slurs.mnx" />
+    <None Include="MNX_in\mnx\_15_slurchords.mnx" />
+    <None Include="MNX_in\mnx\__2_cscale.mnx" />
+    <None Include="MNX_in\mnx\__3_chord.mnx" />
+    <None Include="MNX_in\mnx\__4_timesigs.mnx" />
+    <None Include="MNX_in\mnx\__5_keysigs.mnx" />
+    <None Include="MNX_in\mnx\__6_accidentals.mnx" />
+    <None Include="MNX_in\mnx\__7_dots.mnx" />
+    <None Include="MNX_in\mnx\__8_ties.mnx" />
+    <None Include="MNX_in\mnx\__9_beams.mnx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -102,7 +113,24 @@
     <Folder Include="SVG_out\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MNX_in\MNX_png\Ex 1.png" />
+    <Content Include="MNX_in\exampleImages.html" />
+    <Content Include="MNX_in\png\___6_example-accidentals.png" />
+    <Content Include="MNX_in\png\__10_example-beamhooks.png" />
+    <Content Include="MNX_in\png\___9_example-beams.png" />
+    <Content Include="MNX_in\png\___7_example-dots.png" />
+    <Content Include="MNX_in\png\___5_example-keysigs.png" />
+    <Content Include="MNX_in\png\__13_example-octave.png" />
+    <Content Include="MNX_in\png\___8_example-ties.png" />
+    <Content Include="MNX_in\png\__11_example-tuplets.png" />
+    <Content Include="MNX_in\png\___1_example01.png" />
+    <Content Include="MNX_in\png\___2_example02.png" />
+    <Content Include="MNX_in\png\___3_example03.png" />
+    <Content Include="MNX_in\png\__12_example04.png" />
+    <Content Include="MNX_in\png\___4_example05.png" />
+    <Content Include="MNX_in\png\__15_slurchords.png" />
+    <Content Include="MNX_in\png\__17_slurincomplete.png" />
+    <Content Include="MNX_in\png\__16_slurnotes.png" />
+    <Content Include="MNX_in\png\__14_slurs.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

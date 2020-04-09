@@ -61,7 +61,7 @@ namespace MNXtoSVG.Globals
         {
             if(condition == false)
             {
-                throw new ApplicationException(message);
+                ThrowError(message);
             }
         }
 
@@ -73,7 +73,7 @@ namespace MNXtoSVG.Globals
         {
             if(condition == false)
             {
-                throw new ApplicationException($"Condition failed.");
+                ThrowError($"Condition failed.");
             }
         }
 

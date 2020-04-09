@@ -25,6 +25,8 @@ namespace MNXtoSVG
         {
             List<MNX> mnxs = GetMNXs();
 
+            AdjustMNXs(mnxs); 
+
             const string SVG_out_Directory = @"D:\Visual Studio\Projects\MNXtoSVG\MNXtoSVG\SVG_out\";
 
             foreach(var mnx in mnxs)
@@ -32,6 +34,15 @@ namespace MNXtoSVG
                 var svgPath = SVG_out_Directory + mnx.FileName + ".svg";
                 mnx.WriteSVG(svgPath);
             }  
+        }
+
+        /// <summary>
+        /// Resolve directions hierarchies etc.
+        /// </summary>
+        /// <param name="mnxs"></param>
+        private void AdjustMNXs(List<MNX> mnxs)
+        {
+
         }
 
         private List<MNX> GetMNXs()
@@ -57,7 +68,7 @@ namespace MNXtoSVG
                     string infoStr = ex.Message +
                         "\n\nError in File: " + Path.GetFileName(mnxPath);
 
-                    MessageBox.Show(infoStr, "Error constructing MNX_Common object", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(infoStr, "Error constructing MNX object", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 

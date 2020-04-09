@@ -111,5 +111,16 @@ namespace MNXtoSVG.Globals
             up,
             down
         }
+
+        public enum MNXClefSign
+        {
+            undefined, // ji
+            G, // G (treble) clef
+            F, // F(bass) clef
+            C, // C clef
+            percussion, // Percussion clef
+            jianpu, // Jianpu clef
+            none // The spec asks: Is the none value from MusicXML needed? Why?
+        }
     }
 }

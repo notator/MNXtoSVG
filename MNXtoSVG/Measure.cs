@@ -112,11 +112,11 @@ namespace MNXtoSVG
                         case "directions":
                             if(parentElement == "global")
                             {
-                                GlobalDirections = new Directions(r, "measure");
+                                GlobalDirections = new Directions(r, "measure", "global");
                             }
                             else if(parentElement == "part")
                             {
-                                PartDirections = new Directions(r, "measure");
+                                PartDirections = new Directions(r, "measure", "part");
                             }
                             break;
                         case "sequence":

@@ -26,7 +26,13 @@ namespace MNXtoSVG
         public readonly int? StaffIndex = null;
         public readonly G.MNXOrientation Orientation = G.MNXOrientation.undefined;
 
-        public Directions(XmlReader r, string parentElement)
+        // These are just the elements used in the first set of examples.
+        // Other elements need to be added later.
+        public readonly Time Time;
+        public readonly object Clef;
+        public readonly Key Key;
+
+        public Directions(XmlReader r, string parentElement, string grandParentElement)
         {
             G.Assert(r.Name == "directions");
             // https://w3c.github.io/mnx/specification/common/#elementdef-directions
@@ -39,7 +45,7 @@ namespace MNXtoSVG
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
             {
-                r.MoveToAttribute(i);                
+                r.MoveToAttribute(i);
                 switch(r.Name)
                 {
                     // https://w3c.github.io/mnx/specification/common/#common-direction-attributes
@@ -62,10 +68,42 @@ namespace MNXtoSVG
                         else if(r.Value == "down")
                             Orientation = G.MNXOrientation.down;
                         break;
+                    default:
+                        G.ThrowError("Unknown directions attribute.");
+                        break;
 
                 }
             }
 
+            // These are just the elements used in the first set of examples.
+            // Other elements need to be added later.
+            G.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift");
+
+            while(r.Name == "time" || r.Name == "clef" || r.Name == "key")
+            {
+                if(r.NodeType != XmlNodeType.EndElement)
+                {
+                    switch(r.Name)
+                    {
+                        case "time":
+                            // https://w3c.github.io/mnx/specification/common/#the-time-element
+                            if(grandParentElement != "global")
+                            {
+                                G.ThrowError("Error: the time element must be global in standard mnx-common.");
+                            }
+                            Time = new Time(r);
+                            break;
+                        case "clef":
+                            Clef = new Clef(r);
+                            break;
+                        case "key":
+                            Key = new Key(r);
+                            break;
+                    }
+                }
+                G.ReadToXmlElementTag(r, "time", "clef", "key", "directions");
+            }
+            G.Assert(r.Name == "directions"); // end of "directions"
         }
 
         public void WriteSVG(XmlWriter w)

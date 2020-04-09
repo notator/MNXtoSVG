@@ -11,8 +11,7 @@ namespace MNXtoSVG
         public readonly uint? StaffIndex = null; // default
         public readonly string VoiceID = null; // default
 
-        public readonly Directions Directions;
-        public readonly List<IWritable> EventOrBeamed = new List<IWritable>();
+        public readonly List<IWritable> Seq = new List<IWritable>();
 
         public Sequence(XmlReader r)
         {
@@ -40,30 +39,42 @@ namespace MNXtoSVG
                     default:
                         throw new ApplicationException("Unknown attribute");
                 }
-
-                G.ReadToXmlElementTag(r, "directions", "event"); // expand on these later...
-
-                while(r.Name == "directions" || r.Name == "event" || r.Name == "beamed")
-                {
-                    if(r.NodeType != XmlNodeType.EndElement)
-                    {
-                        switch(r.Name)
-                        {
-                            case "directions":
-                                Directions = new Directions(r, "sequence");
-                                break;
-                            case "event":
-                                EventOrBeamed.Add(new Event(r));
-                                break;
-                            case "beamed":
-                                EventOrBeamed.Add(new Beamed(r));
-                                break;
-                        }
-                    }
-                    G.ReadToXmlElementTag(r, "directions", "event", "beamed", "sequence");
-                }
-                G.Assert(r.Name == "sequence"); // end of sequence
             }
+
+            G.ReadToXmlElementTag(r, "directions", "event"); // expand on these later...
+
+            while(r.Name == "directions" || r.Name == "event" || r.Name == "beamed")
+            {
+                if(r.NodeType != XmlNodeType.EndElement)
+                {
+                    switch(r.Name)
+                    {
+                        case "directions":
+                            Seq.Add(new Directions(r, "sequence", "measure"));
+                            break;
+                        case "event":
+                            Seq.Add(new Event(r));
+                            break;
+                        case "beamed":
+                            Seq.Add(new Beamed(r));
+                            break;
+                    }
+                }
+                G.ReadToXmlElementTag(r, "directions", "event", "beamed", "sequence");
+            }
+
+            CheckSequence(Seq);
+
+            G.Assert(r.Name == "sequence"); // end of sequence
+
+        }
+
+        private void CheckSequence(List<IWritable> seq)
+        {
+            // check the constraints on the contained directions here!
+            // maybe silently correct any errors.
+
+            throw new NotImplementedException();
         }
 
         public void WriteSVG(XmlWriter w)

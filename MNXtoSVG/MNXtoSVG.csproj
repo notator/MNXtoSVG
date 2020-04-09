@@ -48,6 +48,9 @@
   <ItemGroup>
     <Compile Include="Beamed.cs" />
     <Compile Include="Event.cs" />
+    <Compile Include="Clef.cs" />
+    <Compile Include="Key.cs" />
+    <Compile Include="Time.cs" />
     <Compile Include="_IWritable.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="Directions.cs" />

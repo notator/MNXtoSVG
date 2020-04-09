@@ -50,7 +50,7 @@ namespace MNXtoSVG
                         switch(r.Name)
                         {
                             case "directions":
-                                Directions = new Directions(r);
+                                Directions = new Directions(r, "sequence");
                                 break;
                             case "event":
                                 EventOrBeamed.Add(new Event(r));

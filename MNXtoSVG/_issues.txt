@@ -1,1 +1,7 @@
-﻿
+﻿Issues arising while programming the parser:
+
+1. Note that <measure> elements can be empty (i.e. <measure/>), but only when inside <global> elements. (Maybe make that clearer in the spec.)
+2. Need a Regex for "metrical location" -- see https://w3c.github.io/mnx/specification/common/#measure-location
+3. §6.8.1 says "All directions within a directions parent element must be given an explicit measure location by
+   supplying a location attribute. The default measure location is zero."
+   Can the location attribute in a <directions><directions> be omitted or not?

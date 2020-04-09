@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -34,6 +37,19 @@ namespace MNXtoSVG.Globals
                 MessageBox.Show(msg.ToString(), "Title", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 throw new ApplicationException(msg.ToString());
             }
+        }
+
+        public static void ThrowError(string errorDescription,
+                    [CallerLineNumber] int lineNumber = 0,
+                    [CallerMemberName] string caller = null,
+                    [CallerFilePath] string path = null)
+        {
+            string infoStr = errorDescription + "\n" +
+                Path.GetFileName(path) +
+                "\nline number:" + lineNumber +
+                "\n(method: " + caller + ")";
+
+            throw new ApplicationException(infoStr);
         }
 
         /// <summary>

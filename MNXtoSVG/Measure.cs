@@ -1,16 +1,45 @@
-﻿using MNXtoSVG.Globals;
-using System;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Xml;
+using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Measure
+    internal class Measure : IWritable
     {
+        /// <summary>
+        /// If null, this value should be set when the whole score has been read
+        /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
+        /// </summary>
+        public int? Number = null;
+        /// <summary>
+        /// If null, this value should be set when the whole score has been read
+        /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
+        /// </summary>
+        public int? Index = null;
+        public readonly G.MNXBarlineType BarlineType = G.MNXBarlineType.undefined; // default
+
+        public readonly Directions GlobalDirections = null;
+        public readonly Directions PartDirections = null;
+        public readonly List<Sequence> Sequences = new List<Sequence>();
+
         public Measure(XmlReader r, string parentElement)
         {
             G.Assert(r.Name == "measure");
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
+
+            if(r.IsEmptyElement)
+            {
+                if(parentElement == "global")
+                {
+                    return;
+                }
+                else
+                {
+                    G.ThrowError("Empty measure in sequence.");
+                }
+            }
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -19,11 +48,11 @@ namespace MNXtoSVG
                 switch(r.Name)
                 {
                     case "index":
-                        Index = UInt32.Parse(r.Value); 
+                        Index = Int32.Parse(r.Value); 
                         G.Assert(Index > 0);
                         break;
                     case "number":
-                        Number = UInt32.Parse(r.Value);
+                        Number = Int32.Parse(r.Value);
                         G.Assert(Number > 0);
                         break;
                     case "barline":
@@ -93,7 +122,7 @@ namespace MNXtoSVG
                         case "sequence":
                             if(parentElement == "global")
                             {
-                                throw new ArgumentException("Error in input file.");
+                                G.ThrowError("Error in input file.");
                             }
                             Sequences.Add(new Sequence(r));
                             break;
@@ -104,20 +133,9 @@ namespace MNXtoSVG
             G.Assert(r.Name == "measure"); // end of measure
         }
 
-        /// <summary>
-        /// If null, this value should be set when the whole score has been read
-        /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
-        /// </summary>
-        public uint? Number = null;
-        /// <summary>
-        /// If null, this value should be set when the whole score has been read
-        /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
-        /// </summary>
-        public uint? Index = null;
-        public readonly G.MNXBarlineType BarlineType = G.MNXBarlineType.undefined; // default
-
-        public readonly Directions GlobalDirections = null;
-        public readonly Directions PartDirections = null;
-        public readonly List<Sequence> Sequences = new List<Sequence>();
+        public void WriteSVG(XmlWriter w)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,16 +1,16 @@
-﻿using MNXtoSVG.Globals;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml;
+using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class ScoreAudio
+    internal class ScoreAudio : IWritable
     {
-        // https://w3c.github.io/mnx/specification/common/#elementdef-score-audio
-
         public ScoreAudio(XmlReader r)
         {
             G.Assert(r.Name == "score-audio");
+            // https://w3c.github.io/mnx/specification/common/#elementdef-score-audio
 
             throw new NotImplementedException();
 
@@ -34,6 +34,11 @@ namespace MNXtoSVG
             //}
             //G.Assert(r.Name == "mnx"); // end of mnx
 
+        }
+
+        public void WriteSVG(XmlWriter w)
+        {
+            throw new NotImplementedException();
         }
     }
 }

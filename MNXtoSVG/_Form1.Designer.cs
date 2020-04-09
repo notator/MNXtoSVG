@@ -1,6 +1,6 @@
 ﻿namespace MNXtoSVG
 {
-    partial class Form1
+    partial class _Form1
     {
         /// <summary>
         /// Required designer variable.

@@ -1,17 +1,18 @@
-﻿using MNXtoSVG.Globals;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Collections.Generic;
 using System.Xml;
+using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    class MNX
+    class MNX : IWritable
     {
+        private readonly Head Head = null;
+        private readonly Score Score = null;
+        private readonly Collection Collection = null;
+        public readonly string FileName;
+
         public MNX(string mnxPath)
         {
             FileName = Path.GetFileNameWithoutExtension(mnxPath);
@@ -64,10 +65,10 @@ namespace MNXtoSVG
             return FileName;
         }
 
-        private readonly Head Head = null;
-        private readonly Score Score = null;
-        private readonly Collection Collection = null;
-        public readonly string FileName;
+        public void WriteSVG(XmlWriter w)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

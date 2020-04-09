@@ -6,14 +6,12 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Head : IWritable
-    {        
-        public Head(XmlReader r)
+    public class Event : IWritable
+    {
+        public Event(XmlReader r)
         {
-            G.Assert(r.Name == "head");
-            // https://w3c.github.io/mnx/specification/common/#the-score-element
-
-            throw new NotImplementedException();
+            G.Assert(r.Name == "event");
+            // https://w3c.github.io/mnx/specification/common/#the-event-element
 
         }
 

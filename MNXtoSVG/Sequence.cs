@@ -1,17 +1,23 @@
-﻿using MNXtoSVG.Globals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Sequence
+    internal class Sequence : IWritable
     {
-        // https://w3c.github.io/mnx/specification/common/#elementdef-sequence
+        public readonly G.MNXOrientation Orientation = G.MNXOrientation.undefined; // default
+        public readonly uint? StaffIndex = null; // default
+        public readonly string VoiceID = null; // default
+
+        public readonly Directions Directions;
+        public readonly List<IWritable> EventOrBeamed = new List<IWritable>();
 
         public Sequence(XmlReader r)
         {
             G.Assert(r.Name == "sequence");
+            // https://w3c.github.io/mnx/specification/common/#elementdef-sequence
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -47,10 +53,10 @@ namespace MNXtoSVG
                                 Directions = new Directions(r);
                                 break;
                             case "event":
-                                Bevents.Add(new Event(r));
+                                EventOrBeamed.Add(new Event(r));
                                 break;
                             case "beamed":
-                                Bevents.Add(new Beamed(r));
+                                EventOrBeamed.Add(new Beamed(r));
                                 break;
                         }
                     }
@@ -60,11 +66,9 @@ namespace MNXtoSVG
             }
         }
 
-        public readonly G.MNXOrientation Orientation = G.MNXOrientation.undefined; // default
-        public readonly uint? StaffIndex = null; // default
-        public readonly string VoiceID = null; // default
-
-        public readonly Directions Directions;
-        public readonly List<Bevent> Bevents = new List<Bevent>();
+        public void WriteSVG(XmlWriter w)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

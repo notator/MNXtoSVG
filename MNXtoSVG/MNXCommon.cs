@@ -1,17 +1,21 @@
-﻿using MNXtoSVG.Globals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class CommonScore
+    internal class MNXCommon : IWritable
     {
-        // https://w3c.github.io/mnx/specification/common/#the-mnx-common-element
+        public readonly G.MNXCommonProfile Profile = G.MNXCommonProfile.undefined;
+        public readonly List<Global> Globals = new List<Global>();
+        public readonly List<Part> Parts = new List<Part>();
+        public readonly List<ScoreAudio> ScoreAudios = new List<ScoreAudio>();
 
-        public CommonScore(XmlReader r)
+        public MNXCommon(XmlReader r)
         {
             G.Assert(r.Name == "mnx-common");
+            // https://w3c.github.io/mnx/specification/common/#the-mnx-common-element
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -65,9 +69,9 @@ namespace MNXtoSVG
             G.Assert(ScoreAudios.Count >= 0);
         }
 
-        public readonly G.MNXCommonProfile Profile = G.MNXCommonProfile.undefined;
-        public readonly List<Global> Globals = new List<Global>();
-        public readonly List<Part> Parts = new List<Part>();
-        public readonly List<ScoreAudio> ScoreAudios = new List<ScoreAudio>();
+        public void WriteSVG(XmlWriter w)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

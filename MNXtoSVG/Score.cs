@@ -1,14 +1,18 @@
-﻿using MNXtoSVG.Globals;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml;
+using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Score
+    internal class Score : IWritable
     {
+        public readonly string SourceFilePath = null;
+        public readonly MNXCommon MNXCommon;
+
         public Score(XmlReader r)
         {
             G.Assert(r.Name == "score");
-
             // https://w3c.github.io/mnx/specification/common/#the-score-element
             // can have a "src" attribute
             int count = r.AttributeCount;
@@ -29,10 +33,12 @@ namespace MNXtoSVG
             G.ReadToXmlElementTag(r, "mnx-common");
             G.Assert(r.Name == "mnx-common");
 
-            CommonScore = new CommonScore(r);
+            MNXCommon = new MNXCommon(r);
         }
 
-        public readonly string SourceFilePath = null;
-        public readonly CommonScore CommonScore;
+        public void WriteSVG(XmlWriter w)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

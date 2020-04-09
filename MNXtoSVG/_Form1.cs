@@ -10,12 +10,13 @@ using System.Windows.Forms;
 using System.IO;
 using MNXtoSVG.Globals;
 using System.Xml;
+using System.Diagnostics;
 
 namespace MNXtoSVG
 {
-    public partial class Form1 : Form
+    public partial class _Form1 : Form
     {
-        public Form1()
+        public _Form1()
         {
             InitializeComponent();
         }
@@ -42,19 +43,21 @@ namespace MNXtoSVG
             mnxPaths.Sort();
 
             List<MNX> mnxs = new List<MNX>();
+            string mnxPath = null;
 
             for(var i = 0; i < mnxPaths.Count; i++)
             {
-                var mnxPath = mnxPaths[i];
-                MNX mnx = null;
                 try
                 {
-                    mnx = new MNX(mnxPath);
-                    mnxs.Add(mnx);
+                    mnxPath = mnxPaths[i];
+                    mnxs.Add(new MNX(mnxPath));
                 }
                 catch(Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error constructing MNX_Common object", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string infoStr = ex.Message +
+                        "\n\nError in File: " + Path.GetFileName(mnxPath);
+
+                    MessageBox.Show(infoStr, "Error constructing MNX_Common object", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 

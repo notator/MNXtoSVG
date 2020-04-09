@@ -1,16 +1,20 @@
-﻿using MNXtoSVG.Globals;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Xml;
+using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Global
+    internal class Global : IWritable
     {
-        // https://w3c.github.io/mnx/specification/common/#the-global-element
+        public List<string> PartIDs = null;
+        public List<Measure> Measures = new List<Measure>();
 
         public Global(XmlReader r)
         {
             G.Assert(r.Name == "global");
+            // https://w3c.github.io/mnx/specification/common/#the-global-element
 
             // can have a "parts" attribute
             int count = r.AttributeCount;
@@ -41,7 +45,13 @@ namespace MNXtoSVG
             G.Assert(Measures.Count > 0);
         }
 
-        public List<string> PartIDs = null;
-        public List<Measure> Measures = new List<Measure>();
+        public void WriteSVG(XmlWriter w)
+        {
+            throw new System.NotImplementedException();
+        }
+
+
+
+
     }
 }

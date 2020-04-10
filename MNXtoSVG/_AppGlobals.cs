@@ -11,6 +11,14 @@ namespace MNXtoSVG.Globals
 {
     public static class G
     {
+        public enum MNXProfileEnum
+        {
+            undefined,
+            MNXCommonStandard
+        }
+
+        public static MNXProfileEnum MNXProfile = MNXProfileEnum.undefined;
+
         /// <summary>
         /// Adapted from CapXML Utilities.
         /// Reads to the next start or end tag having a name which is in the parameter list.
@@ -75,12 +83,6 @@ namespace MNXtoSVG.Globals
             {
                 throw new ApplicationException($"Condition failed.");
             }
-        }
-
-        public enum MNXCommonProfile
-        {
-            undefined,
-            standard
         }
 
         /// <summary>

@@ -7,7 +7,6 @@ namespace MNXtoSVG
 {
     internal class MNXCommon : IWritable
     {
-        public readonly G.MNXCommonProfile Profile = G.MNXCommonProfile.undefined;
         public readonly List<Global> Globals = new List<Global>();
         public readonly List<Part> Parts = new List<Part>();
         public readonly List<ScoreAudio> ScoreAudios = new List<ScoreAudio>();
@@ -16,6 +15,8 @@ namespace MNXtoSVG
         {
             G.Assert(r.Name == "mnx-common");
             // https://w3c.github.io/mnx/specification/common/#the-mnx-common-element
+
+            G.MNXProfile = G.MNXProfileEnum.undefined;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -28,7 +29,7 @@ namespace MNXtoSVG
                             switch(r.Value)
                             {
                                 case "standard":
-                                    this.Profile = G.MNXCommonProfile.standard;
+                                    G.MNXProfile = G.MNXProfileEnum.MNXCommonStandard;
                                     break;
                                 default:
                                     throw new ApplicationException("Unknown profile");
@@ -61,9 +62,9 @@ namespace MNXtoSVG
                 }
                 G.ReadToXmlElementTag(r, "global", "part", "score-audio", "mnx-common");
             }
+
             G.Assert(r.Name == "mnx-common"); // end of "mnx-common"
 
-            G.Assert(Profile != G.MNXCommonProfile.undefined);
             G.Assert(Globals.Count > 0);
             G.Assert(Parts.Count > 0);
             G.Assert(ScoreAudios.Count >= 0);

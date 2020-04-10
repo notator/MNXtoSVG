@@ -51,11 +51,13 @@
     <Compile Include="DirectionClasses.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Clef.cs" />
+    <Compile Include="MeasureLocation.cs" />
     <Compile Include="Note.cs" />
     <Compile Include="OctaveShift.cs" />
     <Compile Include="Key.cs" />
     <Compile Include="Rest.cs" />
     <Compile Include="SpanAttributes.cs" />
+    <Compile Include="Tied.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="_IWritable.cs" />
     <Compile Include="Sequence.cs" />
@@ -92,14 +94,18 @@
     </Compile>
     <None Include="MNX_in\mnx\_17_slurincomplete.mnx" />
     <None Include="MNX_in\mnx\_16_slurnotes.mnx" />
-    <None Include="MNX_in\mnx\__1_helloworld.mnx" />
+    <None Include="MNX_in\mnx\__1_helloworld.mnx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
     <None Include="MNX_in\mnx\_12_voices.mnx" />
     <None Include="MNX_in\mnx\_13_octaves.mnx">
       <SubType>Designer</SubType>
     </None>
-    <None Include="MNX_in\mnx\_14_slurs.mnx" />
+    <None Include="MNX_in\mnx\_14_slurs.mnx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MNX_in\mnx\_15_slurchords.mnx" />
     <None Include="MNX_in\mnx\__2_cscale.mnx" />
     <None Include="MNX_in\mnx\__3_chord.mnx" />
@@ -107,7 +113,9 @@
     <None Include="MNX_in\mnx\__5_keysigs.mnx" />
     <None Include="MNX_in\mnx\__6_accidentals.mnx" />
     <None Include="MNX_in\mnx\__7_dots.mnx" />
-    <None Include="MNX_in\mnx\__8_ties.mnx" />
+    <None Include="MNX_in\mnx\__8_ties.mnx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MNX_in\mnx\__9_beams.mnx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

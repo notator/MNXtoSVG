@@ -20,7 +20,7 @@ namespace MNXtoSVG.Globals
         }
 
         public enum MNXOctaveShiftType
-        { 
+        {
             undefined,
             down1Oct, // 8va (notes are rendered down one octave)
             up1Oct,   // 8vb (notes are rendered up one octave)
@@ -136,5 +136,35 @@ namespace MNXtoSVG.Globals
             tab, // not in MNX Spec... but in MusicXML spec: https://usermanuals.musicxml.com/MusicXML/Content/ST-MusicXML-clef-sign.htm
             none // The spec asks: Is the none value from MusicXML needed? Why?
         }
+
+        /// <summary>
+        /// Avaiable CWMN accidentals copied from MusicXML. (Not all the accidentals there are for CWMN.)
+        /// See https://usermanuals.musicxml.com/MusicXML/Content/ST-MusicXML-accidental-value.htm
+        /// </summary>
+        public enum MNXCommonAccidental
+        {
+            auto, // from spec
+            sharp,
+            natural,
+            flat,
+            doubleSharp,
+            sharpSharp,
+            flatFlat,
+            naturalSharp,
+            naturalFlat,
+            quarterFlat,
+            quarterSharp,
+            threeQuartersFlat,
+            threeQuartersSharp,
+            sharpDown,
+            sharpUp,
+            naturalDown,
+            naturalUp,
+            flatDown,
+            flatUp,
+            tripleSharp,
+            tripleFlat
+        }
     }
+
 }

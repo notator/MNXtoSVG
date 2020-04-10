@@ -5,3 +5,7 @@
 3. §6.8.1 says "All directions within a directions parent element must be given an explicit measure location by
    supplying a location attribute. The default measure location is zero."
    Can the location attribute in a <directions><directions> be omitted or not?
+4. id attribute is missing for note (in §6.4.1)
+5. §6.6.2 target attribute is missing in the definition of "tied"
+6. §6.6.2 location is a "measure location" but can also have the values "incoming" and "outgoing".
+   Are the latter two "measure location"s? I'm assuming that's the case.

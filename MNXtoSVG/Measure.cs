@@ -20,8 +20,7 @@ namespace MNXtoSVG
         public int? Index = null;
         public readonly G.MNXBarlineType BarlineType = G.MNXBarlineType.undefined; // default
 
-        public readonly Directions GlobalDirections = null;
-        public readonly Directions PartDirections = null;
+        public readonly Directions Directions = null;
         public readonly List<Sequence> Sequences = new List<Sequence>();
 
         public Measure(XmlReader r, string parentElement)
@@ -56,45 +55,7 @@ namespace MNXtoSVG
                         G.Assert(Number > 0);
                         break;
                     case "barline":
-                        {
-                            switch(r.Value)
-                            {
-                                // default is G.MNXBarlineType.undefined (see below)
-                                case "regular":
-                                    this.BarlineType = G.MNXBarlineType.regular;
-                                    break;
-                                case "dotted":
-                                    this.BarlineType = G.MNXBarlineType.dotted;
-                                    break;
-                                case "dashed":
-                                    this.BarlineType = G.MNXBarlineType.dashed;
-                                    break;
-                                case "heavy":
-                                    this.BarlineType = G.MNXBarlineType.heavy;
-                                    break;
-                                case "light-light":
-                                    this.BarlineType = G.MNXBarlineType.lightLight;
-                                    break;
-                                case "light-heavy":
-                                    this.BarlineType = G.MNXBarlineType.lightHeavy;
-                                    break;
-                                case "heavy-light":
-                                    this.BarlineType = G.MNXBarlineType.heavyLight;
-                                    break;
-                                case "heavy-heavy":
-                                    this.BarlineType = G.MNXBarlineType.heavyHeavy;
-                                    break;
-                                case "tick":
-                                    this.BarlineType = G.MNXBarlineType.tick;
-                                    break;
-                                case "short":
-                                    this.BarlineType = G.MNXBarlineType._short;
-                                    break;
-                                case "none":
-                                    this.BarlineType = G.MNXBarlineType.none;
-                                    break;
-                            }
-                        }
+                        BarlineType = GetBarlineType(r.Value);
                         break;
                     default:
                         throw new ApplicationException("Unknown attribute");
@@ -110,14 +71,7 @@ namespace MNXtoSVG
                     switch(r.Name)
                     {
                         case "directions":
-                            if(parentElement == "global")
-                            {
-                                GlobalDirections = new Directions(r, "measure", "global");
-                            }
-                            else if(parentElement == "part")
-                            {
-                                PartDirections = new Directions(r, "measure", "part");
-                            }
+                            Directions = new Directions(r, "measure", parentElement);
                             break;
                         case "sequence":
                             if(parentElement == "global")
@@ -131,6 +85,49 @@ namespace MNXtoSVG
                 G.ReadToXmlElementTag(r, "directions", "sequence", "measure");
             }
             G.Assert(r.Name == "measure"); // end of measure
+        }
+
+        private G.MNXBarlineType GetBarlineType(string value)
+        {
+            G.MNXBarlineType rval = G.MNXBarlineType.undefined;
+            switch(value)
+            {
+                // default is G.MNXBarlineType.undefined (see below)
+                case "regular":
+                    rval = G.MNXBarlineType.regular;
+                    break;
+                case "dotted":
+                    rval = G.MNXBarlineType.dotted;
+                    break;
+                case "dashed":
+                    rval = G.MNXBarlineType.dashed;
+                    break;
+                case "heavy":
+                    rval = G.MNXBarlineType.heavy;
+                    break;
+                case "light-light":
+                    rval = G.MNXBarlineType.lightLight;
+                    break;
+                case "light-heavy":
+                    rval = G.MNXBarlineType.lightHeavy;
+                    break;
+                case "heavy-light":
+                    rval = G.MNXBarlineType.heavyLight;
+                    break;
+                case "heavy-heavy":
+                    rval = G.MNXBarlineType.heavyHeavy;
+                    break;
+                case "tick":
+                    rval = G.MNXBarlineType.tick;
+                    break;
+                case "short":
+                    rval = G.MNXBarlineType._short;
+                    break;
+                case "none":
+                    rval = G.MNXBarlineType.none;
+                    break;
+            }
+            return rval;
         }
 
         public void WriteSVG(XmlWriter w)

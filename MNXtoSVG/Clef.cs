@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Clef : IWritable
+    internal class Clef : DirectionClass, IWritable
     {
         public readonly int Line = 0; // 0 means uninitialised. Line must start at 1 (the bottom line of the staff)
         public readonly int Octave = 0; // Default. Octave can be set to any positive or negative integer.
@@ -34,7 +34,10 @@ namespace MNXtoSVG
                         int.TryParse(r.Value, out Octave);
                         break;
                     default:
-                        G.ThrowError("Unknown clef attribute.");
+                        if(base.SetAttribute(r) == false)
+                        {
+                            G.ThrowError("Unknown clef attribute.");
+                        }
                         break;
                 }
             }

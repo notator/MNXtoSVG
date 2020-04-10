@@ -73,8 +73,6 @@ namespace MNXtoSVG
         {
             // check the constraints on the contained directions here!
             // maybe silently correct any errors.
-
-            throw new NotImplementedException();
         }
 
         public void WriteSVG(XmlWriter w)

@@ -47,9 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Beamed.cs" />
+    <Compile Include="DirectionAttributes.cs" />
+    <Compile Include="DirectionClasses.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Clef.cs" />
+    <Compile Include="OctaveShift.cs" />
     <Compile Include="Key.cs" />
+    <Compile Include="SpanAttributes.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="_IWritable.cs" />
     <Compile Include="Sequence.cs" />

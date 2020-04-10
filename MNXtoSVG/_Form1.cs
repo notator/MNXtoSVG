@@ -27,13 +27,13 @@ namespace MNXtoSVG
 
             AdjustMNXs(mnxs); 
 
-            const string SVG_out_Directory = @"D:\Visual Studio\Projects\MNXtoSVG\MNXtoSVG\SVG_out\";
+            //const string SVG_out_Directory = @"D:\Visual Studio\Projects\MNXtoSVG\MNXtoSVG\SVG_out\";
 
-            foreach(var mnx in mnxs)
-            {
-                var svgPath = SVG_out_Directory + mnx.FileName + ".svg";
-                mnx.WriteSVG(svgPath);
-            }  
+            //foreach(var mnx in mnxs)
+            //{
+            //    var svgPath = SVG_out_Directory + mnx.FileName + ".svg";
+            //    mnx.WriteSVG(svgPath);
+            //}  
         }
 
         /// <summary>

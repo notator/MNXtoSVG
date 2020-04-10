@@ -23,13 +23,12 @@ namespace MNXtoSVG.Globals
         { 
             undefined,
             down1Oct, // 8va (notes are rendered down one octave)
-            up1Oct, // 8vb(notes are rendered up one octave)
+            up1Oct,   // 8vb (notes are rendered up one octave)
             down2Oct, // 15ma(notes are rendered down two octaves)
-            up2Oct, // 15mb(notes are rendered up two octaves)
+            up2Oct,   // 15mb(notes are rendered up two octaves)
             down3Oct, // 22ma(notes are rendered down three octaves)
-            up3Oct // 22mb(notes are rendered up three octaves)
+            up3Oct    // 22mb(notes are rendered up three octaves)
         }
-
 
         /// <summary>
         /// Adapted from CapXML Utilities.
@@ -98,7 +97,7 @@ namespace MNXtoSVG.Globals
         }
 
         /// <summary>
-        /// ji -- April 2020: Should three repeat barline types be defined as well? :
+        /// ji -- April 2020: Should three repeat barline types be defined as well?
         ///     repeat-begin,
         ///     repeat-end,
         ///     repeat-end-begin
@@ -133,7 +132,8 @@ namespace MNXtoSVG.Globals
             F, // F(bass) clef
             C, // C clef
             percussion, // Percussion clef
-            jianpu, // Jianpu clef
+            jianpu, // Jianpu clef ?? not mnx-common...
+            tab, // not in MNX Spec... but in MusicXML spec: https://usermanuals.musicxml.com/MusicXML/Content/ST-MusicXML-clef-sign.htm
             none // The spec asks: Is the none value from MusicXML needed? Why?
         }
     }

@@ -28,6 +28,7 @@ namespace MNXtoSVG
         // Contained objects        
         public readonly List<Note> Notes = null;// Either Notes or Rest must be non-null. Notes.Count can be 0;
         public readonly Rest Rest = null;// Either Notes or Rest must be non-null;
+        public readonly List<Slur> Slurs = null;
 
         public Event(XmlReader r)
         {
@@ -59,9 +60,9 @@ namespace MNXtoSVG
             }
 
             // extend the contained elements as necessary..
-            G.ReadToXmlElementTag(r, "note", "rest");
+            G.ReadToXmlElementTag(r, "note", "rest", "slur");
 
-            while(r.Name == "note" || r.Name == "rest")
+            while(r.Name == "note" || r.Name == "rest" || r.Name == "slur")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
@@ -80,9 +81,16 @@ namespace MNXtoSVG
                                 Rest = new Rest(r);
                             }
                             break;
+                        case "slur":
+                            if(Slurs == null)
+                            {
+                                Slurs = new List<Slur>();
+                            }
+                            Slurs.Add(new Slur(r));
+                            break;
                     }
                 }
-                G.ReadToXmlElementTag(r, "note", "rest", "event");
+                G.ReadToXmlElementTag(r, "note", "rest", "slur", "event");
             }
             G.Assert(r.Name == "event"); // end of event
 

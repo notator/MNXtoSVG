@@ -57,6 +57,7 @@
     <Compile Include="Key.cs" />
     <Compile Include="Rest.cs" />
     <Compile Include="SpanAttributes.cs" />
+    <Compile Include="Slur.cs" />
     <Compile Include="Tied.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="_IWritable.cs" />
@@ -106,7 +107,9 @@
     <None Include="MNX_in\mnx\_14_slurs.mnx">
       <SubType>Designer</SubType>
     </None>
-    <None Include="MNX_in\mnx\_15_slurchords.mnx" />
+    <None Include="MNX_in\mnx\_15_slurchords.mnx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MNX_in\mnx\__2_cscale.mnx" />
     <None Include="MNX_in\mnx\__3_chord.mnx" />
     <None Include="MNX_in\mnx\__4_timesigs.mnx" />

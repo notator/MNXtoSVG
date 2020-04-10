@@ -125,6 +125,13 @@ namespace MNXtoSVG.Globals
             down
         }
 
+        public enum MNXLineType
+        {
+            solid, // always default
+            dashed,
+            dotted
+        }
+
         public enum MNXClefSign
         {
             undefined, // ji

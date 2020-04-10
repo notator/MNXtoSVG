@@ -51,8 +51,10 @@
     <Compile Include="DirectionClasses.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Clef.cs" />
+    <Compile Include="Note.cs" />
     <Compile Include="OctaveShift.cs" />
     <Compile Include="Key.cs" />
+    <Compile Include="Rest.cs" />
     <Compile Include="SpanAttributes.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="_IWritable.cs" />
@@ -94,7 +96,9 @@
     <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
     <None Include="MNX_in\mnx\_12_voices.mnx" />
-    <None Include="MNX_in\mnx\_13_octaves.mnx" />
+    <None Include="MNX_in\mnx\_13_octaves.mnx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MNX_in\mnx\_14_slurs.mnx" />
     <None Include="MNX_in\mnx\_15_slurchords.mnx" />
     <None Include="MNX_in\mnx\__2_cscale.mnx" />

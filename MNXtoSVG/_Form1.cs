@@ -23,17 +23,36 @@ namespace MNXtoSVG
 
         private void ConvertButton_Click(object sender, EventArgs e)
         {
-            List<MNX> mnxs = GetMNXs();
+            string programFolder = GetProgramFolder();
+            string MNX_in_Directory = programFolder + @"\MNX_in\mnx\";
+            string SVG_out_Directory = programFolder + @"\SVG_out\";
+
+            List<MNX> mnxs = GetMNXs(MNX_in_Directory);
 
             AdjustMNXs(mnxs); 
 
-            //const string SVG_out_Directory = @"D:\Visual Studio\Projects\MNXtoSVG\MNXtoSVG\SVG_out\";
+            
 
             //foreach(var mnx in mnxs)
             //{
             //    var svgPath = SVG_out_Directory + mnx.FileName + ".svg";
             //    mnx.WriteSVG(svgPath);
             //}  
+        }
+
+        private string GetProgramFolder()
+        {
+            string directory = Directory.GetCurrentDirectory();
+
+            string directoryName = Path.GetFileName(directory);
+            while(directoryName != "MNXtoSVG")
+            {
+                var startIndex = directory.IndexOf(directoryName) - 1;
+                directory = directory.Remove(startIndex);
+                directoryName = Path.GetFileName(directory);
+            }
+
+            return directory;
         }
 
         /// <summary>
@@ -45,10 +64,9 @@ namespace MNXtoSVG
 
         }
 
-        private List<MNX> GetMNXs()
+        private List<MNX> GetMNXs(string MNX_in_Folder)
         {
-            const string MNX_in_Directory = @"D:\Visual Studio\Projects\MNXtoSVG\MNXtoSVG\MNX_in\mnx";
-            string[] mnxPathsArray = Directory.GetFiles(MNX_in_Directory, "*.mnx");
+            string[] mnxPathsArray = Directory.GetFiles(MNX_in_Folder, "*.mnx");
 
             List<string> mnxPaths = new List<string>(mnxPathsArray);
             mnxPaths.Sort();

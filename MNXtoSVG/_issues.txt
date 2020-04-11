@@ -10,3 +10,4 @@
 6. §6.6.2 location is a "measure location" but can also have the values "incoming" and "outgoing".
    I'm assuming that the latter are forms of "measure location", and should be added to its definition...
 7. §6.7.2 should provide a formal (blue) definition of "slur"
+8. §6.3.3 "beamed" elements have an optional "id" attribute (missing in the blue definition)

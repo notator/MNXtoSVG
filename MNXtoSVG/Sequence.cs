@@ -13,9 +13,9 @@ namespace MNXtoSVG
 
         public readonly List<IWritable> Seq = new List<IWritable>();
 
-        public Sequence(XmlReader r)
+        public Sequence(XmlReader r, bool isBeamed)
         {
-            G.Assert(r.Name == "sequence");
+            G.Assert(r.Name == "sequence" || isBeamed);
             // https://w3c.github.io/mnx/specification/common/#elementdef-sequence
 
             int count = r.AttributeCount;
@@ -41,10 +41,14 @@ namespace MNXtoSVG
                 }
             }
 
-            G.ReadToXmlElementTag(r, "directions", "event"); // expand on these later...
+            G.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed"); // expand on these later...
 
-            while(r.Name == "directions" || r.Name == "event" || r.Name == "beamed")
+            while(r.Name == "directions" || r.Name == "event" || r.Name == "grace" || r.Name == "beamed")
             {
+                if(isBeamed && r.Name == "beamed" && r.NodeType == XmlNodeType.EndElement)
+                {
+                    break;
+                }
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
@@ -55,21 +59,38 @@ namespace MNXtoSVG
                         case "event":
                             Seq.Add(new Event(r));
                             break;
+                        case "grace":
+                            Seq.Add(new Grace(r));
+                            break;
                         case "beamed":
                             Seq.Add(new Beamed(r));
                             break;
                     }
                 }
-                G.ReadToXmlElementTag(r, "directions", "event", "beamed", "sequence");
+                if(isBeamed)
+                {
+                    G.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed");
+                }
+                else
+                {
+                    G.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "sequence");
+                }                
             }
 
-            CheckSequence(Seq);
+            CheckDirections(Seq);
 
-            G.Assert(r.Name == "sequence"); // end of sequence
+            if(isBeamed)
+            {
+                G.Assert(r.Name == "beamed"); // end of sequence in beamed
+            }
+            else
+            {
+                G.Assert(r.Name == "sequence"); // end of sequence
+            }
 
         }
 
-        private void CheckSequence(List<IWritable> seq)
+        private void CheckDirections(List<IWritable> seq)
         {
             // check the constraints on the contained directions here!
             // maybe silently correct any errors.

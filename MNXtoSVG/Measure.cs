@@ -78,7 +78,7 @@ namespace MNXtoSVG
                             {
                                 G.ThrowError("Error in input file.");
                             }
-                            Sequences.Add(new Sequence(r));
+                            Sequences.Add(new Sequence(r, false));
                             break;
                     }
                 }

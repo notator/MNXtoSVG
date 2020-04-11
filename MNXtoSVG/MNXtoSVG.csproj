@@ -51,7 +51,9 @@
     <Compile Include="DirectionClasses.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Clef.cs" />
-    <Compile Include="MeasureLocation.cs" />
+    <Compile Include="Grace.cs" />
+    <Compile Include="MNXC_PositionInMeasure.cs" />
+    <Compile Include="MNXC_Duration.cs" />
     <Compile Include="Note.cs" />
     <Compile Include="OctaveShift.cs" />
     <Compile Include="Key.cs" />

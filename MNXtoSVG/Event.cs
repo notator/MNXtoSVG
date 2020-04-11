@@ -12,8 +12,8 @@ namespace MNXtoSVG
         public readonly G.MNXOrientation StemDirection = G.MNXOrientation.undefined;
 
         // Compulsory Attribute         
-        //   value - the notated metrical duration of this event
-        public readonly string Value = null;
+        //   value - the notated metrical duration of this event  ( /2, /4, /8 etc)
+        public readonly MNXC_Duration Value = null;
 
         // Optional Attributes 
         //   measure - optional flag indicating that the event occupies the entire measure.
@@ -42,7 +42,7 @@ namespace MNXtoSVG
                 switch(r.Name)
                 {
                     case "value":
-                        Value = r.Value;
+                        Value = new MNXC_Duration(r.Value);
                         break;
                     case "measure":
                         G.ThrowError("Not Implemented");

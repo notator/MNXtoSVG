@@ -10,8 +10,7 @@ namespace MNXtoSVG
         public readonly G.MNXCGraceType Type = G.MNXCGraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
 
-        internal Sequence Seq => seq;
-        private readonly Sequence seq = null;
+        public readonly List<IWritable> Seq;
 
         public Grace(XmlReader r)
         {
@@ -35,7 +34,7 @@ namespace MNXtoSVG
                 }
             }
 
-            seq = new Sequence(r, "grace", false);
+            Seq = G.GetSequenceContent(r, "grace", false);
 
             G.Assert(r.Name == "grace"); // end of grace
 

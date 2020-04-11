@@ -11,12 +11,11 @@ namespace MNXtoSVG
         public readonly uint? StaffIndex = null; // default
         public readonly string VoiceID = null; // default
 
-        public readonly List<IWritable> Seq = new List<IWritable>();
+        public readonly List<IWritable> Seq;
 
-        public Sequence(XmlReader r, string caller, bool isGlobal)
+        public Sequence(XmlReader r, bool isGlobal)
         {
-            G.Assert(r.Name == caller);
-            // https://w3c.github.io/mnx/specification/common/#elementdef-sequence
+            G.Assert(r.Name == "sequence");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -41,46 +40,9 @@ namespace MNXtoSVG
                 }
             }
 
-            G.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "sequence");
+            Seq = G.GetSequenceContent(r, "sequence", isGlobal);
 
-            while(r.Name == "directions" || r.Name == "event" || r.Name == "grace" || r.Name == "beamed" || r.Name == "sequence")
-            {
-                if(r.Name == caller && r.NodeType == XmlNodeType.EndElement)
-                {
-                    break;
-                }
-                if(r.NodeType != XmlNodeType.EndElement)
-                {
-                    switch(r.Name)
-                    {
-                        case "directions":
-                            Seq.Add(new Directions(r, isGlobal));
-                            break;
-                        case "event":
-                            Seq.Add(new Event(r));
-                            break;
-                        case "grace":
-                            Seq.Add(new Grace(r));
-                            break;
-                        case "beamed":
-                            Seq.Add(new Beamed(r));
-                            break;
-                    }
-                }
-
-                G.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "sequence");
-            }
-
-            CheckDirections(Seq, isGlobal);
-
-            G.Assert(r.Name == caller); // end of sequence
-
-        }
-
-        private void CheckDirections(List<IWritable> seq, bool isGlobal)
-        {
-            // check the constraints on the contained directions here!
-            // maybe silently correct any errors.
+            G.Assert(r.Name == "sequence");
         }
 
         public void WriteSVG(XmlWriter w)

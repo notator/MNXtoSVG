@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace MNXtoSVG
 {
-    interface IWritable
+    public interface IWritable
     {
         void WriteSVG(XmlWriter w);
     }

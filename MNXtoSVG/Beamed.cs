@@ -12,8 +12,7 @@ namespace MNXtoSVG
         public readonly string Continue = null;
         public readonly string ID = null;
 
-        internal Sequence Seq => seq;
-        private readonly Sequence seq = null;
+        public readonly List<IWritable> Seq;
 
         public Beamed(XmlReader r)
         {
@@ -40,12 +39,10 @@ namespace MNXtoSVG
                 }
             }
 
-            seq = new Sequence(r, "beamed", false);
+            Seq = G.GetSequenceContent(r, "beamed", false);
 
             G.Assert(r.Name == "beamed"); // end of (nested) beamed
         }
-
-
 
         public void WriteSVG(XmlWriter w)
         {

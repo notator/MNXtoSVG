@@ -9,7 +9,7 @@ namespace MNXtoSVG
     public class Slur : IWritable
     {
         public readonly string Target = null; // an ID
-        public readonly MeasureLocation Location = null;
+        public readonly MNXC_PositionInMeasure Location = null;
         public readonly string StartNote = null; // an ID
         public readonly string EndNote = null; // an ID
         public readonly G.MNXLineType LineType = G.MNXLineType.solid;
@@ -31,7 +31,7 @@ namespace MNXtoSVG
                         Target = r.Value;
                         break;
                     case "location":
-                        Location = new MeasureLocation(r.Value);
+                        Location = new MNXC_PositionInMeasure(r.Value);
                         break;
                     case "start-note":
                         StartNote = r.Value;

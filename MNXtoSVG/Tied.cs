@@ -9,7 +9,7 @@ namespace MNXtoSVG
     public class Tied : IWritable
     {
         public readonly string Target = null;
-        public readonly MeasureLocation Location = null;
+        public readonly MNXC_PositionInMeasure Location = null;
 
         public Tied(XmlReader r)
         {
@@ -26,7 +26,7 @@ namespace MNXtoSVG
                         Target = r.Value;
                         break;
                     case "location":
-                        Location = new MeasureLocation(r.Value);
+                        Location = new MNXC_PositionInMeasure(r.Value);
                         break;
                 }
             }

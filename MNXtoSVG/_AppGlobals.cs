@@ -196,17 +196,29 @@ namespace MNXtoSVG.Globals
 
         /// <summary>
         /// This function is called after getting the class specific attributes
-        /// The XmlReader is pointing to the last attribute read or to the beginning
-        /// of the containing (sequence-like) element.
+        /// The XmlReader is currently pointing to the last attribute read or to
+        /// the beginning of the containing (sequence-like) element.
+        /// See https://w3c.github.io/mnx/specification/common/#elementdef-sequence
         /// </summary>
         public static List<IWritable> GetSequenceContent(XmlReader r, string caller, bool isGlobal)
         {
-            List<IWritable> content = new List<IWritable>();
-            // https://w3c.github.io/mnx/specification/common/#elementdef-sequence
+            // local function, called below.
+            void CheckDirectionContent(List<IWritable> seq)
+            {
+                bool global = isGlobal; // isGlobal is from the outer scope
 
+                // check the constraints on the contained directions here!
+                // maybe silently correct any errors.
+            }
+
+            List<IWritable> content = new List<IWritable>();
+
+            // Read to the first element inside the caller element.
+            // These are all the elements that can occur inside sequence-like elements. (Some of them nest.)
             G.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "sequence");
 
-            while(r.Name == "directions" || r.Name == "event" || r.Name == "grace" || r.Name == "beamed" || r.Name == "tuplet" || r.Name == "sequence")
+            while(r.Name == "directions" || r.Name == "event" || r.Name == "grace"
+                || r.Name == "beamed" || r.Name == "tuplet" || r.Name == "sequence")
             {
                 if(r.Name == caller && r.NodeType == XmlNodeType.EndElement)
                 {
@@ -240,20 +252,12 @@ namespace MNXtoSVG.Globals
                 G.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "sequence");
             }
 
-            //CheckDirections(Seq, isGlobal);
+            CheckDirectionContent(content);
 
             G.Assert(r.Name == caller); // end of sequence content
 
             return content;
         }
-
-        //private void CheckDirections(List<IWritable> seq, bool isGlobal)
-        //{
-        //    // check the constraints on the contained directions here!
-        //    // maybe silently correct any errors.
-        //}
-
-
     }
 
 }

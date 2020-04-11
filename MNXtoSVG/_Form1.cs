@@ -76,18 +76,18 @@ namespace MNXtoSVG
 
             for(var i = 0; i < mnxPaths.Count; i++)
             {
-                try
-                {
+                //try
+                //{
                     mnxPath = mnxPaths[i];
                     mnxs.Add(new MNX(mnxPath));
-                }
-                catch(Exception ex)
-                {
-                    string infoStr = ex.Message +
-                        "\n\nError in File: " + Path.GetFileName(mnxPath);
+                //}
+                //catch(Exception ex)
+                //{
+                //    string infoStr = ex.Message +
+                //        "\n\nError in File: " + Path.GetFileName(mnxPath);
 
-                    MessageBox.Show(infoStr, "Error constructing MNX object", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                //    MessageBox.Show(infoStr, "Error constructing MNX object", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
             }
 
             return mnxs;

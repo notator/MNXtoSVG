@@ -23,20 +23,20 @@ namespace MNXtoSVG
         public readonly Directions Directions = null;
         public readonly List<Sequence> Sequences = new List<Sequence>();
 
-        public Measure(XmlReader r, string parentElement)
+        public Measure(XmlReader r, bool isGlobal)
         {
             G.Assert(r.Name == "measure");
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
 
             if(r.IsEmptyElement)
             {
-                if(parentElement == "global")
+                if(isGlobal)
                 {
                     return;
                 }
                 else
                 {
-                    G.ThrowError("Empty measure in sequence.");
+                    G.ThrowError("Empty measure in part.");
                 }
             }
 
@@ -71,14 +71,14 @@ namespace MNXtoSVG
                     switch(r.Name)
                     {
                         case "directions":
-                            Directions = new Directions(r, "measure", parentElement);
+                            Directions = new Directions(r, isGlobal);
                             break;
                         case "sequence":
-                            if(parentElement == "global")
+                            if(isGlobal)
                             {
                                 G.ThrowError("Error in input file.");
                             }
-                            Sequences.Add(new Sequence(r, false));
+                            Sequences.Add(new Sequence(r, "sequence", isGlobal));
                             break;
                     }
                 }

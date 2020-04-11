@@ -36,7 +36,7 @@ namespace MNXtoSVG
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
-                    Measures.Add(new Measure(r, "global"));
+                    Measures.Add(new Measure(r, true));
                 }
                 G.ReadToXmlElementTag(r, "measure", "global");
             }

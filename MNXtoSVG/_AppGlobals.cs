@@ -13,6 +13,13 @@ namespace MNXtoSVG.Globals
     {
         public static MNXProfileEnum MNXProfile = MNXProfileEnum.undefined;
 
+        public enum MNXCGraceType
+        {
+            stealPrevious,
+            stealFollowing,
+            makeTime
+        }
+
         public enum MNXProfileEnum
         {
             undefined,

@@ -40,7 +40,7 @@ namespace MNXtoSVG
                 }
             }
 
-            seq = new Sequence(r, true);
+            seq = new Sequence(r, "beamed", false);
 
             G.Assert(r.Name == "beamed"); // end of (nested) beamed
         }

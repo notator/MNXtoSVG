@@ -35,7 +35,7 @@ namespace MNXtoSVG
                             InstrumentSound = r.ReadElementContentAsString();
                             break;
                         case "measure":
-                            Measures.Add(new Measure(r, "part"));
+                            Measures.Add(new Measure(r, false));
                             break;
                     }
                 }

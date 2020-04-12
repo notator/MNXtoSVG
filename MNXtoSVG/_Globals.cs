@@ -148,5 +148,21 @@ namespace MNXtoSVG.Globals
                 throw new ApplicationException($"Condition failed.");
             }
         }
+
+        public readonly static int[] MNXC_DurationSymbolTicks =
+        {
+            8192, // noteDoubleWhole_breve
+            4096, // noteWhole_semibreve
+            2048, // noteHalf_minim
+            1024, // noteQuarter_crotchet
+            512,  // note8th_1flag_quaver
+            256,  // note16th_2flags_semiquaver
+            128,  // note32nd_3flags_demisemiquaver
+            64,   // note64th_4flags
+            32,   // note128th_5flags
+            16,   // note256th_6flags
+            8,    // note512th_7flags
+            4     // note1024th_8flags
+        };
     }
 }

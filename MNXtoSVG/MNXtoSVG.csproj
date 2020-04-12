@@ -74,7 +74,7 @@
     <Compile Include="MNX.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="Head.cs" />
-    <Compile Include="_Utilities.cs" />
+    <Compile Include="_Globals.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,7 +119,9 @@
     <None Include="MNX_in\mnx\__4_timesigs.mnx" />
     <None Include="MNX_in\mnx\__5_keysigs.mnx" />
     <None Include="MNX_in\mnx\__6_accidentals.mnx" />
-    <None Include="MNX_in\mnx\__7_dots.mnx" />
+    <None Include="MNX_in\mnx\__7_dots.mnx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MNX_in\mnx\__8_ties.mnx">
       <SubType>Designer</SubType>
     </None>

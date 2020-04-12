@@ -29,19 +29,18 @@ namespace MNXtoSVG.Globals
     /// </summary>
     public enum MNXC_DurationSymbolType
     {
-        undefined,
-        noteDoubleWhole_breve,
-        noteWhole_semibreve,
-        noteHalf_minim,
-        noteQuarter_crotchet,
-        note8th_1flag_quaver,
-        note16th_2flags_semiquaver,
-        note32nd_3flags_demisemiquaver,
-        note64th_4flags,
-        note128th_5flags,
-        note256th_6flags,
-        note512th_7flags,
-        note1024th_8flags
+        noteDoubleWhole_breve, // 8192 ticks
+        noteWhole_semibreve,   // 4096 ticks
+        noteHalf_minim,        // 2048 ticks
+        noteQuarter_crotchet,  // 1024 ticks
+        note8th_1flag_quaver,  // 512 ticks
+        note16th_2flags_semiquaver, // 256 ticks
+        note32nd_3flags_demisemiquaver, // 128 ticks
+        note64th_4flags,  // 64 ticks
+        note128th_5flags, // 32 ticks
+        note256th_6flags, // 16 ticks
+        note512th_7flags, // 8 ticks
+        note1024th_8flags // 4 ticks
     }
 
     /// <summary>
@@ -144,5 +143,11 @@ namespace MNXtoSVG.Globals
         stealPrevious,
         stealFollowing,
         makeTime
+    }
+
+    public enum MNXC_ShortTieOrSlur
+    {
+        incoming,
+        outgoing
     }
 }

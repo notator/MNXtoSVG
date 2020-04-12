@@ -10,7 +10,7 @@ namespace MNXtoSVG
     {
         // These are just the elements used in the first set of examples.
         // Other elements need to be added later.
-        public readonly Time Time;
+        public readonly TimeSignature TimeSignature;
         public readonly Clef Clef;
         public readonly Key Key;
         public readonly OctaveShift OctaveShift;
@@ -36,7 +36,7 @@ namespace MNXtoSVG
                             {
                                 G.ThrowError("Error: the time element must be global in standard mnx-common.");
                             }
-                            Time = new Time(r);
+                            TimeSignature = new TimeSignature(r);
                             break;
                         case "clef":
                             Clef = new Clef(r);

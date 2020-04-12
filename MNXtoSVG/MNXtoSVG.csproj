@@ -63,7 +63,7 @@
     <Compile Include="SpanAttributes.cs" />
     <Compile Include="Slur.cs" />
     <Compile Include="Tied.cs" />
-    <Compile Include="Time.cs" />
+    <Compile Include="TimeSignature.cs" />
     <Compile Include="_IWritable.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="Measure.cs" />

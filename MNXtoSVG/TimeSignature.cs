@@ -6,12 +6,12 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Time : IWritable
+    internal class TimeSignature : IWritable
     {
         public readonly string Signature;
         public readonly string Measure;
 
-        public Time(XmlReader r)
+        public TimeSignature(XmlReader r)
         {
             G.Assert(r.Name == "time");
 

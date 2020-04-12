@@ -19,7 +19,7 @@ namespace MNXtoSVG
         /// #event235 -> the same metrical position as the event whose element ID is event235
         /// 
         /// This value is *writable*: see https://w3c.github.io/mnx/specification/common/#sequence-the-content
-        /// "directions occurring within sequence content must omit this attribute as their
+        /// "directions occurring within sequence content must omit this ("location") attribute as their
         /// location is determined during the procedure of sequencing the content."
         /// </summary>
         public string Location = null;

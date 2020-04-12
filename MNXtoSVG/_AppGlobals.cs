@@ -84,16 +84,21 @@ namespace MNXtoSVG.Globals
         /// The XmlReader is currently pointing to the last attribute read or to
         /// the beginning of the containing (sequence-like) element.
         /// See https://w3c.github.io/mnx/specification/common/#elementdef-sequence
+        /// The spec says:
+        /// "directions occurring within sequence content must omit this ("location") attribute as their
+        /// location is determined during the procedure of sequencing the content."
         /// </summary>
         public static List<IWritable> GetSequenceContent(XmlReader r, string caller, bool isGlobal)
         {
-            // local function, called below.
+            /// local function, called below.
+            /// The spec says:
+            /// "directions occurring within sequence content (i.e.when isGlobal is false) must omit
+            /// this ("location") attribute as their location is determined during the procedure of
+            /// sequencing the content."
+            /// If found, write a message to the console, explaining that such data is ignored.
             void CheckDirectionContent(List<IWritable> seq)
             {
-                bool global = isGlobal; // isGlobal is from the outer scope
-
-                // check the constraints on the contained directions here!
-                // maybe silently correct any errors.
+                bool global = isGlobal; // isGlobal is from the outer scope                
             }
 
             List<IWritable> content = new List<IWritable>();

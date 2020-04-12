@@ -5,9 +5,16 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
+    public enum MNXCGraceType
+    {
+        stealPrevious,
+        stealFollowing,
+        makeTime
+    }
+
     public class Grace : IWritable
     {
-        public readonly G.MNXCGraceType Type = G.MNXCGraceType.stealPrevious; // spec says this is the default.
+        public readonly MNXCGraceType Type = MNXCGraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
 
         public readonly List<IWritable> Seq;
@@ -40,16 +47,16 @@ namespace MNXtoSVG
 
         }
 
-        private G.MNXCGraceType GetType(string value)
+        private MNXCGraceType GetType(string value)
         {
-            G.MNXCGraceType rval = G.MNXCGraceType.stealPrevious; // spec says this is the default.
+            MNXCGraceType rval = MNXCGraceType.stealPrevious; // spec says this is the default.
             switch(value)
             {
                 case "steal-following":
-                    rval = G.MNXCGraceType.stealFollowing;
+                    rval = MNXCGraceType.stealFollowing;
                     break;
                 case "make-time":
-                    rval = G.MNXCGraceType.makeTime;
+                    rval = MNXCGraceType.makeTime;
                     break;
             }
             return rval;

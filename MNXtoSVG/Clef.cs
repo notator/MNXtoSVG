@@ -6,11 +6,23 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
+    public enum MNXClefSign
+    {
+        undefined, // ji
+        G, // G (treble) clef
+        F, // F(bass) clef
+        C, // C clef
+        percussion, // Percussion clef
+        jianpu, // Jianpu clef ?? not mnx-common...
+        tab, // not in MNX Spec... but in MusicXML spec: https://usermanuals.musicxml.com/MusicXML/Content/ST-MusicXML-clef-sign.htm
+        none // The spec asks: Is the none value from MusicXML needed? Why?
+    }
+
     internal class Clef : DirectionClass, IWritable
     {
         public readonly int Line = 0; // 0 means uninitialised. Line must start at 1 (the bottom line of the staff)
         public readonly int Octave = 0; // Default. Octave can be set to any positive or negative integer.
-        public readonly G.MNXClefSign Sign = G.MNXClefSign.undefined;
+        public readonly MNXClefSign Sign = MNXClefSign.undefined;
 
         public Clef(XmlReader r)
         {
@@ -42,34 +54,34 @@ namespace MNXtoSVG
                 }
             }
 
-            G.Assert(Sign != G.MNXClefSign.undefined && Line > 0);
+            G.Assert(Sign != MNXClefSign.undefined && Line > 0);
 
             // r.Name is now the name of the last clef attribute that has been read.
         }
 
-        private G.MNXClefSign GetMNXClefSign(string value)
+        private MNXClefSign GetMNXClefSign(string value)
         {
-            G.MNXClefSign rval = G.MNXClefSign.undefined;
+            MNXClefSign rval = MNXClefSign.undefined;
 
             switch(value)
             {
                 case "G":
-                    rval = G.MNXClefSign.G;
+                    rval = MNXClefSign.G;
                     break;
                 case "F":
-                    rval = G.MNXClefSign.F;
+                    rval = MNXClefSign.F;
                     break;
                 case "C":
-                    rval = G.MNXClefSign.C;
+                    rval = MNXClefSign.C;
                     break;
                 case "percussion":
-                    rval = G.MNXClefSign.percussion;
+                    rval = MNXClefSign.percussion;
                     break;
                 case "jianpu":
-                    rval = G.MNXClefSign.jianpu;
+                    rval = MNXClefSign.jianpu;
                     break;
                 case "none":
-                    rval = G.MNXClefSign.none;
+                    rval = MNXClefSign.none;
                     break;
             }
             

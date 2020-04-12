@@ -6,9 +6,20 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
+    public enum MNXOctaveShiftType
+    {
+        undefined,
+        down1Oct, // 8va (notes are rendered down one octave)
+        up1Oct,   // 8vb (notes are rendered up one octave)
+        down2Oct, // 15ma(notes are rendered down two octaves)
+        up2Oct,   // 15mb(notes are rendered up two octaves)
+        down3Oct, // 22ma(notes are rendered down three octaves)
+        up3Oct    // 22mb(notes are rendered up three octaves)
+    }
+
     internal class OctaveShift : SpanClass, IWritable
     {
-        public readonly G.MNXOctaveShiftType Type = G.MNXOctaveShiftType.undefined; // default
+        public readonly MNXOctaveShiftType Type = MNXOctaveShiftType.undefined; // default
 
         public OctaveShift(XmlReader r)
             : base()
@@ -37,29 +48,29 @@ namespace MNXtoSVG
             // r.Name is now the name of the last octave-shift attribute that has been read.
         }
 
-        private G.MNXOctaveShiftType GetOctaveShiftType(string value)
+        private MNXOctaveShiftType GetOctaveShiftType(string value)
         {
-            G.MNXOctaveShiftType rval = G.MNXOctaveShiftType.undefined;
+            MNXOctaveShiftType rval = MNXOctaveShiftType.undefined;
 
             switch(value)
             {
                 case "-8":
-                    rval = G.MNXOctaveShiftType.down1Oct;
+                    rval = MNXOctaveShiftType.down1Oct;
                     break;
                 case "8":
-                    rval = G.MNXOctaveShiftType.up1Oct;
+                    rval = MNXOctaveShiftType.up1Oct;
                     break;
                 case "-15":
-                    rval = G.MNXOctaveShiftType.down2Oct;
+                    rval = MNXOctaveShiftType.down2Oct;
                     break;
                 case "15":
-                    rval = G.MNXOctaveShiftType.up2Oct;
+                    rval = MNXOctaveShiftType.up2Oct;
                     break;
                 case "-22":
-                    rval = G.MNXOctaveShiftType.down3Oct;
+                    rval = MNXOctaveShiftType.down3Oct;
                     break;
                 case "22":
-                    rval = G.MNXOctaveShiftType.up3Oct;
+                    rval = MNXOctaveShiftType.up3Oct;
                     break;
             }
 

@@ -6,6 +6,35 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
+    /// <summary>
+    /// Avaiable CWMN accidentals copied from MusicXML. (Not all the accidentals there are for CWMN.)
+    /// See https://usermanuals.musicxml.com/MusicXML/Content/ST-MusicXML-accidental-value.htm
+    /// </summary>
+    public enum MNXCommonAccidental
+    {
+        auto, // from spec
+        sharp,
+        natural,
+        flat,
+        doubleSharp,
+        sharpSharp,
+        flatFlat,
+        naturalSharp,
+        naturalFlat,
+        quarterFlat,
+        quarterSharp,
+        threeQuartersFlat,
+        threeQuartersSharp,
+        sharpDown,
+        sharpUp,
+        naturalDown,
+        naturalUp,
+        flatDown,
+        flatUp,
+        tripleSharp,
+        tripleFlat
+    }
+
     public class Note : IWritable
     {
         // Compulsory Attribute
@@ -13,7 +42,7 @@ namespace MNXtoSVG
         // Optional Attributes
         public readonly string ID = null; // the ID of this note
         public readonly int? Staff = null; // an optional staff index for this note
-        public readonly G.MNXCommonAccidental? Accidental = null; // an optional accidental for this note
+        public readonly MNXCommonAccidental? Accidental = null; // an optional accidental for this note
         public readonly string Value = null; // an optional note value for this note
 
         // Optional Content
@@ -94,74 +123,74 @@ namespace MNXtoSVG
             //}
         }
 
-        private G.MNXCommonAccidental? GetAccidental(string value)
+        private MNXCommonAccidental? GetAccidental(string value)
         {
-            G.MNXCommonAccidental? rval = null;
+            MNXCommonAccidental? rval = null;
 
             switch(value)
             {
                 case "auto":
-                    rval = G.MNXCommonAccidental.auto;
+                    rval = MNXCommonAccidental.auto;
                     break;
                 case "sharp":
-                    rval = G.MNXCommonAccidental.sharp;
+                    rval = MNXCommonAccidental.sharp;
                     break;
                 case "natural":
-                    rval = G.MNXCommonAccidental.natural;
+                    rval = MNXCommonAccidental.natural;
                     break;
                 case "flat":
-                    rval = G.MNXCommonAccidental.flat;
+                    rval = MNXCommonAccidental.flat;
                     break;
                 case "double-sharp":
-                    rval = G.MNXCommonAccidental.doubleSharp;
+                    rval = MNXCommonAccidental.doubleSharp;
                     break;
                 case "sharp-sharp":
-                    rval = G.MNXCommonAccidental.sharpSharp;
+                    rval = MNXCommonAccidental.sharpSharp;
                     break;
                 case "flat-flat":
-                    rval = G.MNXCommonAccidental.flatFlat;
+                    rval = MNXCommonAccidental.flatFlat;
                     break;
                 case "natural-sharp":
-                    rval = G.MNXCommonAccidental.naturalSharp;
+                    rval = MNXCommonAccidental.naturalSharp;
                     break;
                 case "natural-flat":
-                    rval = G.MNXCommonAccidental.naturalFlat;
+                    rval = MNXCommonAccidental.naturalFlat;
                     break;
                 case "quarter-flat":
-                    rval = G.MNXCommonAccidental.quarterFlat;
+                    rval = MNXCommonAccidental.quarterFlat;
                     break;
                 case "quarter-sharp":
-                    rval = G.MNXCommonAccidental.quarterSharp;
+                    rval = MNXCommonAccidental.quarterSharp;
                     break;
                 case "three-quarters-flat":
-                    rval = G.MNXCommonAccidental.threeQuartersFlat;
+                    rval = MNXCommonAccidental.threeQuartersFlat;
                     break;
                 case "three-quarters-sharp":
-                    rval = G.MNXCommonAccidental.threeQuartersSharp;
+                    rval = MNXCommonAccidental.threeQuartersSharp;
                     break;
                 case "sharp-down":
-                    rval = G.MNXCommonAccidental.sharpDown;
+                    rval = MNXCommonAccidental.sharpDown;
                     break;
                 case "sharp-up":
-                    rval = G.MNXCommonAccidental.sharpUp;
+                    rval = MNXCommonAccidental.sharpUp;
                     break;
                 case "natural-down":
-                    rval = G.MNXCommonAccidental.naturalDown;
+                    rval = MNXCommonAccidental.naturalDown;
                     break;
                 case "natural-up":
-                    rval = G.MNXCommonAccidental.naturalUp;
+                    rval = MNXCommonAccidental.naturalUp;
                     break;
                 case "flat-down":
-                    rval = G.MNXCommonAccidental.flatDown;
+                    rval = MNXCommonAccidental.flatDown;
                     break;
                 case "flat-up":
-                    rval = G.MNXCommonAccidental.flatUp;
+                    rval = MNXCommonAccidental.flatUp;
                     break;
                 case "triple-sharp":
-                    rval = G.MNXCommonAccidental.tripleSharp;
+                    rval = MNXCommonAccidental.tripleSharp;
                     break;
                 case "triple-flat":
-                    rval = G.MNXCommonAccidental.tripleFlat;
+                    rval = MNXCommonAccidental.tripleFlat;
                     break;
             }
 

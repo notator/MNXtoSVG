@@ -9,7 +9,7 @@ namespace MNXtoSVG
     public class Event : IWritable
     {
         // Style Property
-        public readonly G.MNXOrientation StemDirection = G.MNXOrientation.undefined;
+        public readonly MNXOrientation StemDirection = MNXOrientation.undefined;
 
         // Compulsory Attribute         
         //   value - the notated metrical duration of this event  ( /2, /4, /8 etc)
@@ -21,7 +21,7 @@ namespace MNXtoSVG
         //   staff - optional staff index of this event
         //   duration - optional performed metrical duration, if different from value
         public readonly bool? Measure = null;
-        public readonly G.MNXOrientation Orient = G.MNXOrientation.undefined;
+        public readonly MNXOrientation Orient = MNXOrientation.undefined;
         public readonly int Staff = 0;
         public readonly string Duration = null;
 

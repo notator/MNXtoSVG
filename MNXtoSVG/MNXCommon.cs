@@ -16,7 +16,7 @@ namespace MNXtoSVG
             G.Assert(r.Name == "mnx-common");
             // https://w3c.github.io/mnx/specification/common/#the-mnx-common-element
 
-            G.MNXProfile = G.MNXProfileEnum.undefined;
+            G.MNXProfile = MNXProfileEnum.undefined;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -29,7 +29,7 @@ namespace MNXtoSVG
                             switch(r.Value)
                             {
                                 case "standard":
-                                    G.MNXProfile = G.MNXProfileEnum.MNXCommonStandard;
+                                    G.MNXProfile = MNXProfileEnum.MNXCommonStandard;
                                     break;
                                 default:
                                     throw new ApplicationException("Unknown profile");

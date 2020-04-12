@@ -24,13 +24,13 @@ namespace MNXtoSVG
         /// </summary>
         public string Location = null;
         public int StaffIndex { get; private set; }
-        public G.MNXOrientation Orientation { get; private set; }
+        public MNXOrientation Orientation { get; private set; }
 
         public DirectionAttributes()
         {
             Location = null;
             StaffIndex = -1;
-            Orientation = G.MNXOrientation.undefined;
+            Orientation = MNXOrientation.undefined;
         }
 
         internal bool SetAttribute(XmlReader r)
@@ -53,9 +53,9 @@ namespace MNXtoSVG
                     break;
                 case "orient":
                     if(r.Value == "up")
-                        Orientation = G.MNXOrientation.up;
+                        Orientation = MNXOrientation.up;
                     else if(r.Value == "down")
-                        Orientation = G.MNXOrientation.down;
+                        Orientation = MNXOrientation.down;
                     rval = true;
                     break;
             }

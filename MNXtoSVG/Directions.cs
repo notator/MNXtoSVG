@@ -32,7 +32,7 @@ namespace MNXtoSVG
                     {
                         case "time":
                             // https://w3c.github.io/mnx/specification/common/#the-time-element
-                            if(G.MNXProfile == G.MNXProfileEnum.MNXCommonStandard && isGlobal == false)
+                            if(G.MNXProfile == MNXProfileEnum.MNXCommonStandard && isGlobal == false)
                             {
                                 G.ThrowError("Error: the time element must be global in standard mnx-common.");
                             }

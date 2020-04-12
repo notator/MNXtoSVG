@@ -6,6 +6,28 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
+    /// <summary>
+    /// ji -- April 2020: Should three repeat barline types be defined as well?
+    ///     repeat-begin,
+    ///     repeat-end,
+    ///     repeat-end-begin
+    /// </summary>
+    public enum MNXBarlineType
+    {
+        undefined,
+        regular,
+        dotted,
+        dashed,
+        heavy,
+        lightLight,
+        lightHeavy,
+        heavyLight,
+        heavyHeavy,
+        tick,
+        _short,
+        none,
+    }
+
     internal class Measure : IWritable
     {
         /// <summary>
@@ -18,7 +40,7 @@ namespace MNXtoSVG
         /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
         /// </summary>
         public int? Index = null;
-        public readonly G.MNXBarlineType BarlineType = G.MNXBarlineType.undefined; // default
+        public readonly MNXBarlineType BarlineType = MNXBarlineType.undefined; // default
 
         public readonly Directions Directions = null;
         public readonly List<Sequence> Sequences = new List<Sequence>();
@@ -87,44 +109,44 @@ namespace MNXtoSVG
             G.Assert(r.Name == "measure"); // end of measure
         }
 
-        private G.MNXBarlineType GetBarlineType(string value)
+        private MNXBarlineType GetBarlineType(string value)
         {
-            G.MNXBarlineType rval = G.MNXBarlineType.undefined;
+            MNXBarlineType rval = MNXBarlineType.undefined;
             switch(value)
             {
-                // default is G.MNXBarlineType.undefined (see below)
+                // default is MNXBarlineType.undefined (see below)
                 case "regular":
-                    rval = G.MNXBarlineType.regular;
+                    rval = MNXBarlineType.regular;
                     break;
                 case "dotted":
-                    rval = G.MNXBarlineType.dotted;
+                    rval = MNXBarlineType.dotted;
                     break;
                 case "dashed":
-                    rval = G.MNXBarlineType.dashed;
+                    rval = MNXBarlineType.dashed;
                     break;
                 case "heavy":
-                    rval = G.MNXBarlineType.heavy;
+                    rval = MNXBarlineType.heavy;
                     break;
                 case "light-light":
-                    rval = G.MNXBarlineType.lightLight;
+                    rval = MNXBarlineType.lightLight;
                     break;
                 case "light-heavy":
-                    rval = G.MNXBarlineType.lightHeavy;
+                    rval = MNXBarlineType.lightHeavy;
                     break;
                 case "heavy-light":
-                    rval = G.MNXBarlineType.heavyLight;
+                    rval = MNXBarlineType.heavyLight;
                     break;
                 case "heavy-heavy":
-                    rval = G.MNXBarlineType.heavyHeavy;
+                    rval = MNXBarlineType.heavyHeavy;
                     break;
                 case "tick":
-                    rval = G.MNXBarlineType.tick;
+                    rval = MNXBarlineType.tick;
                     break;
                 case "short":
-                    rval = G.MNXBarlineType._short;
+                    rval = MNXBarlineType._short;
                     break;
                 case "none":
-                    rval = G.MNXBarlineType.none;
+                    rval = MNXBarlineType.none;
                     break;
             }
             return rval;

@@ -5,9 +5,16 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
+    public enum MNXOrientation
+    {
+        undefined,
+        up,
+        down
+    }
+
     internal class Sequence : IWritable
     {
-        public readonly G.MNXOrientation Orientation = G.MNXOrientation.undefined; // default
+        public readonly MNXOrientation Orientation = MNXOrientation.undefined; // default
         public readonly uint? StaffIndex = null; // default
         public readonly string VoiceID = null; // default
 
@@ -25,9 +32,9 @@ namespace MNXtoSVG
                 {
                     case "orient":
                         if(r.Value == "up")
-                            Orientation = G.MNXOrientation.up;
+                            Orientation = MNXOrientation.up;
                         else if(r.Value == "down")
-                            Orientation = G.MNXOrientation.down;
+                            Orientation = MNXOrientation.down;
                         break;
                     case "staff":
                         StaffIndex = UInt32.Parse(r.Value);

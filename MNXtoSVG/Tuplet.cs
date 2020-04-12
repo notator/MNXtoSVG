@@ -6,10 +6,22 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
+    public enum MNXCTupletNumberDisplay
+    {
+        inner, // ShowNumber default 
+        both,
+        none // ShowValue default
+    }
+
+    public enum MNXCTupletBracketDisplay
+    {
+        auto, // default 
+        yes,
+        no
+    }
+
     public class Tuplet : IWritable
     {
-        
-
         /* Attributes:
          * outer - duration with respect to containing element
          * inner - duration of the enclosed sequence content
@@ -21,11 +33,11 @@ namespace MNXtoSVG
          */
         public readonly MNXC_Duration Outer = null;
         public readonly MNXC_Duration Inner = null;
-        public readonly G.MNXOrientation Orient = G.MNXOrientation.undefined;
+        public readonly MNXOrientation Orient = MNXOrientation.undefined;
         public readonly int? Staff = null;
-        public readonly G.MNXCTupletNumberDisplay ShowNumber = G.MNXCTupletNumberDisplay.inner; // default
-        public readonly G.MNXCTupletNumberDisplay ShowValue = G.MNXCTupletNumberDisplay.none; // default
-        public readonly G.MNXCTupletBracketDisplay Bracket = G.MNXCTupletBracketDisplay.auto; // default
+        public readonly MNXCTupletNumberDisplay ShowNumber = MNXCTupletNumberDisplay.inner; // default
+        public readonly MNXCTupletNumberDisplay ShowValue = MNXCTupletNumberDisplay.none; // default
+        public readonly MNXCTupletBracketDisplay Bracket = MNXCTupletBracketDisplay.auto; // default
 
         public readonly List<IWritable> Seq;
 
@@ -76,47 +88,47 @@ namespace MNXtoSVG
             G.Assert(r.Name == "tuplet"); // end of (nested) tuplet
         }
 
-        private G.MNXOrientation GetMNXOrientation(string value)
+        private MNXOrientation GetMNXOrientation(string value)
         {
-            G.MNXOrientation rval = G.MNXOrientation.undefined;
+            MNXOrientation rval = MNXOrientation.undefined;
             switch(value)
             {
                 case "up":
-                    rval = G.MNXOrientation.up;
+                    rval = MNXOrientation.up;
                     break;
                 case "down":
-                    rval = G.MNXOrientation.down;
+                    rval = MNXOrientation.down;
                     break;
             }
             return rval;
         }
 
-        private G.MNXCTupletNumberDisplay GetTupletNumberDisplay(string value)
+        private MNXCTupletNumberDisplay GetTupletNumberDisplay(string value)
         {
-            G.MNXCTupletNumberDisplay rval = G.MNXCTupletNumberDisplay.inner; // default
+            MNXCTupletNumberDisplay rval = MNXCTupletNumberDisplay.inner; // default
             switch(value)
             {
                 case "both":
-                    rval = G.MNXCTupletNumberDisplay.both;
+                    rval = MNXCTupletNumberDisplay.both;
                     break;
                 case "none":
-                    rval = G.MNXCTupletNumberDisplay.none;
+                    rval = MNXCTupletNumberDisplay.none;
                     break;
                 default:
                     break;
             }
             return rval;
         }
-        private G.MNXCTupletBracketDisplay GetTupletBracketDisplay(string value)
+        private MNXCTupletBracketDisplay GetTupletBracketDisplay(string value)
         {
-            G.MNXCTupletBracketDisplay rval = G.MNXCTupletBracketDisplay.auto; // default
+            MNXCTupletBracketDisplay rval = MNXCTupletBracketDisplay.auto; // default
             switch(value)
             {
                 case "yes":
-                    rval = G.MNXCTupletBracketDisplay.yes;
+                    rval = MNXCTupletBracketDisplay.yes;
                     break;
                 case "no":
-                    rval = G.MNXCTupletBracketDisplay.no;
+                    rval = MNXCTupletBracketDisplay.no;
                     break;
                 default:
                     break;

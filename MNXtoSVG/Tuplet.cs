@@ -6,20 +6,6 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public enum MNXCTupletNumberDisplay
-    {
-        inner, // ShowNumber default 
-        both,
-        none // ShowValue default
-    }
-
-    public enum MNXCTupletBracketDisplay
-    {
-        auto, // default 
-        yes,
-        no
-    }
-
     public class Tuplet : IWritable
     {
         /* Attributes:

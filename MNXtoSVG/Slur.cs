@@ -6,13 +6,6 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public enum MNXLineType
-    {
-        solid, // always default
-        dashed,
-        dotted
-    }
-
     public class Slur : IWritable
     {
         public readonly string Target = null; // an ID

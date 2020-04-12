@@ -6,18 +6,6 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public enum MNXClefSign
-    {
-        undefined, // ji
-        G, // G (treble) clef
-        F, // F(bass) clef
-        C, // C clef
-        percussion, // Percussion clef
-        jianpu, // Jianpu clef ?? not mnx-common...
-        tab, // not in MNX Spec... but in MusicXML spec: https://usermanuals.musicxml.com/MusicXML/Content/ST-MusicXML-clef-sign.htm
-        none // The spec asks: Is the none value from MusicXML needed? Why?
-    }
-
     internal class Clef : DirectionClass, IWritable
     {
         public readonly int Line = 0; // 0 means uninitialised. Line must start at 1 (the bottom line of the staff)

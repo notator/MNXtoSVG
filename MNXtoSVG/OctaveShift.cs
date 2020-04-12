@@ -6,17 +6,6 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public enum MNXOctaveShiftType
-    {
-        undefined,
-        down1Oct, // 8va (notes are rendered down one octave)
-        up1Oct,   // 8vb (notes are rendered up one octave)
-        down2Oct, // 15ma(notes are rendered down two octaves)
-        up2Oct,   // 15mb(notes are rendered up two octaves)
-        down3Oct, // 22ma(notes are rendered down three octaves)
-        up3Oct    // 22mb(notes are rendered up three octaves)
-    }
-
     internal class OctaveShift : SpanClass, IWritable
     {
         public readonly MNXOctaveShiftType Type = MNXOctaveShiftType.undefined; // default

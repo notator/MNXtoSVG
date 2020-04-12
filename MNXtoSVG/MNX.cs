@@ -6,12 +6,6 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public enum MNXProfileEnum
-    {
-        undefined,
-        MNXCommonStandard
-    }
-
     class MNX : IWritable
     {
         private readonly Head Head = null;

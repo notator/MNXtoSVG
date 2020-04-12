@@ -64,6 +64,7 @@
     <Compile Include="Slur.cs" />
     <Compile Include="Tied.cs" />
     <Compile Include="TimeSignature.cs" />
+    <Compile Include="_Enum.cs" />
     <Compile Include="_IWritable.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="Measure.cs" />
@@ -73,19 +74,19 @@
     <Compile Include="MNX.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="Head.cs" />
-    <Compile Include="_AppGlobals.cs" />
-    <Compile Include="_Form1.cs">
+    <Compile Include="_Utilities.cs" />
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="_Form1.Designer.cs">
-      <DependentUpon>_Form1.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="MNXCommon.cs" />
     <Compile Include="Score.cs" />
     <Compile Include="_Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="_Form1.resx">
-      <DependentUpon>_Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -158,7 +159,7 @@
     <Content Include="MNX_in\png\__17_slurincomplete.png" />
     <Content Include="MNX_in\png\__16_slurnotes.png" />
     <Content Include="MNX_in\png\__14_slurs.png" />
-    <Content Include="_Issues.txt" />
+    <Content Include="__Issues.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

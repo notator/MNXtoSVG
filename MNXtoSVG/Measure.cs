@@ -6,28 +6,6 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    /// <summary>
-    /// ji -- April 2020: Should three repeat barline types be defined as well?
-    ///     repeat-begin,
-    ///     repeat-end,
-    ///     repeat-end-begin
-    /// </summary>
-    public enum MNXBarlineType
-    {
-        undefined,
-        regular,
-        dotted,
-        dashed,
-        heavy,
-        lightLight,
-        lightHeavy,
-        heavyLight,
-        heavyHeavy,
-        tick,
-        _short,
-        none,
-    }
-
     internal class Measure : IWritable
     {
         /// <summary>

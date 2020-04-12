@@ -1,30 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Xml;
+using MNXtoSVG.Globals;
 using System.Text;
 
 namespace MNXtoSVG
 {
-    /// <summary>
-    /// The first part of these names were derived from the SMuFL names at 
-    /// https://w3c.github.io/smufl/gitbook/tables/individual-notes.html
-    /// (SMuFL defines these 12 symbols)
-    /// </summary>
-    public enum MNXC_DurationSymbolType
-    {
-        undefined,
-        noteDoubleWhole_breve,
-        noteWhole_semibreve,
-        noteHalf_minim,
-        noteQuarter_crotchet,
-        note8th_1flag_quaver,
-        note16th_2flags_semiquaver,
-        note32nd_3flags_demisemiquaver,
-        note64th_4flags,
-        note128th_5flags,
-        note256th_6flags,
-        note512th_7flags,
-        note1024th_8flags
-    }
-
     public class MNXC_Duration
     {
         public readonly int Multiple;

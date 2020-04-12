@@ -5,13 +5,6 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public enum MNXOrientation
-    {
-        undefined,
-        up,
-        down
-    }
-
     internal class Sequence : IWritable
     {
         public readonly MNXOrientation Orientation = MNXOrientation.undefined; // default

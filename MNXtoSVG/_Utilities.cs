@@ -41,44 +41,6 @@ namespace MNXtoSVG.Globals
             }
         }
 
-        public static void ThrowError(string errorDescription,
-                    [CallerLineNumber] int lineNumber = 0,
-                    [CallerMemberName] string caller = null,
-                    [CallerFilePath] string path = null)
-        {
-            string infoStr = errorDescription + "\n" +
-                Path.GetFileName(path) +
-                "\nline number:" + lineNumber +
-                "\n(method: " + caller + ")";
-
-            throw new ApplicationException(infoStr);
-        }
-
-        /// <summary>
-        /// Throws an ApplicationException if condition is false,
-        /// and displays a custom message.
-        /// </summary>
-        /// <param name="v"></param>
-        public static void Assert(bool condition, string message)
-        {
-            if(condition == false)
-            {
-                throw new ApplicationException(message);
-            }
-        }
-
-        /// <summary>
-        /// Throws an ApplicationException if condition is false
-        /// </summary>
-        /// <param name="v"></param>
-        public static void Assert(bool condition)
-        {
-            if(condition == false)
-            {
-                throw new ApplicationException($"Condition failed.");
-            }
-        }
-
         /// <summary>
         /// This function is called after getting the class specific attributes
         /// The XmlReader is currently pointing to the last attribute read or to
@@ -147,6 +109,44 @@ namespace MNXtoSVG.Globals
             G.Assert(r.Name == caller); // end of sequence content
 
             return content;
+        }
+
+        public static void ThrowError(string errorDescription,
+                    [CallerLineNumber] int lineNumber = 0,
+                    [CallerMemberName] string caller = null,
+                    [CallerFilePath] string path = null)
+        {
+            string infoStr = errorDescription + "\n" +
+                Path.GetFileName(path) +
+                "\nline number:" + lineNumber +
+                "\n(method: " + caller + ")";
+
+            throw new ApplicationException(infoStr);
+        }
+
+        /// <summary>
+        /// Throws an ApplicationException if condition is false,
+        /// and displays a custom message.
+        /// </summary>
+        /// <param name="v"></param>
+        public static void Assert(bool condition, string message)
+        {
+            if(condition == false)
+            {
+                throw new ApplicationException(message);
+            }
+        }
+
+        /// <summary>
+        /// Throws an ApplicationException if condition is false
+        /// </summary>
+        /// <param name="v"></param>
+        public static void Assert(bool condition)
+        {
+            if(condition == false)
+            {
+                throw new ApplicationException($"Condition failed.");
+            }
         }
     }
 }

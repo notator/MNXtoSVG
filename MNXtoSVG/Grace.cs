@@ -5,13 +5,6 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public enum MNXCGraceType
-    {
-        stealPrevious,
-        stealFollowing,
-        makeTime
-    }
-
     public class Grace : IWritable
     {
         public readonly MNXCGraceType Type = MNXCGraceType.stealPrevious; // spec says this is the default.

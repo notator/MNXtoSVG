@@ -6,11 +6,11 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Key : IWritable
+    internal class KeySignature : IWritable
     {
         public readonly int Fifths = 0; // default
 
-        public Key(XmlReader r)
+        public KeySignature(XmlReader r)
         {
             // https://w3c.github.io/mnx/specification/common/#the-key-element
             G.Assert(r.Name == "key");

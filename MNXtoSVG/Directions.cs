@@ -12,7 +12,7 @@ namespace MNXtoSVG
         // Other elements need to be added later.
         public readonly TimeSignature TimeSignature;
         public readonly Clef Clef;
-        public readonly Key Key;
+        public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
 
         public Directions(XmlReader r, bool isGlobal)
@@ -43,7 +43,7 @@ namespace MNXtoSVG
                             break;
                         case "key":
                             // https://w3c.github.io/mnx/specification/common/#the-key-element
-                            Key = new Key(r);
+                            KeySignature = new KeySignature(r);
                             break;
                         case "octave-shift":
                             OctaveShift = new OctaveShift(r);

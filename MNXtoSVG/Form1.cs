@@ -74,7 +74,7 @@ namespace MNXtoSVG
             List<MNX> mnxs = new List<MNX>();
             string mnxPath = null;
 
-            for(var i = 6; i < mnxPaths.Count; i++)
+            for(var i = 0; i < mnxPaths.Count; i++)
             {
                 //try
                 //{

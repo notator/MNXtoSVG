@@ -8,7 +8,7 @@ namespace MNXtoSVG
 {
     public class Beamed : IWritable
     {
-        public readonly MNXC_Duration Value = null;
+        public readonly MNXC_Duration Duration = null;
         public readonly string Continue = null;
         public readonly string ID = null;
 
@@ -26,7 +26,7 @@ namespace MNXtoSVG
                 switch(r.Name)
                 {
                     case "value":
-                        Value = new MNXC_Duration(r.Value);
+                        Duration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
                         break;
                     case "continue":
                         Continue = r.Value;

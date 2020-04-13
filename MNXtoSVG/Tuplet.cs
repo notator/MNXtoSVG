@@ -17,8 +17,8 @@ namespace MNXtoSVG
          * show-value - optional control over the display of the tuplet ratio note values
          * bracket - optional control over the display of brackets
          */
-        public readonly MNXC_Duration Outer = null;
-        public readonly MNXC_Duration Inner = null;
+        public readonly MNXC_Duration OuterDuration = null;
+        public readonly MNXC_Duration InnerDuration = null;
         public readonly MNXOrientation Orient = MNXOrientation.undefined;
         public readonly int? Staff = null;
         public readonly MNXCTupletNumberDisplay ShowNumber = MNXCTupletNumberDisplay.inner; // default
@@ -27,8 +27,14 @@ namespace MNXtoSVG
 
         public readonly List<IWritable> Seq;
 
+        public readonly int TupletLevel;
+
         public Tuplet(XmlReader r)
         {
+            TupletLevel = G.CurrentTupletLevel; // top level tuplet has tuplet level 0
+
+            G.CurrentTupletLevel++;
+
             // https://w3c.github.io/mnx/specification/common/#the-tuplet-element
             G.Assert(r.Name == "tuplet");
 
@@ -39,10 +45,10 @@ namespace MNXtoSVG
                 switch(r.Name)
                 {
                     case "outer":
-                        Outer = new MNXC_Duration(r.Value);
+                        OuterDuration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
                         break;
                     case "inner":
-                        Inner = new MNXC_Duration(r.Value);
+                        InnerDuration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
                         break;
                     case "orient":
                         Orient = GetMNXOrientation(r.Value);
@@ -71,7 +77,141 @@ namespace MNXtoSVG
 
             Seq = G.GetSequenceContent(r, "tuplet", false);
 
+            SetTicks();
+
             G.Assert(r.Name == "tuplet"); // end of (nested) tuplet
+
+            G.CurrentTupletLevel--;
+        }
+
+        private void SetTicks()
+        {
+            int outerTicks = this.OuterDuration.GetBasicTicks();
+
+            int localTupletLevel = this.TupletLevel + 1;
+
+            List<int> ticksInside = new List<int>();
+            List<MNXC_Duration> durationObjects = new List<MNXC_Duration>();
+            List<Tuplet> nestedTuplets = new List<Tuplet>();
+
+            void GetObject(IWritable s)
+            {
+                if(s is Event e)
+                {
+                    if(e.TupletLevel == localTupletLevel)
+                    {
+                        MNXC_Duration d = e.Duration;
+                        MNXC_Duration p = e.PerformedDuration;
+                        int basicTicks = 0;
+                        if(p != null)
+                        {
+                            basicTicks = p.GetBasicTicks();
+                            durationObjects.Add(p);
+                        }
+                        else
+                        {
+                            basicTicks = d.GetBasicTicks();
+                            durationObjects.Add(d);
+                        }        
+                        ticksInside.Add(basicTicks);
+                    }
+                }
+                if(s is Tuplet t)
+                {
+                    // a nested tuplet
+                    if(t.TupletLevel == localTupletLevel)
+                    {
+                        MNXC_Duration d = t.OuterDuration;
+                        int basicTicks = d.GetBasicTicks();
+                        durationObjects.Add(d);
+                        ticksInside.Add(basicTicks);
+                        nestedTuplets.Add(t);
+                    }
+                }
+            }
+
+            // Get 1. the outer ticks of Events and Tuplets at this tuplet level (which may be inside a "beamed")
+            // and 2. a list of nested tuplets
+            foreach(var s in Seq)
+            {
+                if(s is Beamed beamed)
+                {
+                    for(var i = 0; i < beamed.Seq.Count; i++)
+                    {
+                        GetObject(beamed.Seq[i]);
+                    }
+                }
+                else
+                {
+                    GetObject(s);
+                }
+            }
+
+            List<int> innerTicks = GetInnerTicks(outerTicks, ticksInside);
+
+            for(var i = 0; i < durationObjects.Count; i++)
+            {
+                MNXC_Duration d = durationObjects[i];
+                int ticks = innerTicks[i];
+                d.SetTicks(ticks, localTupletLevel);
+            }
+
+            foreach(var tuplet in nestedTuplets)
+            {
+                tuplet.SetTicks();
+            }
+        }
+
+        /// <summary>
+        /// This function divides total into relativeSizes.Count parts, returning a List whose:
+        ///     * Count is relativeSizes.Count.
+        ///     * sum is exactly equal to total
+        ///     * members have the relative sizes (as nearly as possible) to the values in the relativeSizes argument. 
+        /// </summary>
+        private List<int> GetInnerTicks(int total, List<int> relativeSizes)
+        {
+            int divisor = relativeSizes.Count;
+            int sumRelative = 0;
+            for(int i = 0; i < divisor; ++i)
+            {
+                sumRelative += relativeSizes[i];
+            }
+            float factor = ((float)total / (float)sumRelative);
+            float fPos = 0;
+            List<int> intPositions = new List<int>();
+            for(int i = 0; i < divisor; ++i)
+            {
+                intPositions.Add((int)(Math.Floor(fPos)));
+                fPos += (relativeSizes[i] * factor);
+            }
+            intPositions.Add((int)Math.Floor(fPos));
+
+            List<int> intDivisionSizes = new List<int>();
+            for(int i = 0; i < divisor; ++i)
+            {
+                int intDuration = (int)(intPositions[i + 1] - intPositions[i]);
+                intDivisionSizes.Add(intDuration);
+            }
+
+            int intSum = 0;
+            foreach(int i in intDivisionSizes)
+            {
+                //G.Assert(i >= 0);
+                if(i < 0)
+                {
+                    throw new ApplicationException();
+                }
+                intSum += i;
+            }
+            G.Assert(intSum <= total);
+            if(intSum < total)
+            {
+                int lastDuration = intDivisionSizes[intDivisionSizes.Count - 1];
+                lastDuration += (total - intSum);
+                intDivisionSizes.RemoveAt(intDivisionSizes.Count - 1);
+                intDivisionSizes.Add(lastDuration);
+            }
+            return intDivisionSizes;
         }
 
         private MNXOrientation GetMNXOrientation(string value)

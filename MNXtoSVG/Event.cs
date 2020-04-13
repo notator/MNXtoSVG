@@ -13,7 +13,7 @@ namespace MNXtoSVG
 
         // Compulsory Attribute         
         //   value - the notated metrical duration of this event  ( /2, /4, /8 etc)
-        public readonly MNXC_Duration Value = null;
+        public readonly MNXC_Duration Duration = null;
 
         // Optional Attributes 
         //   measure - optional flag indicating that the event occupies the entire measure.
@@ -23,15 +23,19 @@ namespace MNXtoSVG
         public readonly bool? Measure = null;
         public readonly MNXOrientation Orient = MNXOrientation.undefined;
         public readonly int Staff = 0;
-        public readonly string Duration = null;
+        public readonly MNXC_Duration PerformedDuration = null;
 
         // Contained objects        
         public readonly List<Note> Notes = null;// Either Notes or Rest must be non-null. Notes.Count can be 0;
         public readonly Rest Rest = null;// Either Notes or Rest must be non-null;
         public readonly List<Slur> Slurs = null;
 
+        public readonly int TupletLevel;
+
         public Event(XmlReader r)
         {
+            TupletLevel = G.CurrentTupletLevel;
+
             G.Assert(r.Name == "event");
             // https://w3c.github.io/mnx/specification/common/#the-event-element
 
@@ -42,7 +46,7 @@ namespace MNXtoSVG
                 switch(r.Name)
                 {
                     case "value":
-                        Value = new MNXC_Duration(r.Value);
+                        Duration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
                         break;
                     case "measure":
                         G.ThrowError("Not Implemented");
@@ -54,7 +58,7 @@ namespace MNXtoSVG
                         G.ThrowError("Not Implemented");
                         break;
                     case "duration":
-                        Duration = r.Value;
+                        PerformedDuration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
                         break;
                 }
             }

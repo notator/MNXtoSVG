@@ -14,6 +14,12 @@ namespace MNXtoSVG.Globals
         public static MNXProfileEnum MNXProfile = MNXProfileEnum.undefined;
 
         /// <summary>
+        /// Used by the parser. The value 0 means that there are no tuplets currently active.
+        /// This value is incremented at the beginning of a Tuplet constructor, and decremented when it ends. 
+        /// </summary>
+        public static int CurrentTupletLevel = 0;
+
+        /// <summary>
         /// Adapted from CapXML Utilities.
         /// Reads to the next start or end tag having a name which is in the parameter list.
         /// When this function returns, XmlReader.Name is the name of the start or end tag found.

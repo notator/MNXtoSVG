@@ -71,15 +71,15 @@ namespace MNXtoSVG
             G.Assert(Parts.Count > 0);
             G.Assert(ScoreAudios.Count >= 0);
 
-            SynchronizeParts(Parts);
+            CleanupSynchronization(Parts);
         }
 
         /// <summary>
-        /// Remove differences of 1 tick between (quasi) synchronous events.
-        /// (This may not be necessary.)
+        /// Set Grace Ticks.
+        /// Synchronize events that are only separated by 1 tick. 
         /// </summary>
         /// <param name="parts"></param>
-        private void SynchronizeParts(List<Part> parts)
+        private void CleanupSynchronization(List<Part> parts)
         {
             // throw new NotImplementedException();
         }

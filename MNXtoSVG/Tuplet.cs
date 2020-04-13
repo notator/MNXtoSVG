@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Tuplet : IWritable
+    public class Tuplet : IWritable, ITicks
     {
         // Attributes:
 
@@ -30,6 +30,14 @@ namespace MNXtoSVG
         public readonly List<IWritable> Seq;
 
         public readonly int TupletLevel;
+
+        public int Ticks
+        {
+            get
+            {
+                return Duration.Ticks;
+            }
+        }
 
         public Tuplet(XmlReader r)
         {
@@ -97,9 +105,9 @@ namespace MNXtoSVG
         private void SetTicksInContent(int outerTicks, int localTupletLevel)
         {
             List<int> ticksInside = new List<int>();
-            List<IWritable> iWritables = new List<IWritable>();
+            List<ITicks> iTicks = new List<ITicks>();
 
-            void GetObject(IWritable s)
+            void GetObject(ITicks s)
             {
                 if(s is Event e)
                 {
@@ -116,7 +124,7 @@ namespace MNXtoSVG
                         {
                             basicTicks = d.GetBasicTicks();
                         }
-                        iWritables.Add(e);
+                        iTicks.Add(e);
                         ticksInside.Add(basicTicks);
                     }
                 }
@@ -127,7 +135,7 @@ namespace MNXtoSVG
                     {
                         MNXC_Duration d = t.Duration;
                         int basicTicks = d.GetBasicTicks();
-                        iWritables.Add(t);
+                        iTicks.Add(t);
                         ticksInside.Add(basicTicks);
                     }
                 }
@@ -141,29 +149,32 @@ namespace MNXtoSVG
                 {
                     for(var i = 0; i < beamed.Seq.Count; i++)
                     {
-                        GetObject(beamed.Seq[i]);
+                        if(beamed.Seq[i] is ITicks d)
+                        {
+                            GetObject(d);
+                        }
                     }
                 }
-                else
+                else if(s is ITicks d)
                 {
-                    GetObject(s);
+                    GetObject(d);
                 }
             }
 
             List<int> innerTicks = GetInnerTicks(outerTicks, ticksInside);
 
-            for(var i = 0; i < iWritables.Count; i++)
+            for(var i = 0; i < iTicks.Count; i++)
             {
-                IWritable iw = iWritables[i];
+                ITicks dur = iTicks[i];
                 int ticks = innerTicks[i];
-                if(iw is Tuplet t)
+                if(dur is Tuplet t)
                 {
                     t.Duration.Ticks = ticks;
                     t.SetTicksInContent(t.Duration.Ticks, t.TupletLevel + 1);
                 }
                 else
                 {
-                    Event e = iw as Event;
+                    Event e = dur as Event;
                     e.Duration.Ticks = ticks;
                 }
             }

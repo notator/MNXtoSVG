@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Event : IWritable
+    public class Event : IWritable , ITicks
     {
         // Style Property
         public readonly MNXOrientation? StemDirection = null;
@@ -31,6 +31,21 @@ namespace MNXtoSVG
         public readonly List<Slur> Slurs = null;
 
         public readonly int TupletLevel;
+
+        public int Ticks
+        {
+            get
+            {
+                if(TicksOverride != null)
+                {
+                    return TicksOverride.Ticks;
+                }
+                else
+                {
+                    return Duration.Ticks;
+                }
+            }
+        }
 
         public Event(XmlReader r)
         {

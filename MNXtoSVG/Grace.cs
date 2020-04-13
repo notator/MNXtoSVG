@@ -5,12 +5,14 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Grace : IWritable
+    public class Grace : IWritable, ITicks
     {
         public readonly MNXCGraceType Type = MNXCGraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
 
         public readonly List<IWritable> Seq;
+
+        public int Ticks { get; set; } = 0;
 
         public Grace(XmlReader r)
         {

@@ -68,6 +68,17 @@ namespace MNXtoSVG
             G.Assert(Globals.Count > 0);
             G.Assert(Parts.Count > 0);
             G.Assert(ScoreAudios.Count >= 0);
+
+            SynchronizeParts(Parts);
+        }
+
+        /// <summary>
+        /// Remove differences of 1 tick between (quasi) synchronous events.
+        /// </summary>
+        /// <param name="parts"></param>
+        private void SynchronizeParts(List<Part> parts)
+        {
+            // throw new NotImplementedException();
         }
 
         public void WriteSVG(XmlWriter w)

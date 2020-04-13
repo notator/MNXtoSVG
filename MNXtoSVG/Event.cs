@@ -9,7 +9,7 @@ namespace MNXtoSVG
     public class Event : IWritable
     {
         // Style Property
-        public readonly MNXOrientation StemDirection = MNXOrientation.undefined;
+        public readonly MNXOrientation? StemDirection = null;
 
         // Compulsory Attribute         
         //   value - the notated metrical duration of this event  ( /2, /4, /8 etc)
@@ -21,9 +21,9 @@ namespace MNXtoSVG
         //   staff - optional staff index of this event
         //   duration - optional performed metrical duration, if different from value
         public readonly bool? Measure = null;
-        public readonly MNXOrientation Orient = MNXOrientation.undefined;
+        public readonly MNXOrientation? Orient = null;
         public readonly int Staff = 0;
-        public readonly MNXC_Duration PerformedDuration = null;
+        public readonly MNXC_Duration TicksOverride = null;
 
         // Contained objects        
         public readonly List<Note> Notes = null;// Either Notes or Rest must be non-null. Notes.Count can be 0;
@@ -58,7 +58,7 @@ namespace MNXtoSVG
                         G.ThrowError("Not Implemented");
                         break;
                     case "duration":
-                        PerformedDuration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
+                        TicksOverride = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
                         break;
                 }
             }

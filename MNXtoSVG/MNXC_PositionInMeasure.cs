@@ -60,7 +60,9 @@ namespace MNXtoSVG
                         break;
                     default:
                         if(value.IndexOf('.') >= 0)
+                        {
                             Position = new MNXC_Duration(value, G.CurrentTupletLevel);
+                        }
                         break;
                 }
             }

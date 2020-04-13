@@ -7,7 +7,7 @@ namespace MNXtoSVG
 {
     internal class Sequence : IWritable
     {
-        public readonly MNXOrientation Orientation = MNXOrientation.undefined; // default
+        public readonly MNXOrientation? Orientation = null; // default
         public readonly uint? StaffIndex = null; // default
         public readonly string VoiceID = null; // default
 

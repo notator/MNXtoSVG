@@ -8,7 +8,7 @@ namespace MNXtoSVG
 {
     internal class OctaveShift : SpanClass, IWritable
     {
-        public readonly MNXOctaveShiftType Type = MNXOctaveShiftType.undefined; // default
+        public readonly MNXOctaveShiftType? Type = null;
 
         public OctaveShift(XmlReader r)
             : base()
@@ -39,7 +39,7 @@ namespace MNXtoSVG
 
         private MNXOctaveShiftType GetOctaveShiftType(string value)
         {
-            MNXOctaveShiftType rval = MNXOctaveShiftType.undefined;
+            MNXOctaveShiftType rval = MNXOctaveShiftType.up1Oct;
 
             switch(value)
             {
@@ -60,6 +60,9 @@ namespace MNXtoSVG
                     break;
                 case "22":
                     rval = MNXOctaveShiftType.up3Oct;
+                    break;
+                default:
+                    G.ThrowError("Error: unknown octave shift type");
                     break;
             }
 

@@ -18,7 +18,7 @@ namespace MNXtoSVG
         /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
         /// </summary>
         public int? Index = null;
-        public readonly MNXBarlineType BarlineType = MNXBarlineType.undefined; // default
+        public readonly MNXBarlineType? BarlineType = null; // default
 
         public readonly Directions Directions = null;
         public readonly List<Sequence> Sequences = new List<Sequence>();
@@ -89,10 +89,9 @@ namespace MNXtoSVG
 
         private MNXBarlineType GetBarlineType(string value)
         {
-            MNXBarlineType rval = MNXBarlineType.undefined;
+            MNXBarlineType rval = MNXBarlineType.regular;
             switch(value)
             {
-                // default is MNXBarlineType.undefined (see below)
                 case "regular":
                     rval = MNXBarlineType.regular;
                     break;
@@ -125,6 +124,9 @@ namespace MNXtoSVG
                     break;
                 case "none":
                     rval = MNXBarlineType.none;
+                    break;
+                default:
+                    G.ThrowError("Error: unknown barline type");
                     break;
             }
             return rval;

@@ -163,6 +163,9 @@ namespace MNXtoSVG
                 case "triple-flat":
                     rval = MNXCommonAccidental.tripleFlat;
                     break;
+                default:
+                    G.ThrowError("Error: unknown accidental.");
+                    break;
             }
 
             return rval;

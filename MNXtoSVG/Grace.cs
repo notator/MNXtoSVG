@@ -24,7 +24,7 @@ namespace MNXtoSVG
                 switch(r.Name)
                 {
                     case "type":
-                        Type = GetType(r.Value);
+                        Type = GetGraceType(r.Value);
                         break;
                     case "slash":
                         Slash = (r.Value == "yes");
@@ -40,7 +40,7 @@ namespace MNXtoSVG
 
         }
 
-        private MNXCGraceType GetType(string value)
+        private MNXCGraceType GetGraceType(string value)
         {
             MNXCGraceType rval = MNXCGraceType.stealPrevious; // spec says this is the default.
             switch(value)
@@ -50,6 +50,9 @@ namespace MNXtoSVG
                     break;
                 case "make-time":
                     rval = MNXCGraceType.makeTime;
+                    break;
+                default:
+                    G.ThrowError("Error: unknown grace type.");
                     break;
             }
             return rval;

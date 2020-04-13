@@ -97,6 +97,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="MNX_in\mnx\__01_nestedtuplets.mnx" />
     <None Include="MNX_in\mnx\_17_slurincomplete.mnx" />
     <None Include="MNX_in\mnx\_16_slurnotes.mnx" />
     <None Include="MNX_in\mnx\__1_helloworld.mnx">

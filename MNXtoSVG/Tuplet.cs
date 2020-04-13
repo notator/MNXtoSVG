@@ -8,18 +8,20 @@ namespace MNXtoSVG
 {
     public class Tuplet : IWritable
     {
-        /* Attributes:
-         * outer - duration with respect to containing element
-         * inner - duration of the enclosed sequence content
-         * orient - optional orientation of this tuplet
-         * staff - optional staff index of this tuplet
-         * show-number - optional control over the display of the tuplet ratio numbers
-         * show-value - optional control over the display of the tuplet ratio note values
-         * bracket - optional control over the display of brackets
-         */
-        public readonly MNXC_Duration OuterDuration = null;
+        // Attributes:
+
+        
+        // staff - optional staff index of this tuplet -> Staff
+        // show-number - optional control over the display of the tuplet ratio numbers -> ShowNumber
+        // show-value - optional control over the display of the tuplet ratio note values -> ShowValue
+        // bracket - optional control over the display of brackets -> Bracket
+
+        // duration with respect to containing element (from MNX outer)
+        public readonly MNXC_Duration Duration = null;
+        // duration of the enclosed sequence content (from MNX inner)
         public readonly MNXC_Duration InnerDuration = null;
-        public readonly MNXOrientation Orient = MNXOrientation.undefined;
+        // optional orientation of this tuplet
+        public readonly MNXOrientation? Orient = null;
         public readonly int? Staff = null;
         public readonly MNXCTupletNumberDisplay ShowNumber = MNXCTupletNumberDisplay.inner; // default
         public readonly MNXCTupletNumberDisplay ShowValue = MNXCTupletNumberDisplay.none; // default
@@ -45,7 +47,7 @@ namespace MNXtoSVG
                 switch(r.Name)
                 {
                     case "outer":
-                        OuterDuration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
+                        Duration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
                         break;
                     case "inner":
                         InnerDuration = new MNXC_Duration(r.Value, G.CurrentTupletLevel);
@@ -77,22 +79,25 @@ namespace MNXtoSVG
 
             Seq = G.GetSequenceContent(r, "tuplet", false);
 
-            SetTicks();
+            if(G.CurrentTupletLevel == 1)
+            {
+                int outerTicks = this.Duration.GetBasicTicks();
+                this.Duration.Ticks = outerTicks;
+                SetTicksInContent(outerTicks, this.TupletLevel + 1);
+            }
 
             G.Assert(r.Name == "tuplet"); // end of (nested) tuplet
 
             G.CurrentTupletLevel--;
         }
 
-        private void SetTicks()
+        /// <summary>
+        /// This function is called recursively for nested tuplets. 
+        /// </summary>
+        private void SetTicksInContent(int outerTicks, int localTupletLevel)
         {
-            int outerTicks = this.OuterDuration.GetBasicTicks();
-
-            int localTupletLevel = this.TupletLevel + 1;
-
             List<int> ticksInside = new List<int>();
-            List<MNXC_Duration> durationObjects = new List<MNXC_Duration>();
-            List<Tuplet> nestedTuplets = new List<Tuplet>();
+            List<IWritable> iWritables = new List<IWritable>();
 
             void GetObject(IWritable s)
             {
@@ -101,31 +106,29 @@ namespace MNXtoSVG
                     if(e.TupletLevel == localTupletLevel)
                     {
                         MNXC_Duration d = e.Duration;
-                        MNXC_Duration p = e.PerformedDuration;
+                        MNXC_Duration ticksOverride = e.TicksOverride;
                         int basicTicks = 0;
-                        if(p != null)
+                        if(ticksOverride != null)
                         {
-                            basicTicks = p.GetBasicTicks();
-                            durationObjects.Add(p);
+                            basicTicks = ticksOverride.GetBasicTicks();                            
                         }
                         else
                         {
                             basicTicks = d.GetBasicTicks();
-                            durationObjects.Add(d);
-                        }        
+                        }
+                        iWritables.Add(e);
                         ticksInside.Add(basicTicks);
                     }
                 }
-                if(s is Tuplet t)
+                else if(s is Tuplet t)
                 {
                     // a nested tuplet
                     if(t.TupletLevel == localTupletLevel)
                     {
-                        MNXC_Duration d = t.OuterDuration;
+                        MNXC_Duration d = t.Duration;
                         int basicTicks = d.GetBasicTicks();
-                        durationObjects.Add(d);
+                        iWritables.Add(t);
                         ticksInside.Add(basicTicks);
-                        nestedTuplets.Add(t);
                     }
                 }
             }
@@ -149,16 +152,20 @@ namespace MNXtoSVG
 
             List<int> innerTicks = GetInnerTicks(outerTicks, ticksInside);
 
-            for(var i = 0; i < durationObjects.Count; i++)
+            for(var i = 0; i < iWritables.Count; i++)
             {
-                MNXC_Duration d = durationObjects[i];
+                IWritable iw = iWritables[i];
                 int ticks = innerTicks[i];
-                d.SetTicks(ticks, localTupletLevel);
-            }
-
-            foreach(var tuplet in nestedTuplets)
-            {
-                tuplet.SetTicks();
+                if(iw is Tuplet t)
+                {
+                    t.Duration.Ticks = ticks;
+                    t.SetTicksInContent(t.Duration.Ticks, t.TupletLevel + 1);
+                }
+                else
+                {
+                    Event e = iw as Event;
+                    e.Duration.Ticks = ticks;
+                }
             }
         }
 
@@ -217,7 +224,7 @@ namespace MNXtoSVG
 
         private MNXOrientation GetMNXOrientation(string value)
         {
-            MNXOrientation rval = MNXOrientation.undefined;
+            MNXOrientation rval = MNXOrientation.up;
             switch(value)
             {
                 case "up":
@@ -225,6 +232,9 @@ namespace MNXtoSVG
                     break;
                 case "down":
                     rval = MNXOrientation.down;
+                    break;
+                default:
+                    G.ThrowError("Error: unknown orientation");
                     break;
             }
             return rval;
@@ -242,6 +252,7 @@ namespace MNXtoSVG
                     rval = MNXCTupletNumberDisplay.none;
                     break;
                 default:
+                    G.ThrowError("Error: unknown tuplet number display type.");
                     break;
             }
             return rval;
@@ -258,6 +269,7 @@ namespace MNXtoSVG
                     rval = MNXCTupletBracketDisplay.no;
                     break;
                 default:
+                    G.ThrowError("Error: unknown tuplet bracket display type.");
                     break;
             }
             return rval;

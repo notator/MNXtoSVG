@@ -11,7 +11,7 @@ namespace MNXtoSVG.Globals
 {
     public static class G
     {
-        public static MNXProfileEnum MNXProfile = MNXProfileEnum.undefined;
+        public static MNXProfileEnum? MNXProfile = null;
 
         /// <summary>
         /// Used by the parser. The value 0 means that there are no tuplets currently active.

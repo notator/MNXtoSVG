@@ -10,7 +10,7 @@ namespace MNXtoSVG
     {
         public readonly int Line = 0; // 0 means uninitialised. Line must start at 1 (the bottom line of the staff)
         public readonly int Octave = 0; // Default. Octave can be set to any positive or negative integer.
-        public readonly MNXClefSign Sign = MNXClefSign.undefined;
+        public readonly MNXClefSign? Sign = null;
 
         public Clef(XmlReader r)
         {
@@ -42,14 +42,14 @@ namespace MNXtoSVG
                 }
             }
 
-            G.Assert(Sign != MNXClefSign.undefined && Line > 0);
+            G.Assert(Sign != null && Line > 0);
 
             // r.Name is now the name of the last clef attribute that has been read.
         }
 
         private MNXClefSign GetMNXClefSign(string value)
         {
-            MNXClefSign rval = MNXClefSign.undefined;
+            MNXClefSign rval = MNXClefSign.G;
 
             switch(value)
             {
@@ -70,6 +70,9 @@ namespace MNXtoSVG
                     break;
                 case "none":
                     rval = MNXClefSign.none;
+                    break;
+                default:
+                    G.ThrowError("Error: unknown clef sign");
                     break;
             }
             

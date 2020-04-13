@@ -11,7 +11,6 @@ namespace MNXtoSVG.Globals
 {
     public enum MNXProfileEnum
     {
-        undefined,
         MNXCommonStandard
     }
 
@@ -51,7 +50,6 @@ namespace MNXtoSVG.Globals
     /// </summary>
     public enum MNXBarlineType
     {
-        undefined,
         regular,
         dotted,
         dashed,
@@ -67,7 +65,6 @@ namespace MNXtoSVG.Globals
 
     public enum MNXOctaveShiftType
     {
-        undefined,
         down1Oct, // 8va (notes are rendered down one octave)
         up1Oct,   // 8vb (notes are rendered up one octave)
         down2Oct, // 15ma(notes are rendered down two octaves)
@@ -78,7 +75,6 @@ namespace MNXtoSVG.Globals
 
     public enum MNXOrientation
     {
-        undefined,
         up,
         down
     }
@@ -114,7 +110,6 @@ namespace MNXtoSVG.Globals
 
     public enum MNXClefSign
     {
-        undefined, // ji
         G, // G (treble) clef
         F, // F(bass) clef
         C, // C clef

@@ -13,8 +13,8 @@ namespace MNXtoSVG
         public readonly string StartNote = null; // an ID
         public readonly string EndNote = null; // an ID
         public readonly MNXLineType LineType = MNXLineType.solid;
-        public readonly MNXOrientation Side = MNXOrientation.undefined;
-        public readonly MNXOrientation SideEnd = MNXOrientation.undefined;
+        public readonly MNXOrientation? Side = null;
+        public readonly MNXOrientation? SideEnd = null;
 
         public Slur(XmlReader r)
         {
@@ -71,6 +71,9 @@ namespace MNXtoSVG
                     break;
                 case "dotted":
                     rval = MNXLineType.dotted;
+                    break;
+                default:
+                    G.ThrowError("Error: unknown line type");
                     break;
             }
             return rval;

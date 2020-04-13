@@ -16,7 +16,7 @@ namespace MNXtoSVG
             G.Assert(r.Name == "mnx-common");
             // https://w3c.github.io/mnx/specification/common/#the-mnx-common-element
 
-            G.MNXProfile = MNXProfileEnum.undefined;
+            G.MNXProfile = null;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -32,12 +32,14 @@ namespace MNXtoSVG
                                     G.MNXProfile = MNXProfileEnum.MNXCommonStandard;
                                     break;
                                 default:
-                                    throw new ApplicationException("Unknown profile");
+                                    G.ThrowError("Error: unknown profile");
+                                    break;
                             }
                         }
                         break;
                     default:
-                        throw new ApplicationException("Unknown attribute");
+                        G.ThrowError("Error: unknown attribute");
+                        break;
                 }
             }
                                                                     

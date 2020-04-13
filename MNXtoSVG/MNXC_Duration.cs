@@ -43,6 +43,13 @@ namespace MNXtoSVG
                 }
                 return _ticks;
             }
+            set
+            {
+                G.Assert(_ticks == 0, "Error: Ticks has already been set.");
+                G.Assert(value > 0, "Error: Ticks cannot be less than 1.");
+
+                _ticks = value;
+            }
         } 
 
         /// <summary>
@@ -214,17 +221,5 @@ namespace MNXtoSVG
 
             return rval;
         }
-
-        public void SetTicks(int ticks, int tupletLevel)
-        {
-            G.Assert(_ticks == 0, "Error: Ticks has already been set.");
-            G.Assert(ticks > 0, "Error: Ticks cannot be less than 1.");
-
-            if(_tupletlevel == tupletLevel)
-            {
-                _ticks = ticks;
-            }
-        }
-
     }
 }

@@ -74,6 +74,7 @@ namespace MNXtoSVG
 
         /// <summary>
         /// Remove differences of 1 tick between (quasi) synchronous events.
+        /// (This may not be necessary.)
         /// </summary>
         /// <param name="parts"></param>
         private void SynchronizeParts(List<Part> parts)

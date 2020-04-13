@@ -163,7 +163,8 @@ namespace MNXtoSVG
         }
 
         /// <summary>
-        /// This function divides total into relativeSizes.Count parts, returning a List whose:
+        /// This code was lifted from Moritz.Globals.IntDivisionSizes(total, relativeSizes).
+        /// The function divides total into relativeSizes.Count parts, returning a List whose:
         ///     * Count is relativeSizes.Count.
         ///     * sum is exactly equal to total
         ///     * members have the relative sizes (as nearly as possible) to the values in the relativeSizes argument. 

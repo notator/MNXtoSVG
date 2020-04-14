@@ -12,7 +12,6 @@ namespace MNXtoSVG
         {
             // https://w3c.github.io/mnx/specification/common/#elementdef-rest
             G.Assert(r.Name == "rest");
-
         }
 
         public int Ticks => throw new NotImplementedException();

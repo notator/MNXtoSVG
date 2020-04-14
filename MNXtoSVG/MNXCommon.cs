@@ -86,6 +86,10 @@ namespace MNXtoSVG
 
         public void WriteSVG(XmlWriter w)
         {
+            foreach(Part part in Parts)
+            {
+                part.WriteSVG(w);
+            }
             throw new NotImplementedException();
         }
     }

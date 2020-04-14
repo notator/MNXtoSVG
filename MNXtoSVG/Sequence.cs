@@ -63,7 +63,10 @@ namespace MNXtoSVG
 
         public void WriteSVG(XmlWriter w)
         {
-            throw new NotImplementedException();
+            foreach(IWritable iWritable in Seq)
+            {
+                iWritable.WriteSVG(w);
+            }
         }
     }
 }

@@ -116,7 +116,14 @@ namespace MNXtoSVG
 
         public void WriteSVG(XmlWriter w)
         {
-            throw new NotImplementedException();
+            if(Rest != null)
+            {
+                Rest.WriteSVG(w);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

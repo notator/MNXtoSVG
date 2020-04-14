@@ -38,7 +38,7 @@ namespace MNXtoSVG
 
         public void WriteSVG(XmlWriter w)
         {
-            throw new System.NotImplementedException();
+            MNXCommon.WriteSVG(w);
         }
     }
 }

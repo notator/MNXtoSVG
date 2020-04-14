@@ -67,7 +67,7 @@ namespace MNXtoSVG
 
         public void WriteSVG(XmlWriter w)
         {
-            throw new NotImplementedException();
+            Score.WriteSVG(w);
         }
     }
 

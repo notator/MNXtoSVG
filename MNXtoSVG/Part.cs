@@ -46,7 +46,10 @@ namespace MNXtoSVG
 
         public void WriteSVG(XmlWriter w)
         {
-            throw new System.NotImplementedException();
+            foreach(Measure measure in Measures)
+            {
+                measure.WriteSVG(w);
+            }
         }
     }
 }

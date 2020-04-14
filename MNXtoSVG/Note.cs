@@ -6,18 +6,23 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Note : IWritable
+    public class Note : IWritable, IEventComponent
     {
         // Compulsory Attribute
         public readonly string Pitch = null; // the musical pitch of this note
         // Optional Attributes
         public readonly string ID = null; // the ID of this note
-        public readonly int? Staff = null; // an optional staff index for this note
-        public readonly MNXCommonAccidental? Accidental = null; // an optional accidental for this note
+
+        // optional staff index of this note (also Tuplet, Rest, Event)
+        // (1-based) staff index of this tuplet. The spec says that the default is app-specific,
+        // and that "The topmost staff in a part has a staff index of 1; staves below the topmost staff
+        // are identified with successively increasing indices."
+        public readonly int Staff = 1; // app-specific default
+        public readonly Accidental Accidental = null; // an optional accidental for this note
         public readonly string Value = null; // an optional note value for this note
 
         // Optional Content
-        public readonly Tied Tied = null;
+        public readonly Tie Tied = null;
         // Content (not defined in spec yet)
         // 6.5.1. The notehead element
         // 6.5.2. The fret element
@@ -51,7 +56,7 @@ namespace MNXtoSVG
                         }
                         break;
                     case "accidental":
-                        Accidental = GetAccidental(r.Value);
+                        Accidental = new Accidental(r.Value);
                         break;
                     case "value":
                         Value = r.Value;
@@ -70,7 +75,7 @@ namespace MNXtoSVG
                         switch(r.Name)
                         {
                             case "tied":
-                                Tied = new Tied(r);
+                                Tied = new Tie(r);
                                 break;
                             case "notehead":
                                 G.ThrowError("Error: Not implemented yet.");
@@ -93,83 +98,6 @@ namespace MNXtoSVG
             //    G.Assert(r.Name == "id" || r.Name == "pitch" || r.Name == "staff" || r.Name == "accidental" || r.Name == "value");
             //}
         }
-
-        private MNXCommonAccidental? GetAccidental(string value)
-        {
-            MNXCommonAccidental? rval = null;
-
-            switch(value)
-            {
-                case "auto":
-                    rval = MNXCommonAccidental.auto;
-                    break;
-                case "sharp":
-                    rval = MNXCommonAccidental.sharp;
-                    break;
-                case "natural":
-                    rval = MNXCommonAccidental.natural;
-                    break;
-                case "flat":
-                    rval = MNXCommonAccidental.flat;
-                    break;
-                case "double-sharp":
-                    rval = MNXCommonAccidental.doubleSharp;
-                    break;
-                case "sharp-sharp":
-                    rval = MNXCommonAccidental.sharpSharp;
-                    break;
-                case "flat-flat":
-                    rval = MNXCommonAccidental.flatFlat;
-                    break;
-                case "natural-sharp":
-                    rval = MNXCommonAccidental.naturalSharp;
-                    break;
-                case "natural-flat":
-                    rval = MNXCommonAccidental.naturalFlat;
-                    break;
-                case "quarter-flat":
-                    rval = MNXCommonAccidental.quarterFlat;
-                    break;
-                case "quarter-sharp":
-                    rval = MNXCommonAccidental.quarterSharp;
-                    break;
-                case "three-quarters-flat":
-                    rval = MNXCommonAccidental.threeQuartersFlat;
-                    break;
-                case "three-quarters-sharp":
-                    rval = MNXCommonAccidental.threeQuartersSharp;
-                    break;
-                case "sharp-down":
-                    rval = MNXCommonAccidental.sharpDown;
-                    break;
-                case "sharp-up":
-                    rval = MNXCommonAccidental.sharpUp;
-                    break;
-                case "natural-down":
-                    rval = MNXCommonAccidental.naturalDown;
-                    break;
-                case "natural-up":
-                    rval = MNXCommonAccidental.naturalUp;
-                    break;
-                case "flat-down":
-                    rval = MNXCommonAccidental.flatDown;
-                    break;
-                case "flat-up":
-                    rval = MNXCommonAccidental.flatUp;
-                    break;
-                case "triple-sharp":
-                    rval = MNXCommonAccidental.tripleSharp;
-                    break;
-                case "triple-flat":
-                    rval = MNXCommonAccidental.tripleFlat;
-                    break;
-                default:
-                    G.ThrowError("Error: unknown accidental.");
-                    break;
-            }
-
-            return rval;
-    }
 
         public void WriteSVG(XmlWriter w)
         {

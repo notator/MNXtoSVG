@@ -13,6 +13,22 @@ namespace MNXtoSVG
 
         public readonly List<IWritable> Seq;
 
+        public int Ticks
+        {
+            get
+            {
+                int ticks = 0;
+                foreach(IWritable iw in Seq)
+                {
+                    if(iw is ITicks it)
+                    {
+                        ticks += it.Ticks; 
+                    }
+                }
+                return ticks;
+            }
+        }
+
         public Sequence(XmlReader r, bool isGlobal)
         {
             G.Assert(r.Name == "sequence");

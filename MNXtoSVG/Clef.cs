@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Clef : DirectionClass, IWritable
+    internal class Clef : Direction, IWritable, IWritableSequenceComponent
     {
         public readonly int Line = 0; // 0 means uninitialised. Line must start at 1 (the bottom line of the staff)
         public readonly int Octave = 0; // Default. Octave can be set to any positive or negative integer.

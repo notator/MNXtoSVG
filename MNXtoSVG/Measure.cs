@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class Measure : IWritable
+    internal class Measure : IWritable , ITicks
     {
         /// <summary>
         /// If null, this value should be set when the whole score has been read
@@ -22,6 +22,19 @@ namespace MNXtoSVG
 
         public readonly Directions Directions = null;
         public readonly List<Sequence> Sequences = new List<Sequence>();
+
+        public int Ticks
+        {
+            get
+            {
+                int ticks = Sequences[0].Ticks;
+                for(var i = 1; i < Sequences.Count; i++)
+                {
+                    G.Assert(Sequences[i].Ticks == ticks);
+                }
+                return ticks;
+            }
+        }
 
         public Measure(XmlReader r, bool isGlobal)
         {

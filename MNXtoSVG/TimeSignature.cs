@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class TimeSignature : IWritable
+    internal class TimeSignature : IWritable, IWritableSequenceComponent
     {
         public readonly string Signature;
         public readonly string Measure;

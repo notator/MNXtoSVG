@@ -5,18 +5,20 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Grace : IWritable, ITicks
+    /// <summary>
+    /// https://w3c.github.io/mnx/specification/common/#the-grace-element
+    /// </summary>
+    public class Grace : IWritable, ITicks, ITicksSequenceComponent
     {
         public readonly MNXCGraceType Type = MNXCGraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
 
         public readonly List<IWritable> Seq;
 
-        public int Ticks { get; set; } = 0;
+        public int Ticks { get; set; } = 1;
 
         public Grace(XmlReader r)
-        {
-            // https://w3c.github.io/mnx/specification/common/#the-grace-element
+        {            
             G.Assert(r.Name == "grace");
 
             int count = r.AttributeCount;
@@ -44,7 +46,7 @@ namespace MNXtoSVG
 
         private MNXCGraceType GetGraceType(string value)
         {
-            MNXCGraceType rval = MNXCGraceType.stealPrevious; // spec says this is the default.
+            MNXCGraceType rval = MNXCGraceType.stealPrevious; // default (spec)
             switch(value)
             {
                 case "steal-following":

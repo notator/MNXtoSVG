@@ -29,9 +29,7 @@ namespace MNXtoSVG
 
             List<MNX> mnxs = GetMNXs(MNX_in_Directory);
 
-            AdjustMNXs(mnxs); 
-
-            
+            AdjustMNXs(mnxs);             
 
             //foreach(var mnx in mnxs)
             //{

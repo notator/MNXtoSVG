@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    internal class OctaveShift : SpanClass, IWritable
+    internal class OctaveShift : Span, IWritable
     {
         public readonly MNXOctaveShiftType? Type = null;
 

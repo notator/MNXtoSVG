@@ -6,27 +6,37 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Tuplet : IWritable, ITicks
+    /// <summary>
+    /// https://w3c.github.io/mnx/specification/common/#the-tuplet-element
+    /// </summary>
+    public class Tuplet : IWritable, ITicks, ITicksSequenceComponent
     {
-        // Attributes:
-
-        
-        // staff - optional staff index of this tuplet -> Staff
-        // show-number - optional control over the display of the tuplet ratio numbers -> ShowNumber
-        // show-value - optional control over the display of the tuplet ratio note values -> ShowValue
-        // bracket - optional control over the display of brackets -> Bracket
-
+        #region MNX file attributes
+        // Compulsory attributes:
         // duration with respect to containing element (from MNX outer)
         public readonly MNXC_Duration Duration = null;
         // duration of the enclosed sequence content (from MNX inner)
         public readonly MNXC_Duration InnerDuration = null;
-        // optional orientation of this tuplet
-        public readonly MNXOrientation? Orient = null;
-        public readonly int? Staff = null;
-        public readonly MNXCTupletNumberDisplay ShowNumber = MNXCTupletNumberDisplay.inner; // default
-        public readonly MNXCTupletNumberDisplay ShowValue = MNXCTupletNumberDisplay.none; // default
-        public readonly MNXCTupletBracketDisplay Bracket = MNXCTupletBracketDisplay.auto; // default
 
+        // Optional attributes:
+        // Orientation of this tuplet. (The spec says default is app-specific.) 
+        public readonly MNXOrientation Orient = MNXOrientation.up; // app-specific default
+
+        // (1-based) staff index of this tuplet. The spec says that the default is app-specific,
+        // and that "The topmost staff in a part has a staff index of 1; staves below the topmost staff
+        // are identified with successively increasing indices."
+        // https://w3c.github.io/mnx/specification/common/#common-parts-staves
+        public readonly int Staff = 1; // (app-specific?) default
+
+        // Control over the display of the tuplet ratio numbers
+        public readonly MNXCTupletNumberDisplay ShowNumber = MNXCTupletNumberDisplay.inner; // spec default
+        // Control over the display of the tuplet ratio note values
+        public readonly MNXCTupletNumberDisplay ShowValue = MNXCTupletNumberDisplay.none; // spec default
+        // Control over the display of brackets -> Bracket
+        public readonly MNXCTupletBracketDisplay Bracket = MNXCTupletBracketDisplay.auto; // spec default
+        #endregion MNX file attributes
+
+        #region Runtime properties
         public readonly List<IWritable> Seq;
 
         public readonly int TupletLevel;
@@ -39,13 +49,14 @@ namespace MNXtoSVG
             }
         }
 
+        #endregion Runtime properties
+
         public Tuplet(XmlReader r)
         {
             TupletLevel = G.CurrentTupletLevel; // top level tuplet has tuplet level 0
 
             G.CurrentTupletLevel++;
 
-            // https://w3c.github.io/mnx/specification/common/#the-tuplet-element
             G.Assert(r.Name == "tuplet");
 
             int count = r.AttributeCount;
@@ -105,39 +116,37 @@ namespace MNXtoSVG
         private void SetTicksInContent(int outerTicks, int localTupletLevel)
         {
             List<int> ticksInside = new List<int>();
-            List<ITicks> iTicks = new List<ITicks>();
+            List<ITicksSequenceComponent> components = new List<ITicksSequenceComponent>();
 
-            void GetObject(ITicks s)
+            void GetObject(ITicksSequenceComponent component)
             {
-                if(s is Event e)
+                if(component is Event e)
                 {
-                    if(e.TupletLevel == localTupletLevel)
+                    G.Assert(e.TupletLevel == localTupletLevel);
+
+                    MNXC_Duration defaultDuration = e.Duration;
+                    MNXC_Duration ticksOverride = e.TicksOverride;
+                    int basicTicks = 0;
+                    if(ticksOverride != null)
                     {
-                        MNXC_Duration d = e.Duration;
-                        MNXC_Duration ticksOverride = e.TicksOverride;
-                        int basicTicks = 0;
-                        if(ticksOverride != null)
-                        {
-                            basicTicks = ticksOverride.GetBasicTicks();                            
-                        }
-                        else
-                        {
-                            basicTicks = d.GetBasicTicks();
-                        }
-                        iTicks.Add(e);
-                        ticksInside.Add(basicTicks);
+                        basicTicks = ticksOverride.GetBasicTicks();                            
                     }
+                    else
+                    {
+                        basicTicks = defaultDuration.GetBasicTicks();
+                    }
+                    components.Add(e);
+                    ticksInside.Add(basicTicks);
                 }
-                else if(s is Tuplet t)
+                else if(component is Tuplet t)
                 {
                     // a nested tuplet
-                    if(t.TupletLevel == localTupletLevel)
-                    {
-                        MNXC_Duration d = t.Duration;
-                        int basicTicks = d.GetBasicTicks();
-                        iTicks.Add(t);
-                        ticksInside.Add(basicTicks);
-                    }
+                    G.Assert(t.TupletLevel == localTupletLevel);
+                   
+                    MNXC_Duration d = t.Duration;
+                    int basicTicks = d.GetBasicTicks();
+                    components.Add(t);
+                    ticksInside.Add(basicTicks);
                 }
             }
 
@@ -149,33 +158,33 @@ namespace MNXtoSVG
                 {
                     for(var i = 0; i < beamed.Seq.Count; i++)
                     {
-                        if(beamed.Seq[i] is ITicks d)
+                        if(beamed.Seq[i] is ITicksSequenceComponent component)
                         {
-                            GetObject(d);
+                            GetObject(component);
                         }
                     }
                 }
-                else if(s is ITicks d)
+                else if(s is ITicksSequenceComponent component)
                 {
-                    GetObject(d);
+                    GetObject(component);
                 }
             }
 
             List<int> innerTicks = GetInnerTicks(outerTicks, ticksInside);
 
-            for(var i = 0; i < iTicks.Count; i++)
+            for(var i = 0; i < components.Count; i++)
             {
-                ITicks dur = iTicks[i];
+                ITicksSequenceComponent component = components[i];
                 int ticks = innerTicks[i];
-                if(dur is Tuplet t)
+                if(component is Tuplet tuplet)
                 {
-                    t.Duration.Ticks = ticks;
-                    t.SetTicksInContent(t.Duration.Ticks, t.TupletLevel + 1);
+                    tuplet.Duration.Ticks = ticks;
+                    tuplet.SetTicksInContent(tuplet.Duration.Ticks, tuplet.TupletLevel + 1);
                 }
                 else
                 {
-                    Event e = dur as Event;
-                    e.Duration.Ticks = ticks;
+                    Event evnt = component as Event;
+                    evnt.Duration.Ticks = ticks;
                 }
             }
         }

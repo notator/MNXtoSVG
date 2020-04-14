@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace MNXtoSVG
 {
-    internal abstract class DirectionClass
+    public abstract class Direction
     {
         public readonly DirectionAttributes DirectionAttributes = new DirectionAttributes();
 
@@ -15,7 +15,7 @@ namespace MNXtoSVG
         }
     }
 
-    internal abstract class SpanClass : DirectionClass
+    public abstract class Span : Direction
     {
         public readonly SpanAttributes SpanAttributes = new SpanAttributes();
 

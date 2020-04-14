@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Rest : IWritable
+    public class Rest : IWritable, IWritableSequenceComponent, ITicks, ITicksSequenceComponent, IEventComponent
     {
         public Rest(XmlReader r)
         {
@@ -14,6 +14,8 @@ namespace MNXtoSVG
             G.Assert(r.Name == "rest");
 
         }
+
+        public int Ticks => throw new NotImplementedException();
 
         public void WriteSVG(XmlWriter w)
         {

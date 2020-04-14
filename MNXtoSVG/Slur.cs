@@ -6,7 +6,7 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Slur : IWritable
+    public class Slur : IWritable, IWritableSequenceComponent, IEventComponent
     {
         public readonly string Target = null; // an ID
         public readonly MNXC_PositionInMeasure Location = null;

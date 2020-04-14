@@ -6,12 +6,12 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Tied : IWritable
+    public class Tie : Span, IWritable
     {
         public readonly string Target = null;
         public readonly MNXC_PositionInMeasure Location = null;
 
-        public Tied(XmlReader r)
+        public Tie(XmlReader r)
         {
             // https://w3c.github.io/mnx/specification/common/#the-tied-element
             G.Assert(r.Name == "tied");

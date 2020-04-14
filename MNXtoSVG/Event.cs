@@ -6,53 +6,52 @@ using MNXtoSVG.Globals;
 
 namespace MNXtoSVG
 {
-    public class Event : IWritable , ITicks
+    /// <summary>
+    /// https://w3c.github.io/mnx/specification/common/#the-event-element
+    /// </summary>
+    public class Event : IWritable , ITicks, ITicksSequenceComponent
     {
-        // Style Property
-        public readonly MNXOrientation? StemDirection = null;
-
+        #region MNX file attributes
         // Compulsory Attribute         
         //   value - the notated metrical duration of this event  ( /2, /4, /8 etc)
         public readonly MNXC_Duration Duration = null;
 
         // Optional Attributes 
-        //   measure - optional flag indicating that the event occupies the entire measure.
-        //   orient - optional orientation of this event
-        //   staff - optional staff index of this event
-        //   duration - optional performed metrical duration, if different from value
+        //   optional flag indicating that the event occupies the entire measure.    
         public readonly bool? Measure = null;
-        public readonly MNXOrientation? Orient = null;
-        public readonly int Staff = 0;
+        //   optional orientation of this event
+        public readonly MNXOrientation? StemDirection = null;
+        //   optional staff index of this event (also Tuplet, Rest, Note)
+        // (1-based) staff index of this tuplet. The spec says that the default is app-specific,
+        // and that "The topmost staff in a part has a staff index of 1; staves below the topmost staff
+        // are identified with successively increasing indices."
+        public readonly int Staff = 1; // app-specific default
+        //   duration - optional performed metrical duration, if different from value
         public readonly MNXC_Duration TicksOverride = null;
+        #endregion  MNX file attributes
 
-        // Contained objects        
-        public readonly List<Note> Notes = null;// Either Notes or Rest must be non-null. Notes.Count can be 0;
-        public readonly Rest Rest = null;// Either Notes or Rest must be non-null;
+        #region runtime properties
+        // Contained objects
+        // Either Notes or Rest must be non-null. Notes.Count can be 0;
+        public readonly List<Note> Notes = null;
+        // Either Notes or Rest must be non-null;
+        public readonly Rest Rest = null;
         public readonly List<Slur> Slurs = null;
-
+        // TupletLevel is used when setting Duration.Ticks. It has the following meaning:
+        //    0: The Event is not contained in a Tuplet.
+        //    1: The Event is contained in a Tuplet.
+        //    2: The Event is contained in a Tuplet nested in a Tuplet.
+        //    etc. (This app copes with arbitrarily nested tuplets.)
         public readonly int TupletLevel;
+        public int Ticks { get { return Duration.Ticks; }}
 
-        public int Ticks
-        {
-            get
-            {
-                if(TicksOverride != null)
-                {
-                    return TicksOverride.Ticks;
-                }
-                else
-                {
-                    return Duration.Ticks;
-                }
-            }
-        }
+        #endregion runtime properties
 
         public Event(XmlReader r)
         {
             TupletLevel = G.CurrentTupletLevel;
 
             G.Assert(r.Name == "event");
-            // https://w3c.github.io/mnx/specification/common/#the-event-element
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

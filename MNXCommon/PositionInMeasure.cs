@@ -2,7 +2,7 @@
 
 namespace MNX.Common
 {
-    public class MNXC_PositionInMeasure
+    public class PositionInMeasure
     {
         /*
          * Here are some instances of the measure location syntax:
@@ -27,6 +27,22 @@ namespace MNX.Common
         public readonly string ID = null; // currently without the leading '#' (okay?)
         public readonly ShortTieOrSlur? Short = null;
 
+        private int _ticks;
+        public int Ticks
+        {
+            get
+            {
+                if(Position != null)
+                {
+                    return Position.Ticks;
+                }
+                else
+                {
+                    return _ticks;
+                }
+            }
+        }
+
         /// <summary>
         /// The value argument is the MNXC measure location string
         /// ("0.25", "3/8", "4:0.25", "4:1/4", "#event235" etc.)
@@ -38,7 +54,7 @@ namespace MNX.Common
         /// These just duplicate the other options, and create unnecessary work
         /// for parsers, so I'm currently ignoring them.
         /// </summary>
-        public MNXC_PositionInMeasure(string value)
+        public PositionInMeasure(string value)
         {
             StringBuilder sbValue = new StringBuilder(value);
             int colonPos = -1;

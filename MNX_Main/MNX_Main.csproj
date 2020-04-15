@@ -49,17 +49,17 @@
     <Compile Include="Collection.cs" />
     <Compile Include="Head.cs" />
     <Compile Include="MNX.cs" />
-    <Compile Include="MNXtoSVGMainForm1.cs">
+    <Compile Include="MNX_MainForm1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MNXtoSVGMainForm1.Designer.cs">
-      <DependentUpon>MNXtoSVGMainForm1.cs</DependentUpon>
+    <Compile Include="MNX_MainForm1.Designer.cs">
+      <DependentUpon>MNX_MainForm1.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Score.cs" />
-    <EmbeddedResource Include="MNXtoSVGMainForm1.resx">
-      <DependentUpon>MNXtoSVGMainForm1.cs</DependentUpon>
+    <EmbeddedResource Include="MNX_MainForm1.resx">
+      <DependentUpon>MNX_MainForm1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -133,7 +133,7 @@
     <Content Include="MNX_in\png\___7_example-dots.png" />
     <Content Include="MNX_in\png\___8_example-ties.png" />
     <Content Include="MNX_in\png\___9_example-beams.png" />
-    <Content Include="_Issues.txt" />
+    <Content Include="Issues.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

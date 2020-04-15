@@ -13,9 +13,34 @@ namespace MNX.Common
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
 
-        public readonly List<ISequenceComponent> Seq;
+        public readonly List<Event> Events;
 
-        public int Ticks { get; set; } = 1;
+        public int Ticks
+        {
+            get
+            {
+                int rval = 0;
+                foreach(var e in Events)
+                {
+                    rval += e.Duration.Ticks;
+                }
+                return rval;
+            }
+            set
+            {
+                List<int> tickss = new List<int>();
+                foreach(var e in Events)
+                {
+                    tickss.Add(e.Duration.Ticks);
+                }
+                List<int> newTickss = B.GetInnerTicks(value, tickss);
+
+                for(var i = 0; i < newTickss.Count; i++)
+                {
+                    Events[i].Duration.Ticks = newTickss[i];
+                }
+            }
+        }
 
         public Grace(XmlReader r)
         {            
@@ -38,10 +63,27 @@ namespace MNX.Common
                 }
             }
 
-            Seq = B.GetSequenceContent(r, "grace", false);
+            Events = GetGraceContent(r);
 
             A.Assert(r.Name == "grace"); // end of grace
 
+        }
+
+        private List<Event> GetGraceContent(XmlReader r)
+        {
+            List<ISequenceComponent> seq = B.GetSequenceContent(r, "grace", false);
+            List<Event> rval = new List<Event>();
+            foreach(var item in seq)
+            {
+                if(item is Event e)
+                {
+                    int nTicks = e.Duration.Ticks / 3;
+                    e.Duration.Ticks = (nTicks < B.MinimumEventTicks) ? B.MinimumEventTicks : nTicks;
+                    // Grace.Ticks returns the sum of these Ticks.
+                    rval.Add(e);
+                }
+            }
+            return rval;
         }
 
         private GraceType GetGraceType(string value)

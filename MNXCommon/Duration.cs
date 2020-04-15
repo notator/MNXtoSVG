@@ -43,7 +43,7 @@ namespace MNX.Common
             set
             {
                 A.Assert(_ticks == 0, "Error: Ticks has already been set.");
-                A.Assert(value > 0, "Error: Ticks cannot be less than 1.");
+                A.Assert(value >= B.MinimumEventTicks, "Error: Duration must have at least " + B.MinimumEventTicks.ToString() + " Ticks");
 
                 _ticks = value;
             }

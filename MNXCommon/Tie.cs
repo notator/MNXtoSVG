@@ -6,7 +6,7 @@ namespace MNX.Common
     public class Tie : Span
     {
         public readonly string Target = null;
-        public readonly MNXC_PositionInMeasure Location = null;
+        public readonly PositionInMeasure Location = null;
 
         public Tie(XmlReader r)
         {
@@ -23,7 +23,7 @@ namespace MNX.Common
                         Target = r.Value;
                         break;
                     case "location":
-                        Location = new MNXC_PositionInMeasure(r.Value);
+                        Location = new PositionInMeasure(r.Value);
                         break;
                 }
             }

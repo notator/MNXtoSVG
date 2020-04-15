@@ -52,7 +52,7 @@
     <Compile Include="Measure.cs" />
     <Compile Include="MNXCommon.cs" />
     <Compile Include="Duration.cs" />
-    <Compile Include="MNXC_PositionInMeasure.cs" />
+    <Compile Include="PositionInMeasure.cs" />
     <Compile Include="Note.cs" />
     <Compile Include="OctaveShift.cs" />
     <Compile Include="Part.cs" />

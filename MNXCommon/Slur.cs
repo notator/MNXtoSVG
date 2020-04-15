@@ -6,7 +6,7 @@ namespace MNX.Common
     public class Slur : ISequenceComponent, IEventComponent
     {
         public readonly string Target = null; // an ID
-        public readonly MNXC_PositionInMeasure Location = null;
+        public readonly PositionInMeasure Location = null;
         public readonly string StartNote = null; // an ID
         public readonly string EndNote = null; // an ID
         public readonly LineType LineType = LineType.solid;
@@ -28,7 +28,7 @@ namespace MNX.Common
                         Target = r.Value;
                         break;
                     case "location":
-                        Location = new MNXC_PositionInMeasure(r.Value);
+                        Location = new PositionInMeasure(r.Value);
                         break;
                     case "start-note":
                         StartNote = r.Value;

@@ -13,7 +13,7 @@ namespace MNX.Common
         #region MNX file attributes
         // Compulsory attributes:
         // duration with respect to containing element (from MNX outer)
-        public readonly Duration Duration = null;
+        public readonly Duration OuterDuration = null;
         // duration of the enclosed sequence content (from MNX inner)
         public readonly Duration InnerDuration = null;
 
@@ -44,7 +44,7 @@ namespace MNX.Common
         {
             get
             {
-                return Duration.Ticks;
+                return OuterDuration.Ticks;
             }
         }
 
@@ -65,7 +65,7 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "outer":
-                        Duration = new Duration(r.Value, B.CurrentTupletLevel);
+                        OuterDuration = new Duration(r.Value, B.CurrentTupletLevel);
                         break;
                     case "inner":
                         InnerDuration = new Duration(r.Value, B.CurrentTupletLevel);
@@ -95,18 +95,33 @@ namespace MNX.Common
                 }
             }
 
-            Seq = B.GetSequenceContent(r, "tuplet", false);
+            Seq = GetTupletComponents(r);
 
             if(B.CurrentTupletLevel == 1)
             {
-                int outerTicks = this.Duration.GetBasicTicks();
-                this.Duration.Ticks = outerTicks;
+                int outerTicks = this.OuterDuration.GetBasicTicks();
+                this.OuterDuration.Ticks = outerTicks;
                 SetTicksInContent(outerTicks, this.TupletLevel + 1);
             }
 
             A.Assert(r.Name == "tuplet"); // end of (nested) tuplet
 
             B.CurrentTupletLevel--;
+        }
+
+        private List<ISequenceComponent> GetTupletComponents(XmlReader r)
+        {
+            List<ISequenceComponent> rval = new List<ISequenceComponent>();
+
+            var seq = B.GetSequenceContent(r, "tuplet", false);
+            foreach(var seqObj in seq)
+            {
+                if(seqObj is ISequenceComponent tc)
+                {
+                    rval.Add(tc);
+                }
+            }
+            return rval;
         }
 
         /// <summary>
@@ -116,6 +131,7 @@ namespace MNX.Common
         {
             List<int> ticksInside = new List<int>();
             List<ISequenceComponent> components = new List<ISequenceComponent>();
+            int stealGraceTicks = 0;
 
             void GetObject(ISequenceComponent component)
             {
@@ -134,6 +150,8 @@ namespace MNX.Common
                     {
                         basicTicks = defaultDuration.GetBasicTicks();
                     }
+                    basicTicks -= stealGraceTicks;
+                    stealGraceTicks = 0;
                     components.Add(e);
                     ticksInside.Add(basicTicks);
                 }
@@ -142,10 +160,14 @@ namespace MNX.Common
                     // a nested tuplet
                     A.Assert(t.TupletLevel == localTupletLevel);
                    
-                    Duration d = t.Duration;
+                    Duration d = t.OuterDuration;
                     int basicTicks = d.GetBasicTicks();
                     components.Add(t);
                     ticksInside.Add(basicTicks);
+                }
+                else if(component is Grace g)
+                {
+                    ticksInside.Add(g.Ticks);
                 }
             }
 
@@ -169,7 +191,7 @@ namespace MNX.Common
                 }
             }
 
-            List<int> innerTicks = GetInnerTicks(outerTicks, ticksInside);
+            List<int> innerTicks = B.GetInnerTicks(outerTicks, ticksInside);
 
             for(var i = 0; i < components.Count; i++)
             {
@@ -177,8 +199,8 @@ namespace MNX.Common
                 int ticks = innerTicks[i];
                 if(component is Tuplet tuplet)
                 {
-                    tuplet.Duration.Ticks = ticks;
-                    tuplet.SetTicksInContent(tuplet.Duration.Ticks, tuplet.TupletLevel + 1);
+                    tuplet.OuterDuration.Ticks = ticks;
+                    tuplet.SetTicksInContent(tuplet.OuterDuration.Ticks, tuplet.TupletLevel + 1);
                 }
                 else
                 {
@@ -186,59 +208,6 @@ namespace MNX.Common
                     evnt.Duration.Ticks = ticks;
                 }
             }
-        }
-
-        /// <summary>
-        /// This code was lifted from Moritz.Globals.IntDivisionSizes(total, relativeSizes).
-        /// The function divides total into relativeSizes.Count parts, returning a List whose:
-        ///     * Count is relativeSizes.Count.
-        ///     * sum is exactly equal to total
-        ///     * members have the relative sizes (as nearly as possible) to the values in the relativeSizes argument. 
-        /// </summary>
-        private List<int> GetInnerTicks(int total, List<int> relativeSizes)
-        {
-            int divisor = relativeSizes.Count;
-            int sumRelative = 0;
-            for(int i = 0; i < divisor; ++i)
-            {
-                sumRelative += relativeSizes[i];
-            }
-            float factor = ((float)total / (float)sumRelative);
-            float fPos = 0;
-            List<int> intPositions = new List<int>();
-            for(int i = 0; i < divisor; ++i)
-            {
-                intPositions.Add((int)(Math.Floor(fPos)));
-                fPos += (relativeSizes[i] * factor);
-            }
-            intPositions.Add((int)Math.Floor(fPos));
-
-            List<int> intDivisionSizes = new List<int>();
-            for(int i = 0; i < divisor; ++i)
-            {
-                int intDuration = (int)(intPositions[i + 1] - intPositions[i]);
-                intDivisionSizes.Add(intDuration);
-            }
-
-            int intSum = 0;
-            foreach(int i in intDivisionSizes)
-            {
-                //A.Assert(i >= 0);
-                if(i < 0)
-                {
-                    throw new ApplicationException();
-                }
-                intSum += i;
-            }
-            A.Assert(intSum <= total);
-            if(intSum < total)
-            {
-                int lastDuration = intDivisionSizes[intDivisionSizes.Count - 1];
-                lastDuration += (total - intSum);
-                intDivisionSizes.RemoveAt(intDivisionSizes.Count - 1);
-                intDivisionSizes.Add(lastDuration);
-            }
-            return intDivisionSizes;
         }
 
         private Orientation GetMNXOrientation(string value)

@@ -133,6 +133,7 @@
     <Content Include="MNX_in\png\___7_example-dots.png" />
     <Content Include="MNX_in\png\___8_example-ties.png" />
     <Content Include="MNX_in\png\___9_example-beams.png" />
+    <Content Include="_Issues.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

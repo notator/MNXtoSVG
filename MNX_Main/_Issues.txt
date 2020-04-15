@@ -1,0 +1,35 @@
+﻿Issues arising while programming the parser:
+
+1. Note that <measure> elements can be empty (i.e. <measure/>), but only when
+   inside <global> elements. (Maybe make that clearer in the spec.)
+2. §5.1 should explicitly list the allowed string representations for the
+   duration classes. As it stands "*4", "*8" etc seem to be allowed, but
+   these dont correspond to any real duration symbols (doubledoublewholenote,
+   doubledoubledoublewholenote etc. dont exist).
+3. §6.8.1 says
+   "All directions within a directions parent element must be given an explicit
+   measure location by supplying a location attribute. The default measure
+   location is zero."
+   Can the location attribute in a <directions><directions> be omitted or not?
+4. §6.4.1 id attribute is missing for note
+5. §6.6.2 should say that "tied" has Liaison Attributes (i.e. a "target" attribute)
+6. §6.6.2 location is a "measure location" but can also have the values "incoming"
+   and "outgoing". I'm assuming that the latter are forms of "measure location",
+   and should be added to its definition...
+   We really need a clear Regex for "metrical location", and more examples.
+   See https://w3c.github.io/mnx/specification/common/#measure-location
+   Apropos: I'd prefer not to allow the decimal representations of position.
+   These just duplicate the other options, create unnecessary work for parsers,
+   and will lead to tears in future...
+   Its really quite difficult to know what the value "3.27" would mean...
+   *Positions* should be defined in terms of *Durations*, so either they should
+   both allow decimal fractions of whole notes, or neither should.
+7. §6.7.2 should provide a formal (blue) definition of "slur".
+8. §6.3.3 "beamed" elements have an optional "id" attribute (missing in the blue
+   definition)
+9. §4.10 I assume that the Note Value string can have an arbitrary number of
+   'd's corresponding to the number of dots. That could be made more explicit.
+   Actually, we really need a Regex expression that formally defines NoteValue's
+   content, complemented perhaps by something like the existing informal description.
+10. §6.3.5 I think Grace should, like Event and Tuplet, have an optional "staff" attribute.
+11.

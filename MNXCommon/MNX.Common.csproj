@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6872BABE-C7A2-496D-B97A-B7997CD9BFCD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>MNXCommon</RootNamespace>
+    <AssemblyName>MNXCommon</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Accidental.cs" />
+    <Compile Include="Beamed.cs" />
+    <Compile Include="Clef.cs" />
+    <Compile Include="DirectionAttributes.cs" />
+    <Compile Include="DirectionClasses.cs" />
+    <Compile Include="Directions.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Grace.cs" />
+    <Compile Include="KeySignature.cs" />
+    <Compile Include="Measure.cs" />
+    <Compile Include="MNXCommon.cs" />
+    <Compile Include="Duration.cs" />
+    <Compile Include="MNXC_PositionInMeasure.cs" />
+    <Compile Include="Note.cs" />
+    <Compile Include="OctaveShift.cs" />
+    <Compile Include="Part.cs" />
+    <Compile Include="Rest.cs" />
+    <Compile Include="ScoreAudio.cs" />
+    <Compile Include="Sequence.cs" />
+    <Compile Include="Slur.cs" />
+    <Compile Include="SpanAttributes.cs" />
+    <Compile Include="Tie.cs" />
+    <Compile Include="TimeSignature.cs" />
+    <Compile Include="Tuplet.cs" />
+    <Compile Include="BGlobals.cs" />
+    <Compile Include="Enum.cs" />
+    <Compile Include="Interfaces.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MNX.Globals\MNX.AGlobals.csproj">
+      <Project>{9abe7e06-1560-42cb-86c8-26d64cfb4cff}</Project>
+      <Name>MNX.AGlobals</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

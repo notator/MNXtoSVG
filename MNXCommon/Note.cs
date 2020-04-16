@@ -19,7 +19,7 @@ namespace MNX.Common
         public readonly string Value = null; // an optional note value for this note
 
         // Optional Content
-        public readonly Tie Tied = null;
+        public readonly Tied Tied = null;
         // Content (not defined in spec yet)
         // 6.5.1. The notehead element
         // 6.5.2. The fret element
@@ -72,7 +72,7 @@ namespace MNX.Common
                         switch(r.Name)
                         {
                             case "tied":
-                                Tied = new Tie(r);
+                                Tied = new Tied(r);
                                 break;
                             case "notehead":
                                 A.ThrowError("Error: Not implemented yet.");

@@ -3,10 +3,16 @@ using MNX.AGlobals;
 
 namespace MNX.Common
 {
-    public class Slur : ISequenceComponent, IEventComponent
+    public class Slur : Span, ISeqComponent, IEventComponent
     {
-        public readonly string Target = null; // an ID
-        public readonly PositionInMeasure Location = null;
+        // Instruction attributes
+        public override PositionInMeasure Location { get; }
+        public override int StaffIndex { get; }
+        public override Orientation? Orient { get; }
+        // Span attribute
+        public override string Target { get; }
+
+        // Other attributes
         public readonly string StartNote = null; // an ID
         public readonly string EndNote = null; // an ID
         public readonly LineType LineType = LineType.solid;
@@ -24,12 +30,6 @@ namespace MNX.Common
                 r.MoveToAttribute(i);
                 switch(r.Name)
                 {
-                    case "target":
-                        Target = r.Value;
-                        break;
-                    case "location":
-                        Location = new PositionInMeasure(r.Value);
-                        break;
                     case "start-note":
                         StartNote = r.Value;
                         break;
@@ -50,6 +50,30 @@ namespace MNX.Common
                             SideEnd = Orientation.up;
                         else if(r.Value == "down")
                             SideEnd = Orientation.down;
+                        break;
+                    // Span attribute
+                    case "target":
+                        Target = r.Value;
+                        break;
+                    // Instruction attributes
+                    case "location":
+                        Location = new PositionInMeasure(r.Value);
+                        break;
+                    case "staff-index":
+                        int staffIndex = 0;
+                        int.TryParse(r.Value, out staffIndex);
+                        StaffIndex = staffIndex;
+                        break;
+                    case "orient":
+                        switch(r.Value)
+                        {
+                            case "up":
+                                Orient = Orientation.up;
+                                break;
+                            case "down":
+                                Orient = Orientation.down;
+                                break;
+                        }
                         break;
                 }
             }

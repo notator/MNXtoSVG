@@ -42,8 +42,7 @@
     <Compile Include="Accidental.cs" />
     <Compile Include="Beamed.cs" />
     <Compile Include="Clef.cs" />
-    <Compile Include="DirectionAttributes.cs" />
-    <Compile Include="DirectionClasses.cs" />
+    <Compile Include="Instruction.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Global.cs" />
@@ -60,8 +59,7 @@
     <Compile Include="ScoreAudio.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="Slur.cs" />
-    <Compile Include="SpanAttributes.cs" />
-    <Compile Include="Tie.cs" />
+    <Compile Include="Tied.cs" />
     <Compile Include="TimeSignature.cs" />
     <Compile Include="Tuplet.cs" />
     <Compile Include="BGlobals.cs" />

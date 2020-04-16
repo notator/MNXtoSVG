@@ -1,8 +1,44 @@
 ﻿
+using System.Collections.Generic;
+
 namespace MNX.Common
 {
     /// <summary>
-    /// Currently implemented by Measure, Sequence, Tuplet, Event, Grace, Rest
+    /// The Measure is in a global Directions
+    /// Currently implemented by TimeSignature.
+    /// </summary>
+    public interface IGlobalMeasureComponent
+    {
+    }
+
+    /// <summary>
+    /// The Measure is in a Part
+    /// Currently implemented by Directions, Sequence.
+    /// </summary>
+    public interface IPartMeasureComponent
+    {
+    }
+
+    /// <summary>
+    /// Currently implemented by
+    /// Directions,
+    /// Tuplet, Beamed, Grace, Event, Rest
+    /// plus Clef, Slur. 
+    /// </summary>
+    public interface ISeqComponent
+    {
+    }
+
+    /// <summary>
+    /// Currently implemented by Tied 
+    /// </summary>
+    public interface INoteComponent
+    {
+
+    }
+
+    /// <summary>
+    /// Currently implemented by Measure, Sequence, Tuplet, Beam, Grace, Event, Rest
     /// </summary>
     public interface ITicks
     {
@@ -10,18 +46,11 @@ namespace MNX.Common
     }
 
     /// <summary>
-    /// Currently implemented by KeySignature, TimeSignature...
+    /// Sequence, Tuplet, Beam, Grace
     /// </summary>
-    public interface IDirectionsComponent
+    public interface IEventList
     {
-    }
-
-    /// <summary>
-    /// Currently implemented by Tuplet, Event, Grace, Rest
-    /// plus Clef, TimeSignature, Tied, Slur, Rest.
-    /// </summary>
-    public interface ISequenceComponent
-    {
+        List<Event> EventList { get; }
     }
 
     /// <summary>
@@ -29,6 +58,14 @@ namespace MNX.Common
     /// All IEventComponents are also IWritable
     /// </summary>
     public interface IEventComponent
+    {
+    }
+
+    /// <summary>
+    /// Can be Global or Part Directions.
+    /// Currently implemented by KeySignature
+    /// </summary>
+    internal interface IDirectionsComponent
     {
     }
 }

@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class Rest : ISequenceComponent, ITicks, IEventComponent
+    public class Rest : ISeqComponent, ITicks, IEventComponent
     {
         public Rest(XmlReader r)
         {

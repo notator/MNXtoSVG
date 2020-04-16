@@ -5,13 +5,13 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class Beamed : ISequenceComponent
+    public class Beamed : ISeqComponent
     {
         public readonly Duration Duration = null;
         public readonly string Continue = null;
         public readonly string ID = null;
 
-        public readonly List<ISequenceComponent> Seq;
+        public readonly List<ISeqComponent> Seq;
 
         public Beamed(XmlReader r)
         {

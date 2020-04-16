@@ -5,20 +5,21 @@ using MNX.AGlobals;
 
 namespace MNX.Common
 {
-    internal class Sequence : ITicks, ISequenceComponent
+    // https://w3c.github.io/mnx/specification/common/#the-sequence-element
+    internal class Sequence : ITicks, IPartMeasureComponent
     {
         public readonly Orientation? Orient = null; // default
         public readonly uint? StaffIndex = null; // default
         public readonly string VoiceID = null; // default
 
-        public readonly List<ISequenceComponent> Seq;
+        public readonly List<ISeqComponent> Seq;
 
         public int Ticks
         {
             get
             {
                 int ticks = 0;
-                foreach(ISequenceComponent iw in Seq)
+                foreach(ISeqComponent iw in Seq)
                 {
                     if(iw is ITicks it)
                     {

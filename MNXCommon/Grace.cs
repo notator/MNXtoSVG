@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-grace-element
     /// </summary>
-    public class Grace : ITicks, ISequenceComponent
+    public class Grace : ITicks, ISeqComponent
     {
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
@@ -71,7 +71,7 @@ namespace MNX.Common
 
         private List<Event> GetGraceContent(XmlReader r)
         {
-            List<ISequenceComponent> seq = B.GetSequenceContent(r, "grace", false);
+            List<ISeqComponent> seq = B.GetSequenceContent(r, "grace", false);
             List<Event> rval = new List<Event>();
             foreach(var item in seq)
             {

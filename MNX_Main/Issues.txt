@@ -32,4 +32,15 @@
    Actually, we really need a Regex expression that formally defines NoteValue's
    content, complemented perhaps by something like the existing informal description.
 10. §6.3.5 I think Grace should, like Event and Tuplet, have an optional "staff" attribute.
-11.
+11. §6.3 Needs a formal (blue) definition of Sequence, its context and contents.
+    (Sequence content is defined in the text as: Directions, Beamed, Tuplet, Grace, Event
+	and Forward. I think Forward is unnecessary. My parser does not expect to see it.)
+12. §6.3 says "directions occurring within sequence content must omit this ("location")
+    attribute as their location is determined during the procedure of sequencing the content."
+	Perhaps it would be better to say that such "location" attributes will be ignored.
+13. §6.3 I think "direction" is a bad name for a special type of object that is contained
+    by the "directions" element. The "directions" element can contain lots of other types
+	of element as well!	Perhaps a better name for "clef" etc. would be "instruction".
+	The text in §6.3 would then	be much less confusing!
+	Even better, would be to do things the other way round: Rename "directions" to
+	"instructions" and call a "clef"-like object a "direction".

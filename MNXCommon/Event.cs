@@ -7,7 +7,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-event-element
     /// </summary>
-    public class Event : ITicks, ISequenceComponent
+    public class Event : ITicks, ISeqComponent
     {
         #region MNX file attributes
         // Compulsory Attribute         

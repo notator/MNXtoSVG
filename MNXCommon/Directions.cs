@@ -6,7 +6,8 @@ using MNX.AGlobals;
 
 namespace MNX.Common
 {
-    internal class Directions : ISequenceComponent
+    // https://w3c.github.io/mnx/specification/common/#elementdef-directions
+    internal class Directions : IGlobalMeasureComponent, IPartMeasureComponent, ISeqComponent
     {
         // These are just the elements used in the first set of examples.
         // Other elements need to be added later.
@@ -18,7 +19,6 @@ namespace MNX.Common
         public Directions(XmlReader r, bool isGlobal)
         {
             A.Assert(r.Name == "directions");
-            // https://w3c.github.io/mnx/specification/common/#elementdef-directions
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.

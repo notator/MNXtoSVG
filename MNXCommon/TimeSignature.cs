@@ -3,7 +3,8 @@ using MNX.AGlobals;
 
 namespace MNX.Common
 {
-    internal class TimeSignature : IDirectionsComponent
+    // https://w3c.github.io/mnx/specification/common/#the-time-element
+    internal class TimeSignature : IGlobalMeasureComponent
     {
         public readonly string Signature;
         public readonly string Measure;
@@ -12,7 +13,6 @@ namespace MNX.Common
         {
             A.Assert(r.Name == "time");
 
-            // https://w3c.github.io/mnx/specification/common/#the-time-element
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
             {

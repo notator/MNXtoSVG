@@ -84,7 +84,7 @@ namespace MNX.Common
                     List<Sequence> sequences = measures[measureIndex].Sequences;
                     for(var sequenceIndex = 0; sequenceIndex < sequences.Count; sequenceIndex++)
                     {
-                        List<ISequenceComponent> seqComponents = sequences[sequenceIndex].Seq;
+                        List<ISeqComponent> seqComponents = sequences[sequenceIndex].Seq;
                         for(var seqComponentIndex = 0; seqComponentIndex < seqComponents.Count; seqComponentIndex++)
                         {
                             if(seqComponents[seqComponentIndex] is Grace grace)
@@ -131,7 +131,7 @@ namespace MNX.Common
 
         private Event FindPreviousEvent(int partIndex, int measureIndex, int sequenceIndex, int seqComponentIndex)
         {
-            List<ISequenceComponent> seq = Parts[partIndex].Measures[measureIndex].Sequences[sequenceIndex].Seq;
+            List<ISeqComponent> seq = Parts[partIndex].Measures[measureIndex].Sequences[sequenceIndex].Seq;
             int returnEventIndex = seqComponentIndex - 1;
             if(returnEventIndex < 0)
             {
@@ -144,7 +144,7 @@ namespace MNX.Common
             }
 
             Event returnEvent = null;
-            ISequenceComponent previousSeqComponent = seq[returnEventIndex];
+            ISeqComponent previousSeqComponent = seq[returnEventIndex];
             while(!(previousSeqComponent is ITicks iTicks))
             {
                 returnEventIndex--;
@@ -182,7 +182,7 @@ namespace MNX.Common
             return returnEvent;
         }
 
-        private List<ISequenceComponent> GetPreviousSeq(int partIndex, int measureIndex, int sequenceIndex)
+        private List<ISeqComponent> GetPreviousSeq(int partIndex, int measureIndex, int sequenceIndex)
         {
             measureIndex--;
             if(measureIndex < 0)
@@ -197,7 +197,7 @@ namespace MNX.Common
             throw new NotImplementedException();
         }
 
-        private List<ISequenceComponent> GetNextSeq(int partIndex, int measureIndex, int sequenceIndex)
+        private List<ISeqComponent> GetNextSeq(int partIndex, int measureIndex, int sequenceIndex)
         {
             measureIndex++;
             if(measureIndex >= Parts[partIndex].Measures.Count)

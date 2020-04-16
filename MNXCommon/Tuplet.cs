@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-tuplet-element
     /// </summary>
-    public class Tuplet : ITicks, ISequenceComponent
+    public class Tuplet : ITicks, ISeqComponent
     {
         #region MNX file attributes
         // Compulsory attributes:
@@ -36,7 +36,7 @@ namespace MNX.Common
         #endregion MNX file attributes
 
         #region Runtime properties
-        public readonly List<ISequenceComponent> Seq;
+        public readonly List<ISeqComponent> Seq;
 
         public readonly int TupletLevel;
 
@@ -109,14 +109,14 @@ namespace MNX.Common
             B.CurrentTupletLevel--;
         }
 
-        private List<ISequenceComponent> GetTupletComponents(XmlReader r)
+        private List<ISeqComponent> GetTupletComponents(XmlReader r)
         {
-            List<ISequenceComponent> rval = new List<ISequenceComponent>();
+            List<ISeqComponent> rval = new List<ISeqComponent>();
 
             var seq = B.GetSequenceContent(r, "tuplet", false);
             foreach(var seqObj in seq)
             {
-                if(seqObj is ISequenceComponent tc)
+                if(seqObj is ISeqComponent tc)
                 {
                     rval.Add(tc);
                 }
@@ -130,10 +130,10 @@ namespace MNX.Common
         private void SetTicksInContent(int outerTicks, int localTupletLevel)
         {
             List<int> ticksInside = new List<int>();
-            List<ISequenceComponent> components = new List<ISequenceComponent>();
+            List<ISeqComponent> components = new List<ISeqComponent>();
             int stealGraceTicks = 0;
 
-            void GetObject(ISequenceComponent component)
+            void GetObject(ISeqComponent component)
             {
                 if(component is Event e)
                 {
@@ -179,13 +179,13 @@ namespace MNX.Common
                 {
                     for(var i = 0; i < beamed.Seq.Count; i++)
                     {
-                        if(beamed.Seq[i] is ISequenceComponent component)
+                        if(beamed.Seq[i] is ISeqComponent component)
                         {
                             GetObject(component);
                         }
                     }
                 }
-                else if(s is ISequenceComponent component)
+                else if(s is ISeqComponent component)
                 {
                     GetObject(component);
                 }
@@ -195,7 +195,7 @@ namespace MNX.Common
 
             for(var i = 0; i < components.Count; i++)
             {
-                ISequenceComponent component = components[i];
+                ISeqComponent component = components[i];
                 int ticks = innerTicks[i];
                 if(component is Tuplet tuplet)
                 {

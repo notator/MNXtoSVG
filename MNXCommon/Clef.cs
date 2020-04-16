@@ -3,8 +3,13 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    internal class Clef : Direction, ISequenceComponent
+    internal class Clef : Instruction, IDirectionsComponent
     {
+        // Instruction attributes
+        public override PositionInMeasure Location { get; }
+        public override int StaffIndex { get; }
+        public override Orientation? Orient { get; }
+        // Other attributes
         public readonly int Line = 0; // 0 means uninitialised. Line must start at 1 (the bottom line of the staff)
         public readonly int Octave = 0; // Default. Octave can be set to any positive or negative integer.
         public readonly ClefType? Sign = null;
@@ -30,11 +35,28 @@ namespace MNX.Common
                     case "octave":
                         int.TryParse(r.Value, out Octave);
                         break;
-                    default:
-                        if(base.SetAttribute(r) == false)
+                    // Instruction attributes
+                    case "location":
+                        Location = new PositionInMeasure(r.Value);
+                        break;
+                    case "staff-index":
+                        int staffIndex = 0;
+                        int.TryParse(r.Value, out staffIndex);
+                        StaffIndex = staffIndex;
+                        break;
+                    case "orient":
+                        switch(r.Value)
                         {
-                            A.ThrowError("Unknown clef attribute.");
+                            case "up":
+                                Orient = Orientation.up;
+                                break;
+                            case "down":
+                                Orient = Orientation.down;
+                                break;
                         }
+                        break;
+                    default:
+                        A.ThrowError("Unknown clef attribute.");
                         break;
                 }
             }

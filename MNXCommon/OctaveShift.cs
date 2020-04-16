@@ -3,14 +3,21 @@ using MNX.AGlobals;
 
 namespace MNX.Common
 {
+    // https://w3c.github.io/mnx/specification/common/#the-octave-shift-element
     internal class OctaveShift : Span
     {
+        // Instruction attributes
+        public override PositionInMeasure Location { get; }
+        public override int StaffIndex { get; }
+        public override Orientation? Orient { get; }
+        // Span attribute
+        public override string Target { get; }
+
         public readonly OctaveShiftType? Type = null;
 
         public OctaveShift(XmlReader r)
             : base()
-        {
-            // https://w3c.github.io/mnx/specification/common/#the-octave-shift-element
+        {            
             A.Assert(r.Name == "octave-shift");
 
             int count = r.AttributeCount;
@@ -22,11 +29,32 @@ namespace MNX.Common
                     case "type":
                         Type = GetOctaveShiftType(r.Value);
                         break;
-                    default:
-                        if(base.SetAttribute(r) == false)
+                    // Span attribute
+                    case "target":
+                        Target = r.Value;
+                        break;
+                    // Instruction attributes
+                    case "location":
+                        Location = new PositionInMeasure(r.Value);
+                        break;
+                    case "staff-index":
+                        int staffIndex = 0;
+                        int.TryParse(r.Value, out staffIndex);
+                        StaffIndex = staffIndex;
+                        break;
+                    case "orient":
+                        switch(r.Value)
                         {
-                            A.ThrowError("Error: Unknown attribute name.");
+                            case "up":
+                                Orient = Orientation.up;
+                                break;
+                            case "down":
+                                Orient = Orientation.down;
+                                break;
                         }
+                        break;
+                    default:
+                        A.ThrowError("Error: Unknown attribute name.");
                         break;
                 }
             }

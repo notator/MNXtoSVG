@@ -3,13 +3,13 @@ using System.Xml;
 
 namespace MNX.Common
 {
+    // https://w3c.github.io/mnx/specification/common/#the-key-element
     internal class KeySignature : IDirectionsComponent
     {
         public readonly int Fifths = 0; // default
 
         public KeySignature(XmlReader r)
         {
-            // https://w3c.github.io/mnx/specification/common/#the-key-element
             A.Assert(r.Name == "key");
 
             int count = r.AttributeCount;
@@ -30,4 +30,6 @@ namespace MNX.Common
             // r.Name is now the name of the last key attribute that has been read.
         }
     }
+
+
 }

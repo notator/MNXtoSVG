@@ -26,7 +26,7 @@ namespace MNX.Common
         /// "directions occurring within sequence content must omit this ("location") attribute as their
         /// location is determined during the procedure of sequencing the content."
         /// </summary>
-        internal static List<ISequenceComponent> GetSequenceContent(XmlReader r, string caller, bool isGlobal)
+        internal static List<ISeqComponent> GetSequenceContent(XmlReader r, string caller, bool isGlobal)
         {
             /// local function, called below.
             /// The spec says:
@@ -34,12 +34,12 @@ namespace MNX.Common
             /// this ("location") attribute as their location is determined during the procedure of
             /// sequencing the content."
             /// If found, write a message to the console, explaining that such data is ignored.
-            void CheckDirectionContent(List<ISequenceComponent> seq)
+            void CheckDirectionContent(List<ISeqComponent> seq)
             {
                 bool global = isGlobal; // isGlobal is from the outer scope                
             }
 
-            List<ISequenceComponent> content = new List<ISequenceComponent>();
+            List<ISeqComponent> content = new List<ISeqComponent>();
 
             // Read to the first element inside the caller element.
             // These are all the elements that can occur inside sequence-like elements. (Some of them nest.)

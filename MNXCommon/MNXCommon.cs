@@ -89,11 +89,12 @@ namespace MNX.Common
                         {
                             if(seqComponents[seqComponentIndex] is Grace grace)
                             {
+                                int graceIndex = seqComponentIndex;
                                 int stealableTicks = 0;
                                 switch(grace.Type)
                                 {
                                     case GraceType.stealPrevious:
-                                        Event previousEvent = FindPreviousEvent(partIndex, measureIndex, sequenceIndex, grace);
+                                        Event previousEvent = FindPreviousEvent(partIndex, measureIndex, sequenceIndex, grace, graceIndex);
                                         if(previousEvent == null)
                                         {
                                             A.ThrowError("Can't steal ticks from another grace or before the beginning of a part.");
@@ -106,7 +107,7 @@ namespace MNX.Common
                                         previousEvent.Duration.Ticks -= grace.Ticks;
                                         break;
                                     case GraceType.stealFollowing:
-                                        Event nextEvent = FindNextEvent(partIndex, measureIndex, sequenceIndex, grace);
+                                        Event nextEvent = FindNextEvent(partIndex, measureIndex, sequenceIndex, grace, graceIndex);
                                         if(nextEvent == null)
                                         {
                                             A.ThrowError("Can't steal ticks from another grace or after the end of a part.");
@@ -133,6 +134,7 @@ namespace MNX.Common
         {
             List<ISeqComponent> seq = null;
             int prevSeqComponentIndex = graceIndex - 1;
+            #region find sequence and prevComponentIndex (if necessary, move the grace into the previous measure).
             if(graceIndex == 0)
             {
                 // move the grace into the previous seq (i.e. before the barline)
@@ -151,6 +153,8 @@ namespace MNX.Common
                 prevSeqComponentIndex = graceIndex - 1;
 
             }
+            #endregion
+
             while(!(seq[prevSeqComponentIndex] is Event || seq[prevSeqComponentIndex] is EventGroup))
             {
                 prevSeqComponentIndex--;
@@ -159,16 +163,26 @@ namespace MNX.Common
                     A.ThrowError("Error: found neither Event nor EventGroup.");
                 }
             }
+
+            Event returnEvent = null;
             if(seq[prevSeqComponentIndex] is Event e)
             {
-                return e;
+                returnEvent = e;
             }
             else
             {
                 EventGroup eg = seq[prevSeqComponentIndex] as EventGroup;
-                List<Event> eventList = eg.EventList;
-                return eventList[eventList.Count - 1];
+                if(eg is Grace)
+                {
+                    returnEvent = null; // can't steal from a grace.
+                }
+                else
+                {
+                    List<Event> eventList = eg.EventList;
+                    returnEvent = eventList[eventList.Count - 1];
+                }
             }
+            return returnEvent;
         }
 
         private List<ISeqComponent> GetPreviousSeq(int partIndex, int measureIndex, int sequenceIndex)
@@ -181,7 +195,7 @@ namespace MNX.Common
             return Parts[partIndex].Measures[measureIndex].Sequences[sequenceIndex].Seq;
         }
 
-        private Event FindNextEvent(int partIndex, int measureIndex, int sequenceIndex, int seqComponentIndex)
+        private Event FindNextEvent(int partIndex, int measureIndex, int sequenceIndex, Grace grace, int graceIndex)
         {
             throw new NotImplementedException();
         }

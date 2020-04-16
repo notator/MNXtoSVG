@@ -44,3 +44,8 @@
 	The text in §6.3 would then	be much less confusing!
 	Even better, would be to do things the other way round: Rename "directions" to
 	"instructions" and call a "clef"-like object a "direction".
+14. §6.3.5 Is it legal for "stealPrevious" grace notes to be at the beginning, and for
+    "stealFollowing" grace notes to be at the end of a sequence? (I've moved them if necessary.
+	(I think it would be a good idea for all ITicks objects to have an optional ticks
+    attribute... This would help a lot when defining Grace notes. Needs some discussion.)
+15.

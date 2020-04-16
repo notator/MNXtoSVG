@@ -43,7 +43,7 @@ namespace MNX.Common
 
             // Read to the first element inside the caller element.
             // These are all the elements that can occur inside sequence-like elements. (Some of them nest.)
-            A.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "sequence");
+            A.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet");
 
             while(r.Name == "directions" || r.Name == "event" || r.Name == "grace"
                 || r.Name == "beamed" || r.Name == "tuplet" || r.Name == "sequence")
@@ -72,9 +72,6 @@ namespace MNX.Common
                             break;
                         case "tuplet":
                             content.Add(new Tuplet(r));
-                            break;
-                        case "sequence":
-                            content.Add(new Sequence(r, isGlobal));
                             break;
                     }
                 }

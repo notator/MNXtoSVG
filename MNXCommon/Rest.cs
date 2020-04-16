@@ -4,11 +4,11 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class Rest : ISeqComponent, ITicks, IEventComponent
+    // https://w3c.github.io/mnx/specification/common/#elementdef-rest
+    public class Rest : ITicks, IEventComponent
     {
         public Rest(XmlReader r)
         {
-            // https://w3c.github.io/mnx/specification/common/#elementdef-rest
             A.Assert(r.Name == "rest");
         }
 

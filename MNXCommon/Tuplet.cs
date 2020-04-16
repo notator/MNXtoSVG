@@ -8,11 +8,17 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-tuplet-element
     /// </summary>
-    public class Tuplet : ITicks, ISeqComponent
+    internal class Tuplet : EventGroup, ITicks, ISeqComponent
     {
+        /// Compulsory attributes:
         #region MNX file attributes
-        // Compulsory attributes:
-        // duration with respect to containing element (from MNX outer)
+        /// duration with respect to containing element (from MNX outer) 
+        /// <summary>
+        /// Note that OuterDuration is the logical duration in the score,
+        /// but OuterDuration.Ticks may change if Grace objects steal ticks
+        /// from the first or last event.
+        /// </para>
+        /// </summary>
         public readonly Duration OuterDuration = null;
         // duration of the enclosed sequence content (from MNX inner)
         public readonly Duration InnerDuration = null;
@@ -35,20 +41,9 @@ namespace MNX.Common
         public readonly TupletBracketDisplay Bracket = TupletBracketDisplay.auto; // spec default
         #endregion MNX file attributes
 
-        #region Runtime properties
-        public readonly List<ISeqComponent> Seq;
-
+        #region Runtime property
         public readonly int TupletLevel;
-
-        public int Ticks
-        {
-            get
-            {
-                return OuterDuration.Ticks;
-            }
-        }
-
-        #endregion Runtime properties
+        #endregion Runtime property
 
         public Tuplet(XmlReader r)
         {
@@ -95,7 +90,7 @@ namespace MNX.Common
                 }
             }
 
-            Seq = GetTupletComponents(r);
+            Seq = B.GetSequenceContent(r, "tuplet", false);
 
             if(B.CurrentTupletLevel == 1)
             {
@@ -107,21 +102,6 @@ namespace MNX.Common
             A.Assert(r.Name == "tuplet"); // end of (nested) tuplet
 
             B.CurrentTupletLevel--;
-        }
-
-        private List<ISeqComponent> GetTupletComponents(XmlReader r)
-        {
-            List<ISeqComponent> rval = new List<ISeqComponent>();
-
-            var seq = B.GetSequenceContent(r, "tuplet", false);
-            foreach(var seqObj in seq)
-            {
-                if(seqObj is ISeqComponent tc)
-                {
-                    rval.Add(tc);
-                }
-            }
-            return rval;
         }
 
         /// <summary>

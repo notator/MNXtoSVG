@@ -4,7 +4,7 @@ using MNX.AGlobals;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-time-element
-    internal class TimeSignature : IGlobalMeasureComponent
+    internal class TimeSignature : IGlobalDirectionsComponent
     {
         public readonly string Signature;
         public readonly string Measure;

@@ -1,17 +1,16 @@
-﻿using MNX.AGlobals;
+﻿
+using MNX.AGlobals;
 using System;
 using System.Collections.Generic;
 using System.Xml;
 
 namespace MNX.Common
 {
-    public class Beamed : ISeqComponent
+    internal class Beamed : EventGroup, ISeqComponent
     {
         public readonly Duration Duration = null;
         public readonly string Continue = null;
         public readonly string ID = null;
-
-        public readonly List<ISeqComponent> Seq;
 
         public Beamed(XmlReader r)
         {

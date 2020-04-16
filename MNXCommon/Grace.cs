@@ -8,39 +8,10 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-grace-element
     /// </summary>
-    public class Grace : ITicks, ISeqComponent
+    internal class Grace : EventGroup, ITicks, ISeqComponent
     {
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
-
-        public readonly List<Event> Events;
-
-        public int Ticks
-        {
-            get
-            {
-                int rval = 0;
-                foreach(var e in Events)
-                {
-                    rval += e.Duration.Ticks;
-                }
-                return rval;
-            }
-            set
-            {
-                List<int> tickss = new List<int>();
-                foreach(var e in Events)
-                {
-                    tickss.Add(e.Duration.Ticks);
-                }
-                List<int> newTickss = B.GetInnerTicks(value, tickss);
-
-                for(var i = 0; i < newTickss.Count; i++)
-                {
-                    Events[i].Duration.Ticks = newTickss[i];
-                }
-            }
-        }
 
         public Grace(XmlReader r)
         {            
@@ -63,27 +34,22 @@ namespace MNX.Common
                 }
             }
 
-            Events = GetGraceContent(r);
+            Seq = B.GetSequenceContent(r, "grace", false);
+
+            SetDefaultTicks(Seq);
 
             A.Assert(r.Name == "grace"); // end of grace
 
         }
 
-        private List<Event> GetGraceContent(XmlReader r)
+        private void SetDefaultTicks(List<ISeqComponent> seq)
         {
-            List<ISeqComponent> seq = B.GetSequenceContent(r, "grace", false);
-            List<Event> rval = new List<Event>();
-            foreach(var item in seq)
+            var eventList = EventList;
+            foreach(var e in eventList)
             {
-                if(item is Event e)
-                {
-                    int nTicks = e.Duration.Ticks / 3;
-                    e.Duration.Ticks = (nTicks < B.MinimumEventTicks) ? B.MinimumEventTicks : nTicks;
-                    // Grace.Ticks returns the sum of these Ticks.
-                    rval.Add(e);
-                }
+                int nTicks = e.Duration.Ticks / 3;
+                e.Duration.Ticks = (nTicks < B.MinimumEventTicks) ? B.MinimumEventTicks : nTicks;
             }
-            return rval;
         }
 
         private GraceType GetGraceType(string value)

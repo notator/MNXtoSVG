@@ -42,6 +42,7 @@
     <Compile Include="Accidental.cs" />
     <Compile Include="Beamed.cs" />
     <Compile Include="Clef.cs" />
+    <Compile Include="EventGroup.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="Event.cs" />

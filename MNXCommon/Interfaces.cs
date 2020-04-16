@@ -4,33 +4,44 @@ using System.Collections.Generic;
 namespace MNX.Common
 {
     /// <summary>
-    /// The Measure is in a global Directions
-    /// Currently implemented by TimeSignature.
+    /// Directions.
     /// </summary>
     public interface IGlobalMeasureComponent
     {
     }
 
     /// <summary>
-    /// The Measure is in a Part
-    /// Currently implemented by Directions, Sequence.
+    /// TimeSignature.
+    /// </summary>
+    public interface IGlobalDirectionsComponent
+    {
+    }
+
+    /// <summary>
+    /// Directions, Sequence.
     /// </summary>
     public interface IPartMeasureComponent
     {
     }
 
     /// <summary>
-    /// Currently implemented by
     /// Directions,
-    /// Tuplet, Beamed, Grace, Event, Rest
-    /// plus Clef, Slur. 
+    /// Tuplet, Beamed, Grace, Event
+    /// Clef 
     /// </summary>
     public interface ISeqComponent
     {
     }
 
     /// <summary>
-    /// Currently implemented by Tied 
+    /// Rest, Slur (Tied is INoteComponent)
+    /// </summary>
+    public interface IEventComponent
+    {
+    }
+
+    /// <summary>
+    /// Tied 
     /// </summary>
     public interface INoteComponent
     {
@@ -43,22 +54,6 @@ namespace MNX.Common
     public interface ITicks
     {
         int Ticks { get; }
-    }
-
-    /// <summary>
-    /// Sequence, Tuplet, Beam, Grace
-    /// </summary>
-    public interface IEventList
-    {
-        List<Event> EventList { get; }
-    }
-
-    /// <summary>
-    /// Note, Rest, Slur (Tie is a Span)
-    /// All IEventComponents are also IWritable
-    /// </summary>
-    public interface IEventComponent
-    {
     }
 
     /// <summary>

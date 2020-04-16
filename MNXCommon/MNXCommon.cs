@@ -93,7 +93,7 @@ namespace MNX.Common
                                 switch(grace.Type)
                                 {
                                     case GraceType.stealPrevious:
-                                        Event previousEvent = FindPreviousEvent(partIndex, measureIndex, sequenceIndex, seqComponentIndex);
+                                        Event previousEvent = FindPreviousEvent(partIndex, measureIndex, sequenceIndex, grace);
                                         if(previousEvent == null)
                                         {
                                             A.ThrowError("Can't steal ticks from another grace or before the beginning of a part.");
@@ -106,7 +106,7 @@ namespace MNX.Common
                                         previousEvent.Duration.Ticks -= grace.Ticks;
                                         break;
                                     case GraceType.stealFollowing:
-                                        Event nextEvent = FindNextEvent(partIndex, measureIndex, sequenceIndex, seqComponentIndex);
+                                        Event nextEvent = FindNextEvent(partIndex, measureIndex, sequenceIndex, grace);
                                         if(nextEvent == null)
                                         {
                                             A.ThrowError("Can't steal ticks from another grace or after the end of a part.");
@@ -119,7 +119,7 @@ namespace MNX.Common
                                         nextEvent.Duration.Ticks -= grace.Ticks;
                                         break;
                                     case GraceType.makeTime:
-                                        MakeTime(grace.Ticks, partIndex, measureIndex, sequenceIndex, seqComponentIndex);
+                                        MakeTime(grace.Ticks, partIndex, measureIndex, sequenceIndex, graceIndex);
                                         break;
                                 }
                             }
@@ -129,57 +129,46 @@ namespace MNX.Common
             }
         }
 
-        private Event FindPreviousEvent(int partIndex, int measureIndex, int sequenceIndex, int seqComponentIndex)
+        private Event FindPreviousEvent(int partIndex, int measureIndex, int sequenceIndex, Grace grace, int graceIndex)
         {
-            List<ISeqComponent> seq = Parts[partIndex].Measures[measureIndex].Sequences[sequenceIndex].Seq;
-            int returnEventIndex = seqComponentIndex - 1;
-            if(returnEventIndex < 0)
+            List<ISeqComponent> seq = null;
+            int prevSeqComponentIndex = graceIndex - 1;
+            if(graceIndex == 0)
             {
+                // move the grace into the previous seq (i.e. before the barline)
+                seq = Parts[partIndex].Measures[measureIndex].Sequences[sequenceIndex].Seq;
+                seq.RemoveAt(0);
                 seq = GetPreviousSeq(partIndex, measureIndex, sequenceIndex);
                 if(seq == null)
                 {
                     return null;
                 }
-                returnEventIndex = seq.Count - 1;
-            }
-
-            Event returnEvent = null;
-            ISeqComponent previousSeqComponent = seq[returnEventIndex];
-            while(!(previousSeqComponent is ITicks iTicks))
-            {
-                returnEventIndex--;
-                if(returnEventIndex < 0)
-                {
-                    seq = GetPreviousSeq(partIndex, measureIndex, sequenceIndex);
-                    if(seq == null)
-                    {
-                        return null;
-                    }
-                    returnEventIndex = seq.Count - 1;
-                }
-            }
-
-            if(seq[returnEventIndex] is Tuplet)
-            {
-                Tuplet tuplet = seq[returnEventIndex] as Tuplet;
-                while(tuplet.Seq[tuplet.Seq.Count - 1] is Tuplet)
-                {
-                    // nested tuplet
-                    tuplet = tuplet.Seq[tuplet.Seq.Count - 1] as Tuplet;
-                }
-                int tupletComponentIndex = tuplet.Seq.Count - 1;
-                while(!(tuplet.Seq[tupletComponentIndex] is ITicks))
-                {
-                    tupletComponentIndex--;
-                }
-                returnEvent = tuplet.Seq[tupletComponentIndex] as Event; // will be null if Grace
+                seq.Add(grace);
+                prevSeqComponentIndex = seq.Count - 2;
             }
             else
             {
-                returnEvent = seq[returnEventIndex] as Event; // will be null if Grace
-            }
+                prevSeqComponentIndex = graceIndex - 1;
 
-            return returnEvent;
+            }
+            while(!(seq[prevSeqComponentIndex] is Event || seq[prevSeqComponentIndex] is EventGroup))
+            {
+                prevSeqComponentIndex--;
+                if(prevSeqComponentIndex < 0)
+                {
+                    A.ThrowError("Error: found neither Event nor EventGroup.");
+                }
+            }
+            if(seq[prevSeqComponentIndex] is Event e)
+            {
+                return e;
+            }
+            else
+            {
+                EventGroup eg = seq[prevSeqComponentIndex] as EventGroup;
+                List<Event> eventList = eg.EventList;
+                return eventList[eventList.Count - 1];
+            }
         }
 
         private List<ISeqComponent> GetPreviousSeq(int partIndex, int measureIndex, int sequenceIndex)

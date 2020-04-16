@@ -1,5 +1,5 @@
 ﻿
-using System.Collections.Generic;
+
 
 namespace MNX.Common
 {
@@ -49,7 +49,7 @@ namespace MNX.Common
     }
 
     /// <summary>
-    /// Currently implemented by Measure, Sequence, Tuplet, Beam, Grace, Event, Rest
+    /// Currently implemented by Measure, Sequence, Tuplet, Beam, Grace, Event (Rest is a field in Event)
     /// </summary>
     public interface ITicks
     {

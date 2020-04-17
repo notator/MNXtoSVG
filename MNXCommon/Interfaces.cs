@@ -52,7 +52,7 @@ namespace MNX.Common
     /// Measure, Sequence, Tuplet, Beam, Grace, Event, Forward
     /// (Rest is an implementation detail of Event.) 
     /// </summary>
-    public interface ITicks
+    public interface IHasTicks
     {
         int Ticks { get; }
     }

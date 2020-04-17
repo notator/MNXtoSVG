@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-tuplet-element
     /// </summary>
-    internal class Tuplet : EventGroup, ITicks, ISeqComponent
+    internal class Tuplet : EventGroup, IHasTicks, ISeqComponent
     {
         /// Compulsory attributes:
         #region MNX file attributes

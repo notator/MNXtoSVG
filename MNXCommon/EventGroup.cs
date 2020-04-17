@@ -4,20 +4,20 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    internal abstract class EventGroup : ITicks
+    internal abstract class EventGroup : IHasTicks
     {
         public List<ISeqComponent> Seq = null;
 
-        public List<ITicks> EventsAndEventGroups
+        public List<IHasTicks> EventsAndEventGroups
         {
             get
             {
-                List<ITicks> eventsAndEventGroups = new List<ITicks>();
+                List<IHasTicks> eventsAndEventGroups = new List<IHasTicks>();
                 foreach(var item in Seq)
                 {
-                    if(item is ITicks it)
+                    if(item is IHasTicks iht)
                     {
-                        eventsAndEventGroups.Add(it);
+                        eventsAndEventGroups.Add(iht);
                     }
                 }
                 return eventsAndEventGroups;

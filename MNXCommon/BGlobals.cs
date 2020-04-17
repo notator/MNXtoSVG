@@ -85,27 +85,5 @@ namespace MNX.Common
             }
             return intDivisionSizes;
         }
-
-        /// <summary>
-        /// If the ticksObject is not found, this function returns the current length of the sequence.
-        /// </summary>
-        /// <returns></returns>
-        internal static int TickPositionInSequence(Sequence sequence, ITicks ticksObject)
-        {
-            int rval = 0;
-            foreach(var seqObj in sequence.Seq)
-            {
-                if(seqObj is ITicks tObj)
-                {
-                    if(tObj == ticksObject)
-                    {
-                        break;
-                    }
-                    rval += tObj.Ticks;
-                }
-            }
-
-            return rval;
-        }
     }
 }

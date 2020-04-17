@@ -6,7 +6,7 @@ using MNX.AGlobals;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-sequence-element
-    internal class Sequence : EventGroup, ITicks, IPartMeasureComponent
+    internal class Sequence : EventGroup, IHasTicks, IPartMeasureComponent
     {
         public readonly Orientation? Orient = null; // default
         public readonly uint? StaffIndex = null; // default
@@ -42,6 +42,28 @@ namespace MNX.Common
             Seq = GetSequenceContent(r, "sequence", isGlobal);
 
             A.Assert(r.Name == "sequence");
+        }
+
+        /// <summary>
+        /// If the ticksObject is not found, this function returns the current length of the sequence.
+        /// </summary>
+        /// <returns></returns>
+        internal int TickPositionInSeq(IHasTicks ticksObject)
+        {
+            int rval = 0;
+            foreach(var seqObj in Seq)
+            {
+                if(seqObj is IHasTicks tObj)
+                {
+                    if(tObj == ticksObject)
+                    {
+                        break;
+                    }
+                    rval += tObj.Ticks;
+                }
+            }
+
+            return rval;
         }
     }
 }

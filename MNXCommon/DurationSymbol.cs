@@ -69,7 +69,7 @@ namespace MNX.Common
             DurationSymbolTyp = analysis.Item2;
             NumberOfDots = analysis.Item3;
 
-            if(Tupletlevel == 0 && DefaultTicks == 0)
+            if(DefaultTicks == 0)
             {
                 DefaultTicks = GetDefaultTicks();
             }

@@ -10,8 +10,9 @@ namespace MNX.Common
         public override PositionInMeasure Location { get; }
         public override int StaffIndex { get; }
         public override Orientation? Orient { get; }
-        // Span attribute
+        // Span attributes
         public override string Target { get; }
+        public override PositionInMeasure End { get; }
 
         public readonly OctaveShiftType? Type = null;
 
@@ -32,6 +33,9 @@ namespace MNX.Common
                     // Span attribute
                     case "target":
                         Target = r.Value;
+                        break;
+                    case "end":
+                        End = new PositionInMeasure(r.Value);
                         break;
                     // Instruction attributes
                     case "location":

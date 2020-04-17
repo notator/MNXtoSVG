@@ -29,5 +29,6 @@ namespace MNX.Common
     internal abstract class Span : Instruction
     {
         public abstract string Target { get; }
+        public abstract PositionInMeasure End { get; }
     }
 }

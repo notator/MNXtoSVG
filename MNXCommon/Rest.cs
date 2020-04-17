@@ -8,7 +8,7 @@ namespace MNX.Common
     // Rest is a *field* in Event.
     public class Rest
     {
-        public readonly string Pitch;
+        public readonly string Pitch = null;
 
         public Rest(XmlReader r)
         {
@@ -25,9 +25,9 @@ namespace MNX.Common
                         break;
                 }
             }
-            A.ReadToXmlElementTag(r, "rest");
-
-            A.Assert(r.Name == "rest"); // end of rest
+            
+            // r now points either to the last attribute read
+            // or to the empty rest.
         }
     }
 }

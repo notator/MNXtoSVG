@@ -12,6 +12,7 @@ namespace MNX.Common
         public override Orientation? Orient { get; }
         // Span attribute
         public override string Target { get; }
+        public override PositionInMeasure End { get; }
 
         public Tied(XmlReader r)
         {            
@@ -26,6 +27,9 @@ namespace MNX.Common
                     // Span attribute
                     case "target":
                         Target = r.Value;
+                        break;
+                    case "end":
+                        End = new PositionInMeasure(r.Value);
                         break;
                     // Instruction attributes
                     case "location":

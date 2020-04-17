@@ -19,9 +19,9 @@ namespace MNX.Common
         /// from the first or last event.
         /// </para>
         /// </summary>
-        public readonly Duration OuterDuration = null;
+        public readonly DurationSymbol OuterDuration = null;
         // duration of the enclosed sequence content (from MNX inner)
-        public readonly Duration InnerDuration = null;
+        public readonly DurationSymbol InnerDuration = null;
 
         // Optional attributes:
         // Orientation of this tuplet. (The spec says default is app-specific.) 
@@ -60,10 +60,10 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "outer":
-                        OuterDuration = new Duration(r.Value, B.CurrentTupletLevel);
+                        OuterDuration = new DurationSymbol(r.Value, B.CurrentTupletLevel);
                         break;
                     case "inner":
-                        InnerDuration = new Duration(r.Value, B.CurrentTupletLevel);
+                        InnerDuration = new DurationSymbol(r.Value, B.CurrentTupletLevel);
                         break;
                     case "orient":
                         Orient = GetMNXOrientation(r.Value);
@@ -94,7 +94,7 @@ namespace MNX.Common
 
             if(B.CurrentTupletLevel == 1)
             {
-                int outerTicks = this.OuterDuration.GetBasicTicks();
+                int outerTicks = this.OuterDuration.GetDefaultTicks();
                 this.OuterDuration.Ticks = outerTicks;
                 SetTicksInContent(outerTicks, this.TupletLevel + 1);
             }
@@ -119,16 +119,16 @@ namespace MNX.Common
                 {
                     A.Assert(e.TupletLevel == localTupletLevel);
 
-                    Duration defaultDuration = e.Duration;
-                    Duration ticksOverride = e.TicksOverride;
+                    DurationSymbol defaultDuration = e.DSymbol;
+                    DurationSymbol ticksOverride = e.TicksOverride;
                     int basicTicks = 0;
                     if(ticksOverride != null)
                     {
-                        basicTicks = ticksOverride.GetBasicTicks();                            
+                        basicTicks = ticksOverride.GetDefaultTicks();                            
                     }
                     else
                     {
-                        basicTicks = defaultDuration.GetBasicTicks();
+                        basicTicks = defaultDuration.GetDefaultTicks();
                     }
                     basicTicks -= stealGraceTicks;
                     stealGraceTicks = 0;
@@ -140,8 +140,8 @@ namespace MNX.Common
                     // a nested tuplet
                     A.Assert(t.TupletLevel == localTupletLevel);
                    
-                    Duration d = t.OuterDuration;
-                    int basicTicks = d.GetBasicTicks();
+                    DurationSymbol d = t.OuterDuration;
+                    int basicTicks = d.GetDefaultTicks();
                     components.Add(t);
                     ticksInside.Add(basicTicks);
                 }
@@ -180,12 +180,12 @@ namespace MNX.Common
                 if(component is Tuplet tuplet)
                 {
                     tuplet.OuterDuration.Ticks = ticks;
-                    tuplet.SetTicksInContent(tuplet.OuterDuration.Ticks, tuplet.TupletLevel + 1);
+                    tuplet.SetTicksInContent(tuplet.OuterDuration.DefaultTicks, tuplet.TupletLevel + 1);
                 }
                 else
                 {
                     Event evnt = component as Event;
-                    evnt.Duration.Ticks = ticks;
+                    evnt.DSymbol.Ticks = ticks;
                 }
             }
         }

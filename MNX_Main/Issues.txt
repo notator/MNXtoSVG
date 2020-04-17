@@ -48,4 +48,5 @@
     "stealFollowing" grace notes to be at the end of a sequence? (I've moved them if necessary.
 	(I think it would be a good idea for all ITicks objects to have an optional ticks
     attribute... This would help a lot when defining Grace notes. Needs some discussion.)
-15.
+15. §6.3.4 I think "Forward" should be an ITicks, and be includable in all EventGroup types.
+    Its like a non-displaying, non-playing Event. I've implemented it like that.

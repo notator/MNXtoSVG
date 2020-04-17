@@ -2,7 +2,7 @@
 
 namespace MNX.Common
 {
-    public class PositionInMeasure
+    internal class PositionInMeasure
     {
         /*
          * Here are some instances of the measure location syntax:
@@ -22,24 +22,17 @@ namespace MNX.Common
          * the same metrical position as the event whose element ID is event235
          */
 
-        public readonly Duration Position = null;
+        public readonly DurationSymbol Position = null;
         public readonly int? MeasureNumber = null;
         public readonly string ID = null; // currently without the leading '#' (okay?)
         public readonly ShortTieOrSlur? Short = null;
 
-        private int _ticks;
         public int Ticks
         {
             get
             {
-                if(Position != null)
-                {
-                    return Position.Ticks;
-                }
-                else
-                {
-                    return _ticks;
-                }
+                int rval = (Position == null) ? 0 : Position.DefaultTicks;
+                return rval;
             }
         }
 
@@ -76,7 +69,7 @@ namespace MNX.Common
                     default:
                         if(value.IndexOf('.') >= 0)
                         {
-                            Position = new Duration(value, B.CurrentTupletLevel);
+                            Position = new DurationSymbol(value, B.CurrentTupletLevel);
                         }
                         break;
                 }
@@ -87,7 +80,7 @@ namespace MNX.Common
                 string[] mStrs = value.Split(separator, System.StringSplitOptions.None);
                 int.TryParse(mStrs[0], out int measureNumber);
                 MeasureNumber = measureNumber;
-                Position = new Duration(mStrs[1], B.CurrentTupletLevel);
+                Position = new DurationSymbol(mStrs[1], B.CurrentTupletLevel);
             }
         }
     }

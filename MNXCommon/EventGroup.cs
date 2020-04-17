@@ -1,16 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using MNX.AGlobals;
+using System.Collections.Generic;
 
 namespace MNX.Common
 {
-    internal abstract class EventGroup
+    internal abstract class EventGroup : ITicks
     {
         public List<ISeqComponent> Seq = null;
+
+        public List<ITicks> EventsAndEventGroups
+        {
+            get
+            {
+                List<ITicks> eventsAndEventGroups = new List<ITicks>();
+                foreach(var item in Seq)
+                {
+                    if(item is ITicks it)
+                    {
+                        eventsAndEventGroups.Add(it);
+                    }
+                }
+                return eventsAndEventGroups;
+            }
+        }
 
         /// <summary>
         /// Returns a flat sequence of Events constructed from
         /// any contained Events and EventGroups. 
         /// </summary>
-        public List<Event> EventList
+        public List<Event> Events
         {
             get
             {
@@ -19,7 +36,7 @@ namespace MNX.Common
                 {
                     if(item is EventGroup eg)
                     {
-                        var eventList = eg.EventList;
+                        var eventList = eg.Events;
                         foreach(var e in eventList)
                         {
                             rval.Add(e);
@@ -34,33 +51,24 @@ namespace MNX.Common
             }
         }
 
-        public int Ticks
+        public virtual int Ticks
         {
             get
             {
-                var eventList = EventList;
+                var eventList = Events;
                 int rval = 0;
                 foreach(var e in eventList)
                 {
-                    rval += e.Duration.Ticks;
+                    rval += e.Ticks;
                 }
                 return rval;
             }
             set
             {
-                int totalTicks = value;
-                var eventList = EventList;
-                List<int> tickss = new List<int>();
-                foreach(var e in eventList)
-                {
-                    tickss.Add(e.Duration.Ticks);
-                }
-                List<int> newTickss = B.GetInnerTicks(totalTicks, tickss);
-
-                for(var i = 0; i < newTickss.Count; i++)
-                {
-                    eventList[i].Duration.Ticks = newTickss[i];
-                }
+                // EventGroup Ticks is virtual so that it can be overriden by Grace.
+                // Grace.Ticks implements Ticks.set, so that it can flexiby steal Ticks from Event.
+                // Event also implements Ticks.set.
+                A.ThrowError("Application Error: This function should never be called.");       
             }
         }
     }

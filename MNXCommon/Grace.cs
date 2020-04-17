@@ -13,6 +13,32 @@ namespace MNX.Common
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
 
+        /// <summary>
+        /// Grace and Event implement Ticks.set so that grace can steal.
+        /// </summary>
+        public override int Ticks
+        {
+            get
+            {
+                return base.Ticks; // returns the sum of the inner ticks.
+            }
+            set
+            {
+                int outerTicks = value;
+                List<Event> events = Events;
+                List<int> innerTicks = new List<int>();
+                foreach(var ev in Events)
+                {
+                    innerTicks.Add(ev.Ticks);
+                }
+                List<int> newTicks = B.GetInnerTicks(outerTicks, innerTicks);
+                for(var i = 0; i < newTicks.Count; i++)
+                {
+                    events[i].Ticks = newTicks[i];
+                }
+            }
+        }
+
         public Grace(XmlReader r)
         {            
             A.Assert(r.Name == "grace");
@@ -44,11 +70,11 @@ namespace MNX.Common
 
         private void SetDefaultTicks(List<ISeqComponent> seq)
         {
-            var eventList = EventList;
+            var eventList = Events;
             foreach(var e in eventList)
             {
-                int nTicks = e.Duration.Ticks / 3;
-                e.Duration.Ticks = (nTicks < B.MinimumEventTicks) ? B.MinimumEventTicks : nTicks;
+                int nTicks = e.DSymbol.DefaultTicks / 3;
+                e.DSymbol.Ticks = (nTicks < B.MinimumEventTicks) ? B.MinimumEventTicks : nTicks;
             }
         }
 

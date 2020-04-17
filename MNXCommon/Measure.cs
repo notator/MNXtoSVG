@@ -143,5 +143,139 @@ namespace MNX.Common
             }
             return rval;
         }
+
+        internal void AdjustForGraceNotes()
+        {
+            for(var sequenceIndex = 0; sequenceIndex < Sequences.Count; sequenceIndex++)
+            {
+                List<ITicks> eventsAndEventGroups = Sequences[sequenceIndex].EventsAndEventGroups;
+                for(var eegIndex = 0; eegIndex < eventsAndEventGroups.Count; eegIndex++)
+                {
+                    if(eventsAndEventGroups[eegIndex] is Grace grace)
+                    {
+                        int graceIndex = eegIndex;
+                        int stealableTicks = 0;
+                        switch(grace.Type)
+                        {
+                            case GraceType.stealPrevious:
+                                Event previousEvent = FindPreviousEvent(eventsAndEventGroups, graceIndex);
+                                stealableTicks = (previousEvent.Ticks - B.MinimumEventTicks);
+                                if(grace.Ticks > stealableTicks)
+                                {
+                                    grace.Ticks = stealableTicks;
+                                }
+                                previousEvent.Ticks -= grace.Ticks;
+                                break;
+                            case GraceType.stealFollowing:
+                                Event nextEvent = FindNextEvent(eventsAndEventGroups, graceIndex);
+                                stealableTicks = (nextEvent.Ticks - B.MinimumEventTicks);
+                                if(grace.Ticks > stealableTicks)
+                                {
+                                    grace.Ticks = stealableTicks;
+                                }
+                                nextEvent.Ticks -= grace.Ticks;
+                                break;
+                            case GraceType.makeTime:
+                                MakeTime(eventsAndEventGroups, grace);
+                                break;
+                        }
+                    }
+                }
+            }
+        }            
+
+        private static Event FindPreviousEvent(List<ITicks> eventsAndEventGroups, int graceIndex)
+        {
+            if(graceIndex == 0)
+            {
+                A.ThrowError("Can't steal ticks from the previous measure.");
+            }
+            ITicks previousObject = eventsAndEventGroups[graceIndex - 1];
+            if(previousObject is Grace)
+            {
+                A.ThrowError("Can't steal ticks from a Grace.");
+            }
+            Event previousEvent = null;
+            if(previousObject is EventGroup eg)
+            {
+                List<Event> events = eg.Events;
+                previousEvent = events[events.Count - 1];
+            }
+            else
+            {
+                previousEvent = previousObject as Event;
+            }
+
+            return previousEvent;
+        }
+
+        private static Event FindNextEvent(List<ITicks> eventsAndEventGroups, int graceIndex)
+        {
+            if(graceIndex == (eventsAndEventGroups.Count - 1))
+            {
+                A.ThrowError("Can't steal ticks from the next measure.");
+            }
+            ITicks nextObject = eventsAndEventGroups[graceIndex + 1];
+            if(nextObject is Grace)
+            {
+                A.ThrowError("Can't steal ticks from a Grace.");
+            }
+            Event nextEvent = null;
+            if(nextObject is EventGroup eg)
+            {
+                List<Event> events = eg.Events;
+                nextEvent = events[0];
+            }
+            else
+            {
+                nextEvent = nextObject as Event;
+            }
+
+            return nextEvent;
+        }
+
+        private void MakeTime(List<ITicks> eventsAndEventGroups, Grace grace)
+        {
+            int graceTicksPostion = 0;
+            foreach(var obj in eventsAndEventGroups)
+            {
+                if(obj == grace)
+                {
+                    break;
+                }
+                graceTicksPostion += obj.Ticks;
+            }
+            foreach(var sequence in this.Sequences)
+            {
+                int ticksPos = 0;
+                List<ITicks> eegs = sequence.EventsAndEventGroups;
+                int eegIndex = 0;
+                int insertTicksPos = 0;
+                for(var index = 0; index < eegs.Count; index++)
+                {
+                    if(ticksPos >= graceTicksPostion)
+                    {
+                        eegIndex = index;
+                        break;
+                    }
+                    insertTicksPos = ticksPos;
+                    ticksPos += eegs[index].Ticks;              
+                }
+                var eeg = eegs[eegIndex];
+                if(eeg is EventGroup eg)
+                {
+                    List<Event> events = eg.Events;
+                    for(var i = 0; i < events.Count; i++)
+                    {
+                        if(insertTicksPos >= graceTicksPostion || i == (events.Count - 1))
+                        {
+                            events[i].Ticks += grace.Ticks;
+                            break;
+                        }
+                    }
+                }
+                else ((Event)eeg).Ticks += grace.Ticks;                
+            }
+        }
     }
 }

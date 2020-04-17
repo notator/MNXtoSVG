@@ -7,12 +7,12 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-event-element
     /// </summary>
-    public class Event : ITicks, ISeqComponent
+    internal class Event : ITicks, ISeqComponent
     {
         #region MNX file attributes
         // Compulsory Attribute         
         //   value - the notated metrical duration of this event  ( /2, /4, /8 etc)
-        public readonly Duration Duration = null;
+        public readonly DurationSymbol DSymbol = null;
 
         // Optional Attributes 
         //   optional flag indicating that the event occupies the entire measure.    
@@ -25,7 +25,7 @@ namespace MNX.Common
         // are identified with successively increasing indices."
         public readonly int Staff = 1; // app-specific default
         //   duration - optional performed metrical duration, if different from value
-        public readonly Duration TicksOverride = null;
+        public readonly DurationSymbol TicksOverride = null;
         #endregion  MNX file attributes
 
         #region runtime properties
@@ -41,7 +41,24 @@ namespace MNX.Common
         //    2: The Event is contained in a Tuplet nested in a Tuplet.
         //    etc. (This app copes with arbitrarily nested tuplets.)
         public readonly int TupletLevel;
-        public int Ticks { get { return Duration.Ticks; }}
+        public int Ticks
+        {
+            get
+            {
+                if( _ticks == 0)
+                {
+                    _ticks = DSymbol.DefaultTicks;
+                }
+                return _ticks;
+            }
+            set
+            {
+                // this function should only be used when stealing ticks for Grace.
+                A.Assert(value >= B.MinimumEventTicks);
+                _ticks = value;
+            }
+        }
+        private int _ticks = 0;
 
         #endregion runtime properties
 
@@ -58,7 +75,7 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "value":
-                        Duration = new Duration(r.Value, B.CurrentTupletLevel);
+                        DSymbol = new DurationSymbol(r.Value, B.CurrentTupletLevel);
                         break;
                     case "measure":
                         A.ThrowError("Not Implemented");
@@ -70,7 +87,7 @@ namespace MNX.Common
                         A.ThrowError("Not Implemented");
                         break;
                     case "duration":
-                        TicksOverride = new Duration(r.Value, B.CurrentTupletLevel);
+                        TicksOverride = new DurationSymbol(r.Value, B.CurrentTupletLevel);
                         break;
                 }
             }

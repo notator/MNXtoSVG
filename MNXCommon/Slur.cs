@@ -3,7 +3,7 @@ using MNX.AGlobals;
 
 namespace MNX.Common
 {
-    public class Slur : Span, IEventComponent
+    internal class Slur : Span, IEventComponent
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }

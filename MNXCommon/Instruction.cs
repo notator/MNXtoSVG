@@ -10,7 +10,7 @@ namespace MNX.Common
     /// An Instruction is an object like a Clef.
     /// A Span is an object like a Slur, Tie or OctaveShift.
     /// </summary>
-    public abstract class Instruction
+    internal abstract class Instruction
     {
         /// <summary>
         /// https://w3c.github.io/mnx/specification/common/#measure-location
@@ -26,7 +26,7 @@ namespace MNX.Common
         public abstract Orientation? Orient { get; }
     }
 
-    public abstract class Span : Instruction
+    internal abstract class Span : Instruction
     {
         public abstract string Target { get; }
     }

@@ -4,7 +4,7 @@ using System.Xml;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-tied-element
-    public class Tied : Span, INoteComponent
+    internal class Tied : Span, INoteComponent
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }

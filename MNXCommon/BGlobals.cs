@@ -10,7 +10,7 @@ namespace MNX.Common
         /// <summary>
         /// The minimum number of Ticks in an ITicks object.
         /// </summary>
-        internal static readonly int MinimumEventTicks = 5;
+        internal static readonly int MinimumEventTicks = 4;
         /// <summary>
         /// Used by the parser. The value 0 means that there are no tuplets currently active.
         /// This value is incremented at the beginning of a Tuplet constructor, and decremented when it ends. 

@@ -49,7 +49,8 @@ namespace MNX.Common
     }
 
     /// <summary>
-    /// Currently implemented by Measure, Sequence, Tuplet, Beam, Grace, Event (Rest is a field in Event)
+    /// Measure, Sequence, Tuplet, Beam, Grace, Event, Forward
+    /// (Rest is an implementation detail of Event.) 
     /// </summary>
     public interface ITicks
     {

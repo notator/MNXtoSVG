@@ -90,7 +90,7 @@ namespace MNX.Common
                 }
             }
 
-            Seq = B.GetSequenceContent(r, "tuplet", false);
+            Seq = GetSequenceContent(r, "tuplet", false);
 
             if(B.CurrentTupletLevel == 1)
             {

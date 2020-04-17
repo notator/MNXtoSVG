@@ -60,7 +60,7 @@ namespace MNX.Common
                 }
             }
 
-            Seq = B.GetSequenceContent(r, "grace", false);
+            Seq = GetSequenceContent(r, "grace", false);
 
             SetDefaultTicks(Seq);
 

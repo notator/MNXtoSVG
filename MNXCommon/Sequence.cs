@@ -39,7 +39,7 @@ namespace MNX.Common
                 }
             }
 
-            Seq = B.GetSequenceContent(r, "sequence", isGlobal);
+            Seq = GetSequenceContent(r, "sequence", isGlobal);
 
             A.Assert(r.Name == "sequence");
         }

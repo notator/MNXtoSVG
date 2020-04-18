@@ -70,6 +70,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="MNX_in\mnxp\__1_helloworld.mnxp" />
     <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
     <None Include="MNX_in\mnx\_12_voices.mnx" />

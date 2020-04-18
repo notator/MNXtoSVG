@@ -14,21 +14,9 @@ namespace MNX_Main
             InitializeComponent();
         }
 
-        private void GOButton_Click(object sender, EventArgs e)
+        private void WriteSVGButton_Click(object sender, EventArgs e)
         {
-            string programFolder = GetProgramFolder();
-            string MNX_in_Directory = programFolder + @"\MNX_in\mnx\";
-            string SVG_out_Directory = programFolder + @"\SVG_out\";
-
-            List<MNX> mnxs = GetMNXs(MNX_in_Directory);
-
-            AdjustMNXs(mnxs);
-
-            //foreach(var mnx in mnxs)
-            //{
-            //    var svgPath = SVG_out_Directory + mnx.FileName + ".svg";
-            //    mnx.WriteSVG(svgPath);
-            //}  
+ 
         }
 
         private string GetProgramFolder()
@@ -72,6 +60,24 @@ namespace MNX_Main
             }
 
             return mnxs;
+        }
+
+        private void WriteAllSVGFilesButton_Click(object sender, EventArgs e)
+        {
+            string programFolder = GetProgramFolder();
+            string MNX_in_Directory = programFolder + @"\MNX_in\mnx\";
+            string SVG_out_Directory = programFolder + @"\SVG_out\";
+
+            List<MNX> mnxs = GetMNXs(MNX_in_Directory);
+
+            AdjustMNXs(mnxs);
+
+            //foreach(var mnx in mnxs)
+            //{
+            //    var svgPath = SVG_out_Directory + mnx.FileName + ".svg";
+            //    mnx.WriteSVG(svgPath);
+            //} 
+
         }
     }
 }

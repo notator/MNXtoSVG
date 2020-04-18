@@ -26,7 +26,7 @@ namespace MNX.Common
 
     /// <summary>
     /// Directions,
-    /// Tuplet, Beamed, Grace, Event
+    /// Tuplet, Beamed, Grace, Event, Forward
     /// Clef 
     /// </summary>
     public interface ISeqComponent

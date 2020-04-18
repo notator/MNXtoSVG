@@ -171,7 +171,7 @@ namespace MNX.Common
                 }
             }
 
-            List<int> innerTicks = B.GetInnerTicks(outerTicks, ticksInside);
+            List<int> innerTicks = GetJustifiedInnerTicks(outerTicks, ticksInside);
 
             for(var i = 0; i < components.Count; i++)
             {

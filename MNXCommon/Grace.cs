@@ -31,7 +31,7 @@ namespace MNX.Common
                 {
                     innerTicks.Add(ev.Ticks);
                 }
-                List<int> newTicks = B.GetInnerTicks(outerTicks, innerTicks);
+                List<int> newTicks = GetJustifiedInnerTicks(outerTicks, innerTicks);
                 for(var i = 0; i < newTicks.Count; i++)
                 {
                     events[i].Ticks = newTicks[i];

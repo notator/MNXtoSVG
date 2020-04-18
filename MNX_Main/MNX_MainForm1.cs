@@ -36,7 +36,7 @@ namespace MNX_Main
             string directory = Directory.GetCurrentDirectory();
 
             string directoryName = Path.GetFileName(directory);
-            while(directoryName != "MNXtoSVG")
+            while(directoryName != "MNX_Main")
             {
                 var startIndex = directory.IndexOf(directoryName) - 1;
                 directory = directory.Remove(startIndex);

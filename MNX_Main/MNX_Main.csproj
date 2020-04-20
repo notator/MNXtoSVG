@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="Collection.cs" />
     <Compile Include="Head.cs" />
-    <Compile Include="SVG_Data.cs" />
+    <Compile Include="PageFormat.cs" />
     <Compile Include="MNX.cs" />
     <Compile Include="MNX_MainForm1.cs">
       <SubType>Form</SubType>
@@ -59,6 +59,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Score.cs" />
+    <Compile Include="Time.cs" />
     <EmbeddedResource Include="MNX_MainForm1.resx">
       <DependentUpon>MNX_MainForm1.cs</DependentUpon>
     </EmbeddedResource>
@@ -72,6 +73,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
+    <None Include="MNX_in\mnx\_11a_nestedtuplets.mnx" />
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
     <None Include="MNX_in\mnx\_12_voices.mnx" />
     <None Include="MNX_in\mnx\_13_octaves.mnx" />
@@ -88,6 +90,24 @@
     <None Include="MNX_in\mnx\__7_dots.mnx" />
     <None Include="MNX_in\mnx\__8_ties.mnx" />
     <None Include="MNX_in\mnx\__9_beams.mnx" />
+    <None Include="MNX_in\svgData\_10_beamhooks.svgd" />
+    <None Include="MNX_in\svgData\_11a_nestedtuplets.svgd" />
+    <None Include="MNX_in\svgData\_11_tuplets.svgd" />
+    <None Include="MNX_in\svgData\_12_voices.svgd" />
+    <None Include="MNX_in\svgData\_13_octaves.svgd" />
+    <None Include="MNX_in\svgData\_14_slurs.svgd" />
+    <None Include="MNX_in\svgData\_15_slurchords.svgd" />
+    <None Include="MNX_in\svgData\_16_slurnotes.svgd" />
+    <None Include="MNX_in\svgData\_17_slurincomplete.svgd" />
+    <None Include="MNX_in\svgData\__1_helloworld.svgd" />
+    <None Include="MNX_in\svgData\__2_cscale.svgd" />
+    <None Include="MNX_in\svgData\__3_chord.svgd" />
+    <None Include="MNX_in\svgData\__4_timesigs.svgd" />
+    <None Include="MNX_in\svgData\__5_keysigs.svgd" />
+    <None Include="MNX_in\svgData\__6_accidentals.svgd" />
+    <None Include="MNX_in\svgData\__7_dots.svgd" />
+    <None Include="MNX_in\svgData\__8_ties.svgd" />
+    <None Include="MNX_in\svgData\__9_beams.svgd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -97,24 +117,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SVG_format\_10_beamhooks.svgd" />
-    <None Include="SVG_format\_11a_nestedtuplets.svgd" />
-    <None Include="SVG_format\_11_tuplets.svgd" />
-    <None Include="SVG_format\_12_voices.svgd" />
-    <None Include="SVG_format\_13_octaves.svgd" />
-    <None Include="SVG_format\_14_slurs.svgd" />
-    <None Include="SVG_format\_15_slurchords.svgd" />
-    <None Include="SVG_format\_16_slurnotes.svgd" />
-    <None Include="SVG_format\_17_slurincomplete.svgd" />
-    <None Include="SVG_format\__1_helloworld.svgd" />
-    <None Include="SVG_format\__2_cscale.svgd" />
-    <None Include="SVG_format\__3_chord.svgd" />
-    <None Include="SVG_format\__4_timesigs.svgd" />
-    <None Include="SVG_format\__5_keysigs.svgd" />
-    <None Include="SVG_format\__6_accidentals.svgd" />
-    <None Include="SVG_format\__7_dots.svgd" />
-    <None Include="SVG_format\__8_ties.svgd" />
-    <None Include="SVG_format\__9_beams.svgd" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -133,7 +135,7 @@
     <Folder Include="SVG_out\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MNX_in\exampleImages.html" />
+    <Content Include="Issues.txt" />
     <Content Include="MNX_in\png\__10_example-beamhooks.png" />
     <Content Include="MNX_in\png\__11_example-tuplets.png" />
     <Content Include="MNX_in\png\__12_example04.png" />
@@ -151,7 +153,6 @@
     <Content Include="MNX_in\png\___7_example-dots.png" />
     <Content Include="MNX_in\png\___8_example-ties.png" />
     <Content Include="MNX_in\png\___9_example-beams.png" />
-    <Content Include="Issues.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

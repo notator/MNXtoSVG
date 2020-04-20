@@ -16,7 +16,7 @@ namespace MNX_Main
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MNXtoSVGForm1());
+            Application.Run(new MNX_MainForm1());
         }
     }
 }

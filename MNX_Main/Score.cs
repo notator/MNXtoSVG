@@ -1,5 +1,6 @@
 ﻿using MNX.AGlobals;
 using MNX.Common;
+using System;
 using System.Xml;
 
 namespace MNX_Main
@@ -27,12 +28,28 @@ namespace MNX_Main
             }
 
             // Other score types need to be added and constructed here.
-            // The test files are all "mnx-common" 
-            // The following call throws an exception if the score type is not mentioned in its argument list.
             A.ReadToXmlElementTag(r, "mnx-common");
-            A.Assert(r.Name == "mnx-common"); 
 
-            MNXCommon = new MNXCommon(r);
+            while(r.Name == "mnx-common")
+            {
+                if(r.NodeType != XmlNodeType.EndElement)
+                {
+                    switch(r.Name)
+                    {
+                        case "mnx-common":
+                            MNXCommon = new MNXCommon(r);
+                            break;
+                    }
+                }
+                A.ReadToXmlElementTag(r, "mnx-common", "score");
+            }
+            A.Assert(r.Name == "score"); // end of event        
+        }
+
+        internal void WriteSVG()
+        {
+            // uses current A.SVGData
+            MNXCommon.WriteSVG();
         }
     }
 }

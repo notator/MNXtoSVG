@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Enum.cs" />
     <Compile Include="AGlobals.cs" />
+    <Compile Include="SVGData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

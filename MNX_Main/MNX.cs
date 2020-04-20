@@ -1,4 +1,5 @@
 ﻿using MNX.AGlobals;
+using System;
 using System.IO;
 using System.Xml;
 
@@ -58,6 +59,12 @@ namespace MNX_Main
         public override string ToString()
         {
             return FileName;
+        }
+
+        internal void WriteSVG()
+        {
+            // uses current A.SVGData
+            Score.WriteSVG();
         }
     }
 

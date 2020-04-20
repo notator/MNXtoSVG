@@ -10,7 +10,33 @@ namespace MNX.AGlobals
 {
     public static class A
     {
+        #region application constants
+        private static string GetMNX_MainFolder()
+        {
+            string directory = Directory.GetCurrentDirectory();
+
+            string directoryName = Path.GetFileName(directory);
+            while(directoryName != "MNX_Main")
+            {
+                var startIndex = directory.IndexOf(directoryName) - 1;
+                directory = directory.Remove(startIndex);
+                directoryName = Path.GetFileName(directory);
+            }
+
+            return directory;
+        }
+        private static readonly string mnxMainFolder = GetMNX_MainFolder();
+        // contains all MNX input files (not just mnx-common)
+        public static readonly string MNX_in_Folder = mnxMainFolder + @"\MNX_in\mnx\";
+        // contains page formatting data parallel to the files in the MNX_in_Folder.
+        public static readonly string SVGData_Folder = mnxMainFolder + @"\MNX_in\svgData\";
+        // contains the output SVG.
+        public static readonly string SVG_out_Folder = mnxMainFolder + @"\SVG_out\";
+        #endregion
+
+        // These are set for the score currently being constructed.
         public static MNXProfile? Profile = null;
+        public static SVGData SVGData;
 
         /// <summary>
         /// Adapted from CapXML Utilities.

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--file created: Friday 22.12.2017, 16:07:19-->
-<mnxInstantiationSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://james-ingram-act-two.de/open-source/XMLSchemas/mnxPageFormat.xsd">    
+<svgInstantiationSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://james-ingram-act-two.de/open-source/XMLSchemas/svgInstantiationSettings.xsd">    
 	<paperSize width="500" height="100"/>
 	<margins
 		topPage1="90"
@@ -16,4 +16,4 @@
 		minGapsBetweenSystems="3"
 		systemStartBars="1" />
   <time crotchetsPerMinute="60" />
-</mnxInstantiationSettings>
+</svgInstantiationSettings>

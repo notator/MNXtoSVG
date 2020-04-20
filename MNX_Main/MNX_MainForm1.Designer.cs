@@ -1,6 +1,6 @@
 ﻿namespace MNX_Main
 {
-    partial class MNXtoSVGForm1
+    partial class MNX_MainForm1
     {
         /// <summary>
         /// Required designer variable.
@@ -421,9 +421,9 @@
             this.WriteAllSVGFilesButton.Name = "WriteAllSVGFilesButton";
             this.WriteAllSVGFilesButton.Size = new System.Drawing.Size(129, 38);
             this.WriteAllSVGFilesButton.TabIndex = 10;
-            this.WriteAllSVGFilesButton.Text = "Write all SVG files";
+            this.WriteAllSVGFilesButton.Text = "Write all SVG scores";
             this.WriteAllSVGFilesButton.UseVisualStyleBackColor = true;
-            this.WriteAllSVGFilesButton.Click += new System.EventHandler(this.WriteAllSVGFilesButton_Click);
+            this.WriteAllSVGFilesButton.Click += new System.EventHandler(this.WriteAllSVGScoresButton_Click);
             // 
             // WriteSVGButton
             // 
@@ -432,11 +432,11 @@
             this.WriteSVGButton.Name = "WriteSVGButton";
             this.WriteSVGButton.Size = new System.Drawing.Size(129, 38);
             this.WriteSVGButton.TabIndex = 0;
-            this.WriteSVGButton.Text = "Write SVG";
+            this.WriteSVGButton.Text = "Write SVG score";
             this.WriteSVGButton.UseVisualStyleBackColor = true;
             this.WriteSVGButton.Click += new System.EventHandler(this.WriteSVGButton_Click);
             // 
-            // MNXtoSVGForm1
+            // GetMNX_SVGDataPairs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -454,7 +454,7 @@
             this.Controls.Add(this.WriteSVGButton);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "MNXtoSVGForm1";
+            this.Name = "GetMNX_SVGDataPairs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MNXtoSVG";
             this.PaperSizeGroupBox.ResumeLayout(false);

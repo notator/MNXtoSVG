@@ -35,40 +35,45 @@ namespace MNX_Main
         }
 
         /// <summary>
-        /// Resolve directions hierarchies etc.
+        /// Resolve mnx directions hierarchies etc.
         /// </summary>
         /// <param name="mnxs"></param>
-        private void AdjustMNXs(List<MNX> mnxs)
+        private void AdjustMNXs(List<KeyValuePair<MNX, SVG_Data>> mnx_svgData_pairs)
         {
 
         }
 
-        private List<MNX> GetMNXs(string MNX_in_Folder)
+        private List<KeyValuePair<MNX, SVG_Data>> GetMNX_SVGDataPairs(string MNX_in_Folder, string SVG_format_Folder)
         {
+            List<KeyValuePair<MNX, SVG_Data>> rval = new List<KeyValuePair<MNX, SVG_Data>>();
+
             string[] mnxPathsArray = Directory.GetFiles(MNX_in_Folder, "*.mnx");
+            string[] svgDataArray = Directory.GetFiles(SVG_format_Folder, "*.svgd");
 
             List<string> mnxPaths = new List<string>(mnxPathsArray);
             mnxPaths.Sort();
-
-            List<MNX> mnxs = new List<MNX>();
-            string mnxPath = null;
+            List<string> svgDataPaths = new List<string>(svgDataArray);
+            svgDataPaths.Sort();
 
             for(var i = 0; i < mnxPaths.Count; i++)
             {
-                mnxPath = mnxPaths[i];
-                mnxs.Add(new MNX(mnxPath));
+                var mnx = new MNX(mnxPaths[i]);
+                var svgData = new SVG_Data(svgDataPaths[i]);
+                var pair = new KeyValuePair<MNX, SVG_Data>(mnx, svgData);
+                rval.Add(pair);
             }
 
-            return mnxs;
+            return rval;
         }
 
         private void WriteAllSVGFilesButton_Click(object sender, EventArgs e)
         {
             string programFolder = GetProgramFolder();
             string MNX_in_Directory = programFolder + @"\MNX_in\mnx\";
+            string SVG_format_Directory = programFolder + @"\SVG_format\";
             string SVG_out_Directory = programFolder + @"\SVG_out\";
 
-            List<MNX> mnxs = GetMNXs(MNX_in_Directory);
+            List<KeyValuePair<MNX, SVG_Data>> mnxs = GetMNX_SVGDataPairs(MNX_in_Directory, SVG_format_Directory);
 
             AdjustMNXs(mnxs);
 

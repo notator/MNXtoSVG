@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Collection.cs" />
     <Compile Include="Head.cs" />
+    <Compile Include="SVG_Data.cs" />
     <Compile Include="MNX.cs" />
     <Compile Include="MNX_MainForm1.cs">
       <SubType>Form</SubType>
@@ -70,7 +71,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="MNX_in\mnxs\__1_helloworld.mnxs" />
     <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
     <None Include="MNX_in\mnx\_12_voices.mnx" />
@@ -79,7 +79,6 @@
     <None Include="MNX_in\mnx\_15_slurchords.mnx" />
     <None Include="MNX_in\mnx\_16_slurnotes.mnx" />
     <None Include="MNX_in\mnx\_17_slurincomplete.mnx" />
-    <None Include="MNX_in\mnx\__01_nestedtuplets.mnx" />
     <None Include="MNX_in\mnx\__1_helloworld.mnx" />
     <None Include="MNX_in\mnx\__2_cscale.mnx" />
     <None Include="MNX_in\mnx\__3_chord.mnx" />
@@ -98,6 +97,24 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="SVG_format\_10_beamhooks.svgd" />
+    <None Include="SVG_format\_11a_nestedtuplets.svgd" />
+    <None Include="SVG_format\_11_tuplets.svgd" />
+    <None Include="SVG_format\_12_voices.svgd" />
+    <None Include="SVG_format\_13_octaves.svgd" />
+    <None Include="SVG_format\_14_slurs.svgd" />
+    <None Include="SVG_format\_15_slurchords.svgd" />
+    <None Include="SVG_format\_16_slurnotes.svgd" />
+    <None Include="SVG_format\_17_slurincomplete.svgd" />
+    <None Include="SVG_format\__1_helloworld.svgd" />
+    <None Include="SVG_format\__2_cscale.svgd" />
+    <None Include="SVG_format\__3_chord.svgd" />
+    <None Include="SVG_format\__4_timesigs.svgd" />
+    <None Include="SVG_format\__5_keysigs.svgd" />
+    <None Include="SVG_format\__6_accidentals.svgd" />
+    <None Include="SVG_format\__7_dots.svgd" />
+    <None Include="SVG_format\__8_ties.svgd" />
+    <None Include="SVG_format\__9_beams.svgd" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

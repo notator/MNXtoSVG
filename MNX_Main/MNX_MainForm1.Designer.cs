@@ -80,11 +80,11 @@
             // 
             // MNXSelect
             // 
-            this.MNXSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MNXSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MNXSelect.FormattingEnabled = true;
             this.MNXSelect.Location = new System.Drawing.Point(176, 27);
             this.MNXSelect.Name = "MNXSelect";
-            this.MNXSelect.Size = new System.Drawing.Size(222, 23);
+            this.MNXSelect.Size = new System.Drawing.Size(222, 21);
             this.MNXSelect.TabIndex = 2;
             // 
             // PaperWidthLabel
@@ -113,18 +113,18 @@
             // 
             // PaperHeightTextBox
             // 
-            this.PaperHeightTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PaperHeightTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PaperHeightTextBox.Location = new System.Drawing.Point(117, 37);
             this.PaperHeightTextBox.Name = "PaperHeightTextBox";
-            this.PaperHeightTextBox.Size = new System.Drawing.Size(88, 21);
+            this.PaperHeightTextBox.Size = new System.Drawing.Size(88, 20);
             this.PaperHeightTextBox.TabIndex = 6;
             // 
             // PaperWidthTextBox
             // 
-            this.PaperWidthTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PaperWidthTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PaperWidthTextBox.Location = new System.Drawing.Point(23, 37);
             this.PaperWidthTextBox.Name = "PaperWidthTextBox";
-            this.PaperWidthTextBox.Size = new System.Drawing.Size(88, 21);
+            this.PaperWidthTextBox.Size = new System.Drawing.Size(88, 20);
             this.PaperWidthTextBox.TabIndex = 5;
             // 
             // PaperHeightLabel
@@ -141,7 +141,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(148, 65);
+            this.label4.Location = new System.Drawing.Point(148, 63);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(278, 15);
             this.label4.TabIndex = 5;
@@ -169,10 +169,10 @@
             // 
             // MarginTopPage1TextBox
             // 
-            this.MarginTopPage1TextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MarginTopPage1TextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MarginTopPage1TextBox.Location = new System.Drawing.Point(82, 36);
             this.MarginTopPage1TextBox.Name = "MarginTopPage1TextBox";
-            this.MarginTopPage1TextBox.Size = new System.Drawing.Size(60, 21);
+            this.MarginTopPage1TextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginTopPage1TextBox.TabIndex = 12;
             // 
             // MarginTopPage1Label
@@ -207,34 +207,34 @@
             // 
             // MarginBottomTextBox
             // 
-            this.MarginBottomTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MarginBottomTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MarginBottomTextBox.Location = new System.Drawing.Point(82, 148);
             this.MarginBottomTextBox.Name = "MarginBottomTextBox";
-            this.MarginBottomTextBox.Size = new System.Drawing.Size(60, 21);
+            this.MarginBottomTextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginBottomTextBox.TabIndex = 8;
             // 
             // MarginLeftTextBox
             // 
-            this.MarginLeftTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MarginLeftTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MarginLeftTextBox.Location = new System.Drawing.Point(22, 110);
             this.MarginLeftTextBox.Name = "MarginLeftTextBox";
-            this.MarginLeftTextBox.Size = new System.Drawing.Size(60, 21);
+            this.MarginLeftTextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginLeftTextBox.TabIndex = 7;
             // 
             // MarginRightTextBox
             // 
-            this.MarginRightTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MarginRightTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MarginRightTextBox.Location = new System.Drawing.Point(142, 110);
             this.MarginRightTextBox.Name = "MarginRightTextBox";
-            this.MarginRightTextBox.Size = new System.Drawing.Size(60, 21);
+            this.MarginRightTextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginRightTextBox.TabIndex = 6;
             // 
             // MarginTopOtherPagesTextBox
             // 
-            this.MarginTopOtherPagesTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MarginTopOtherPagesTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MarginTopOtherPagesTextBox.Location = new System.Drawing.Point(82, 74);
             this.MarginTopOtherPagesTextBox.Name = "MarginTopOtherPagesTextBox";
-            this.MarginTopOtherPagesTextBox.Size = new System.Drawing.Size(60, 21);
+            this.MarginTopOtherPagesTextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginTopOtherPagesTextBox.TabIndex = 5;
             // 
             // MarginRightLabel
@@ -260,11 +260,11 @@
             // SaveSpeedAndPageSettingsButton
             // 
             this.SaveSpeedAndPageSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveSpeedAndPageSettingsButton.Location = new System.Drawing.Point(193, 372);
+            this.SaveSpeedAndPageSettingsButton.Location = new System.Drawing.Point(213, 372);
             this.SaveSpeedAndPageSettingsButton.Name = "SaveSpeedAndPageSettingsButton";
-            this.SaveSpeedAndPageSettingsButton.Size = new System.Drawing.Size(183, 38);
+            this.SaveSpeedAndPageSettingsButton.Size = new System.Drawing.Size(142, 38);
             this.SaveSpeedAndPageSettingsButton.TabIndex = 8;
-            this.SaveSpeedAndPageSettingsButton.Text = "Save Speed and Page Settings";
+            this.SaveSpeedAndPageSettingsButton.Text = "Save these Settings";
             this.SaveSpeedAndPageSettingsButton.UseVisualStyleBackColor = true;
             // 
             // NotationGroupBox
@@ -287,23 +287,23 @@
             // 
             // MinimumGapsBetweenSystemsTextBox
             // 
-            this.MinimumGapsBetweenSystemsTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MinimumGapsBetweenSystemsTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumGapsBetweenSystemsTextBox.Location = new System.Drawing.Point(175, 119);
             this.MinimumGapsBetweenSystemsTextBox.Name = "MinimumGapsBetweenSystemsTextBox";
-            this.MinimumGapsBetweenSystemsTextBox.Size = new System.Drawing.Size(58, 21);
+            this.MinimumGapsBetweenSystemsTextBox.Size = new System.Drawing.Size(58, 20);
             this.MinimumGapsBetweenSystemsTextBox.TabIndex = 14;
             // 
             // MinimumGapsBetweenStavesTextBox
             // 
-            this.MinimumGapsBetweenStavesTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MinimumGapsBetweenStavesTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumGapsBetweenStavesTextBox.Location = new System.Drawing.Point(175, 91);
             this.MinimumGapsBetweenStavesTextBox.Name = "MinimumGapsBetweenStavesTextBox";
-            this.MinimumGapsBetweenStavesTextBox.Size = new System.Drawing.Size(58, 21);
+            this.MinimumGapsBetweenStavesTextBox.Size = new System.Drawing.Size(58, 20);
             this.MinimumGapsBetweenStavesTextBox.TabIndex = 13;
             // 
             // GapSizeComboBox
             // 
-            this.GapSizeComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GapSizeComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GapSizeComboBox.FormattingEnabled = true;
             this.GapSizeComboBox.Items.AddRange(new object[] {
             "1",
@@ -326,12 +326,12 @@
             "28"});
             this.GapSizeComboBox.Location = new System.Drawing.Point(175, 61);
             this.GapSizeComboBox.Name = "GapSizeComboBox";
-            this.GapSizeComboBox.Size = new System.Drawing.Size(58, 23);
+            this.GapSizeComboBox.Size = new System.Drawing.Size(58, 21);
             this.GapSizeComboBox.TabIndex = 12;
             // 
             // StafflineStemStrokeWidthComboBox
             // 
-            this.StafflineStemStrokeWidthComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StafflineStemStrokeWidthComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StafflineStemStrokeWidthComboBox.FormattingEnabled = true;
             this.StafflineStemStrokeWidthComboBox.Items.AddRange(new object[] {
             "0.25",
@@ -341,7 +341,7 @@
             "2.0"});
             this.StafflineStemStrokeWidthComboBox.Location = new System.Drawing.Point(175, 32);
             this.StafflineStemStrokeWidthComboBox.Name = "StafflineStemStrokeWidthComboBox";
-            this.StafflineStemStrokeWidthComboBox.Size = new System.Drawing.Size(58, 23);
+            this.StafflineStemStrokeWidthComboBox.Size = new System.Drawing.Size(58, 21);
             this.StafflineStemStrokeWidthComboBox.TabIndex = 11;
             // 
             // MinimumGapsBetweenSystemsLabel
@@ -396,10 +396,10 @@
             // 
             // CrotchetsPerMinuteTextBox
             // 
-            this.CrotchetsPerMinuteTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CrotchetsPerMinuteTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CrotchetsPerMinuteTextBox.Location = new System.Drawing.Point(175, 18);
             this.CrotchetsPerMinuteTextBox.Name = "CrotchetsPerMinuteTextBox";
-            this.CrotchetsPerMinuteTextBox.Size = new System.Drawing.Size(58, 21);
+            this.CrotchetsPerMinuteTextBox.Size = new System.Drawing.Size(58, 20);
             this.CrotchetsPerMinuteTextBox.TabIndex = 4;
             // 
             // SpeedGroupBox
@@ -428,7 +428,7 @@
             // WriteSVGButton
             // 
             this.WriteSVGButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.WriteSVGButton.Location = new System.Drawing.Point(405, 372);
+            this.WriteSVGButton.Location = new System.Drawing.Point(404, 372);
             this.WriteSVGButton.Name = "WriteSVGButton";
             this.WriteSVGButton.Size = new System.Drawing.Size(129, 38);
             this.WriteSVGButton.TabIndex = 0;

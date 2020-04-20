@@ -10,7 +10,7 @@
 		marginRight="70"
 		marginBottom="50"
 		marginLeft="70" />
-  <mnxCommon
+  <notation
 		stafflineStemStrokeWidth="0.5"
 		gapSize="5"
 		minGapsBetweenStaves="8"

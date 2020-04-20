@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MNX.AGlobals
 {
-    internal class Page
+    public class PageSettings
     {
         public readonly int width;
         public readonly int height;
@@ -16,7 +16,7 @@ namespace MNX.AGlobals
         public readonly int marginBottom;
         public readonly int marginLeft;
 
-        internal Page(
+        internal PageSettings(
             int width,
             int height,
             int marginTopPage1,
@@ -35,7 +35,7 @@ namespace MNX.AGlobals
         }
     }
 
-    internal class MNXCommonData
+    public class NotationSettings
     {
         public readonly double stafflineStemStrokeWidth = 0;
         public readonly double gapSize = 0;
@@ -44,7 +44,7 @@ namespace MNX.AGlobals
         public readonly List<int> systemStartBars = null;
         public readonly double crotchetsPerMinute = 0;
 
-        internal MNXCommonData(
+        internal NotationSettings(
             double stafflineStemStrokeWidth,
             double gapSize,
             int minGapsBetweenStaves,

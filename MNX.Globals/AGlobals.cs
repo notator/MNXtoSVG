@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -32,11 +35,41 @@ namespace MNX.AGlobals
         public static readonly string SVGData_Folder = mnxMainFolder + @"\MNX_in\svgData\";
         // contains the output SVG.
         public static readonly string SVG_out_Folder = mnxMainFolder + @"\SVG_out\";
+
+        // used when writing doubles as text (with decimal point)
+        public static readonly CultureInfo en_US_CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
         #endregion
 
         // These are set for the score currently being constructed.
         public static MNXProfile? Profile = null;
         public static SVGData SVGData;
+
+        /// <summary>
+        /// Copied from Moritz
+        /// </summary>
+        /// <param name="directoryPath"></param>
+        public static void CreateDirectoryIfItDoesNotExist(string directoryPath)
+        {
+            if(!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+                while(!Directory.Exists(directoryPath))
+                    Thread.Sleep(100);
+            }
+        }
+
+        /// <summary>
+        /// The current date. (Written to XML files.)
+        /// Copied from Moritz
+        /// </summary>
+        public static string NowString
+        {
+            get
+            {
+                CultureInfo ci = new CultureInfo("en-US", false);
+                return DateTime.Today.ToString("dddd dd.MM.yyyy", ci.DateTimeFormat) + ", " + DateTime.Now.ToLongTimeString();
+            }
+        }
 
         /// <summary>
         /// Adapted from CapXML Utilities.

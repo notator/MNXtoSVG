@@ -9,22 +9,24 @@ namespace MNX.AGlobals
 {
     public class SVGData
     {
-        Page Page = null;
-        MNXCommonData MNXCommonData = null;
+        public readonly PageSettings Page = null;
+        public readonly NotationSettings MNXCommonData = null;
 
-        public readonly string FileName;
+        private readonly string _svgDataPath;
+        public readonly string _fileName;
 
         public SVGData(string svgDataPath)
         {
-            FileName = Path.GetFileNameWithoutExtension(svgDataPath);
+            _svgDataPath = svgDataPath;
+            _fileName = Path.GetFileNameWithoutExtension(svgDataPath);
 
             using(XmlReader r = XmlReader.Create(svgDataPath))
             {
                 A.ReadToXmlElementTag(r, "svgData"); // check that this is an svgData file
 
-                A.ReadToXmlElementTag(r, "page", "mnxCommon");
+                A.ReadToXmlElementTag(r, "page", "notation");
 
-                while(r.Name == "page" || r.Name == "mnxCommon")
+                while(r.Name == "page" || r.Name == "notation")
                 {
                     if(r.NodeType != XmlNodeType.EndElement)
                     {
@@ -33,11 +35,11 @@ namespace MNX.AGlobals
                             case "page":
                                 Page = GetPage(r);
                                 break;
-                            case "mnxCommon":
+                            case "notation":
                                 MNXCommonData = GetMNXCommonData(r);
                                 break;
                         }
-                        A.ReadToXmlElementTag(r, "page", "mnxCommon", "svgData");
+                        A.ReadToXmlElementTag(r, "page", "notation", "svgData");
                     }
                     
                 }
@@ -45,7 +47,7 @@ namespace MNX.AGlobals
             }
         }
 
-        private Page GetPage(XmlReader r)
+        private PageSettings GetPage(XmlReader r)
         {
             int width = 0;
             int height = 0;
@@ -85,7 +87,7 @@ namespace MNX.AGlobals
                 }
             }
 
-            return new Page(
+            return new PageSettings(
                 width, 
                 height,
                 marginTopPage1,
@@ -94,8 +96,7 @@ namespace MNX.AGlobals
                 marginBottom,
                 marginLeft);
         }
-
-        private MNXCommonData GetMNXCommonData(XmlReader r)
+        private NotationSettings GetMNXCommonData(XmlReader r)
         {
             double stafflineStemStrokeWidth = 0;
             double gapSize = 0;
@@ -131,7 +132,7 @@ namespace MNX.AGlobals
                 }
             }
 
-            return new MNXCommonData(
+            return new NotationSettings(
                 stafflineStemStrokeWidth,
                 gapSize,
                 minGapsBetweenStaves,
@@ -140,9 +141,74 @@ namespace MNX.AGlobals
                 crotchetsPerMinute);
         }
 
+        #region save settings
+        public void SaveSettings()
+        {
+            A.Assert(!string.IsNullOrEmpty(_svgDataPath));
+
+            A.CreateDirectoryIfItDoesNotExist(this._svgDataPath);
+
+            #region do the save
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = ("\t"),
+                NewLineOnAttributes = true,
+                CloseOutput = false
+            };
+            using(XmlWriter w = XmlWriter.Create(_svgDataPath, settings))
+            {
+                w.WriteStartDocument();
+                w.WriteComment("file created: " + A.NowString);
+
+                w.WriteStartElement("svgData");
+                w.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
+                w.WriteAttributeString("xsi", "noNamespaceSchemaLocation", null, "SchemasBaseFolder" + "/svgData.xsd");
+
+                WritePage(w);
+                WriteMNXCommon(w);
+                w.WriteEndElement(); // closes the moritzKrystalScore element
+                                     // the XmlWriter is closed automatically at the end of this using clause.
+            }
+            #endregion do the save
+
+            //SetGroupBoxIsSaved(PageGroupBox, NotationGroupBox, TimeGroupBox);
+        }
+
+        private void WritePage(XmlWriter w)
+        {
+            w.WriteStartElement("page");
+
+            //w.WriteAttributeString("width", WidthTextBox.Text);
+            //w.WriteAttributeString("height", HeightTextBox.Text);
+            //w.WriteAttributeString("marginTopPage1", MarginTopPage1TextBox.Text);
+            //w.WriteAttributeString("marginTopOther", MarginTopOtherTextBox.Text);
+            //w.WriteAttributeString("marginRight", MarginRightTextBox.Text);
+            //w.WriteAttributeString("marginBottom", MarginBottomTextBox.Text);
+            //w.WriteAttributeString("marginLeft", MarginLeftTextBox.Text);
+
+            w.WriteEndElement(); // page
+
+            
+        }
+        private void WriteMNXCommon(XmlWriter w)
+        {
+            w.WriteStartElement("notation");
+
+            //w.WriteAttributeString("stafflineStemStrokeWidth", StafflineStemStrokeWidthComboBox.Text);
+            //w.WriteAttributeString("gapSize", GapSizeComboBox.Text);
+            //w.WriteAttributeString("minGapsBetweenStaves", MinGapsBetweenStavesTextBox.Text);
+            //w.WriteAttributeString("minGapsBetweenSystems", MinGapsBetweenSystemsTextBox.Text);
+            //w.WriteAttributeString("systemStartBars", SystemStartBarsTextBox.Text);
+            //w.WriteAttributeString("crotchetsPerMinute", CrotchetsPerMinuteTextBox.Text);
+
+            w.WriteEndElement(); // notation
+        }
+        #endregion save settings
+
         public override string ToString()
         {
-            return FileName;
+            return _fileName;
         }
     }
 

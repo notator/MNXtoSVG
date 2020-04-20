@@ -66,6 +66,37 @@ namespace MNX.AGlobals
             }
         }
 
+        /// <summary>
+        /// Copied from Moritz...
+        /// Converts a string containing integers separated by whitespace and the character in arg2
+        /// to the corresponding list of integers.
+        /// Throws an exception if the string contains anything other than 
+        /// positive or negative integers, the separator or white space. 
+        /// </summary>
+        public static List<int> StringToIntList(string s, char separator)
+        {
+            List<int> rval = new List<int>();
+            char[] delimiter = { separator };
+            string[] integers = s.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                foreach(string integer in integers)
+                {
+                    string i = integer.Trim();
+                    if(!string.IsNullOrEmpty(i))
+                    {
+                        rval.Add(int.Parse(i));
+                    }
+                }
+            }
+            catch
+            {
+                throw new ApplicationException("Error in AGlobals.StringToIntList()");
+            }
+            return rval;
+        }
+
+
         public static void ThrowError(string errorDescription,
                     [CallerLineNumber] int lineNumber = 0,
                     [CallerMemberName] string caller = null,

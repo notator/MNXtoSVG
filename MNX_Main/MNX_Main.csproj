@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="Collection.cs" />
     <Compile Include="Head.cs" />
-    <Compile Include="PageFormat.cs" />
     <Compile Include="MNX.cs" />
     <Compile Include="MNX_MainForm1.cs">
       <SubType>Form</SubType>
@@ -137,6 +136,7 @@
   <ItemGroup>
     <Content Include="Issues.txt" />
     <Content Include="MNX_in\png\__10_example-beamhooks.png" />
+    <Content Include="MNX_in\png\__11a_example-tuplets.png" />
     <Content Include="MNX_in\png\__11_example-tuplets.png" />
     <Content Include="MNX_in\png\__12_example04.png" />
     <Content Include="MNX_in\png\__13_example-octave.png" />

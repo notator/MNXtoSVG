@@ -120,9 +120,6 @@ namespace MNX.AGlobals
         #region save settings
         public void SaveSettings()
         {
-            A.Assert(!string.IsNullOrEmpty(_svgDataPath));
-
-            #region do the save
             XmlWriterSettings settings = new XmlWriterSettings
             {
                 Indent = true,
@@ -144,9 +141,6 @@ namespace MNX.AGlobals
                 w.WriteEndElement(); // closes the moritzKrystalScore element
                                      // the XmlWriter is closed automatically at the end of this using clause.
             }
-            #endregion do the save
-
-            //SetGroupBoxIsSaved(PageGroupBox, NotationGroupBox, TimeGroupBox);
         }
 
         private void WritePage(XmlWriter w)

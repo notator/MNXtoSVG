@@ -49,15 +49,17 @@ namespace MNX_Main
                 for(var i = 0; i < _mnxSVGDatas.Count; i++)
                 {
                     var mnx = new MNX(_mnxSVGDatas[i].Item1);
-                    var SVGData = new SVGData(_mnxSVGDatas[i].Item2);
-                    mnx.WriteSVG(SVGData); // Writes the score to A.SVG_out
+                    var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
+                    var svgData = new SVGData(svgds);
+                    mnx.WriteSVG(svgData); // Writes the score to A.SVG_out
                 }
             }
             else
             {
                 var mnx = new MNX(_mnxSVGDatas[selectedIndex - 1].Item1);
-                var SVGData = new SVGData(_mnxSVGDatas[selectedIndex - 1].Item2);
-                mnx.WriteSVG(SVGData); // Writes the score to A.SVG_out
+                var svgds = new SVGDataStrings(_mnxSVGDatas[selectedIndex - 1].Item2);
+                var svgData = new SVGData(svgds);
+                mnx.WriteSVG(svgData); // Writes the score to A.SVG_out
             }
         }
 
@@ -78,18 +80,18 @@ namespace MNX_Main
         {
             // Load a score (edit svgData)
             var svgDataPath = _mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2;
-            SVGData svgd = new SVGData(svgDataPath);
+            var svgds = new SVGDataStrings(svgDataPath);
 
-            LoadControls(svgd);
+            LoadControls(svgds);
 
             EnableDisableControls(false);
 
             _settingsHaveChanged = false;
         }
 
-        private void LoadControls(SVGData svgd)
+        private void LoadControls(SVGDataStrings svgds)
         {
-            var page = svgd.Page;
+            var page = svgds.Page;
             this.PageWidthTextBox.Text = page.width;
             this.PageHeightTextBox.Text = page.height;
             this.MarginTopPage1TextBox.Text = page.marginTopPage1;
@@ -98,7 +100,7 @@ namespace MNX_Main
             this.MarginBottomTextBox.Text = page.marginBottom;
             this.MarginLeftTextBox.Text = page.marginLeft;
 
-            var notes = svgd.MNXCommonData;
+            var notes = svgds.MNXCommonData;
             this.StafflineStemStrokeWidthComboBox.SelectedIndex = GetIndex(StafflineStemStrokeWidthComboBox, notes.stafflineStemStrokeWidth);
             this.GapSizeComboBox.SelectedIndex = GetIndex(GapSizeComboBox, notes.gapSize);
             this.MinimumGapsBetweenStavesTextBox.Text = notes.minGapsBetweenStaves;
@@ -154,7 +156,7 @@ namespace MNX_Main
             }
         }
 
-        private void SetButtons(TextBox textBox)
+        private void SetButtons()
         {
             _settingsHaveChanged = true;
 
@@ -196,21 +198,27 @@ namespace MNX_Main
         {
             TextBox textBox = sender as TextBox;
             A.CheckTextBoxIsUInt(textBox);
-            SetButtons(textBox);
+            SetButtons();
+        }
+
+        private void ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetButtons();
+
         }
 
         private void UnsignedDoubleTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
             A.CheckTextBoxIsUnsignedDouble(textBox);
-            SetButtons(textBox);
+            SetButtons();
         }
 
         private void SystemStartBarsTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
             A.CheckSystemStartBarsUnsignedIntList(textBox);
-            SetButtons(textBox);
+            SetButtons();
         }
 
         private void TextBox_Changed(object sender, EventArgs e)
@@ -226,15 +234,16 @@ namespace MNX_Main
                 SaveSettings();
                 _settingsHaveChanged = false;
                 WriteButton.Enabled = true;
+                WriteButton.Focus();
             }
 
         }
 
         public void SaveSettings()
         {
-            var SVGData = new SVGData(_mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2);
+            var svgds = new SVGDataStrings(_mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2);
 
-            var page = SVGData.Page;
+            var page = svgds.Page;
             page.width = PageWidthTextBox.Text;
             page.height = PageHeightTextBox.Text;
             page.marginTopPage1 = MarginTopPage1TextBox.Text;
@@ -243,15 +252,15 @@ namespace MNX_Main
             page.marginLeft = MarginLeftTextBox.Text;
             page.marginBottom = MarginBottomTextBox.Text;
 
-            var notes = SVGData.MNXCommonData;
-            notes.stafflineStemStrokeWidth = StafflineStemStrokeWidthComboBox.SelectedText;
-            notes.gapSize = GapSizeComboBox.SelectedText;
+            var notes = svgds.MNXCommonData;
+            notes.stafflineStemStrokeWidth = (string) StafflineStemStrokeWidthComboBox.Items[StafflineStemStrokeWidthComboBox.SelectedIndex];
+            notes.gapSize = (string) GapSizeComboBox.Items[GapSizeComboBox.SelectedIndex];
             notes.minGapsBetweenStaves = MinimumGapsBetweenStavesTextBox.Text;
             notes.minGapsBetweenSystems = MinimumGapsBetweenSystemsTextBox.Text;
             notes.systemStartBars = SystemStartBarsTextBox.Text;
             notes.crotchetsPerMinute = CrotchetsPerMinuteTextBox.Text;
 
-            SVGData.SaveSettings();
+            svgds.SaveSettings();
         }
 
         private void RevertFormatButton_Click(object sender, EventArgs e)

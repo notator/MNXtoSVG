@@ -9,178 +9,39 @@ namespace MNX.AGlobals
 {
     public class SVGData
     {
-        public PageSettings Page = null;
-        public NotationAndSpeedSettings MNXCommonData = null;
+        public readonly int pageWidth = 0;
+        public readonly int pageHeight = 0;
+        public readonly int marginTopPage1 = 0;
+        public readonly int marginTopOther = 0;
+        public readonly int marginRight = 0;
+        public readonly int marginBottom = 0;
+        public readonly int marginLeft = 0;
+        public readonly double stafflineStemStrokeWidth = 0;
+        public readonly double gap = 0;
+        public readonly int minGapsBetweenStaves = 0;
+        public readonly int minGapsBetweenSystems = 0;
+        public readonly List<int> systemStartBars = null;
+        public readonly double crotchetsPerMinute = 0;
 
-        private readonly string _svgDataPath;
-        public readonly string _fileName;
-
-        public SVGData(string svgDataPath)
+        public SVGData(SVGDataStrings svgds)
         {
-            _svgDataPath = svgDataPath;
-            _fileName = Path.GetFileNameWithoutExtension(svgDataPath);
-
-            using(XmlReader r = XmlReader.Create(svgDataPath))
-            {
-                A.ReadToXmlElementTag(r, "svgData"); // check that this is an svgData file
-
-                A.ReadToXmlElementTag(r, "page", "notation");
-
-                while(r.Name == "page" || r.Name == "notation")
-                {
-                    if(r.NodeType != XmlNodeType.EndElement)
-                    {
-                        switch(r.Name)
-                        {
-                            case "page":
-                                Page = GetPage(r);
-                                break;
-                            case "notation":
-                                MNXCommonData = GetMNXCommonData(r);
-                                break;
-                        }
-                        A.ReadToXmlElementTag(r, "page", "notation", "svgData");
-                    }
-                    
-                }
-                A.Assert(r.Name == "svgData"); // end of svgData
-            }
-        }
-
-        private PageSettings GetPage(XmlReader r)
-        {
-            PageSettings ps = new PageSettings();
-
-            int count = r.AttributeCount;
-            for(int i = 0; i < count; i++)
-            {
-                r.MoveToAttribute(i);
-                switch(r.Name)
-                {
-                    case "width":
-                        ps.width = r.Value;
-                        break;
-                    case "height":
-                        ps.height = r.Value;
-                        break;
-                    case "marginTopPage1":
-                        ps.marginTopPage1 = r.Value;
-                        break;
-                    case "marginTopOther":
-                        ps.marginTopOther = r.Value;
-                        break;
-                    case "marginRight":
-                        ps.marginRight = r.Value;
-                        break;
-                    case "marginBottom":
-                        ps.marginBottom = r.Value;
-                        break;
-                    case "marginLeft":
-                        ps.marginLeft = r.Value;
-                        break;
-                }
-            }
-
-            return ps;
-        }
-        private NotationAndSpeedSettings GetMNXCommonData(XmlReader r)
-        {
-            NotationAndSpeedSettings nss = new NotationAndSpeedSettings();
-
-            int count = r.AttributeCount;
-            for(int i = 0; i < count; i++)
-            {
-                r.MoveToAttribute(i);
-                switch(r.Name)
-                {
-                    case "stafflineStemStrokeWidth":
-                        nss.stafflineStemStrokeWidth = r.Value;
-                        break;
-                    case "gapSize":
-                        nss.gapSize = r.Value;
-                        break;
-                    case "minGapsBetweenStaves":
-                        nss.minGapsBetweenStaves = r.Value;
-                        break;
-                    case "minGapsBetweenSystems":
-                        nss.minGapsBetweenSystems = r.Value;
-                        break;
-                    case "systemStartBars":
-                        nss.systemStartBars = r.Value;
-                        break;
-                    case "crotchetsPerMinute":
-                        nss.crotchetsPerMinute = r.Value;
-                        break;
-                }
-            }
-
-            return nss;
-        }
-
-        #region save settings
-        public void SaveSettings()
-        {
-            XmlWriterSettings settings = new XmlWriterSettings
-            {
-                Indent = true,
-                IndentChars = ("\t"),
-                NewLineOnAttributes = true,
-                CloseOutput = false
-            };
-            using(XmlWriter w = XmlWriter.Create(_svgDataPath, settings))
-            {
-                w.WriteStartDocument();
-                w.WriteComment("file created: " + A.NowString);
-
-                w.WriteStartElement("svgData");
-                w.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
-                w.WriteAttributeString("xsi", "noNamespaceSchemaLocation", null, "SchemasBaseFolder" + "/svgData.xsd");
-
-                WritePage(w);
-                WriteMNXCommon(w);
-                w.WriteEndElement(); // closes the moritzKrystalScore element
-                                     // the XmlWriter is closed automatically at the end of this using clause.
-            }
-        }
-
-        private void WritePage(XmlWriter w)
-        {
-            var page = this.Page;
-            w.WriteStartElement("page");
-
-            w.WriteAttributeString("width", page.width);
-            w.WriteAttributeString("height", page.height);
-            w.WriteAttributeString("marginTopPage1", page.marginTopPage1);
-            w.WriteAttributeString("marginTopOther", page.marginTopOther);
-            w.WriteAttributeString("marginRight", page.marginRight);
-            w.WriteAttributeString("marginBottom", page.marginBottom);
-            w.WriteAttributeString("marginLeft", page.marginLeft);
-
-            w.WriteEndElement(); // page
-
-            
-        }
-        private void WriteMNXCommon(XmlWriter w)
-        {
-            var notes = this.MNXCommonData;
-
-            w.WriteStartElement("notation");
-
-            w.WriteAttributeString("stafflineStemStrokeWidth", notes.stafflineStemStrokeWidth);
-            w.WriteAttributeString("gapSize", notes.gapSize);
-            w.WriteAttributeString("minGapsBetweenStaves", notes.minGapsBetweenStaves);
-            w.WriteAttributeString("minGapsBetweenSystems", notes.minGapsBetweenSystems);
-            w.WriteAttributeString("systemStartBars", notes.systemStartBars);
-            w.WriteAttributeString("crotchetsPerMinute", notes.crotchetsPerMinute);
-
-            w.WriteEndElement(); // notation
-        }
-        #endregion save settings
-
-        public override string ToString()
-        {
-            return _fileName;
+            pageWidth = int.Parse(svgds.Page.width);
+            pageHeight = int.Parse(svgds.Page.height);
+            marginTopPage1 = int.Parse(svgds.Page.marginTopPage1);
+            marginTopOther = int.Parse(svgds.Page.marginTopOther);
+            marginRight = int.Parse(svgds.Page.marginRight);
+            marginBottom = int.Parse(svgds.Page.marginBottom);
+            marginLeft = int.Parse(svgds.Page.marginLeft);
+            stafflineStemStrokeWidth = double.Parse(svgds.MNXCommonData.stafflineStemStrokeWidth, A.En_USNumberFormat);
+            gap = double.Parse(svgds.MNXCommonData.gapSize, A.En_USNumberFormat);
+            minGapsBetweenStaves = int.Parse(svgds.MNXCommonData.minGapsBetweenStaves);
+            minGapsBetweenSystems = int.Parse(svgds.MNXCommonData.minGapsBetweenSystems);
+            char[] delimiters = { ',', ' ' };
+            systemStartBars = A.StringToIntList(svgds.MNXCommonData.systemStartBars, delimiters);
+            crotchetsPerMinute = double.Parse(svgds.MNXCommonData.crotchetsPerMinute, A.En_USNumberFormat);
         }
     }
+
+
 
 }

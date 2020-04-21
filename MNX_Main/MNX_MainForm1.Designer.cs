@@ -50,6 +50,9 @@
             this.SaveFormatButton = new System.Windows.Forms.Button();
             this.NotationGroupBox = new System.Windows.Forms.GroupBox();
             this.SystemStartBarsTextBox = new System.Windows.Forms.TextBox();
+            this.SpeedGroupBox = new System.Windows.Forms.GroupBox();
+            this.CrotchetsPerMinuteTextBox = new System.Windows.Forms.TextBox();
+            this.CrotchetsPerMinuteLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.MinimumGapsBetweenSystemsTextBox = new System.Windows.Forms.TextBox();
             this.MinimumGapsBetweenStavesTextBox = new System.Windows.Forms.TextBox();
@@ -59,9 +62,6 @@
             this.MinimumGapsBetweenStavesLabel = new System.Windows.Forms.Label();
             this.GapSizeLabel = new System.Windows.Forms.Label();
             this.StafflineAndStemStrokeWidthLabel = new System.Windows.Forms.Label();
-            this.CrotchetsPerMinuteLabel = new System.Windows.Forms.Label();
-            this.CrotchetsPerMinuteTextBox = new System.Windows.Forms.TextBox();
-            this.SpeedGroupBox = new System.Windows.Forms.GroupBox();
             this.WriteButton = new System.Windows.Forms.Button();
             this.RevertFormatButton = new System.Windows.Forms.Button();
             this.PaperSizeGroupBox.SuspendLayout();
@@ -332,6 +332,41 @@
             this.SystemStartBarsTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
             this.SystemStartBarsTextBox.Leave += new System.EventHandler(this.SystemStartBarsTextBox_Leave);
             // 
+            // SpeedGroupBox
+            // 
+            this.SpeedGroupBox.Controls.Add(this.CrotchetsPerMinuteTextBox);
+            this.SpeedGroupBox.Controls.Add(this.CrotchetsPerMinuteLabel);
+            this.SpeedGroupBox.Enabled = false;
+            this.SpeedGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SpeedGroupBox.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.SpeedGroupBox.Location = new System.Drawing.Point(15, 211);
+            this.SpeedGroupBox.Name = "SpeedGroupBox";
+            this.SpeedGroupBox.Size = new System.Drawing.Size(226, 51);
+            this.SpeedGroupBox.TabIndex = 7;
+            this.SpeedGroupBox.TabStop = false;
+            this.SpeedGroupBox.Text = "speed";
+            // 
+            // CrotchetsPerMinuteTextBox
+            // 
+            this.CrotchetsPerMinuteTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CrotchetsPerMinuteTextBox.Location = new System.Drawing.Point(160, 18);
+            this.CrotchetsPerMinuteTextBox.Name = "CrotchetsPerMinuteTextBox";
+            this.CrotchetsPerMinuteTextBox.Size = new System.Drawing.Size(58, 20);
+            this.CrotchetsPerMinuteTextBox.TabIndex = 0;
+            this.CrotchetsPerMinuteTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.CrotchetsPerMinuteTextBox.Leave += new System.EventHandler(this.UnsignedDoubleTextBox_Leave);
+            // 
+            // CrotchetsPerMinuteLabel
+            // 
+            this.CrotchetsPerMinuteLabel.AutoSize = true;
+            this.CrotchetsPerMinuteLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CrotchetsPerMinuteLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.CrotchetsPerMinuteLabel.Location = new System.Drawing.Point(16, 21);
+            this.CrotchetsPerMinuteLabel.Name = "CrotchetsPerMinuteLabel";
+            this.CrotchetsPerMinuteLabel.Size = new System.Drawing.Size(138, 13);
+            this.CrotchetsPerMinuteLabel.TabIndex = 3;
+            this.CrotchetsPerMinuteLabel.Text = "crotchets per minute ( float )";
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -391,6 +426,7 @@
             this.GapSizeComboBox.Name = "GapSizeComboBox";
             this.GapSizeComboBox.Size = new System.Drawing.Size(58, 21);
             this.GapSizeComboBox.TabIndex = 1;
+            this.GapSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
             this.GapSizeComboBox.SelectedValueChanged += new System.EventHandler(this.TextBox_Changed);
             // 
             // StafflineStemStrokeWidthComboBox
@@ -408,6 +444,7 @@
             this.StafflineStemStrokeWidthComboBox.Name = "StafflineStemStrokeWidthComboBox";
             this.StafflineStemStrokeWidthComboBox.Size = new System.Drawing.Size(58, 21);
             this.StafflineStemStrokeWidthComboBox.TabIndex = 0;
+            this.StafflineStemStrokeWidthComboBox.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
             this.StafflineStemStrokeWidthComboBox.SelectedValueChanged += new System.EventHandler(this.TextBox_Changed);
             // 
             // MinimumGapsBetweenSystemsLabel
@@ -453,41 +490,6 @@
             this.StafflineAndStemStrokeWidthLabel.Size = new System.Drawing.Size(149, 13);
             this.StafflineAndStemStrokeWidthLabel.TabIndex = 7;
             this.StafflineAndStemStrokeWidthLabel.Text = "staffline and stem stroke width";
-            // 
-            // CrotchetsPerMinuteLabel
-            // 
-            this.CrotchetsPerMinuteLabel.AutoSize = true;
-            this.CrotchetsPerMinuteLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CrotchetsPerMinuteLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CrotchetsPerMinuteLabel.Location = new System.Drawing.Point(16, 21);
-            this.CrotchetsPerMinuteLabel.Name = "CrotchetsPerMinuteLabel";
-            this.CrotchetsPerMinuteLabel.Size = new System.Drawing.Size(138, 13);
-            this.CrotchetsPerMinuteLabel.TabIndex = 3;
-            this.CrotchetsPerMinuteLabel.Text = "crotchets per minute ( float )";
-            // 
-            // CrotchetsPerMinuteTextBox
-            // 
-            this.CrotchetsPerMinuteTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CrotchetsPerMinuteTextBox.Location = new System.Drawing.Point(160, 18);
-            this.CrotchetsPerMinuteTextBox.Name = "CrotchetsPerMinuteTextBox";
-            this.CrotchetsPerMinuteTextBox.Size = new System.Drawing.Size(58, 20);
-            this.CrotchetsPerMinuteTextBox.TabIndex = 0;
-            this.CrotchetsPerMinuteTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
-            this.CrotchetsPerMinuteTextBox.Leave += new System.EventHandler(this.UnsignedDoubleTextBox_Leave);
-            // 
-            // SpeedGroupBox
-            // 
-            this.SpeedGroupBox.Controls.Add(this.CrotchetsPerMinuteTextBox);
-            this.SpeedGroupBox.Controls.Add(this.CrotchetsPerMinuteLabel);
-            this.SpeedGroupBox.Enabled = false;
-            this.SpeedGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SpeedGroupBox.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.SpeedGroupBox.Location = new System.Drawing.Point(15, 211);
-            this.SpeedGroupBox.Name = "SpeedGroupBox";
-            this.SpeedGroupBox.Size = new System.Drawing.Size(226, 51);
-            this.SpeedGroupBox.TabIndex = 7;
-            this.SpeedGroupBox.TabStop = false;
-            this.SpeedGroupBox.Text = "speed";
             // 
             // WriteButton
             // 

@@ -47,19 +47,6 @@ namespace MNX.AGlobals
 
         #region Cloned Moritz functions
         #region Form1
-        /// <summary>
-        /// Cloned from Moritz
-        /// </summary>
-        /// <param name="directoryPath"></param>
-        public static void CreateDirectoryIfItDoesNotExist(string directoryPath)
-        {
-            if(!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-                while(!Directory.Exists(directoryPath))
-                    Thread.Sleep(100);
-            }
-        }
 
         /// <summary>
         /// The current date. (Written to XML files.)
@@ -73,7 +60,6 @@ namespace MNX.AGlobals
                 return DateTime.Today.ToString("dddd dd.MM.yyyy", ci.DateTimeFormat) + ", " + DateTime.Now.ToLongTimeString();
             }
         }
-
 
         public static void SetTextBoxErrorColorIfNotOkay(TextBox textBox, bool okay)
         {

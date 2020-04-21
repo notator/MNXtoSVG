@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
 using MNX.AGlobals;
 
 namespace MNX_Main
@@ -83,32 +84,32 @@ namespace MNX_Main
 
         private void LoadControls(SVGData svgd)
         {
-            this.PageWidthTextBox.Text = svgd.Page.width.ToString();
-            this.PageHeightTextBox.Text = svgd.Page.height.ToString();
-            this.MarginTopPage1TextBox.Text = svgd.Page.marginTopPage1.ToString();
-            this.MarginTopOtherPagesTextBox.Text = svgd.Page.marginTopOther.ToString();
-            this.MarginRightTextBox.Text = svgd.Page.marginRight.ToString();
-            this.MarginBottomTextBox.Text = svgd.Page.marginBottom.ToString();
-            this.MarginLeftTextBox.Text = svgd.Page.marginLeft.ToString();
+            var page = svgd.Page;
+            this.PageWidthTextBox.Text = page.width;
+            this.PageHeightTextBox.Text = page.height;
+            this.MarginTopPage1TextBox.Text = page.marginTopPage1;
+            this.MarginTopOtherPagesTextBox.Text = page.marginTopOther;
+            this.MarginRightTextBox.Text = page.marginRight;
+            this.MarginBottomTextBox.Text = page.marginBottom;
+            this.MarginLeftTextBox.Text = page.marginLeft;
 
-            this.StafflineStemStrokeWidthComboBox.SelectedIndex = GetIndex(StafflineStemStrokeWidthComboBox, svgd.MNXCommonData.stafflineStemStrokeWidth);
-            this.GapSizeComboBox.SelectedIndex = GetIndex(GapSizeComboBox, svgd.MNXCommonData.gapSize);
-            this.MinimumGapsBetweenStavesTextBox.Text = svgd.MNXCommonData.minGapsBetweenStaves.ToString();
-            this.MinimumGapsBetweenSystemsTextBox.Text = svgd.MNXCommonData.minGapsBetweenSystems.ToString();
-            this.SystemStartBarsTextBox.Text = svgd.MNXCommonData.systemStartBars;
-
-            this.CrotchetsPerMinuteTextBox.Text = svgd.MNXCommonData.crotchetsPerMinute.ToString(A.En_USNumberFormat);
+            var notes = svgd.MNXCommonData;
+            this.StafflineStemStrokeWidthComboBox.SelectedIndex = GetIndex(StafflineStemStrokeWidthComboBox, notes.stafflineStemStrokeWidth);
+            this.GapSizeComboBox.SelectedIndex = GetIndex(GapSizeComboBox, notes.gapSize);
+            this.MinimumGapsBetweenStavesTextBox.Text = notes.minGapsBetweenStaves;
+            this.MinimumGapsBetweenSystemsTextBox.Text = notes.minGapsBetweenSystems;
+            this.SystemStartBarsTextBox.Text = notes.systemStartBars;
+            this.CrotchetsPerMinuteTextBox.Text = notes.crotchetsPerMinute;
 
         }
 
-        private int GetIndex(ComboBox comboBox, double value)
+        private int GetIndex(ComboBox comboBox, string value)
         {
-            string valueString = value.ToString(A.En_USNumberFormat);
             var items = comboBox.Items;
             int rval = 0;
             for(int i = 0; i < items.Count; i++)
             {
-                if(items[i].ToString() == valueString)
+                if(items[i].ToString() == value)
                 {
                     rval = i;
                     break;
@@ -224,9 +225,28 @@ namespace MNX_Main
 
         }
 
-        private void SaveSettings()
+        public void SaveSettings()
         {
-            throw new NotImplementedException();
+            var SVGData = new SVGData(_mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2);
+
+            var page = SVGData.Page;
+            page.width = PageWidthTextBox.Text;
+            page.height = PageHeightTextBox.Text;
+            page.marginTopPage1 = MarginTopPage1TextBox.Text;
+            page.marginTopOther = MarginTopOtherPagesTextBox.Text;
+            page.marginRight = MarginRightTextBox.Text;
+            page.marginLeft = MarginLeftTextBox.Text;
+            page.marginBottom = MarginBottomTextBox.Text;
+
+            var notes = SVGData.MNXCommonData;
+            notes.stafflineStemStrokeWidth = StafflineStemStrokeWidthComboBox.SelectedText;
+            notes.gapSize = GapSizeComboBox.SelectedText;
+            notes.minGapsBetweenStaves = MinimumGapsBetweenStavesTextBox.Text;
+            notes.minGapsBetweenSystems = MinimumGapsBetweenSystemsTextBox.Text;
+            notes.systemStartBars = SystemStartBarsTextBox.Text;
+            notes.crotchetsPerMinute = CrotchetsPerMinuteTextBox.Text;
+
+            SVGData.SaveSettings();
         }
 
 

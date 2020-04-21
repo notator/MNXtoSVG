@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Friday 22.12.2017, 16:07:19-->
+<!--file created: Tuesday 21.04.2020, 17:10:11-->
 <svgData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://james-ingram-act-two.de/open-source/XMLSchemas/svgInstantiationSettings.xsd">
-  <page
-    width="500"
-    height="100"
+	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/svgData.xsd">
+	<page
+		width="500"
+		height="100"
 		marginTopPage1="90"
 		marginTopOther="60"
 		marginRight="70"
 		marginBottom="50"
 		marginLeft="70" />
-  <notation
-		stafflineStemStrokeWidth="0.5"
-		gapSize="5"
+	<notation
+		stafflineStemStrokeWidth=""
+		gapSize=""
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="3"
-		systemStartBars="1"
-    crotchetsPerMinute="60" />
+		systemStartBars="1,  7"
+		crotchetsPerMinute="60" />
 </svgData>

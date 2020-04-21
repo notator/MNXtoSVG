@@ -9,8 +9,8 @@ namespace MNX.AGlobals
 {
     public class SVGData
     {
-        public readonly PageSettings Page = null;
-        public readonly NotationSettings MNXCommonData = null;
+        public PageSettings Page = null;
+        public NotationAndSpeedSettings MNXCommonData = null;
 
         private readonly string _svgDataPath;
         public readonly string _fileName;
@@ -49,13 +49,7 @@ namespace MNX.AGlobals
 
         private PageSettings GetPage(XmlReader r)
         {
-            int width = 0;
-            int height = 0;
-            int marginTopPage1 = 0;
-            int marginTopOther = 0;
-            int marginRight = 0;
-            int marginBottom = 0;
-            int marginLeft = 0;
+            PageSettings ps = new PageSettings();
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -64,46 +58,34 @@ namespace MNX.AGlobals
                 switch(r.Name)
                 {
                     case "width":
-                        int.TryParse(r.Value, out width);
+                        ps.width = r.Value;
                         break;
                     case "height":
-                        int.TryParse(r.Value, out height);
+                        ps.height = r.Value;
                         break;
                     case "marginTopPage1":
-                        int.TryParse(r.Value, out marginTopPage1);
+                        ps.marginTopPage1 = r.Value;
                         break;
                     case "marginTopOther":
-                        int.TryParse(r.Value, out marginTopOther);
+                        ps.marginTopOther = r.Value;
                         break;
                     case "marginRight":
-                        int.TryParse(r.Value, out marginRight);
+                        ps.marginRight = r.Value;
                         break;
                     case "marginBottom":
-                        int.TryParse(r.Value, out marginBottom);
+                        ps.marginBottom = r.Value;
                         break;
                     case "marginLeft":
-                        int.TryParse(r.Value, out marginLeft);
+                        ps.marginLeft = r.Value;
                         break;
                 }
             }
 
-            return new PageSettings(
-                width, 
-                height,
-                marginTopPage1,
-                marginTopOther,
-                marginRight,
-                marginBottom,
-                marginLeft);
+            return ps;
         }
-        private NotationSettings GetMNXCommonData(XmlReader r)
+        private NotationAndSpeedSettings GetMNXCommonData(XmlReader r)
         {
-            double stafflineStemStrokeWidth = 0;
-            double gapSize = 0;
-            int minGapsBetweenStaves = 0;
-            int minGapsBetweenSystems = 0;
-            string systemStartBars = "";
-            double crotchetsPerMinute = 0;
+            NotationAndSpeedSettings nss = new NotationAndSpeedSettings();
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -112,41 +94,33 @@ namespace MNX.AGlobals
                 switch(r.Name)
                 {
                     case "stafflineStemStrokeWidth":
-                        double.TryParse(r.Value, NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-GB"), out stafflineStemStrokeWidth);
+                        nss.stafflineStemStrokeWidth = r.Value;
                         break;
                     case "gapSize":
-                        double.TryParse(r.Value, NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-GB"), out gapSize);
+                        nss.gapSize = r.Value;
                         break;
                     case "minGapsBetweenStaves":
-                        int.TryParse(r.Value, out minGapsBetweenStaves);
+                        nss.minGapsBetweenStaves = r.Value;
                         break;
                     case "minGapsBetweenSystems":
-                        int.TryParse(r.Value, out minGapsBetweenSystems);
+                        nss.minGapsBetweenSystems = r.Value;
                         break;
                     case "systemStartBars":
-                        systemStartBars = r.Value;
+                        nss.systemStartBars = r.Value;
                         break;
                     case "crotchetsPerMinute":
-                        double.TryParse(r.Value, NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-GB"), out crotchetsPerMinute);
+                        nss.crotchetsPerMinute = r.Value;
                         break;
                 }
             }
 
-            return new NotationSettings(
-                stafflineStemStrokeWidth,
-                gapSize,
-                minGapsBetweenStaves,
-                minGapsBetweenSystems,
-                systemStartBars,
-                crotchetsPerMinute);
+            return nss;
         }
 
         #region save settings
         public void SaveSettings()
         {
             A.Assert(!string.IsNullOrEmpty(_svgDataPath));
-
-            A.CreateDirectoryIfItDoesNotExist(this._svgDataPath);
 
             #region do the save
             XmlWriterSettings settings = new XmlWriterSettings
@@ -177,15 +151,16 @@ namespace MNX.AGlobals
 
         private void WritePage(XmlWriter w)
         {
+            var page = this.Page;
             w.WriteStartElement("page");
 
-            //w.WriteAttributeString("width", WidthTextBox.Text);
-            //w.WriteAttributeString("height", HeightTextBox.Text);
-            //w.WriteAttributeString("marginTopPage1", MarginTopPage1TextBox.Text);
-            //w.WriteAttributeString("marginTopOther", MarginTopOtherTextBox.Text);
-            //w.WriteAttributeString("marginRight", MarginRightTextBox.Text);
-            //w.WriteAttributeString("marginBottom", MarginBottomTextBox.Text);
-            //w.WriteAttributeString("marginLeft", MarginLeftTextBox.Text);
+            w.WriteAttributeString("width", page.width);
+            w.WriteAttributeString("height", page.height);
+            w.WriteAttributeString("marginTopPage1", page.marginTopPage1);
+            w.WriteAttributeString("marginTopOther", page.marginTopOther);
+            w.WriteAttributeString("marginRight", page.marginRight);
+            w.WriteAttributeString("marginBottom", page.marginBottom);
+            w.WriteAttributeString("marginLeft", page.marginLeft);
 
             w.WriteEndElement(); // page
 
@@ -193,14 +168,16 @@ namespace MNX.AGlobals
         }
         private void WriteMNXCommon(XmlWriter w)
         {
+            var notes = this.MNXCommonData;
+
             w.WriteStartElement("notation");
 
-            //w.WriteAttributeString("stafflineStemStrokeWidth", StafflineStemStrokeWidthComboBox.Text);
-            //w.WriteAttributeString("gapSize", GapSizeComboBox.Text);
-            //w.WriteAttributeString("minGapsBetweenStaves", MinGapsBetweenStavesTextBox.Text);
-            //w.WriteAttributeString("minGapsBetweenSystems", MinGapsBetweenSystemsTextBox.Text);
-            //w.WriteAttributeString("systemStartBars", SystemStartBarsTextBox.Text);
-            //w.WriteAttributeString("crotchetsPerMinute", CrotchetsPerMinuteTextBox.Text);
+            w.WriteAttributeString("stafflineStemStrokeWidth", notes.stafflineStemStrokeWidth);
+            w.WriteAttributeString("gapSize", notes.gapSize);
+            w.WriteAttributeString("minGapsBetweenStaves", notes.minGapsBetweenStaves);
+            w.WriteAttributeString("minGapsBetweenSystems", notes.minGapsBetweenSystems);
+            w.WriteAttributeString("systemStartBars", notes.systemStartBars);
+            w.WriteAttributeString("crotchetsPerMinute", notes.crotchetsPerMinute);
 
             w.WriteEndElement(); // notation
         }

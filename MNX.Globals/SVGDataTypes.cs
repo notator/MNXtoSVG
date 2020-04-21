@@ -8,22 +8,26 @@ namespace MNX.AGlobals
 {
     public class PageSettings
     {
-        public readonly int width;
-        public readonly int height;
-        public readonly int marginTopPage1;
-        public readonly int marginTopOther;
-        public readonly int marginRight;
-        public readonly int marginBottom;
-        public readonly int marginLeft;
+        public string width;
+        public string height;
+        public string marginTopPage1;
+        public string marginTopOther;
+        public string marginRight;
+        public string marginBottom;
+        public string marginLeft;
+
+        public PageSettings()
+        {
+        }
 
         internal PageSettings(
-            int width,
-            int height,
-            int marginTopPage1,
-            int marginTopOther,
-            int marginRight,
-            int marginBottom,
-            int marginLeft)
+            string width,
+            string height,
+            string marginTopPage1,
+            string marginTopOther,
+            string marginRight,
+            string marginBottom,
+            string marginLeft)
         {
             this.width = width;
             this.height = height;
@@ -35,22 +39,26 @@ namespace MNX.AGlobals
         }
     }
 
-    public class NotationSettings
+    public class NotationAndSpeedSettings
     {
-        public readonly double stafflineStemStrokeWidth = 0;
-        public readonly double gapSize = 0;
-        public readonly int minGapsBetweenStaves = 0;
-        public readonly int minGapsBetweenSystems = 0;
-        public readonly string systemStartBars = null;
-        public readonly double crotchetsPerMinute = 0;
+        public string stafflineStemStrokeWidth;
+        public string gapSize;
+        public string minGapsBetweenStaves;
+        public string minGapsBetweenSystems;
+        public string systemStartBars;
+        public string crotchetsPerMinute;
 
-        internal NotationSettings(
-            double stafflineStemStrokeWidth,
-            double gapSize,
-            int minGapsBetweenStaves,
-            int minGapsBetweenSystems,
+        public NotationAndSpeedSettings()
+        {
+        }
+
+        internal NotationAndSpeedSettings(
+            string stafflineStemStrokeWidth,
+            string gapSize,
+            string minGapsBetweenStaves,
+            string minGapsBetweenSystems,
             string systemStartBars,
-            double crotchetsPerMinute)
+            string crotchetsPerMinute)
         {
             this.stafflineStemStrokeWidth = stafflineStemStrokeWidth;
             this.gapSize = gapSize;
@@ -58,7 +66,6 @@ namespace MNX.AGlobals
             this.minGapsBetweenSystems = minGapsBetweenSystems;
             this.systemStartBars = systemStartBars;
             this.crotchetsPerMinute = crotchetsPerMinute;
-
         }
     }
 }

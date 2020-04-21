@@ -46,10 +46,9 @@ namespace MNX_Main
             A.Assert(r.Name == "score"); // end of event        
         }
 
-        internal void WriteSVG()
+        internal void WriteSVG(SVGData svgData)
         {
-            // uses current A.SVGData
-            MNXCommon.WriteSVG();
+            MNXCommon.WriteSVG(svgData);
         }
     }
 }

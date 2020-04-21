@@ -74,9 +74,9 @@ namespace MNX.Common
             A.Assert(ScoreAudios.Count >= 0);
         }
 
-        public void WriteSVG()
+        public void WriteSVG(SVGData svgData)
         {
-            // uses current A.SVGData
+            throw new NotImplementedException();
         }
 
         private void AdjustForGraceNotes()

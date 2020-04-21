@@ -49,15 +49,15 @@ namespace MNX_Main
                 for(var i = 0; i < _mnxSVGDatas.Count; i++)
                 {
                     var mnx = new MNX(_mnxSVGDatas[i].Item1);
-                    A.SVGData = new SVGData(_mnxSVGDatas[i].Item2);
-                    mnx.WriteSVG(); // Writes the score to A.SVG_out
+                    var SVGData = new SVGData(_mnxSVGDatas[i].Item2);
+                    mnx.WriteSVG(SVGData); // Writes the score to A.SVG_out
                 }
             }
             else
             {
                 var mnx = new MNX(_mnxSVGDatas[selectedIndex - 1].Item1);
-                A.SVGData = new SVGData(_mnxSVGDatas[selectedIndex - 1].Item2);
-                mnx.WriteSVG(); // Writes the score to A.SVG_out
+                var SVGData = new SVGData(_mnxSVGDatas[selectedIndex - 1].Item2);
+                mnx.WriteSVG(SVGData); // Writes the score to A.SVG_out
             }
         }
 

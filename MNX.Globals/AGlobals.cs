@@ -44,7 +44,6 @@ namespace MNX.AGlobals
 
         // These are set for the score currently being constructed.
         public static MNXProfile? Profile = null;
-        public static SVGData SVGData;
 
         #region Cloned Moritz functions
         #region Form1

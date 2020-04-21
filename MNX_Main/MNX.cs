@@ -61,10 +61,9 @@ namespace MNX_Main
             return FileName;
         }
 
-        internal void WriteSVG()
+        internal void WriteSVG(SVGData svgData)
         {
-            // uses current A.SVGData
-            Score.WriteSVG();
+            Score.WriteSVG(svgData);
         }
     }
 

@@ -207,23 +207,10 @@ namespace MNX_Main
             SetButtons(textBox);
         }
 
-        //private void SystemStartBarsTextBox_Leave(object sender, EventArgs e)
-        //{
-        //    // Passing uint.MaxValue means that the list can have any number of values (including none).
-        //    M.LeaveIntRangeTextBox(SystemStartBarsTextBox, true, uint.MaxValue, 1, int.MaxValue, M.SetTextBoxErrorColorIfNotOkay);
-        //    if(SystemStartBarsTextBox.BackColor != M.TextBoxErrorColor)
-        //    {
-        //        SystemStartBarsTextBox.Text = NormalizedSystemStartBars();
-        //    }
-        //    SetGroupBoxIsUnconfirmed(NotationGroupBox, ConfirmNotationButton, RevertNotationButton);
-        //}
-
         private void TextBox_Changed(object sender, EventArgs e)
         {
             A.SetToWhite(sender as TextBox);
         }
-
-
 
         private void SaveFormatButton_Click(object sender, EventArgs e)
         {

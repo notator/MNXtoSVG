@@ -49,6 +49,8 @@
             this.MarginTopOtherPagesLabel = new System.Windows.Forms.Label();
             this.SaveFormatButton = new System.Windows.Forms.Button();
             this.NotationGroupBox = new System.Windows.Forms.GroupBox();
+            this.SystemStartBarsTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.MinimumGapsBetweenSystemsTextBox = new System.Windows.Forms.TextBox();
             this.MinimumGapsBetweenStavesTextBox = new System.Windows.Forms.TextBox();
             this.GapSizeComboBox = new System.Windows.Forms.ComboBox();
@@ -299,6 +301,8 @@
             // 
             // NotationGroupBox
             // 
+            this.NotationGroupBox.Controls.Add(this.SystemStartBarsTextBox);
+            this.NotationGroupBox.Controls.Add(this.label1);
             this.NotationGroupBox.Controls.Add(this.MinimumGapsBetweenSystemsTextBox);
             this.NotationGroupBox.Controls.Add(this.MinimumGapsBetweenStavesTextBox);
             this.NotationGroupBox.Controls.Add(this.GapSizeComboBox);
@@ -312,10 +316,31 @@
             this.NotationGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.NotationGroupBox.Location = new System.Drawing.Point(279, 86);
             this.NotationGroupBox.Name = "NotationGroupBox";
-            this.NotationGroupBox.Size = new System.Drawing.Size(255, 167);
+            this.NotationGroupBox.Size = new System.Drawing.Size(255, 197);
             this.NotationGroupBox.TabIndex = 6;
             this.NotationGroupBox.TabStop = false;
             this.NotationGroupBox.Text = "notation";
+            // 
+            // SystemStartBarsTextBox
+            // 
+            this.SystemStartBarsTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SystemStartBarsTextBox.Location = new System.Drawing.Point(15, 164);
+            this.SystemStartBarsTextBox.Name = "SystemStartBarsTextBox";
+            this.SystemStartBarsTextBox.Size = new System.Drawing.Size(218, 20);
+            this.SystemStartBarsTextBox.TabIndex = 11;
+            this.SystemStartBarsTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.SystemStartBarsTextBox.Leave += new System.EventHandler(this.SystemStartBarsTextBox_Leave);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label1.Location = new System.Drawing.Point(12, 148);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(166, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "system start bars ( must start at 1 )";
             // 
             // MinimumGapsBetweenSystemsTextBox
             // 
@@ -554,6 +579,8 @@
         private System.Windows.Forms.GroupBox SpeedGroupBox;
         private System.Windows.Forms.Button WriteButton;
         private System.Windows.Forms.Button RevertFormatButton;
+        private System.Windows.Forms.TextBox SystemStartBarsTextBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 

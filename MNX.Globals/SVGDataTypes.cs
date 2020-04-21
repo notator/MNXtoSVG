@@ -41,7 +41,7 @@ namespace MNX.AGlobals
         public readonly double gapSize = 0;
         public readonly int minGapsBetweenStaves = 0;
         public readonly int minGapsBetweenSystems = 0;
-        public readonly List<int> systemStartBars = null;
+        public readonly string systemStartBars = null;
         public readonly double crotchetsPerMinute = 0;
 
         internal NotationSettings(
@@ -49,7 +49,7 @@ namespace MNX.AGlobals
             double gapSize,
             int minGapsBetweenStaves,
             int minGapsBetweenSystems,
-            List<int> systemStartBars,
+            string systemStartBars,
             double crotchetsPerMinute)
         {
             this.stafflineStemStrokeWidth = stafflineStemStrokeWidth;

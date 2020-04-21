@@ -102,7 +102,7 @@ namespace MNX.AGlobals
             double gapSize = 0;
             int minGapsBetweenStaves = 0;
             int minGapsBetweenSystems = 0;
-            List<int> systemStartBars = new List<int>();
+            string systemStartBars = "";
             double crotchetsPerMinute = 0;
 
             int count = r.AttributeCount;
@@ -124,7 +124,7 @@ namespace MNX.AGlobals
                         int.TryParse(r.Value, out minGapsBetweenSystems);
                         break;
                     case "systemStartBars":
-                        systemStartBars = A.StringToIntList(r.Value, ' ');
+                        systemStartBars = r.Value;
                         break;
                     case "crotchetsPerMinute":
                         double.TryParse(r.Value, NumberStyles.Any, CultureInfo.CreateSpecificCulture("en-GB"), out crotchetsPerMinute);

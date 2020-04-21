@@ -95,8 +95,10 @@ namespace MNX_Main
             this.GapSizeComboBox.SelectedIndex = GetIndex(GapSizeComboBox, svgd.MNXCommonData.gapSize);
             this.MinimumGapsBetweenStavesTextBox.Text = svgd.MNXCommonData.minGapsBetweenStaves.ToString();
             this.MinimumGapsBetweenSystemsTextBox.Text = svgd.MNXCommonData.minGapsBetweenSystems.ToString();
+            this.SystemStartBarsTextBox.Text = svgd.MNXCommonData.systemStartBars;
 
             this.CrotchetsPerMinuteTextBox.Text = svgd.MNXCommonData.crotchetsPerMinute.ToString(A.En_USNumberFormat);
+
         }
 
         private int GetIndex(ComboBox comboBox, double value)
@@ -149,7 +151,8 @@ namespace MNX_Main
         private void SetButtons(TextBox textBox)
         {
             _settingsHaveChanged = true;
-            if(A.HasError(textBox) == false)
+
+            if(AllInputsAreErrorFree())
             {
                 RevertFormatButton.Enabled = true;
                 SaveFormatButton.Enabled = true;
@@ -164,12 +167,29 @@ namespace MNX_Main
             SaveFormatButton.Focus();
         }
 
+        private bool AllInputsAreErrorFree()
+        {
+            bool rval = true;
+
+            if(rval && A.HasError(this.PageWidthTextBox)) { rval = false; }
+            if(rval && A.HasError(this.PageHeightTextBox)) { rval = false; }
+            if(rval && A.HasError(this.MarginTopPage1TextBox)) { rval = false; }
+            if(rval && A.HasError(this.MarginTopOtherPagesTextBox)) { rval = false; }
+            if(rval && A.HasError(this.MarginRightTextBox)) { rval = false; }
+            if(rval && A.HasError(this.MarginBottomTextBox)) { rval = false; }
+            if(rval && A.HasError(this.MarginLeftTextBox)) { rval = false; }
+            if(rval && A.HasError(this.MinimumGapsBetweenStavesTextBox)) { rval = false; }
+            if(rval && A.HasError(this.MinimumGapsBetweenSystemsTextBox)) { rval = false; }
+            if(rval && A.HasError(this.SystemStartBarsTextBox)) { rval = false; }
+            if(rval && A.HasError(this.CrotchetsPerMinuteTextBox)) { rval = false; }
+
+            return rval;
+        }
+
         private void IntTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
             A.CheckTextBoxIsUInt(textBox);
-            //// Passing uint.MaxValue means that the list can have any number of values (including none).
-            //A.LeaveIntRangeTextBox(textBox, true, uint.MaxValue, 1, int.MaxValue, A.SetTextBoxErrorColorIfNotOkay);
             SetButtons(textBox);
         }
 
@@ -177,8 +197,13 @@ namespace MNX_Main
         {
             TextBox textBox = sender as TextBox;
             A.CheckTextBoxIsUnsignedDouble(textBox);
-            //// Passing uint.MaxValue means that the list can have any number of values (including none).
-            //A.LeaveIntRangeTextBox(textBox, true, uint.MaxValue, 1, int.MaxValue, A.SetTextBoxErrorColorIfNotOkay);
+            SetButtons(textBox);
+        }
+
+        private void SystemStartBarsTextBox_Leave(object sender, EventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            A.CheckSystemStartBarsUnsignedIntList(textBox);
             SetButtons(textBox);
         }
 

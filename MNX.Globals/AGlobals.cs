@@ -135,6 +135,111 @@ namespace MNX.AGlobals
             SetTextBoxErrorColorIfNotOkay(textBox, okay);
         }
 
+        public static void CheckSystemStartBarsUnsignedIntList(TextBox textBox)
+        {
+            List<int> checkedUnsignedInts = null;
+            bool okay = false;
+            if(textBox.Text.Length > 0)
+            {
+                checkedUnsignedInts = GetCheckedUnsignedInts(textBox, int.MaxValue, 0, int.MaxValue);
+                if(checkedUnsignedInts != null)
+                {
+                    if(CheckStartBarConditions(checkedUnsignedInts))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        foreach(int integer in checkedUnsignedInts)
+                        {
+                            string intString = integer.ToString();
+                            sb.Append(",  " + intString);
+                        }
+                        sb.Remove(0, 3);
+                        textBox.Text = sb.ToString();
+                        okay = true;
+                    }
+                }
+            }
+
+            SetTextBoxErrorColorIfNotOkay(textBox, okay);
+        }
+
+        private static bool CheckStartBarConditions(List<int> unsignedInts)
+        {
+            bool rval = true;
+            if(unsignedInts[0] != 1)
+            {
+                rval = false;
+            }
+            else
+            {
+                for(var i = 1; i < unsignedInts.Count; i++)
+                {
+                    if(unsignedInts[i - 1] >= unsignedInts[i])
+                    {
+                        rval = false;
+                        break;
+                    }
+                }
+            }
+            return rval;
+        }
+
+        /// <summary>
+        /// Returns null if
+        ///     textBox.Text is empty, or
+        ///     textBox.Text contains anything other than numbers, commas and whitespace or
+        ///     count is not equal to uint.MaxValue and there are not count values or
+        ///     the values are outside the given range.
+        /// </summary>
+        private static List<int> GetCheckedUnsignedInts(TextBox textBox, uint count, int minVal, int maxVal)
+        {
+            List<int> rval = null;
+            List<string> strings = new List<string>();
+            bool okay = true;
+            if(textBox.Text.Length > 0)
+            {
+                foreach(Char c in textBox.Text)
+                {
+                    if(!(Char.IsDigit(c) || c == ',' || Char.IsWhiteSpace(c)))
+                        okay = false;
+                }
+                if(okay)
+                {
+                    char[] delimiters = { ',', ' ' };
+                    rval = StringToIntList(textBox.Text, delimiters);
+                }
+            }
+
+            if(rval == null || rval.Count == 0)
+                return null;
+            else return rval;
+        }
+
+        /// <summary>
+        /// Returne false if
+        ///     intList == null
+        ///     count != uint.MaxValue && intList.Count != count
+        ///     or any value is less than minVal, 
+        ///     or any value is greater than maxval.
+        /// </summary>
+        private static bool CheckIntList(List<int> intList, uint count, int minVal, int maxVal)
+        {
+            bool OK = true;
+            if(intList == null || (count != uint.MaxValue && intList.Count != count))
+                OK = false;
+            else
+            {
+                foreach(int value in intList)
+                {
+                    if(value < minVal || value > maxVal)
+                    {
+                        OK = false;
+                        break;
+                    }
+                }
+            }
+            return OK;
+        }
+
         //public delegate void SetDialogStateDelegate(TextBox textBox, bool success);
         ///// <summary>
         ///// If the textBox is disabled, this function does nothing.
@@ -286,32 +391,30 @@ namespace MNX.AGlobals
         }
 
         /// <summary>
-        /// Copied from Moritz...
-        /// Converts a string containing integers separated by whitespace and the character in arg2
+        /// Converts a string containing unsigned integers separated by the delimiters in arg2 (' ' and ',')
         /// to the corresponding list of integers.
-        /// Throws an exception if the string contains anything other than 
-        /// positive or negative integers, the separator or white space. 
+        /// Returns null if the string contains anything other than the delimiters and positive integers greater than 0. 
+        /// Copied (changed a bit) from Moritz...
         /// </summary>
-        public static List<int> StringToIntList(string s, char separator)
+        public static List<int> StringToIntList(string s, char[] delimiters)
         {
             List<int> rval = new List<int>();
-            char[] delimiter = { separator };
-            string[] integers = s.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-            try
+            string[] integers = s.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            foreach(string integer in integers)
             {
-                foreach(string integer in integers)
+                string iString = integer.Trim();
+                if(!string.IsNullOrEmpty(iString))
                 {
-                    string i = integer.Trim();
-                    if(!string.IsNullOrEmpty(i))
+                    int i = int.Parse(iString);
+                    if( i <= 0)
                     {
-                        rval.Add(int.Parse(i));
+                        rval = null;
+                        break;
                     }
+                    rval.Add(i);
                 }
             }
-            catch
-            {
-                throw new ApplicationException("Error in AGlobals.StringToIntList()");
-            }
+
             return rval;
         }
         #endregion Form1

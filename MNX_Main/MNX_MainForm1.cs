@@ -70,16 +70,21 @@ namespace MNX_Main
             }
             else
             {
-                // Write one score (edit svgData)
-                var svgDataPath = _mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2;
-                SVGData svgd = new SVGData(svgDataPath);
-
-                LoadControls(svgd);
-
-                EnableDisableControls(false);
-
-                _settingsHaveChanged = false;
+                LoadOneScore();
             }
+        }
+
+        private void LoadOneScore()
+        {
+            // Load a score (edit svgData)
+            var svgDataPath = _mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2;
+            SVGData svgd = new SVGData(svgDataPath);
+
+            LoadControls(svgd);
+
+            EnableDisableControls(false);
+
+            _settingsHaveChanged = false;
         }
 
         private void LoadControls(SVGData svgd)
@@ -249,6 +254,9 @@ namespace MNX_Main
             SVGData.SaveSettings();
         }
 
-
+        private void RevertFormatButton_Click(object sender, EventArgs e)
+        {
+            LoadOneScore();
+        }
     }
 }

@@ -508,8 +508,9 @@
             this.RevertFormatButton.Name = "RevertFormatButton";
             this.RevertFormatButton.Size = new System.Drawing.Size(139, 51);
             this.RevertFormatButton.TabIndex = 8;
-            this.RevertFormatButton.Text = "Revert Format";
+            this.RevertFormatButton.Text = "Revert to saved";
             this.RevertFormatButton.UseVisualStyleBackColor = true;
+            this.RevertFormatButton.Click += new System.EventHandler(this.RevertFormatButton_Click);
             // 
             // MNX_MainForm1
             // 

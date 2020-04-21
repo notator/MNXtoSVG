@@ -16,6 +16,10 @@ namespace MNX_Main
         {
             InitializeComponent();
 
+            this.MNXSelect.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.StafflineStemStrokeWidthComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.GapSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+
             string[] mnxPathsArray = Directory.GetFiles(A.MNX_in_Folder, "*.mnx");
             string[] svgDataArray = Directory.GetFiles(A.SVGData_Folder, "*.svgd");
 
@@ -35,17 +39,23 @@ namespace MNX_Main
             MNXSelect.SelectedIndex = 0;
         }
 
-        private void WriteSVGButton_Click(object sender, EventArgs e)
+        private void WriteButton_Click(object sender, EventArgs e)
         {
- 
-        }
+            var selectedIndex = MNXSelect.SelectedIndex;
 
-        private void WriteAllSVGScoresButton_Click(object sender, EventArgs e)
-        {
-            for(var i = 0; i < _mnxSVGDatas.Count; i++)
+            if(selectedIndex == 0)
             {
-                var mnx = new MNX(_mnxSVGDatas[i].Item1);
-                A.SVGData = new SVGData(_mnxSVGDatas[i].Item2);
+                for(var i = 0; i < _mnxSVGDatas.Count; i++)
+                {
+                    var mnx = new MNX(_mnxSVGDatas[i].Item1);
+                    A.SVGData = new SVGData(_mnxSVGDatas[i].Item2);
+                    mnx.WriteSVG(); // Writes the score to A.SVG_out
+                }
+            }
+            else
+            {
+                var mnx = new MNX(_mnxSVGDatas[selectedIndex - 1].Item1);
+                A.SVGData = new SVGData(_mnxSVGDatas[selectedIndex - 1].Item2);
                 mnx.WriteSVG(); // Writes the score to A.SVG_out
             }
         }
@@ -81,12 +91,28 @@ namespace MNX_Main
             this.MarginBottomTextBox.Text = svgd.Page.marginBottom.ToString();
             this.MarginLeftTextBox.Text = svgd.Page.marginLeft.ToString();
 
-            this.StafflineStemStrokeWidthComboBox.SelectedText = svgd.MNXCommonData.stafflineStemStrokeWidth.ToString(A.en_US_CultureInfo);
-            this.GapSizeComboBox.SelectedText = svgd.MNXCommonData.gapSize.ToString(A.en_US_CultureInfo);
+            this.StafflineStemStrokeWidthComboBox.SelectedIndex = GetIndex(StafflineStemStrokeWidthComboBox, svgd.MNXCommonData.stafflineStemStrokeWidth);
+            this.GapSizeComboBox.SelectedIndex = GetIndex(GapSizeComboBox, svgd.MNXCommonData.gapSize);
             this.MinimumGapsBetweenStavesTextBox.Text = svgd.MNXCommonData.minGapsBetweenStaves.ToString();
             this.MinimumGapsBetweenSystemsTextBox.Text = svgd.MNXCommonData.minGapsBetweenSystems.ToString();
 
-            this.CrotchetsPerMinuteTextBox.Text = svgd.MNXCommonData.crotchetsPerMinute.ToString(A.en_US_CultureInfo);
+            this.CrotchetsPerMinuteTextBox.Text = svgd.MNXCommonData.crotchetsPerMinute.ToString(A.En_USNumberFormat);
+        }
+
+        private int GetIndex(ComboBox comboBox, double value)
+        {
+            string valueString = value.ToString(A.En_USNumberFormat);
+            var items = comboBox.Items;
+            int rval = 0;
+            for(int i = 0; i < items.Count; i++)
+            {
+                if(items[i].ToString() == valueString)
+                {
+                    rval = i;
+                    break;
+                }
+            }
+            return rval;
         }
 
         private void EnableDisableControls(bool writeAll)
@@ -98,7 +124,7 @@ namespace MNX_Main
                 MarginsGroupBox.Enabled = false;
                 NotationGroupBox.Enabled = false;
                 SpeedGroupBox.Enabled = false;
-                SaveSpeedAndPageSettingsButton.Enabled = false;
+                SaveFormatButton.Enabled = false;
 
                 WriteButton.Text = "Write all Scores";
                 WriteButton.Enabled = true;
@@ -112,7 +138,7 @@ namespace MNX_Main
                 NotationGroupBox.Enabled = true;
                 SpeedGroupBox.Enabled = true;
 
-                SaveSpeedAndPageSettingsButton.Enabled = false;
+                SaveFormatButton.Enabled = false;
 
                 WriteButton.Text = "Write Score";
                 WriteButton.Enabled = true;
@@ -120,14 +146,61 @@ namespace MNX_Main
             }
         }
 
-        private void SettingsChanged(object sender, EventArgs e)
+        private void SetButtons(TextBox textBox)
         {
             _settingsHaveChanged = true;
-            SaveSpeedAndPageSettingsButton.Enabled = true;
-            WriteButton.Enabled = false;
+            if(A.HasError(textBox) == false)
+            {
+                RevertFormatButton.Enabled = true;
+                SaveFormatButton.Enabled = true;
+                WriteButton.Enabled = false;
+            }
+            else
+            {
+                RevertFormatButton.Enabled = true;
+                SaveFormatButton.Enabled = false;
+                WriteButton.Enabled = false;
+            }
+            SaveFormatButton.Focus();
         }
 
-        private void SaveSpeedAndPageSettingsButton_Click(object sender, EventArgs e)
+        private void IntTextBox_Leave(object sender, EventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            A.CheckTextBoxIsUInt(textBox);
+            //// Passing uint.MaxValue means that the list can have any number of values (including none).
+            //A.LeaveIntRangeTextBox(textBox, true, uint.MaxValue, 1, int.MaxValue, A.SetTextBoxErrorColorIfNotOkay);
+            SetButtons(textBox);
+        }
+
+        private void UnsignedDoubleTextBox_Leave(object sender, EventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            A.CheckTextBoxIsUnsignedDouble(textBox);
+            //// Passing uint.MaxValue means that the list can have any number of values (including none).
+            //A.LeaveIntRangeTextBox(textBox, true, uint.MaxValue, 1, int.MaxValue, A.SetTextBoxErrorColorIfNotOkay);
+            SetButtons(textBox);
+        }
+
+        //private void SystemStartBarsTextBox_Leave(object sender, EventArgs e)
+        //{
+        //    // Passing uint.MaxValue means that the list can have any number of values (including none).
+        //    M.LeaveIntRangeTextBox(SystemStartBarsTextBox, true, uint.MaxValue, 1, int.MaxValue, M.SetTextBoxErrorColorIfNotOkay);
+        //    if(SystemStartBarsTextBox.BackColor != M.TextBoxErrorColor)
+        //    {
+        //        SystemStartBarsTextBox.Text = NormalizedSystemStartBars();
+        //    }
+        //    SetGroupBoxIsUnconfirmed(NotationGroupBox, ConfirmNotationButton, RevertNotationButton);
+        //}
+
+        private void TextBox_Changed(object sender, EventArgs e)
+        {
+            A.SetToWhite(sender as TextBox);
+        }
+
+
+
+        private void SaveFormatButton_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Save settings?", "Save", MessageBoxButtons.YesNo);
             if(result == DialogResult.Yes)
@@ -136,11 +209,14 @@ namespace MNX_Main
                 _settingsHaveChanged = false;
                 WriteButton.Enabled = true;
             }
+
         }
 
         private void SaveSettings()
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

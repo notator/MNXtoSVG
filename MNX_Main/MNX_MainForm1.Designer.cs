@@ -47,7 +47,7 @@
             this.MarginTopOtherPagesTextBox = new System.Windows.Forms.TextBox();
             this.MarginRightLabel = new System.Windows.Forms.Label();
             this.MarginTopOtherPagesLabel = new System.Windows.Forms.Label();
-            this.SaveSpeedAndPageSettingsButton = new System.Windows.Forms.Button();
+            this.SaveFormatButton = new System.Windows.Forms.Button();
             this.NotationGroupBox = new System.Windows.Forms.GroupBox();
             this.MinimumGapsBetweenSystemsTextBox = new System.Windows.Forms.TextBox();
             this.MinimumGapsBetweenStavesTextBox = new System.Windows.Forms.TextBox();
@@ -61,7 +61,7 @@
             this.CrotchetsPerMinuteTextBox = new System.Windows.Forms.TextBox();
             this.SpeedGroupBox = new System.Windows.Forms.GroupBox();
             this.WriteButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.RevertFormatButton = new System.Windows.Forms.Button();
             this.PaperSizeGroupBox.SuspendLayout();
             this.MarginsGroupBox.SuspendLayout();
             this.NotationGroupBox.SuspendLayout();
@@ -123,7 +123,8 @@
             this.PageHeightTextBox.Name = "PageHeightTextBox";
             this.PageHeightTextBox.Size = new System.Drawing.Size(88, 20);
             this.PageHeightTextBox.TabIndex = 1;
-            this.PageHeightTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.PageHeightTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.PageHeightTextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // PageWidthTextBox
             // 
@@ -132,7 +133,8 @@
             this.PageWidthTextBox.Name = "PageWidthTextBox";
             this.PageWidthTextBox.Size = new System.Drawing.Size(88, 20);
             this.PageWidthTextBox.TabIndex = 0;
-            this.PageWidthTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.PageWidthTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.PageWidthTextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // PaperHeightLabel
             // 
@@ -152,9 +154,9 @@
             this.DimensionsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DimensionsLabel.Location = new System.Drawing.Point(32, 61);
             this.DimensionsLabel.Name = "DimensionsLabel";
-            this.DimensionsLabel.Size = new System.Drawing.Size(252, 15);
+            this.DimensionsLabel.Size = new System.Drawing.Size(374, 15);
             this.DimensionsLabel.TabIndex = 5;
-            this.DimensionsLabel.Text = "Spatial dimensions are screen pixels or gaps";
+            this.DimensionsLabel.Text = "All editable spatial dimensions are integers ( screen pixels or gaps )";
             // 
             // MarginsGroupBox
             // 
@@ -185,7 +187,8 @@
             this.MarginTopPage1TextBox.Name = "MarginTopPage1TextBox";
             this.MarginTopPage1TextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginTopPage1TextBox.TabIndex = 0;
-            this.MarginTopPage1TextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.MarginTopPage1TextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MarginTopPage1TextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // MarginTopPage1Label
             // 
@@ -227,7 +230,8 @@
             this.MarginBottomTextBox.Name = "MarginBottomTextBox";
             this.MarginBottomTextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginBottomTextBox.TabIndex = 4;
-            this.MarginBottomTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.MarginBottomTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MarginBottomTextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // MarginLeftTextBox
             // 
@@ -236,7 +240,8 @@
             this.MarginLeftTextBox.Name = "MarginLeftTextBox";
             this.MarginLeftTextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginLeftTextBox.TabIndex = 2;
-            this.MarginLeftTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.MarginLeftTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MarginLeftTextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // MarginRightTextBox
             // 
@@ -245,7 +250,8 @@
             this.MarginRightTextBox.Name = "MarginRightTextBox";
             this.MarginRightTextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginRightTextBox.TabIndex = 3;
-            this.MarginRightTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.MarginRightTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MarginRightTextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // MarginTopOtherPagesTextBox
             // 
@@ -254,7 +260,8 @@
             this.MarginTopOtherPagesTextBox.Name = "MarginTopOtherPagesTextBox";
             this.MarginTopOtherPagesTextBox.Size = new System.Drawing.Size(60, 20);
             this.MarginTopOtherPagesTextBox.TabIndex = 1;
-            this.MarginTopOtherPagesTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.MarginTopOtherPagesTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MarginTopOtherPagesTextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // MarginRightLabel
             // 
@@ -278,17 +285,17 @@
             this.MarginTopOtherPagesLabel.TabIndex = 3;
             this.MarginTopOtherPagesLabel.Text = "top ( other pages )";
             // 
-            // SaveSpeedAndPageSettingsButton
+            // SaveFormatButton
             // 
-            this.SaveSpeedAndPageSettingsButton.Enabled = false;
-            this.SaveSpeedAndPageSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveSpeedAndPageSettingsButton.Location = new System.Drawing.Point(214, 372);
-            this.SaveSpeedAndPageSettingsButton.Name = "SaveSpeedAndPageSettingsButton";
-            this.SaveSpeedAndPageSettingsButton.Size = new System.Drawing.Size(139, 51);
-            this.SaveSpeedAndPageSettingsButton.TabIndex = 3;
-            this.SaveSpeedAndPageSettingsButton.Text = "Save Settings";
-            this.SaveSpeedAndPageSettingsButton.UseVisualStyleBackColor = true;
-            this.SaveSpeedAndPageSettingsButton.Click += new System.EventHandler(this.SaveSpeedAndPageSettingsButton_Click);
+            this.SaveFormatButton.Enabled = false;
+            this.SaveFormatButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveFormatButton.Location = new System.Drawing.Point(214, 372);
+            this.SaveFormatButton.Name = "SaveFormatButton";
+            this.SaveFormatButton.Size = new System.Drawing.Size(139, 51);
+            this.SaveFormatButton.TabIndex = 3;
+            this.SaveFormatButton.Text = "Save Format";
+            this.SaveFormatButton.UseVisualStyleBackColor = true;
+            this.SaveFormatButton.Click += new System.EventHandler(this.SaveFormatButton_Click);
             // 
             // NotationGroupBox
             // 
@@ -317,7 +324,8 @@
             this.MinimumGapsBetweenSystemsTextBox.Name = "MinimumGapsBetweenSystemsTextBox";
             this.MinimumGapsBetweenSystemsTextBox.Size = new System.Drawing.Size(58, 20);
             this.MinimumGapsBetweenSystemsTextBox.TabIndex = 3;
-            this.MinimumGapsBetweenSystemsTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.MinimumGapsBetweenSystemsTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MinimumGapsBetweenSystemsTextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // MinimumGapsBetweenStavesTextBox
             // 
@@ -326,10 +334,12 @@
             this.MinimumGapsBetweenStavesTextBox.Name = "MinimumGapsBetweenStavesTextBox";
             this.MinimumGapsBetweenStavesTextBox.Size = new System.Drawing.Size(58, 20);
             this.MinimumGapsBetweenStavesTextBox.TabIndex = 2;
-            this.MinimumGapsBetweenStavesTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.MinimumGapsBetweenStavesTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MinimumGapsBetweenStavesTextBox.Leave += new System.EventHandler(this.IntTextBox_Leave);
             // 
             // GapSizeComboBox
             // 
+            this.GapSizeComboBox.BackColor = System.Drawing.Color.White;
             this.GapSizeComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GapSizeComboBox.FormattingEnabled = true;
             this.GapSizeComboBox.Items.AddRange(new object[] {
@@ -355,10 +365,11 @@
             this.GapSizeComboBox.Name = "GapSizeComboBox";
             this.GapSizeComboBox.Size = new System.Drawing.Size(58, 21);
             this.GapSizeComboBox.TabIndex = 1;
-            this.GapSizeComboBox.SelectedValueChanged += new System.EventHandler(this.SettingsChanged);
+            this.GapSizeComboBox.SelectedValueChanged += new System.EventHandler(this.TextBox_Changed);
             // 
             // StafflineStemStrokeWidthComboBox
             // 
+            this.StafflineStemStrokeWidthComboBox.BackColor = System.Drawing.Color.White;
             this.StafflineStemStrokeWidthComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StafflineStemStrokeWidthComboBox.FormattingEnabled = true;
             this.StafflineStemStrokeWidthComboBox.Items.AddRange(new object[] {
@@ -371,7 +382,7 @@
             this.StafflineStemStrokeWidthComboBox.Name = "StafflineStemStrokeWidthComboBox";
             this.StafflineStemStrokeWidthComboBox.Size = new System.Drawing.Size(58, 21);
             this.StafflineStemStrokeWidthComboBox.TabIndex = 0;
-            this.StafflineStemStrokeWidthComboBox.SelectedValueChanged += new System.EventHandler(this.SettingsChanged);
+            this.StafflineStemStrokeWidthComboBox.SelectedValueChanged += new System.EventHandler(this.TextBox_Changed);
             // 
             // MinimumGapsBetweenSystemsLabel
             // 
@@ -400,11 +411,11 @@
             this.GapSizeLabel.AutoSize = true;
             this.GapSizeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GapSizeLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.GapSizeLabel.Location = new System.Drawing.Point(123, 64);
+            this.GapSizeLabel.Location = new System.Drawing.Point(82, 64);
             this.GapSizeLabel.Name = "GapSizeLabel";
-            this.GapSizeLabel.Size = new System.Drawing.Size(46, 13);
+            this.GapSizeLabel.Size = new System.Drawing.Size(87, 13);
             this.GapSizeLabel.TabIndex = 8;
-            this.GapSizeLabel.Text = "gap size";
+            this.GapSizeLabel.Text = "gap size ( pixels )";
             // 
             // StafflineAndStemStrokeWidthLabel
             // 
@@ -422,11 +433,11 @@
             this.CrotchetsPerMinuteLabel.AutoSize = true;
             this.CrotchetsPerMinuteLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CrotchetsPerMinuteLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CrotchetsPerMinuteLabel.Location = new System.Drawing.Point(66, 21);
+            this.CrotchetsPerMinuteLabel.Location = new System.Drawing.Point(31, 21);
             this.CrotchetsPerMinuteLabel.Name = "CrotchetsPerMinuteLabel";
-            this.CrotchetsPerMinuteLabel.Size = new System.Drawing.Size(103, 13);
+            this.CrotchetsPerMinuteLabel.Size = new System.Drawing.Size(138, 13);
             this.CrotchetsPerMinuteLabel.TabIndex = 3;
-            this.CrotchetsPerMinuteLabel.Text = "crotchets per minute";
+            this.CrotchetsPerMinuteLabel.Text = "crotchets per minute ( float )";
             // 
             // CrotchetsPerMinuteTextBox
             // 
@@ -435,7 +446,8 @@
             this.CrotchetsPerMinuteTextBox.Name = "CrotchetsPerMinuteTextBox";
             this.CrotchetsPerMinuteTextBox.Size = new System.Drawing.Size(58, 20);
             this.CrotchetsPerMinuteTextBox.TabIndex = 0;
-            this.CrotchetsPerMinuteTextBox.TextChanged += new System.EventHandler(this.SettingsChanged);
+            this.CrotchetsPerMinuteTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.CrotchetsPerMinuteTextBox.Leave += new System.EventHandler(this.UnsignedDoubleTextBox_Leave);
             // 
             // SpeedGroupBox
             // 
@@ -460,18 +472,18 @@
             this.WriteButton.TabIndex = 1;
             this.WriteButton.Text = "Write all SVG scores";
             this.WriteButton.UseVisualStyleBackColor = true;
-            this.WriteButton.Click += new System.EventHandler(this.WriteAllSVGScoresButton_Click);
+            this.WriteButton.Click += new System.EventHandler(this.WriteButton_Click);
             // 
-            // button1
+            // RevertFormatButton
             // 
-            this.button1.Enabled = false;
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(34, 372);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(139, 51);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Revert Settings";
-            this.button1.UseVisualStyleBackColor = true;
+            this.RevertFormatButton.Enabled = false;
+            this.RevertFormatButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RevertFormatButton.Location = new System.Drawing.Point(34, 372);
+            this.RevertFormatButton.Name = "RevertFormatButton";
+            this.RevertFormatButton.Size = new System.Drawing.Size(139, 51);
+            this.RevertFormatButton.TabIndex = 8;
+            this.RevertFormatButton.Text = "Revert Format";
+            this.RevertFormatButton.UseVisualStyleBackColor = true;
             // 
             // MNX_MainForm1
             // 
@@ -479,11 +491,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(255)))), ((int)(((byte)(245)))));
             this.ClientSize = new System.Drawing.Size(568, 435);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.RevertFormatButton);
             this.Controls.Add(this.SpeedGroupBox);
             this.Controls.Add(this.WriteButton);
             this.Controls.Add(this.NotationGroupBox);
-            this.Controls.Add(this.SaveSpeedAndPageSettingsButton);
+            this.Controls.Add(this.SaveFormatButton);
             this.Controls.Add(this.MarginsGroupBox);
             this.Controls.Add(this.DimensionsLabel);
             this.Controls.Add(this.PaperSizeGroupBox);
@@ -527,7 +539,7 @@
         private System.Windows.Forms.TextBox MarginTopOtherPagesTextBox;
         private System.Windows.Forms.Label MarginRightLabel;
         private System.Windows.Forms.Label MarginTopOtherPagesLabel;
-        private System.Windows.Forms.Button SaveSpeedAndPageSettingsButton;
+        private System.Windows.Forms.Button SaveFormatButton;
         private System.Windows.Forms.GroupBox NotationGroupBox;
         private System.Windows.Forms.TextBox MinimumGapsBetweenSystemsTextBox;
         private System.Windows.Forms.TextBox MinimumGapsBetweenStavesTextBox;
@@ -541,7 +553,7 @@
         private System.Windows.Forms.TextBox CrotchetsPerMinuteTextBox;
         private System.Windows.Forms.GroupBox SpeedGroupBox;
         private System.Windows.Forms.Button WriteButton;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button RevertFormatButton;
     }
 }
 

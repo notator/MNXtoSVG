@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -36,16 +37,19 @@ namespace MNX.AGlobals
         // contains the output SVG.
         public static readonly string SVG_out_Folder = mnxMainFolder + @"\SVG_out\";
 
-        // used when writing doubles as text (with decimal point)
-        public static readonly CultureInfo en_US_CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
+        //Creates and initializes the CultureInfo which uses the international sort.
+        public static CultureInfo ci = new CultureInfo("en-US", false);
+        public static NumberFormatInfo En_USNumberFormat = ci.NumberFormat;
         #endregion
 
         // These are set for the score currently being constructed.
         public static MNXProfile? Profile = null;
         public static SVGData SVGData;
 
+        #region Cloned Moritz functions
+        #region Form1
         /// <summary>
-        /// Copied from Moritz
+        /// Cloned from Moritz
         /// </summary>
         /// <param name="directoryPath"></param>
         public static void CreateDirectoryIfItDoesNotExist(string directoryPath)
@@ -60,7 +64,7 @@ namespace MNX.AGlobals
 
         /// <summary>
         /// The current date. (Written to XML files.)
-        /// Copied from Moritz
+        /// Cloned from Moritz
         /// </summary>
         public static string NowString
         {
@@ -71,6 +75,188 @@ namespace MNX.AGlobals
             }
         }
 
+
+        public static void SetTextBoxErrorColorIfNotOkay(TextBox textBox, bool okay)
+        {
+            if(okay)
+            {
+                textBox.BackColor = Color.White;
+            }
+            else
+            {
+                textBox.BackColor = A.TextBoxErrorColor;
+            }
+        }
+
+        public static Color TextBoxErrorColor = Color.FromArgb(255, 220, 220);
+        //public static Color GreenButtonColor = Color.FromArgb(215, 225, 215);
+        //public static Color LightGreenButtonColor = Color.FromArgb(205, 240, 205);
+
+        public static bool HasError(TextBox textBox)
+        {
+            return textBox.BackColor == A.TextBoxErrorColor;
+        }
+
+        public static void CheckTextBoxIsUInt(TextBox textBox)
+        {
+            bool okay = true;
+            textBox.Text.Trim();
+            try
+            {
+                uint i = uint.Parse(textBox.Text);
+            }
+            catch
+            {
+                okay = false;
+            }
+
+            SetTextBoxErrorColorIfNotOkay(textBox, okay);
+        }
+
+        public static void CheckTextBoxIsUnsignedDouble(TextBox textBox)
+        {
+            double d = 0;
+            bool okay = true;
+            textBox.Text.Trim();
+            try
+            {
+                d = double.Parse(textBox.Text);
+            }
+            catch
+            {
+                okay = false;
+            }
+
+            if(d <= 0)
+            {
+                okay = false;
+            }
+
+            SetTextBoxErrorColorIfNotOkay(textBox, okay);
+        }
+
+        //public delegate void SetDialogStateDelegate(TextBox textBox, bool success);
+        ///// <summary>
+        ///// If the textBox is disabled, this function does nothing.
+        ///// SetDialogState sets the text box to an error state (usually by setting its background colour to pink) if:
+        /////     textBox.Text is empty, or
+        /////     textBox.Text contains anything other than numbers, commas and whitespace or
+        /////     count != uint.MaxValue and there are not count values or the values are outside the given range.
+        ///// Cloned from Moritz
+        ///// </summary>
+        //public static void LeaveIntRangeTextBox(TextBox textBox, bool canBeEmpty, uint count, int minVal, int maxVal,
+        //                                            SetDialogStateDelegate SetDialogState)
+        //{
+        //    if(textBox.Enabled)
+        //    {
+        //        if(textBox.Text.Length > 0)
+        //        {
+        //            List<string> checkedIntStrings = GetCheckedIntStrings(textBox, count, minVal, maxVal);
+        //            if(checkedIntStrings != null)
+        //            {
+        //                StringBuilder sb = new StringBuilder();
+        //                foreach(string intString in checkedIntStrings)
+        //                {
+        //                    sb.Append(",  " + intString);
+        //                }
+        //                sb.Remove(0, 3);
+        //                textBox.Text = sb.ToString();
+        //                SetDialogState(textBox, true);
+        //            }
+        //            else
+        //            {
+        //                SetDialogState(textBox, false);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if(canBeEmpty)
+        //                SetDialogState(textBox, true);
+        //            else
+        //                SetDialogState(textBox, false);
+        //        }
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Returns null if
+        /////     textBox.Text is empty, or
+        /////     textBox.Text contains anything other than numbers, commas and whitespace or
+        /////     count is not equal to uint.MaxValue and there are not count values or
+        /////     the values are outside the given range.
+        ///// Cloned from Moritz
+        ///// </summary>
+        //private static List<string> GetCheckedIntStrings(TextBox textBox, uint count, int minVal, int maxVal)
+        //{
+        //    List<string> strings = new List<string>();
+        //    bool okay = true;
+        //    if(textBox.Text.Length > 0)
+        //    {
+        //        foreach(Char c in textBox.Text)
+        //        {
+        //            if(!(Char.IsDigit(c) || c == ',' || Char.IsWhiteSpace(c)))
+        //                okay = false;
+        //        }
+        //        if(okay)
+        //        {
+        //            try
+        //            {
+        //                List<int> ints = StringToIntList(textBox.Text, ',');
+
+        //                if(CheckIntList(ints, count, minVal, maxVal))
+        //                {
+        //                    foreach(int i in ints)
+        //                        strings.Add(i.ToString(A.En_USNumberFormat));
+        //                }
+        //            }
+        //            catch
+        //            {
+        //                // This can happen if StringToIntList(...) throws an exception
+        //                // -- which can happen if two numbers are separated by whitespace but no comma!)
+        //            }
+        //        }
+        //    }
+
+        //    if(strings.Count > 0)
+        //        return strings;
+        //    else return null;
+        //}
+
+        ///// <summary>
+        ///// Returne false if
+        /////     intList == null
+        /////     count != uint.MaxValue && intList.Count != count
+        /////     or any value is less than minVal, 
+        /////     or any value is greater than maxval.
+        ///// Cloned from Moritz
+        ///// </summary>
+        //private static bool CheckIntList(List<int> intList, uint count, int minVal, int maxVal)
+        //{
+        //    bool OK = true;
+        //    if(intList == null || (count != uint.MaxValue && intList.Count != count))
+        //        OK = false;
+        //    else
+        //    {
+        //        foreach(int value in intList)
+        //        {
+        //            if(value < minVal || value > maxVal)
+        //            {
+        //                OK = false;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    return OK;
+        //}
+
+        public static void SetToWhite(TextBox textBox)
+        {
+            if(textBox != null)
+            {
+                textBox.ForeColor = Color.Black;
+                textBox.BackColor = Color.White;
+            }
+        }
         /// <summary>
         /// Adapted from CapXML Utilities.
         /// Reads to the next start or end tag having a name which is in the parameter list.
@@ -128,8 +314,8 @@ namespace MNX.AGlobals
             }
             return rval;
         }
-
-
+        #endregion Form1
+        #region Error handling
         public static void ThrowError(string errorDescription,
                     [CallerLineNumber] int lineNumber = 0,
                     [CallerMemberName] string caller = null,
@@ -167,5 +353,7 @@ namespace MNX.AGlobals
                 throw new ApplicationException($"Condition failed.");
             }
         }
+        #endregion Error handling
+        #endregion Cloned Moritz functions
     }
 }

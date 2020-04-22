@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Tuesday 21.04.2020, 22:08:05-->
+<!--file created: Wednesday 22.04.2020, 10:35:23-->
 <svgData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/svgData.xsd">
 	<page
@@ -15,6 +15,6 @@
 		gapSize="2.5"
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="4"
-		systemStartBars="1"
+		systemStartBars="1,  4,  5,  6,  7,  8"
 		crotchetsPerMinute="60.5" />
 </svgData>

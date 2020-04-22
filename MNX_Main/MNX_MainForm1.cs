@@ -72,21 +72,20 @@ namespace MNX_Main
             }
             else
             {
-                LoadOneScore();
+                LoadOneScore();                
             }
         }
 
         private void LoadOneScore()
         {
-            // Load a score (edit svgData)
+            // Load a score (edit svgDataStrings)
             var svgDataPath = _mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2;
             var svgds = new SVGDataStrings(svgDataPath);
 
             LoadControls(svgds);
 
-            EnableDisableControls(false);
-
             _settingsHaveChanged = false;
+            SetButtons(_settingsHaveChanged);
         }
 
         private void LoadControls(SVGDataStrings svgds)
@@ -107,7 +106,6 @@ namespace MNX_Main
             this.MinimumGapsBetweenSystemsTextBox.Text = notes.minGapsBetweenSystems;
             this.SystemStartBarsTextBox.Text = notes.systemStartBars;
             this.CrotchetsPerMinuteTextBox.Text = notes.crotchetsPerMinute;
-
         }
 
         private int GetIndex(ComboBox comboBox, string value)
@@ -125,54 +123,94 @@ namespace MNX_Main
             return rval;
         }
 
-        private void EnableDisableControls(bool writeAll)
+        private void EnableDisableControls(bool disable)
         {
-            if(writeAll)
+            if(disable)
             {
+                RemoveControlEvents();
                 DimensionsLabel.Enabled = false;
                 PaperSizeGroupBox.Enabled = false;
                 MarginsGroupBox.Enabled = false;
                 NotationGroupBox.Enabled = false;
                 SpeedGroupBox.Enabled = false;
-                SaveFormatButton.Enabled = false;
 
                 WriteButton.Text = "Write all Scores";
-                WriteButton.Enabled = true;
-                WriteButton.Focus();
             }
             else
             {
+                ReplaceControlEvents();
                 DimensionsLabel.Enabled = true;
                 PaperSizeGroupBox.Enabled = true;
                 MarginsGroupBox.Enabled = true;
                 NotationGroupBox.Enabled = true;
                 SpeedGroupBox.Enabled = true;
 
-                SaveFormatButton.Enabled = false;
-
                 WriteButton.Text = "Write Score";
-                WriteButton.Enabled = true;
-                WriteButton.Focus();
             }
         }
 
-        private void SetButtons()
+        private void ReplaceControlEvents()
         {
-            _settingsHaveChanged = true;
+            PageWidthTextBox.Leave += IntTextBox_Leave;
+            PageHeightTextBox.Leave += IntTextBox_Leave;
+            MarginTopPage1TextBox.Leave += IntTextBox_Leave;
+            MarginTopOtherPagesTextBox.Leave += IntTextBox_Leave;
+            MarginRightTextBox.Leave += IntTextBox_Leave;
+            MarginBottomTextBox.Leave += IntTextBox_Leave;
+            MarginLeftTextBox.Leave += IntTextBox_Leave;
+            StafflineStemStrokeWidthComboBox.SelectedIndexChanged += ComboBox_SelectedIndexChanged;
+            GapSizeComboBox.SelectedIndexChanged += ComboBox_SelectedIndexChanged;
+            MinimumGapsBetweenStavesTextBox.Leave += IntTextBox_Leave;
+            MinimumGapsBetweenSystemsTextBox.Leave += IntTextBox_Leave;
+            SystemStartBarsTextBox.Leave += IntTextBox_Leave;
+            CrotchetsPerMinuteTextBox.Leave += IntTextBox_Leave;
+        }
 
-            if(AllInputsAreErrorFree())
+        private void RemoveControlEvents()
+        {
+            PageWidthTextBox.Leave -= IntTextBox_Leave; 
+            PageHeightTextBox.Leave -= IntTextBox_Leave;
+            MarginTopPage1TextBox.Leave -= IntTextBox_Leave;
+            MarginTopOtherPagesTextBox.Leave -= IntTextBox_Leave;
+            MarginRightTextBox.Leave -= IntTextBox_Leave;
+            MarginBottomTextBox.Leave -= IntTextBox_Leave;
+            MarginLeftTextBox.Leave -= IntTextBox_Leave;
+            StafflineStemStrokeWidthComboBox.SelectedIndexChanged -= ComboBox_SelectedIndexChanged;
+            GapSizeComboBox.SelectedIndexChanged -= ComboBox_SelectedIndexChanged;
+            MinimumGapsBetweenStavesTextBox.Leave -= IntTextBox_Leave;
+            MinimumGapsBetweenSystemsTextBox.Leave -= IntTextBox_Leave;
+            SystemStartBarsTextBox.Leave -= IntTextBox_Leave;
+            CrotchetsPerMinuteTextBox.Leave -= IntTextBox_Leave;
+        }
+
+        private void SetButtons(bool settingsHaveChanged)
+        {
+            EnableDisableControls(true);
+            if(!settingsHaveChanged)
             {
-                RevertFormatButton.Enabled = true;
-                SaveFormatButton.Enabled = true;
-                WriteButton.Enabled = false;
-            }
-            else
-            {
-                RevertFormatButton.Enabled = true;
+                RevertFormatButton.Enabled = false;
                 SaveFormatButton.Enabled = false;
-                WriteButton.Enabled = false;
+                WriteButton.Enabled = true;
+                WriteButton.Focus();
             }
-            SaveFormatButton.Focus();
+            else // settings have changed
+            {
+                if(AllInputsAreErrorFree())
+                {
+                    RevertFormatButton.Enabled = true;
+                    SaveFormatButton.Enabled = true;
+                    WriteButton.Enabled = false;
+                    SaveFormatButton.Focus();
+                }
+                else
+                {
+                    RevertFormatButton.Enabled = true;
+                    SaveFormatButton.Enabled = false;
+                    WriteButton.Enabled = false;
+                }
+            }
+
+            EnableDisableControls(MNXSelect.SelectedIndex == 0);
         }
 
         private bool AllInputsAreErrorFree()
@@ -198,27 +236,30 @@ namespace MNX_Main
         {
             TextBox textBox = sender as TextBox;
             A.CheckTextBoxIsUInt(textBox);
-            SetButtons();
+            _settingsHaveChanged = true;
+            SetButtons(_settingsHaveChanged);
         }
 
         private void ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetButtons();
-
+            _settingsHaveChanged = true;
+            SetButtons(_settingsHaveChanged);
         }
 
         private void UnsignedDoubleTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
             A.CheckTextBoxIsUnsignedDouble(textBox);
-            SetButtons();
+            _settingsHaveChanged = true;
+            SetButtons(_settingsHaveChanged);
         }
 
         private void SystemStartBarsTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
             A.CheckSystemStartBarsUnsignedIntList(textBox);
-            SetButtons();
+            _settingsHaveChanged = true;
+            SetButtons(_settingsHaveChanged);
         }
 
         private void TextBox_Changed(object sender, EventArgs e)

@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Xml;
+using Moritz.Spec;
+using System.Collections.Generic;
 
 namespace MNX_Main
 {
@@ -12,9 +14,9 @@ namespace MNX_Main
         private readonly Score Score = null;
         private readonly Collection Collection = null;
 
-        public readonly string FileName;
+        internal readonly string FileName;
 
-        public MNX(string mnxPath)
+        internal MNX(string mnxPath)
         {
             FileName = Path.GetFileNameWithoutExtension(mnxPath);
 
@@ -56,10 +58,11 @@ namespace MNX_Main
             }
         }
 
-        //public List<Bar> ToBars()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        internal List<Bar> ToBars()
+        {
+            List<Bar> rval = new List<Bar>();
+            return rval;
+        }
 
         public override string ToString()
         {

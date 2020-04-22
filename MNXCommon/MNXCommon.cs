@@ -74,11 +74,6 @@ namespace MNX.Common
             A.Assert(ScoreAudios.Count >= 0);
         }
 
-        public void WriteSVG(SVGData svgData)
-        {
-            throw new NotImplementedException();
-        }
-
         private void AdjustForGraceNotes()
         {
             for(var partIndex = 0; partIndex < Parts.Count; partIndex++)

@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using MNX.AGlobals;
+using Moritz.Spec;
 
 namespace MNX_Main
 {
@@ -51,7 +52,7 @@ namespace MNX_Main
                     var mnx = new MNX(_mnxSVGDatas[i].Item1);
                     var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
                     var svgData = new SVGData(svgds);
-                    mnx.WriteSVG(svgData); // Writes the score to A.SVG_out
+                    //List<Bar> bars = mnx.ToBars();
                 }
             }
             else
@@ -59,7 +60,7 @@ namespace MNX_Main
                 var mnx = new MNX(_mnxSVGDatas[selectedIndex - 1].Item1);
                 var svgds = new SVGDataStrings(_mnxSVGDatas[selectedIndex - 1].Item2);
                 var svgData = new SVGData(svgds);
-                mnx.WriteSVG(svgData); // Writes the score to A.SVG_out
+                //List<Bar> bars = mnx.ToBars();
             }
         }
 

@@ -56,15 +56,14 @@ namespace MNX_Main
             }
         }
 
+        //public List<Bar> ToBars()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
         public override string ToString()
         {
             return FileName;
         }
-
-        internal void WriteSVG(SVGData svgData)
-        {
-            Score.WriteSVG(svgData);
-        }
     }
-
 }

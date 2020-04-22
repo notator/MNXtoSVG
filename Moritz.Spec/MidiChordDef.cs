@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Krystals4ObjectLibrary;
-using Moritz.Globals;
-using Moritz.Xml;
+
+using MNX.AGlobals;
 
 namespace Moritz.Spec
 {
@@ -30,7 +29,7 @@ namespace Moritz.Spec
 		{
 			#region conditions
 			A.Assert(bPitches.Count == bVelocities.Count);
-			A.AssertRange0_127(bPitches);
+			C.AssertRange0_127(bPitches);
 			foreach(byte velocity in bVelocities)
 			{
 				AssertIsVelocityValue(velocity);
@@ -60,40 +59,6 @@ namespace Moritz.Spec
         }
 
         /// <summary>
-        /// A MidiChordDef having msDuration, and containing an ornament having BasicMidiChordDefs with nPitchesPerChord.
-        /// The notated pitch and the pitch of BasicMidiChordDefs[0] are set to rootNotatedPitch.
-        /// The notated velocity of all pitches is set to 127.
-        /// The root pitches of the BasicMidiChordDefs begin with rootNotatedPitch, and follow the ornamentEnvelope, using
-        /// the ornamentEnvelope's values as indices in the mode. Their durations are as equal as possible, to give the
-        /// overall msDuration. If ornamentEnvelope is null, a single, one-note BasicMidiChordDef will be created.
-        /// This constructor uses Mode.GetChord(rootNotatedPitch, nPitchesPerChord) which returns pitches that are
-        /// vertically spaced differently according to the absolute height of the rootNotatedPitch. The number of pitches
-        /// in a chord may also be less than nPitchesPerChord (see mode.GetChord(...) ).
-        /// An exception is thrown if rootNotatedPitch is not in the mode.
-        /// </summary>        
-        /// <param name="msDuration">The duration of this MidiChordDef</param>
-        /// <param name="mode">The mode containing all the pitches.</param>
-        /// <param name="rootNotatedPitch">The lowest notated pitch. Also the lowest pitch of BasicMidiChordDefs[0].</param>
-        /// <param name="nPitchesPerChord">The chord density (some chords may have less pitches).</param>
-        /// <param name="ornamentEnvelope">The ornament definition.</param>
-        public MidiChordDef(int msDuration, _oldMode mode, int rootNotatedPitch, int nPitchesPerChord, Envelope ornamentEnvelope = null, string ornamentText = null)
-            : base(msDuration) 
-        {
-            NotatedMidiPitches = mode.GetChord(rootNotatedPitch, nPitchesPerChord);
-            var nmVelocities = new List<byte>();
-            foreach(byte pitch in NotatedMidiPitches) // can be less than nPitchesPerChord
-            {
-                nmVelocities.Add(127);
-            }
-            NotatedMidiVelocities = nmVelocities;
-
-            // Sets BasicMidiChords. If ornamentEnvelope == null, BasicMidiChords[0] is set to the NotatedMidiChord.
-            SetOrnament(mode, ornamentEnvelope, ornamentText);
-
-			AssertConsistency(this);
-		}
-
-        /// <summary>
         /// Constructor used when creating a list of DurationDef templates from a Palette.
         /// The palette has created new values for all the arguments, so this constructor simply transfers
         /// those values to the new MidiChordDef. MsPositionReFirstIUD is set to 0, lyric is set to null.
@@ -110,7 +75,7 @@ namespace Moritz.Spec
             : base(msDuration)
         {
             A.Assert(rootMidiPitches.Count <= rootMidiVelocities.Count);
-			A.AssertRange0_127(rootMidiPitches);
+			C.AssertRange0_127(rootMidiPitches);
 
             MsPositionReFirstUD = 0;
             _pitchWheelDeviation = pitchWheelDeviation;
@@ -180,7 +145,7 @@ namespace Moritz.Spec
 			}
 
 			// fit the msDurations to total msDuration
-			msDurations = A.IntDivisionSizes(msDuration, msDurations);
+			msDurations = C.IntDivisionSizes(msDuration, msDurations);
 			this.BasicDurationDefs = new List<BasicDurationDef>();
 			for(int i = 0; i < iUniqueDefs.Count; ++i)
 			{
@@ -341,51 +306,6 @@ namespace Moritz.Spec
         }
         #endregion Clone
 
-        #region Opposite
-        /// <summary>
-        /// 1. Creates a new, opposite mode from the argument Mode (see Mode.Opposite()).
-        /// 2. Clones this MidiChordDef, and replaces the clone's pitches by the equivalent pitches in the opposite Mode.
-        /// 3. Returns the clone.
-        /// </summary>
-        public MidiChordDef Opposite(_oldMode mode)
-        {
-            #region conditions
-            A.Assert(mode != null);
-            #endregion conditions
-
-            int relativePitchHierarchyIndex = (mode.RelativePitchHierarchyIndex + 11) % 22;
-            _oldMode oppositeMode = new _oldMode(relativePitchHierarchyIndex, mode.BasePitch, mode.NPitchesPerOctave);
-            MidiChordDef oppositeMCD = (MidiChordDef)Clone();
-
-            #region conditions
-            A.Assert(mode.Gamut[0] == oppositeMode.Gamut[0]);
-            A.Assert(mode.NPitchesPerOctave == oppositeMode.NPitchesPerOctave);
-            // N.B. it is not necessarily true that mode.Count == oppositeMode.Count.
-            #endregion conditions
-
-            // Substitute the oppositeMCD's pitches by the equivalent pitches in the oppositeMode.
-            OppositePitches(mode, oppositeMode, oppositeMCD.NotatedMidiPitches);
-            foreach(BasicMidiChordDef bmcd in oppositeMCD.BasicDurationDefs)
-            {
-                OppositePitches(mode, oppositeMode, bmcd.Pitches);
-            }
-
-            return oppositeMCD;
-        }
-
-        private void OppositePitches(_oldMode mode, _oldMode oppositeMode, List<byte> pitches)
-        {
-            for(int i = 0; i < pitches.Count; ++i)
-            {
-                int pitchIndex = mode.IndexInGamut(pitches[i]);
-				int oppositeModeGamutCount = oppositeMode.Gamut.Count;
-				// N.B. it is not necessarily true that mode.Count == oppositeMode.Count.
-				pitchIndex = (pitchIndex < oppositeModeGamutCount) ? pitchIndex : oppositeModeGamutCount - 1;
-                pitches[i] = (byte)oppositeMode.Gamut[pitchIndex];
-            }
-        }
-        #endregion Opposite
-
         #region Invert (shift lowest notes up by one octave)
         /// <summary>
         /// In each chord in this MidiChordDef:
@@ -471,53 +391,6 @@ namespace Moritz.Spec
                     bmdd.MsDuration = newPositions[i + 1] - newPositions[i];
                     A.Assert(MinimumBasicMidiChordMsDuration <= bmdd.MsDuration);
                 }
-            }
-        }
-
-		/// <summary>
-		/// Calls the other SetOrnament function
-		/// </summary>
-		/// <param name="mode"></param>
-		/// <param name="ornamentShape"></param>
-		/// <param name="nOrnamentChords"></param>
-		/// <param name="ornamentText">The string that will follow the tilde. Cannot be null or empty.</param>
-		public void SetOrnament(_oldMode mode, IReadOnlyList<byte> ornamentShape, int nOrnamentChords, string ornamentText)
-        {
-			A.Assert(!String.IsNullOrEmpty(ornamentText));
-            int nPitchesPerOctave = mode.NPitchesPerOctave;
-			Envelope ornamentEnvelope = new Envelope(new List<byte>(ornamentShape), 127, nPitchesPerOctave, nOrnamentChords);
-            SetOrnament(mode, ornamentEnvelope, ornamentText);
-        }
-
-        /// <summary>
-        /// Sets an ornament having the shape and number of elements in the ornamentEnvelope.
-		/// The ornament will only contain BasicMidiChordDefs (i.e. no BasicMidiRestDefs)
-        /// If ornamentEnvelope == null, BasicMidiChords[0] is set to the NotatedMidiChord using the NotatedMidiPitches as the first chord.
-        /// Uses the current Mode.
-        /// Replaces any existing ornament.
-        /// Sets OrnamentText to ornamentText. Note that OrnamentText is a property that has a private setter.
-		/// (usually to a single character).
-        /// </summary>
-        /// <param name="ornamentEnvelope"></param>
-        public void SetOrnament(_oldMode mode, Envelope ornamentEnvelope = null, string ornamentText = null)
-        {
-            A.Assert(mode != null);
-			A.Assert((ornamentEnvelope == null && ornamentText == null) || (ornamentEnvelope != null && ornamentText != null));
-
-            List<int> basicMidiChordRootPitches = mode.PitchSequence(_notatedMidiPitches[0], ornamentEnvelope);
-            // If ornamentEnvelope is null, basicMidiChordRootPitches will only contain rootNotatedpitch.
-
-            BasicDurationDefs = new List<BasicDurationDef>();
-            foreach(int rootPitch in basicMidiChordRootPitches)
-            {
-                BasicMidiChordDef bmcd = new BasicMidiChordDef(1000, mode, rootPitch, _notatedMidiPitches.Count);
-                BasicDurationDefs.Add(bmcd);
-            }
-            this.MsDuration = _msDuration; // resets the BasicMidiChordDef msDurations.
-
-            if(basicMidiChordRootPitches.Count > 1)
-            {
-                OrnamentText = ornamentText;
             }
         }
 
@@ -736,7 +609,7 @@ namespace Moritz.Spec
 		private static void AssertIsVelocityValue(int velocity)
 		{
 			A.Assert(velocity > 0);
-			A.AssertRange0_127(velocity);
+			C.AssertRange0_127(velocity);
 		}
 
 		/// <summary>
@@ -784,80 +657,6 @@ namespace Moritz.Spec
             }
 
             SetNotatedValuesFromFirstBMCD();
-        }
-
-        /// <summary>
-        /// All the pitches in the MidiChordDef must be contained in the mode.
-        /// Transposes the pitches in NotatedMidiPitches, and all BasicMidiChordDef.Pitches by
-        /// the number of steps in the mode. Negative values transpose down.
-        /// The vertical velocity sequence remains unchanged except when notes are removed.
-        /// It is not an error if Midi values would exceed the range of the mode.
-        /// In this case, they are silently coerced to the bottom or top notes of the mode respectively.
-        /// Duplicate top and bottom mode pitches are removed.
-        /// </summary>
-        public void TransposeStepsInModeGamut(_oldMode mode, int steps)
-        {
-            #region conditions
-            A.Assert(mode != null);
-            foreach(BasicMidiChordDef bmcd in BasicDurationDefs)
-            {
-                foreach(int pitch in bmcd.Pitches)
-                {
-                    A.Assert(mode.Gamut.Contains(pitch));
-                }
-            }
-            #endregion conditions
-
-            int bottomMostPitch = mode.Gamut[0];
-            int topMostPitch = mode.Gamut[mode.Gamut.Count - 1];
-
-            foreach(BasicMidiChordDef bmcd in BasicDurationDefs)
-            {
-                List<byte> pitches = bmcd.Pitches;
-                List<byte> velocities = bmcd.Velocities;
-                for(int i = 0; i < pitches.Count; ++i)
-                {
-                    pitches[i] = TransposedPitchInModeGamut(pitches[i], mode, steps);
-                }
-                RemoveDuplicateNotes(pitches, velocities);
-            }
-
-            SetNotatedValuesFromFirstBMCD();
-        }
-
-        /// <summary>
-        /// The rootPitch and all the pitches in the MidiChordDef must be contained in the mode's Gamut.
-        /// The vertical velocity sequence remains unchanged except when notes are removed because they are duplicates.
-        /// Calculates the number of steps to transpose, and then calls TransposeStepsInModeGamut.
-        /// When this function returns, rootPitch is the lowest pitch in both BasicMidiChordDefs[0] and NotatedMidiPitches.
-        /// </summary>
-        public void TransposeToRootInModeGamut(_oldMode mode, int rootPitch)
-        {
-			AssertConsistency(this);
-			BasicMidiChordDef bmcd = BasicDurationDefs[0] as BasicMidiChordDef;
-
-			#region conditions
-            A.Assert(mode != null);
-            A.Assert(mode.Gamut.Contains(rootPitch));
-			A.Assert(mode.Gamut.Contains(bmcd.Pitches[0]));
-            #endregion conditions
-
-            int stepsToTranspose = mode.IndexInGamut(rootPitch) - mode.IndexInGamut(bmcd.Pitches[0]);
-
-            // checks that all the pitches are in the mode.
-            TransposeStepsInModeGamut(mode, stepsToTranspose);
-        }
-
-        private byte TransposedPitchInModeGamut(byte initialPitch, _oldMode mode, int steps)
-        {
-            int index = mode.IndexInGamut(initialPitch);
-            int newIndex = index + steps;
-			int modeGamutCount = mode.Gamut.Count;
-
-			newIndex = (newIndex >= 0) ? newIndex : 0;
-            newIndex = (newIndex < modeGamutCount) ? newIndex : modeGamutCount - 1;
-
-            return (byte)mode.Gamut[newIndex];
         }
 
         private void RemoveDuplicateNotes(List<byte> pitches, List<byte> velocities)
@@ -1130,7 +929,7 @@ namespace Moritz.Spec
             List<MidiMsg> noteOffMsgs = new List<MidiMsg>();
             foreach(byte pitch in hangingPitches)
             {
-                MidiMsg msg = new MidiMsg(A.CMD_NOTE_OFF_0x80 + channel, pitch, A.DEFAULT_NOTEOFF_VELOCITY_64);
+                MidiMsg msg = new MidiMsg(C.CMD_NOTE_OFF_0x80 + channel, pitch, C.DEFAULT_NOTEOFF_VELOCITY_64);
                 noteOffMsgs.Add(msg);
             }
             return noteOffMsgs;
@@ -1196,7 +995,7 @@ namespace Moritz.Spec
 				A.Assert(outerMsDuration >= minimumOutputMsDuration);
 			}
 
-			List<int> intDurations = A.IntDivisionSizes(outerMsDuration, relativeDurations);
+			List<int> intDurations = C.IntDivisionSizes(outerMsDuration, relativeDurations);
 
 			for(int i = 0; i < intDurations.Count; ++i)
 			{
@@ -1384,7 +1183,7 @@ namespace Moritz.Spec
 				// N.B. this value can be set even if value.Count != _notatedMidiVelocities.Count
 				// If the Count is changed, the _notatedMidiVelocities must subsequently be reset,
 				// otherwise a A.Assert will fail when the _notatedMidiVelocities are retrieved.
-				A.AssertRange0_127(value);
+				C.AssertRange0_127(value);
                 _notatedMidiPitches = new List<byte>(value);
             } 
         }

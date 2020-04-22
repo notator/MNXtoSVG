@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+
 using MNX.AGlobals;
 
 namespace Moritz.Spec
@@ -12,7 +14,7 @@ namespace Moritz.Spec
 
 		/// <summary>
 		/// All constructors in this class are protected, so Bars can only be created by subclasses.
-		/// <para>A Bar contains a list of voiceDefs, that can be of either kind: Trk or InputVoiceDef. A Seq only contains Trks.
+		/// <para>A Bar contains a list of voiceDefs, that are all Trk (InputVoiceDef does not exist in MNX). A Seq only contains Trks.
 		/// Bars do not contain barlines. They are implicit, at the beginning and end of the Bar. 
 		/// This constructor uses its arguments' voiceDefs directly, so, if the arguments need to be used again, pass a clone.</para>
 		/// <para>Seq.AssertConsistency and all inputVoiceDef.AssertConsistency functions must succeed (see their definitions).</para>
@@ -22,17 +24,10 @@ namespace Moritz.Spec
 		/// </summary>
 		/// <param name="seq">Cannot be null, and must have Trks</param>
 		/// <param name="inputVoiceDefs">This list can be null or empty</param>
-		protected Bar(Seq seq, IReadOnlyList<InputVoiceDef> inputVoiceDefs )
+		protected Bar(Seq seq )
         {
 			#region conditions
             seq.AssertConsistency();
-			if(inputVoiceDefs != null)
-			{
-				foreach(InputVoiceDef inputVoiceDef in inputVoiceDefs)
-				{
-					inputVoiceDef.AssertConsistency();
-				}
-			}
 			#endregion
 
 			AbsMsPosition = seq.AbsMsPosition;
@@ -47,16 +42,6 @@ namespace Moritz.Spec
 				clefIndex++;
             }
 
-            if(inputVoiceDefs != null)
-            {
-                foreach(InputVoiceDef ivd in inputVoiceDefs)
-                {
-                    ivd.Container = this;
-					A.Assert(ivd.MsDuration == msDuration);
-					_voiceDefs.Add(ivd);
-                }
-            }
-
             AssertConsistency();
         }
 
@@ -68,14 +53,6 @@ namespace Moritz.Spec
             {
                 VoiceDef vd1 = _voiceDefs[i];
                 VoiceDef vd2 = bar2._voiceDefs[i];
-
-                Trk trk1 = vd1 as Trk;
-                Trk trk2 = vd2 as Trk;
-
-                InputVoiceDef ivd1 = vd1 as InputVoiceDef;
-                InputVoiceDef ivd2 = vd2 as InputVoiceDef;
-
-                A.Assert((trk1 != null && trk2 != null) || (ivd1 != null && ivd2 != null));
 
                 vd1.Container = null;
                 vd2.Container = null;
@@ -94,10 +71,8 @@ namespace Moritz.Spec
 		/// InputVoiceDef.AssertConsistency() is called on each VoiceDef that is an InputVoiceDef.
 		/// Then the following checks ae also made:
 		/// <para>1. The first VoiceDef in a Bar must be a Trk.</para>
-		/// <para>2. All Trks must precede InputVoiceDefs (if any) in the _voiceDefs list.</para>
-		/// <para>3. All voiceDefs have the same MsDuration.</para>
-		/// <para>4. There may not be more than 4 InputVoiceDefs</para>
-		/// <para>5. At least one Trk must start with a MidiChordDef, possibly preceded by a ClefDef.</para>
+		/// <para>2. All voiceDefs have the same MsDuration.</para>
+		/// <para>3. At least one Trk must start with a MidiChordDef, possibly preceded by a ClefDef.</para>
 		/// </summary> 
 		public virtual void AssertConsistency()
         {
@@ -107,10 +82,6 @@ namespace Moritz.Spec
 				if(voiceDef is Trk trk)
 				{
 					trk.AssertConsistency();
-				}
-				else if(voiceDef is InputVoiceDef ivd)
-				{
-					ivd.AssertConsistency();
 				}
 				else
 				{
@@ -125,34 +96,14 @@ namespace Moritz.Spec
 			A.Assert(_voiceDefs[0] is Trk, "The first VoiceDef in a Bar must be a Trk.");
 			#endregion
 
-			#region 2. All Trks precede the InputVoiceDefs (if any) in the _voiceDefs list.
-			int nTrks = Trks.Count;
-			for(int i = nTrks; i < _voiceDefs.Count; i++)
-			{
-				A.Assert(_voiceDefs[i] is InputVoiceDef, "All Trks must precede InputVoiceDefs (if any) in the _voiceDefs list."); 
-			}
-			#endregion
-
-			#region 3. All voiceDefs have the same MsDuration.
+			#region 2. All voiceDefs have the same MsDuration.
 			foreach(VoiceDef voiceDef in _voiceDefs)
 			{
 				A.Assert(voiceDef.MsDuration == barMsDuration, "All Trks in a block must have the same duration.");
 			}
 			#endregion
 
-            #region 4. There may not be more than 4 InputVoiceDefs
-            int nInputVoiceDefs = 0;
-            foreach(VoiceDef voiceDef in _voiceDefs)
-            {
-                if(voiceDef is InputVoiceDef)
-                {
-                    nInputVoiceDefs++;
-                }
-            }
-            A.Assert((nInputVoiceDefs <= 4), "There may not be more than 4 InputVoiceDefs.");
-			#endregion
-
-			#region 5. At least one Trk must start with a MidiChordDef, possibly preceded by a ClefDef.
+			#region 3. At least one Trk must start with a MidiChordDef, possibly preceded by a ClefDef.
 			IReadOnlyList<Trk> trks = Trks;
 			bool startFound = false;
 			foreach(Trk trk in trks)
@@ -335,22 +286,6 @@ namespace Moritz.Spec
                     }
                 }
                 return trks.AsReadOnly();
-            }
-        }
-
-        public List<InputVoiceDef> InputVoiceDefs
-        {
-            get
-            {
-                List<InputVoiceDef> inputVoiceDefs = new List<InputVoiceDef>();
-                foreach(VoiceDef voiceDef in _voiceDefs)
-                {
-                    if(voiceDef is InputVoiceDef inputVoiceDef)
-                    {
-                        inputVoiceDefs.Add(inputVoiceDef);
-                    }
-                }
-                return inputVoiceDefs;
             }
         }
 

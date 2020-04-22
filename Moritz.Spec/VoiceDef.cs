@@ -3,9 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections;
-
-using Krystals4ObjectLibrary;
-using Moritz.Globals;
+using MNX.AGlobals;
 
 namespace Moritz.Spec
 {
@@ -73,8 +71,6 @@ namespace Moritz.Spec
                 {
 					A.Assert(false, "Index out of range");
 				}
-                
-                A.Assert(!((this is Trk && value is InputChordDef) || (this is InputVoiceDef && value is MidiChordDef)));
 
                 _uniqueDefs[i] = value;
                 SetMsPositionsReFirstUD();
@@ -251,18 +247,18 @@ namespace Moritz.Spec
         #region attribute changers (Transpose etc.)
 
         /// <summary>
-        /// An object is a NonMidiOrInputChordDef if it is not a MidiChordDef and it is not an InputChordDef.
+        /// An object is a NonMidiChordDef if it is not a MidiChordDef.
         /// For example: a CautionaryChordDef, a RestDef or ClefDef.
         /// </summary>
         /// <param name="beginIndex"></param>
         /// <param name="endIndex"></param>
         /// <returns></returns>
-        protected int GetNumberOfNonMidiOrInputChordDefs(int beginIndex, int endIndex)
+        protected int GetNumberOfNonMidiChordDefs(int beginIndex, int endIndex)
         {
             int nNonMidiChordDefs = 0;
             for(int i = beginIndex; i < endIndex; ++i)
             {
-                if(!(_uniqueDefs[i] is MidiChordDef) && !(_uniqueDefs[i] is InputChordDef))
+                if(!(_uniqueDefs[i] is MidiChordDef))
                     nNonMidiChordDefs++;
             }
             return nNonMidiChordDefs;
@@ -359,7 +355,7 @@ namespace Moritz.Spec
                     List<byte> midiPitches = iucd.NotatedMidiPitches;
                     for(int i = 0; i < midiPitches.Count; ++i)
                     {
-                        midiPitches[i] = A.SetRange0_127(midiPitches[i] + semitonesToTranspose);
+                        midiPitches[i] = C.SetRange0_127(midiPitches[i] + semitonesToTranspose);
                     }
                 }
             }
@@ -403,7 +399,7 @@ namespace Moritz.Spec
         {
 			if(CheckIndices(beginIndex, endIndex))
 			{ 
-				int nNonMidiChordDefs = GetNumberOfNonMidiOrInputChordDefs(beginIndex, endIndex);
+				int nNonMidiChordDefs = GetNumberOfNonMidiChordDefs(beginIndex, endIndex);
 
 				int nSteps = (endIndex - 1 - beginIndex - nNonMidiChordDefs);
 				if(nSteps > 0)
@@ -412,14 +408,12 @@ namespace Moritz.Spec
 					double step = interval;
 					for(int i = beginIndex; i < endIndex; ++i)
 					{
-						InputChordDef icd = _uniqueDefs[i] as InputChordDef;
-						IUniqueChordDef iucd = (!(_uniqueDefs[i] is MidiChordDef mcd)) ? (IUniqueChordDef)icd : (IUniqueChordDef)mcd;
-						if(iucd != null)
-						{
-							iucd.Transpose((int)Math.Round(interval));
-							interval += step;
-						}
-					}
+                        if(_uniqueDefs[i] is IUniqueChordDef iucd)
+                        {
+                            iucd.Transpose((int)Math.Round(interval));
+                            interval += step;
+                        }
+                    }
 				}
 			}
         }
@@ -561,19 +555,9 @@ namespace Moritz.Spec
 
             for(int i = beginIndex; i < endIndex; ++i)
             {
-				InputChordDef icd = this[i] as InputChordDef;
-				IUniqueDef iud = (!(this[i] is MidiChordDef mcd)) ? (IUniqueDef)icd : (IUniqueDef)mcd;
-				if(iud != null)
+                if(this[i] is IUniqueDef iud)
                 {
-                    RestDef restDef;
-                    if(this is InputVoiceDef)
-                    {
-                        restDef = new InputRestDef(iud.MsPositionReFirstUD, iud.MsDuration);
-                    }
-                    else
-                    {
-                        restDef = new MidiRestDef(iud.MsPositionReFirstUD, iud.MsDuration);
-                    }
+                    RestDef restDef = new MidiRestDef(iud.MsPositionReFirstUD, iud.MsDuration);
                     RemoveAt(i);
                     Insert(i, restDef);
                 }
@@ -882,7 +866,7 @@ namespace Moritz.Spec
                         relativeDurations.Add(iumdd.MsDuration);
                 }
 
-                List<int> newDurations = A.IntDivisionSizes(msDuration, relativeDurations);
+                List<int> newDurations = C.IntDivisionSizes(msDuration, relativeDurations);
 
                 A.Assert(newDurations.Count == relativeDurations.Count);
                 int i = 0;

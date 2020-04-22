@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MNX.AGlobals;
 
 namespace Moritz.Spec
 {
@@ -108,7 +109,7 @@ namespace Moritz.Spec
         public List<T> ValueList<T>(List<T> availableValues)
         {
             #region conditions
-            M.Assert(Domain < availableValues.Count);
+            A.Assert(Domain < availableValues.Count);
             #endregion conditions
 
             List<T> values = new List<T>();
@@ -133,13 +134,13 @@ namespace Moritz.Spec
         public List<int> TimeWarp(List<int> originalMsPositions, double distortion)
         {
             #region conditions
-            M.Assert(_domain > 0);
-            M.Assert(originalMsPositions.Count > 1); // At least the start and end positions of the duration to warp.
-            M.Assert(originalMsPositions[0] == 0);
-            M.Assert(distortion > 1);
+            A.Assert(_domain > 0);
+            A.Assert(originalMsPositions.Count > 1); // At least the start and end positions of the duration to warp.
+            A.Assert(originalMsPositions[0] == 0);
+            A.Assert(distortion > 1);
             for(int i = 1; i < originalMsPositions.Count; ++i)
             {
-                M.Assert(originalMsPositions[i] > originalMsPositions[i - 1]);
+                A.Assert(originalMsPositions[i] > originalMsPositions[i - 1]);
             }
             #endregion conditions
 
@@ -188,7 +189,7 @@ namespace Moritz.Spec
                 else if(roundingError < 0)
                 {
                     newIntMsDurations[indexOfLongestDuration]--;
-                    M.Assert(newIntMsDurations[indexOfLongestDuration] > 0, "Impossible Warp: An msDuration may not be set to zero!");
+                    A.Assert(newIntMsDurations[indexOfLongestDuration] > 0, "Impossible Warp: An msDuration may not be set to zero!");
                     roundingError++;
                 }
             }
@@ -202,8 +203,8 @@ namespace Moritz.Spec
             }
             newMsPositions.Add(msPos);
 
-            M.Assert(newMsPositions[0] == 0);
-            M.Assert(newMsPositions[newMsPositions.Count - 1] == originalTotalDuration);
+            A.Assert(newMsPositions[0] == 0);
+            A.Assert(newMsPositions[newMsPositions.Count - 1] == originalTotalDuration);
 
             return newMsPositions;
         }
@@ -431,7 +432,7 @@ namespace Moritz.Spec
         private List<int> GeneralSpread(List<int> argList, int count)
         {
             #region conditions
-            M.Assert(count > 1 && argList.Count > 1 && count != argList.Count);
+            A.Assert(count > 1 && argList.Count > 1 && count != argList.Count);
             #endregion conditions
 
             int nValuesMinusOne = count - 1;
@@ -448,7 +449,7 @@ namespace Moritz.Spec
                 }
             }
 
-            M.Assert(longSpread.Count == (nOriginalValuesMinusOne * nValuesMinusOne));
+            A.Assert(longSpread.Count == (nOriginalValuesMinusOne * nValuesMinusOne));
 
             List<int> spread = new List<int>();
             int index = 0;

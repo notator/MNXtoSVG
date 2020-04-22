@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Krystals4ObjectLibrary;
-using Moritz.Globals;
+
+using MNX.AGlobals;
 
 namespace Moritz.Spec
 {
@@ -40,7 +40,7 @@ namespace Moritz.Spec
             {
                 foreach(byte pitch in value)
                 {
-                    A.Assert(pitch == A.SetRange0_127(pitch));
+                    A.Assert(pitch == C.SetRange0_127(pitch));
                 }
                 _notatedMidiPitches = new List<byte>(value);
             }
@@ -60,7 +60,7 @@ namespace Moritz.Spec
             {
                 foreach(byte velocity in value)
                 {
-                    A.Assert(velocity == A.SetRange0_127(velocity));
+                    A.Assert(velocity == C.SetRange0_127(velocity));
                 }
                 _notatedMidiVelocities = new List<byte>(value);
             }

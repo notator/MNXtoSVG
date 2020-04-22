@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Diagnostics;
 
-using Krystals4ObjectLibrary;
-using Moritz.Globals;
+
+using MNX.AGlobals;
 using Moritz.Xml;
 using System;
 
@@ -43,17 +43,17 @@ namespace Moritz.Spec
 
                 if(DoWriteControl(PanMsbs, carryMsgs.PanState))
                 {
-                    carryMsgs.PanState = WriteCCEnv(w, channel, A.CTL_PAN_10, PanMsbs, msDuration);
+                    carryMsgs.PanState = WriteCCEnv(w, channel, C.CTL_PAN_10, PanMsbs, msDuration);
                 }
 
                 if(DoWriteControl(ModulationWheelMsbs, carryMsgs.ModWheelState))
                 {
-                    carryMsgs.ModWheelState = WriteCCEnv(w, channel, A.CTL_MODWHEEL_1, ModulationWheelMsbs, msDuration);
+                    carryMsgs.ModWheelState = WriteCCEnv(w, channel, C.CTL_MODWHEEL_1, ModulationWheelMsbs, msDuration);
                 }
 
                 if(DoWriteControl(ExpressionMsbs, carryMsgs.ExpressionState))
                 {
-                    carryMsgs.ExpressionState = WriteCCEnv(w, channel, A.CTL_EXPRESSION_11, ExpressionMsbs, msDuration);
+                    carryMsgs.ExpressionState = WriteCCEnv(w, channel, C.CTL_EXPRESSION_11, ExpressionMsbs, msDuration);
                 }
 
                 if(DoWriteControl(PitchWheelMsbs, carryMsgs.PitchWheelState))
@@ -61,7 +61,7 @@ namespace Moritz.Spec
                     string statusString = null;
                     w.WriteStartElement("env"); // envelope
 
-                    statusString = $"0x{(A.CMD_PITCH_WHEEL_0xE0 + channel).ToString("X")}";
+                    statusString = $"0x{(C.CMD_PITCH_WHEEL_0xE0 + channel).ToString("X")}";
                     w.WriteAttributeString("s", statusString);
 
                     carryMsgs.PitchWheelState = WriteD1AndD2VTs(w, PitchWheelMsbs, PitchWheelMsbs, msDuration);
@@ -113,7 +113,7 @@ namespace Moritz.Spec
         /// <returns>The last controller value</returns>
         private byte WriteCCEnv(SvgWriter w, int channel, int d1, List<byte> d2s, int msDuration)
         {
-            string statusString = $"0x{(A.CMD_CONTROL_CHANGE_0xB0 + channel).ToString("X")}"; ;
+            string statusString = $"0x{(C.CMD_CONTROL_CHANGE_0xB0 + channel).ToString("X")}"; ;
             w.WriteStartElement("env"); // envelope
             w.WriteAttributeString("s", statusString);
             w.WriteAttributeString("d1", d1.ToString());

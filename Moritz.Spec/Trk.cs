@@ -2,8 +2,8 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 
-using Krystals4ObjectLibrary;
-using Moritz.Globals;
+
+using MNX.AGlobals;
 
 namespace Moritz.Spec
 {
@@ -505,7 +505,7 @@ namespace Moritz.Spec
             A.Assert(velocityPerAbsolutePitch.Count == 12);
             for(int i = 0; i < 12; ++i)
             {
-                A.AssertIsVelocityValue(velocityPerAbsolutePitch[i]);
+                C.AssertIsVelocityValue(velocityPerAbsolutePitch[i]);
             }
 			#endregion conditions
             for(int i = 0; i < UniqueDefs.Count; ++i)
@@ -778,7 +778,7 @@ namespace Moritz.Spec
 			if(CheckIndices(beginIndex, endIndex))
 			{				
 				A.Assert(startFactor >= 0 && endFactor >= 0);
-				int nNonMidiChordDefs = GetNumberOfNonMidiOrInputChordDefs(beginIndex, endIndex);
+				int nNonMidiChordDefs = GetNumberOfNonMidiChordDefs(beginIndex, endIndex);
 				int steps = endIndex - 1 - beginIndex - nNonMidiChordDefs;
 				if(steps > 0)
 				{
@@ -819,7 +819,7 @@ namespace Moritz.Spec
 			{
 				A.Assert(startPanValue >= 0 && startPanValue <= 127 && endPanValue >= 0 && endPanValue <= 127);
 
-				int nNonMidiChordDefs = GetNumberOfNonMidiOrInputChordDefs(beginIndex, endIndex);
+				int nNonMidiChordDefs = GetNumberOfNonMidiChordDefs(beginIndex, endIndex);
 				int steps = (endIndex - 1 - beginIndex - nNonMidiChordDefs);
 				if(steps > 0)
 				{
@@ -854,7 +854,7 @@ namespace Moritz.Spec
 				{
 					if(this[i] is MidiChordDef mcd)
 					{
-						mcd.PitchWheelDeviation = A.SetRange0_127(deviation);
+						mcd.PitchWheelDeviation = C.SetRange0_127(deviation);
 					}
 				}
 			}
@@ -888,7 +888,7 @@ namespace Moritz.Spec
             A.Assert(pwValueAtBeginIndex >= 0 && pwValueAtEndIndex >= 0);
             A.Assert(pwValueAtBeginIndex <= 127 && pwValueAtEndIndex <= 127);
 
-            int nNonMidiChordDefs = GetNumberOfNonMidiOrInputChordDefs(beginIndex, endIndex);
+            int nNonMidiChordDefs = GetNumberOfNonMidiChordDefs(beginIndex, endIndex);
 
             double pwdfactor = Math.Pow(pwValueAtEndIndex / pwValueAtBeginIndex, (double)1 / (endIndex - beginIndex - nNonMidiChordDefs)); // f13.Count'th root of furies1EndPwdValue/furies1StartPwdValue -- the last pwd should be furies1EndPwdValue
 
@@ -896,7 +896,7 @@ namespace Moritz.Spec
             {
                 if(_uniqueDefs[i] is MidiChordDef umc)
                 {
-                    umc.PitchWheelDeviation = A.SetRange0_127((int)(pwValueAtBeginIndex * (Math.Pow(pwdfactor, i))));
+                    umc.PitchWheelDeviation = C.SetRange0_127((int)(pwValueAtBeginIndex * (Math.Pow(pwdfactor, i))));
                 }
             }
         }
@@ -1016,269 +1016,6 @@ namespace Moritz.Spec
             this.MsPositionReContainer += shift;
         }
         #endregion alignment
-
-        #region Re-ordering the Trk's UniqueDefs
-
-        #region Permute()
-        /// <summary>
-        /// This function permutes any number of UniqueDefs in the trk's UniqueDefs list according to the contour retrieved (from
-        /// the static K.Contour[] array) using the axisNumber and contourNumber arguments. The trk's AxisIndex property is set.
-        /// If there are more than 7 UniqueDefs in the list, 7 partitions are automatically created and permuted recursively
-        /// using the same contour.
-        /// </summary>
-        /// <param name="axisNumber">A value in range 1..12 inclusive.</param>
-        /// <param name="contourNumber">A value in range 1..12 inclusive.</param>
-        public virtual void Permute(int axisNumber, int contourNumber)
-        {
-            A.Assert(!(contourNumber < 1 || contourNumber > 12), "contourNumber out of range 1..12");
-            A.Assert(!(axisNumber < 1 || axisNumber > 12), "axisNumber out of range 1..12");
-
-            PermuteRecursively(axisNumber, contourNumber, _uniqueDefs);
-        }
-
-        /// <summary>
-        /// Re-orders the UniqueDefs in (part of) this Trk.
-        /// <para>1. Creates a list of not more than 7 partitions that are as equal in length as possible.</para>   
-        /// <para>2. Re-orders the partitions according to the contour retrieved (from the static K.Contour[] array) using</para>
-        /// <para>-  the axisNumber and contourNumber arguments.</para>
-        /// <para>3  Re-orders the UniqueDefs in each partition whose count is greater than 1 by calling itself recursively.</para>
-        /// <para>4. Resets the UniqueDefs list to the concatenation of the partitions (that have been re-ordered internally and externally).</para>
-        /// </summary>.
-        /// <param name="uniqueDefs">Call this function with the trk's UniqueDefs list.</param>
-        /// <param name="axisNumber">A value greater than or equal to 1, and less than or equal to 12 An exception is thrown if this is not the case.</param>
-        /// <param name="contourNumber">A value greater than or equal to 1, and less than or equal to 12. An exception is thrown if this is not the case.</param>
-        private void PermuteRecursively(int axisNumber, int contourNumber, List<IUniqueDef> uniqueDefs)
-        {
-            List<List<IUniqueDef>> partitions = GetPartitionsOfEqualLength(uniqueDefs);
-
-            A.Assert(partitions.Count > 0 && partitions.Count <= 7);
-
-            IUniqueDef axisUniqueDef = uniqueDefs[0];
-
-            if(partitions.Count > 1)
-            {
-                // re-order the partitions
-                partitions = DoContouring(axisNumber, contourNumber, partitions);
-                int axisPartitionIndex = GetPartitionIndex(partitions.Count, axisNumber);
-                List<IUniqueDef> axisPartition = partitions[axisPartitionIndex];
-                axisUniqueDef = axisPartition[0];
-                foreach(List<IUniqueDef> partition in partitions)
-                {
-                    if(partition.Count > 1)
-                    {
-                        PermuteRecursively(axisNumber, contourNumber, partition); // recursive call
-                    }
-                }
-            }
-
-            List<IUniqueDef> sortedLmdds = ConvertPartitionsToFlatIUDs(partitions);
-
-            for(int i = 0; i < sortedLmdds.Count; ++i)
-            {
-                uniqueDefs[i] = sortedLmdds[i];
-            }
-
-            // only do the following at the top level of the recursion
-            if(uniqueDefs == _uniqueDefs)
-            {
-                AxisIndex = _uniqueDefs.FindIndex(u => (u == axisUniqueDef));
-                AssertConsistency();
-            }
-        }
-        /// <summary>
-        /// Returns a list of partitions (each of which is a list of IUniqueDefs)
-        /// The returned list:
-        ///     * is as long as possible, but contains not more than 7 partitions.
-        ///     * contains partitions whose Count is distributed as evenly as possible along the list. 
-        /// </summary>
-        private List<List<IUniqueDef>> GetPartitionsOfEqualLength(List<IUniqueDef> uniqueDefs)
-        {
-            A.Assert(uniqueDefs.Count > 0);
-
-            List<int> partitionSizes = GetEqualPartitionSizes(uniqueDefs.Count);
-            List<List<IUniqueDef>> partitions = new List<List<IUniqueDef>>();
-            int lmddIndex = 0;
-            foreach(int size in partitionSizes)
-            {
-                List<IUniqueDef> partition = new List<IUniqueDef>();
-                for(int i = 0; i < size; ++i)
-                {
-                    partition.Add(uniqueDefs[lmddIndex++]);
-                }
-                partitions.Add(partition);
-            }
-            return partitions;
-        }
-        /// <summary>
-        /// Returns a list that adds up to count.
-        /// The returned list:
-        ///     * is as long as possible, but contains not more than 7 ints.
-        ///     * contains values that are distributed evenly along the list. 
-        /// </summary>
-        /// <returns></returns>
-        private List<int> GetEqualPartitionSizes(int count)
-        {
-            List<int> partitionSizes = new List<int>();
-            if(count > 7)
-            {
-                partitionSizes = A.IntDivisionSizes(count, 7);
-            }
-            else
-            {
-                for(int i = 0; i < count; ++i)
-                {
-                    partitionSizes.Add(1);
-                }
-            }
-            return partitionSizes;
-        }
-        #endregion Permute()
-
-        #region PermutePartitions()
-        /// <summary>
-        /// Re-orders up to 7 partitions in this Trk's UniqueDefs list. The content of each partition is not changed. The Trk's AxisIndex property is set.
-        /// <para>1. Creates partitions (lists of UniqueDefs) using the partitionSizes in the third argument.</para>  
-        /// <para>2. Re-orders the partitions according to the contour retrieved (from the static K.Contour[] array) using the axisNumber and contourNumber arguments.</para>
-        /// <para>3. Resets the UniqueDefs list to the concatenation of the re-ordered partitions.</para>
-        /// </summary>
-        /// <param name="axisNumber">A value greater than or equal to 1, and less than or equal to 12 An exception is thrown if this is not the case.</param>
-        /// <param name="contourNumber">A value greater than or equal to 1, and less than or equal to 12. An exception is thrown if this is not the case.</param>
-        /// <param name="partitionSizes">The number of UniqueDefs in each partition to be re-ordered.
-        /// <para>This partitionSizes list must contain 1..7 partition sizes. The sizes must all be greater than 0. The sum of all the sizes must be equal
-        /// to UniqueDefs.Count.</para>
-        /// <para>An Exception is thrown if any of these conditions is not met.</para>
-        /// <para>If the partitions list contains only one value, this function returns silently without doing anything.</para></param>
-        public virtual void PermutePartitions(int axisNumber, int contourNumber, List<int> partitionSizes)
-        {
-            CheckPermutePartitionsArgs(axisNumber, contourNumber, partitionSizes);
-
-            IUniqueDef axisUniqueDef = UniqueDefs[0];
-
-            List<List<IUniqueDef>> partitions = GetPartitionsFromPartitionSizes(partitionSizes);
-
-            if(partitions.Count > 1)
-            {
-                // re-order the partitions
-                partitions = DoContouring(axisNumber, contourNumber, partitions);
-                int axisPartitionIndex = GetPartitionIndex(partitions.Count, axisNumber);
-                List<IUniqueDef> axisPartition = partitions[axisPartitionIndex];
-                axisUniqueDef = axisPartition[0];
-            }
-
-            List<IUniqueDef> sortedLmdds = ConvertPartitionsToFlatIUDs(partitions);
-
-            for(int i = 0; i < sortedLmdds.Count; ++i)
-            {
-                _uniqueDefs[i] = sortedLmdds[i];
-            }
-
-            AxisIndex = _uniqueDefs.FindIndex(u => (u == axisUniqueDef));
-
-            AssertConsistency();
-        }
-
-        /// <summary>
-        /// A.Assert fails if one of the following conditions is not met.
-        /// <para>axisNumber must be in the range 1..12</para>
-        /// <para>contourNumber must be in the range 1..12</para>
-        /// <para>partitionSizes.Count must be greater than 0, and less than 8.</para>
-        /// <para>each partitionSize must be greater then 0.</para>
-        /// <para>the sum of all the partition sizes must be equal to UniqueDefs.Count</para>
-        /// </summary>
-        private void CheckPermutePartitionsArgs(int axisNumber, int contourNumber, List<int> partitionSizes)
-        {
-            A.Assert(!(axisNumber < 1 || axisNumber > 12), "axisNumber out of range 1..12");
-            A.Assert(!(contourNumber < 1 || contourNumber > 12), "contourNumber out of range 1..12");
-
-            A.Assert(!(partitionSizes.Count < 1 || partitionSizes.Count > 7), "partitionSizes.Count must be in range 1..7");
-
-            int totalPartitionSizes = 0;
-            foreach(int size in partitionSizes)
-            {
-                A.Assert(size >= 1, "each partition must contain at least one IUniqueDef");
-                totalPartitionSizes += size;
-            }
-            A.Assert((totalPartitionSizes == _uniqueDefs.Count), "Sum of partition sizes does not match number of UniqueDefs.");
-        }
-        private List<List<IUniqueDef>> GetPartitionsFromPartitionSizes(List<int> partitionSizes)
-        {
-            List<List<IUniqueDef>> partitions = new List<List<IUniqueDef>>();
-            int lmddIndex = 0;
-            foreach(int size in partitionSizes)
-            {
-                List<IUniqueDef> partition = new List<IUniqueDef>();
-                for(int i = 0; i < size; ++i)
-                {
-                    partition.Add(_uniqueDefs[lmddIndex++]);
-                }
-                partitions.Add(partition);
-            }
-            return partitions;
-        }
-        #endregion PermutePartitions
-
-        #region common to Permute functions
-        /// <summary>
-        /// Re-orders the partitions according to the contour retrieved (from the static K.Contour[] array)
-        /// <para>using partitions.Count and the contourNumber and axisNumber arguments.</para>
-        /// <para>Does not change the inner contents of the partitions themselves.</para>
-        /// </summary>
-        /// <returns>A re-ordered list of partitions</returns>
-        private List<List<IUniqueDef>> DoContouring(int axisNumber, int contourNumber, List<List<IUniqueDef>> partitions)
-        {
-            List<List<IUniqueDef>> contouredPartitions = new List<List<IUniqueDef>>();
-            int[] contour = K.Contour(partitions.Count, contourNumber, axisNumber);
-            foreach(int number in contour)
-            {
-                // K.Contour() always returns an array containing 7 values.
-                // For densities less than 7, the final values are 0.
-                if(number == 0)
-                    break;
-                contouredPartitions.Add(partitions[number - 1]);
-            }
-
-            return contouredPartitions;
-        }
-        /// <summary>
-        /// The index of the value before the axis in the standard contour diagrams.
-        /// (i.e. the position of the axis in the diagrams, minus 2)
-        /// </summary>
-        /// <param name="domain">In range [1..7]</param>
-        /// <param name="axisNumber">In range [1..12]</param>
-        private int GetPartitionIndex(int domain, int axisNumber)
-        {
-            A.Assert(domain > 0 && domain <= 7);
-            A.Assert(axisNumber > 0 && axisNumber <= 12);
-
-            return axisIndices[domain - 1, axisNumber - 1];
-        }
-        private static readonly int[,] axisIndices =
-        {
-            {0,0,0,0,0,0,0,0,0,0,0,0}, // domain 1
-            {0,0,0,0,0,0,0,0,0,0,0,0}, // domain 2
-            {0,0,0,0,0,0,1,1,1,1,1,1}, // domain 3
-            {0,0,0,0,1,1,2,2,2,2,1,1}, // domain 4
-            {0,0,0,1,1,2,3,3,3,2,2,1}, // domain 5
-            {0,0,0,1,2,3,4,4,4,3,2,1}, // domain 6
-            {0,0,1,2,3,4,5,5,4,3,2,1}  // domain 7
-        };
-
-        private List<IUniqueDef> ConvertPartitionsToFlatIUDs(List<List<IUniqueDef>> partitions)
-        {
-            List<IUniqueDef> newIUDs = new List<IUniqueDef>();
-            int msPositionReFirstIUD = 0;
-            foreach(List<IUniqueDef> partition in partitions)
-            {
-                foreach(IUniqueDef pLmdd in partition)
-                {
-                    pLmdd.MsPositionReFirstUD = msPositionReFirstIUD;
-                    msPositionReFirstIUD += pLmdd.MsDuration;
-                    newIUDs.Add(pLmdd);
-                }
-            }
-            return newIUDs;
-        }
-        #endregion common to Permute functions
 
         #region Sort functions
 
@@ -1520,8 +1257,6 @@ namespace Moritz.Spec
         #endregion common to sort functions
 
         #endregion Sort functions
-
-        #endregion Re-ordering the Trk's UniqueDefs
 
         #region Enumerators
         protected IEnumerable<MidiChordDef> MidiChordDefs

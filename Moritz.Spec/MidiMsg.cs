@@ -2,7 +2,7 @@
 using System.Xml;
 using System.Diagnostics;
 
-using Moritz.Globals;
+using MNX.AGlobals;
 
 namespace Moritz.Spec
 {

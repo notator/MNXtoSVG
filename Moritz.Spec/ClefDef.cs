@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics;
 
-using Krystals4ObjectLibrary;
-using Moritz.Globals;
+
+using MNX.AGlobals;
 
 namespace Moritz.Spec
 {

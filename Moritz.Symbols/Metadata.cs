@@ -11,6 +11,12 @@ namespace Moritz.Symbols
 {
 	public class Metadata
 	{
+        public string Date;
+        public string ScoreTitle;
+        public string ScoreAuthor;
+        public string Keywords;
+        public string Comment;
+
         /// <summary>
         /// Contains default values.
         /// </summary>
@@ -27,16 +33,16 @@ namespace Moritz.Symbols
 		/// <param name="nScorePages"></param>
 		public void WriteSVG(SvgWriter w, int pageNumber, int nScorePages, string aboutThePieceLinkURL, int nOutputVoices, int nInputVoices)
         {
-			M.Assert(!String.IsNullOrEmpty(Page1Title));
+			M.Assert(!String.IsNullOrEmpty(ScoreTitle));
 
 			string pageTitle;
 			if(pageNumber == 0)
 			{
-				pageTitle = Page1Title + " (scroll)";
+				pageTitle = ScoreTitle + " (scroll)";
 			}
 			else
 			{
-				pageTitle = Page1Title + ", page " + pageNumber.ToString() + " of " + nScorePages.ToString();
+				pageTitle = ScoreTitle + ", page " + pageNumber.ToString() + " of " + nScorePages.ToString();
 			}
 
             w.WriteStartElement("title");
@@ -122,12 +128,5 @@ namespace Moritz.Symbols
 			w.WriteEndElement(); // ends the rdf:RDF element
 			w.WriteEndElement(); // ends the metadata element            
         }
- 
-        public string Page1Title = "";
-		public string Comment = "";
-		public string Keywords = "";
-		public string Page1Author = "";
-		public string Date = "";
 	}
-
 }

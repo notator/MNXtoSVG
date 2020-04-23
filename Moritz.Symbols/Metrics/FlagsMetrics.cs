@@ -15,7 +15,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// Should be called with a duration class having a flag block
         /// </summary>
-        public FlagsMetrics(DurationClass durationClass, float fontHeight, VerticalDir stemDirection)
+        public FlagsMetrics(DurationClass durationClass, double fontHeight, VerticalDir stemDirection)
             : base(CSSObjectClass.flag)
         {
 			_left = 0F;           
@@ -24,14 +24,14 @@ namespace Moritz.Symbols
             _right = (0.31809F * fontHeight);
             if(stemDirection == VerticalDir.up)
             {
-                float rightPadding = (0.06F * fontHeight);
+                double rightPadding = (0.06F * fontHeight);
                 _right += rightPadding;
             }
             
 			_originX = 0F;
 			_originY = 0F;
 
-			float offset = 0F;
+			double offset = 0F;
 			switch(durationClass)
 			{
                 // Bravura says there is a maximum of 8 flags

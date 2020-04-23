@@ -40,8 +40,8 @@ namespace Moritz.Symbols
             return sb.ToString();
         }
 
-        public float LeftBracketLeft = float.MaxValue;
-        public float RightBracketRight = float.MinValue;
+        public double LeftBracketLeft = double.MaxValue;
+        public double RightBracketRight = double.MinValue;
  
         /// <summary>
         /// This value is set to false if this symbol is not

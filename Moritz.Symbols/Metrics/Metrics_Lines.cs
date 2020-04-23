@@ -20,7 +20,7 @@ namespace Moritz.Symbols
         /// <param name="fill">"none", "black", "white", "red" or a string of 6 hex characters</param>
         /// <param name="lineCap"></param>
         public LineMetrics(CSSObjectClass csslineClass,
-            float strokeWidthPixels,
+            double strokeWidthPixels,
             string stroke = "none", 
             string fill = "none",
             CSSLineCap lineCap = CSSLineCap.butt)
@@ -37,7 +37,7 @@ namespace Moritz.Symbols
             throw new NotImplementedException();
         }
 
-        public readonly float StrokeWidthPixels = 0F;
+        public readonly double StrokeWidthPixels = 0F;
         public readonly string Stroke = "none"; // "none", "black", "white", "#333" etc
         public readonly string Fill = "none"; // "none", "black", "white", "#333" etc
         public readonly string LineCap = "butt"; // "butt", "round", "square" 
@@ -45,7 +45,7 @@ namespace Moritz.Symbols
  
 	internal class StemMetrics : LineMetrics
 	{
-		public StemMetrics(float top, float x, float bottom, float strokeWidth, VerticalDir verticalDir)
+		public StemMetrics(double top, double x, double bottom, double strokeWidth, VerticalDir verticalDir)
 			: base(CSSObjectClass.stem, strokeWidth, "black")
 		{
 			_originX = x;
@@ -69,11 +69,11 @@ namespace Moritz.Symbols
 		}
 
 		public readonly VerticalDir VerticalDir;
-		public readonly float StrokeWidth;
+		public readonly double StrokeWidth;
 	}
 	internal class LedgerlineBlockMetrics : LineMetrics, ICloneable
 	{      
-        public LedgerlineBlockMetrics(float left, float right, float strokeWidth, CSSObjectClass ledgerlinesClass)
+        public LedgerlineBlockMetrics(double left, double right, double strokeWidth, CSSObjectClass ledgerlinesClass)
 			: base(ledgerlinesClass, strokeWidth, "black")
 		{
             /// The base class has deliberately been called with CSSClass.ledgerline (singular) here.
@@ -88,7 +88,7 @@ namespace Moritz.Symbols
 			_strokeWidth = strokeWidth;
 		}
 
-		public void AddLedgerline(float newY, float gap)
+		public void AddLedgerline(double newY, double gap)
 		{
 			if(Ys.Count == 0)
 			{
@@ -101,7 +101,7 @@ namespace Moritz.Symbols
 			Ys.Add(newY);
 		}
 
-		public override void Move(float dx, float dy)
+		public override void Move(double dx, double dy)
 		{
 			base.Move(dx, dy);
 			for(int i = 0; i < Ys.Count; i++)
@@ -121,19 +121,19 @@ namespace Moritz.Symbols
 
             w.WriteStartElement("g");
             w.WriteAttributeString("class", CSSObjectClass.ToString());
-            foreach(float y in Ys)
+            foreach(double y in Ys)
 			{
 				w.SvgLine(ledgerlineClass, _left + _strokeWidth, y, _right - _strokeWidth, y);
 			}
             w.WriteEndElement();
 		}
 
-		private List<float> Ys = new List<float>();
-		private readonly float _strokeWidth;
+		private List<double> Ys = new List<double>();
+		private readonly double _strokeWidth;
     }
 	internal class CautionaryBracketMetrics : LineMetrics, ICloneable
 	{
-		public CautionaryBracketMetrics(bool isLeftBracket, float top, float right, float bottom, float left, float strokeWidth)
+		public CautionaryBracketMetrics(bool isLeftBracket, double top, double right, double bottom, double left, double strokeWidth)
 			: base(CSSObjectClass.cautionaryBracket, strokeWidth, "black")
 		{
 			_isLeftBracket = isLeftBracket;
@@ -155,12 +155,12 @@ namespace Moritz.Symbols
 		}
 
 		private readonly bool _isLeftBracket;
-		private readonly float _strokeWidth;
+		private readonly double _strokeWidth;
 	}
 	internal class StafflineMetrics : LineMetrics
 	{
-		public StafflineMetrics(float left, float right, float originY)
-			: base(CSSObjectClass.staffline, 0F, "black")
+		public StafflineMetrics(double left, double right, double originY)
+			: base(CSSObjectClass.staffline, 0, "black")
 		{
 			_left = left;
 			_right = right;
@@ -180,8 +180,8 @@ namespace Moritz.Symbols
 	}
 	public class RegionFrameConnectorMetrics : LineMetrics
 	{
-		public RegionFrameConnectorMetrics(float x, float top, float bottom)
-			: base(CSSObjectClass.regionFrameConnector, 0F, "black")
+		public RegionFrameConnectorMetrics(double x, double top, double bottom)
+			: base(CSSObjectClass.regionFrameConnector, 0, "black")
 		{
 			_left = x;
 			_right = x;
@@ -204,7 +204,7 @@ namespace Moritz.Symbols
 	/// </summary>
 	internal class NoteheadExtenderMetrics : LineMetrics
 	{
-		public NoteheadExtenderMetrics(float left, float right, float originY, float strokeWidth, string strokeColor, float gap, bool drawExtender)
+		public NoteheadExtenderMetrics(double left, double right, double originY, double strokeWidth, string strokeColor, double gap, bool drawExtender)
 			: base(CSSObjectClass.noteExtender, strokeWidth, strokeColor)
 
         {
@@ -234,13 +234,13 @@ namespace Moritz.Symbols
 
         public string StrokeColor { get { return _strokeColor; } }
         private readonly string _strokeColor;
-		private readonly float _strokeWidth = 0F;
+		private readonly double _strokeWidth = 0F;
 		private readonly bool _drawExtender;
 	}
 
 	internal class Barline_LineMetrics : Metrics
 	{
-		public Barline_LineMetrics(float leftReOriginX, float rightReOriginX,
+		public Barline_LineMetrics(double leftReOriginX, double rightReOriginX,
 			CSSObjectClass lineClass1 = CSSObjectClass.normalBarline, CSSObjectClass lineClass2 = CSSObjectClass.normalBarline)
 			: base(lineClass1, lineClass2)
 		{
@@ -249,7 +249,7 @@ namespace Moritz.Symbols
 			_right = rightReOriginX; // for a normal, thin barline: strokeWidth / 2F;
 		}
 
-		//public override void Move(float dx, float dy)
+		//public override void Move(double dx, double dy)
 		//{
 		//	base.Move(dx, dy);
 		//}

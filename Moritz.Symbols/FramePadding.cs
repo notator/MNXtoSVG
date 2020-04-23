@@ -5,7 +5,7 @@ namespace Moritz.Symbols
 {
 	public class FramePadding
 	{
-        public FramePadding(TextFrameType frameType, float paddingTop, float paddingRight, float paddingBottom, float paddingLeft)
+        public FramePadding(TextFrameType frameType, double paddingTop, double paddingRight, double paddingBottom, double paddingLeft)
         {
             FrameType = frameType;
             Top = paddingTop;
@@ -15,9 +15,9 @@ namespace Moritz.Symbols
         }
 
 		public TextFrameType FrameType { get; }
-		public float Top { get; }
-		public float Right { get; }
-		public float Bottom { get; }
-		public float Left { get; }
+		public double Top { get; }
+		public double Right { get; }
+		public double Bottom { get; }
+		public double Left { get; }
 	}
 }

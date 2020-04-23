@@ -476,8 +476,8 @@ namespace MNX.Globals
             {
                 sumRelative += relativeSizes[i];
             }
-            float factor = ((float)total / (float)sumRelative);
-            float fPos = 0;
+            double factor = ((double)total / (double)sumRelative);
+            double fPos = 0;
             List<int> intPositions = new List<int>();
             for(int i = 0; i < divisor; ++i)
             {
@@ -715,7 +715,7 @@ namespace MNX.Globals
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string FloatToShortString(float value)
+        public static string FloatToShortString(double value)
         {
             return value.ToString("0.####", En_USNumberFormat);
         }

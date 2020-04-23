@@ -161,8 +161,8 @@ namespace MNX.Common
             {
                 sumRelative += relativeSizes[i];
             }
-            float factor = ((float)total / (float)sumRelative);
-            float fPos = 0;
+            double factor = ((double)total / (double)sumRelative);
+            double fPos = 0;
             List<int> intPositions = new List<int>();
             for(int i = 0; i < divisor; ++i)
             {

@@ -69,8 +69,8 @@ namespace Moritz.Symbols
                 if(staff.Metrics != null)
                 {
                     Voice voice = staff.Voices[0];
-                    float barlinesTop = staff.Metrics.StafflinesTop;
-                    float barlinesBottom = staff.Metrics.StafflinesBottom;
+                    double barlinesTop = staff.Metrics.StafflinesTop;
+                    double barlinesBottom = staff.Metrics.StafflinesBottom;
 
                     #region set barlinesTop, barlinesBottom
                     switch(staff.NumberOfStafflines)
@@ -93,11 +93,11 @@ namespace Moritz.Symbols
                     #region draw barlines down from staves
                     if(staffIndex < Staves.Count - 1)
                     {
-                        //TopEdge topEdge = new TopEdge(Staves[staffIndex + 1], 0F, pageFormat.Right);
+                        //TopEdge topEdge = new TopEdge(Staves[staffIndex + 1], 0, pageFormat.Right);
                         TopEdge topEdge = GetTopEdge(staffIndex + 1, pageFormat.Right);
                         if(topEdge != null)
                         {
-                            BottomEdge bottomEdge = new BottomEdge(staff, 0F, pageFormat.Right, pageFormat.Gap);
+                            BottomEdge bottomEdge = new BottomEdge(staff, 0, pageFormat.Right, pageFormat.Gap);
                             isFirstBarline = true;
 
                             for(int i = 0; i < voice.NoteObjects.Count; ++i)
@@ -109,8 +109,8 @@ namespace Moritz.Symbols
                                     // draw grouping barlines between staves
                                     if(barlineContinuesDownList[staffIndex] || isFirstBarline)
                                     {
-                                        float top = bottomEdge.YatX(barline.Metrics.OriginX);
-                                        float bottom = topEdge.YatX(barline.Metrics.OriginX);
+                                        double top = bottomEdge.YatX(barline.Metrics.OriginX);
+                                        double bottom = topEdge.YatX(barline.Metrics.OriginX);
                                         bool isLastNoteObject = (i == (voice.NoteObjects.Count - 1));
                                         barline.WriteSVG(w, top, bottom, isLastNoteObject);
                                         isFirstBarline = false;
@@ -137,7 +137,7 @@ namespace Moritz.Symbols
 		///     item2: the number of remaining overlaps (in top or lower voices)
 		///     item3: "top" or "lower", saying in which voices the overlaps are.
         /// </summary>
-        public List<Tuple<int, int, string>> MakeGraphics(Graphics graphics, int systemNumber, PageFormat pageFormat, float leftMargin)
+        public List<Tuple<int, int, string>> MakeGraphics(Graphics graphics, int systemNumber, PageFormat pageFormat, double leftMargin)
         {
             if(Metrics == null)
                 CreateMetrics(graphics, pageFormat, leftMargin);
@@ -162,7 +162,7 @@ namespace Moritz.Symbols
 
 			// barlineWidths:  Key is a moment's msPosition. Value is the distance between the left edge 
 			// of the barline and the AlignmentX of the moment which immediately follows it.
-			Dictionary<int, float> barlineWidths = GetBarlineWidths(moments, pageFormat);
+			Dictionary<int, double> barlineWidths = GetBarlineWidths(moments, pageFormat);
 
 			DistributeProportionally(moments, barlineWidths, pageFormat, leftMargin);
 
@@ -197,14 +197,14 @@ namespace Moritz.Symbols
 			return overlapsInfoList;
         }
 
-        private float CreateMetrics(Graphics graphics, PageFormat pageFormat, float leftMarginPos)
+        private double CreateMetrics(Graphics graphics, PageFormat pageFormat, double leftMarginPos)
         {           
             this.Metrics = new SystemMetrics();
             for(int staffIndex = 0; staffIndex < Staves.Count; ++staffIndex)
             {
                 Staff staff = Staves[staffIndex];
 
-                float staffHeight = staff.Gap * (staff.NumberOfStafflines - 1);
+                double staffHeight = staff.Gap * (staff.NumberOfStafflines - 1);
                 staff.Metrics = new StaffMetrics(leftMarginPos, pageFormat.RightMarginPos, staffHeight);
 
                 for(int voiceIndex = 0; voiceIndex < staff.Voices.Count; ++voiceIndex)
@@ -250,9 +250,9 @@ namespace Moritz.Symbols
 		///     item3: "top" or "lower", saying in which voices the overlaps are.
 		/// </summary>
 		/// <param name="pageFormat"></param>
-		private List<Tuple<int, int, string>> JustifyHorizontally(int systemNumber, List<NoteObjectMoment> systemMoments, Dictionary<int, float> barlineWidths, float hairline)
+		private List<Tuple<int, int, string>> JustifyHorizontally(int systemNumber, List<NoteObjectMoment> systemMoments, Dictionary<int, double> barlineWidths, double hairline)
         {
-			var overlaps = new Dictionary<int, float>();
+			var overlaps = new Dictionary<int, double>();
 			var rval = new List<Tuple<int, int, string>>();
 
 			HashSet<int> nonCompressibleSystemMomentPositions = new HashSet<int>();
@@ -280,10 +280,10 @@ namespace Moritz.Symbols
 			return rval;
 		}
 
-		private Dictionary<int, float> JustifyTopVoicesHorizontally(List<NoteObjectMoment> systemMoments, Dictionary<int, float> barlineWidths, 
-            HashSet<int> nonCompressibleSystemMomentPositions, float hairline)
+		private Dictionary<int, double> JustifyTopVoicesHorizontally(List<NoteObjectMoment> systemMoments, Dictionary<int, double> barlineWidths, 
+            HashSet<int> nonCompressibleSystemMomentPositions, double hairline)
         {
-            Dictionary<int, float> overlaps = new Dictionary<int, float>();
+            Dictionary<int, double> overlaps = new Dictionary<int, double>();
             List<NoteObjectMoment> moments = null;
 			bool allStavesRedistributed = true;
 			bool staffRedistributed = false;
@@ -323,11 +323,11 @@ namespace Moritz.Symbols
             }
         }
 
-		private Dictionary<int, float> JustifyLowerVoicesHorizontally(ref bool lowerVoiceMoved, 
-            List<NoteObjectMoment> systemMoments, Dictionary<int, float> barlineWidths,
-            HashSet<int> nonCompressibleSystemMomentPositions, float hairline)
+		private Dictionary<int, double> JustifyLowerVoicesHorizontally(ref bool lowerVoiceMoved, 
+            List<NoteObjectMoment> systemMoments, Dictionary<int, double> barlineWidths,
+            HashSet<int> nonCompressibleSystemMomentPositions, double hairline)
         {
-            Dictionary<int, float> overlaps = new Dictionary<int, float>();
+            Dictionary<int, double> overlaps = new Dictionary<int, double>();
             List<NoteObjectMoment> moments = null;
 			bool redistributed = false;
 			do
@@ -427,16 +427,16 @@ namespace Moritz.Symbols
         /// <param name="moments"></param>
         /// <param name="gap"></param>
         /// <returns></returns>
-        private Dictionary<int, float> GetBarlineWidths(List<NoteObjectMoment> moments, PageFormat pageFormat)
+        private Dictionary<int, double> GetBarlineWidths(List<NoteObjectMoment> moments, PageFormat pageFormat)
         {
-            Dictionary<int, float> barlineWidths = new Dictionary<int, float>();
+            Dictionary<int, double> barlineWidths = new Dictionary<int, double>();
 
             Barline barline = null;
             int absMsPos = 0;
             for(int i = 1; i < moments.Count; i++)
             {
                 absMsPos = moments[i].AbsMsPosition;
-                float barlineWidth = 0F;
+                double barlineWidth = 0F;
                 M.Assert(moments.Count > 1);
 
                 barline = moments[i].Barline;
@@ -457,7 +457,7 @@ namespace Moritz.Symbols
         /// and aligned internally at AlignmentX = 0;
         /// </summary>
         /// <typeparam name="Type">DurationSymbol, ChordSymbol, RestSymbol</typeparam>
-        private List<NoteObjectMoment> MomentSymbols(float gap)
+        private List<NoteObjectMoment> MomentSymbols(double gap)
         {
             SortedDictionary<int, NoteObjectMoment> dict = new SortedDictionary<int, NoteObjectMoment>();
             Barline barline = null;
@@ -539,7 +539,7 @@ namespace Moritz.Symbols
 
             #region debug
             // moments are currently in order of msPosition.
-            float prevMsPos = -1;
+            double prevMsPos = -1;
             foreach(NoteObjectMoment moment in momentSymbols)
             {
                 M.Assert(moment.AbsMsPosition > prevMsPos);
@@ -553,7 +553,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// Moves clefs and barlines to the left of the following duration symbols.
         /// </summary>
-        private void MoveClefsAndBarlines(float hairline)
+        private void MoveClefsAndBarlines(double hairline)
         {
             Clef clef = null;
             Barline barline = null;
@@ -573,7 +573,7 @@ namespace Moritz.Symbols
 
                             if(noteObject is DurationSymbol durationSymbol)
                             {
-								float barlineToDSPadding = hairline; // 4
+								double barlineToDSPadding = hairline; // 4
 								if(durationSymbol is RestSymbol restSymbol)
 								{
 									barlineToDSPadding = hairline * 8; // 32									
@@ -587,7 +587,7 @@ namespace Moritz.Symbols
 										barlineToDSPadding = hairline * 4; // 16
 								}
 
-								float barlineRight = 0;
+								double barlineRight = 0;
 								if(!(durationSymbol is CautionaryChordSymbol ccs && ccs.Visible == false))
 								{
 									barlineRight = durationSymbol.Metrics.Left - barlineToDSPadding;
@@ -623,12 +623,12 @@ namespace Moritz.Symbols
         /// When this function returns, the moments have been distributed proportionally within each bar.
         /// Symbols are at their correct positions, except that no checking has been done for overlapping noteObject Metrics.
         /// </summary>
-        private void DistributeProportionally(List<NoteObjectMoment> moments, Dictionary<int, float> barlineWidths, PageFormat pageFormat,
-            float leftMarginPos)
+        private void DistributeProportionally(List<NoteObjectMoment> moments, Dictionary<int, double> barlineWidths, PageFormat pageFormat,
+            double leftMarginPos)
         {
-            List<float> momentWidths = new List<float>();
+            List<double> momentWidths = new List<double>();
 
-            float momentWidth = 0;
+            double momentWidth = 0;
             for(int i = 1; i < moments.Count; i++)
             {
                 momentWidth = (moments[i].AbsMsPosition - moments[i - 1].AbsMsPosition) * 10000F;
@@ -636,23 +636,23 @@ namespace Moritz.Symbols
             }
             momentWidths.Add(0F); // final barline
 
-            float totalMomentWidths = 0F;
-            foreach(float width in momentWidths)
+            double totalMomentWidths = 0F;
+            foreach(double width in momentWidths)
                 totalMomentWidths += width;
 
-            float totalBarlineWidths = 0F;
-            foreach(float width in barlineWidths.Values)
+            double totalBarlineWidths = 0F;
+            foreach(double width in barlineWidths.Values)
             {
                 totalBarlineWidths += width;
             }
 
-            float leftEdgeToFirstAlignment = moments[0].LeftEdgeToAlignment();
+            double leftEdgeToFirstAlignment = moments[0].LeftEdgeToAlignment();
 
-            float spreadWidth = pageFormat.RightMarginPos - leftMarginPos - leftEdgeToFirstAlignment - totalBarlineWidths;
+            double spreadWidth = pageFormat.RightMarginPos - leftMarginPos - leftEdgeToFirstAlignment - totalBarlineWidths;
 
-            float factor = spreadWidth / totalMomentWidths;
+            double factor = spreadWidth / totalMomentWidths;
 
-            float currentPosition = leftMarginPos + leftEdgeToFirstAlignment;
+            double currentPosition = leftMarginPos + leftEdgeToFirstAlignment;
             for(int i = 0; i < momentWidths.Count; i++)
             {
                 if(barlineWidths.ContainsKey(moments[i].AbsMsPosition))
@@ -668,12 +668,12 @@ namespace Moritz.Symbols
         /// The msPositions are of the moments whose width will have to be increased because they contain one or more
         /// anchorage symbols which overlap the next symbol on the same staff.
         /// </summary>
-        private Dictionary<int, float> GetOverlaps(List<NoteObjectMoment> staffMoments, float hairline)
+        private Dictionary<int, double> GetOverlaps(List<NoteObjectMoment> staffMoments, double hairline)
         {
-            Dictionary<int, float> overlaps = new Dictionary<int, float>();
+            Dictionary<int, double> overlaps = new Dictionary<int, double>();
 
             NoteObjectMoment previousNOM = null;
-            float overlapWidth = 0;
+            double overlapWidth = 0;
             int absMsPos = 0;
             int previousMsPos = 0;
 
@@ -706,33 +706,33 @@ namespace Moritz.Symbols
         /// <summary>
         /// Redistributes the moments horizontally (regardless of any overlaps).
         /// </summary>
-        private bool RedistributeMoments(List<NoteObjectMoment> systemMoments, Dictionary<int, float> barlineWidths,
+        private bool RedistributeMoments(List<NoteObjectMoment> systemMoments, Dictionary<int, double> barlineWidths,
             HashSet<int> nonCompressibleSystemMomentPositions,
             List<NoteObjectMoment> staffMoments, // the NoteObjectMoments used by the current staff (contains their msPositions)
-            Dictionary<int, float> staffOverlaps) // msPosition, overlap.
+            Dictionary<int, double> staffOverlaps) // msPosition, overlap.
         {
             M.Assert(systemMoments.Count > 1 && staffMoments.Count > 1);
 
             SetNonCompressible(nonCompressibleSystemMomentPositions, systemMoments, staffMoments, staffOverlaps);
 
-            Dictionary<int, float> systemMomentWidthsWithoutBarlines = GetExistingWidthsWithoutBarlines(systemMoments, barlineWidths);
+            Dictionary<int, double> systemMomentWidthsWithoutBarlines = GetExistingWidthsWithoutBarlines(systemMoments, barlineWidths);
 
 			/// The factor by which to compress all those moment widths which are to be compressed.
-			float compressionFactor = CompressionFactor(systemMomentWidthsWithoutBarlines, nonCompressibleSystemMomentPositions, staffOverlaps);
+			double compressionFactor = CompressionFactor(systemMomentWidthsWithoutBarlines, nonCompressibleSystemMomentPositions, staffOverlaps);
 
 			/// If compressionFactor is less than or equal to 0, the moments will overlap
 			/// in the resulting score (and a warning message will be displayed).
 			if(compressionFactor > 0)
 			{
 				/// widthFactors contains the factor by which to multiply the existing width of each system moment.
-				Dictionary<int, float> widthFactors =
+				Dictionary<int, double> widthFactors =
 					WidthFactors(systemMoments, staffMoments, staffOverlaps, barlineWidths, nonCompressibleSystemMomentPositions, compressionFactor);
 
 				for(int i = 1; i < systemMoments.Count; ++i)
 				{
 					int sysMomentMsPos = systemMoments[i - 1].AbsMsPosition;
-					float existingWidth = systemMomentWidthsWithoutBarlines[sysMomentMsPos];
-					float alignmentX = systemMoments[i - 1].AlignmentX + (existingWidth * widthFactors[sysMomentMsPos]);
+					double existingWidth = systemMomentWidthsWithoutBarlines[sysMomentMsPos];
+					double alignmentX = systemMoments[i - 1].AlignmentX + (existingWidth * widthFactors[sysMomentMsPos]);
 
 					if(barlineWidths.ContainsKey(systemMoments[i].AbsMsPosition))
 						alignmentX += barlineWidths[systemMoments[i].AbsMsPosition];
@@ -747,12 +747,12 @@ namespace Moritz.Symbols
 			}
         }
 
-        private Dictionary<int, float> GetExistingWidthsWithoutBarlines(
+        private Dictionary<int, double> GetExistingWidthsWithoutBarlines(
             List<NoteObjectMoment> moments,
-            Dictionary<int, float> barlineWidths)
+            Dictionary<int, double> barlineWidths)
         {
-            float originalWidth = 0;
-            Dictionary<int, float> originalWidthsWithoutBarlines = new Dictionary<int, float>();
+            double originalWidth = 0;
+            Dictionary<int, double> originalWidthsWithoutBarlines = new Dictionary<int, double>();
 
             for(int i = 1; i < moments.Count; i++)
             {
@@ -776,7 +776,7 @@ namespace Moritz.Symbols
         private void SetNonCompressible(HashSet<int> nonCompressibleSystemMomentPositions, 
             List<NoteObjectMoment> systemMoments,
             List<NoteObjectMoment> staffMoments, 
-            Dictionary<int, float> staffOverlaps)
+            Dictionary<int, double> staffOverlaps)
         {
             M.Assert(staffMoments.Count > 1);
             for(int stmIndex = 1; stmIndex < staffMoments.Count; ++stmIndex)
@@ -812,19 +812,19 @@ namespace Moritz.Symbols
 		/// If the returned value is less than or equal to zero, it will not be used (see
 		/// the calling function).
         /// </summary>
-        private float CompressionFactor(Dictionary<int, float> systemMomentWidthsWithoutBarlines, HashSet<int> nonCompressibleSystemMomentPositions, Dictionary<int, float> staffOverlaps)
+        private double CompressionFactor(Dictionary<int, double> systemMomentWidthsWithoutBarlines, HashSet<int> nonCompressibleSystemMomentPositions, Dictionary<int, double> staffOverlaps)
         {
-            float totalCompressibleWidth = TotalCompressibleWidth(systemMomentWidthsWithoutBarlines, nonCompressibleSystemMomentPositions);
-            float totalOverlaps = TotalOverlaps(staffOverlaps);
-            float compressionFactor = (totalCompressibleWidth - totalOverlaps) / totalCompressibleWidth;
+            double totalCompressibleWidth = TotalCompressibleWidth(systemMomentWidthsWithoutBarlines, nonCompressibleSystemMomentPositions);
+            double totalOverlaps = TotalOverlaps(staffOverlaps);
+            double compressionFactor = (totalCompressibleWidth - totalOverlaps) / totalCompressibleWidth;
 
             return compressionFactor;
         }
 
-        private float TotalCompressibleWidth(Dictionary<int, float> originalSystemMomentWidths,
+        private double TotalCompressibleWidth(Dictionary<int, double> originalSystemMomentWidths,
                                             HashSet<int> nonCompressibleSystemMomentPositions)
         {
-            float totalCompressibleWidth = 0F;
+            double totalCompressibleWidth = 0F;
             foreach(int msPos in originalSystemMomentWidths.Keys)
             {
                 if(!nonCompressibleSystemMomentPositions.Contains(msPos))
@@ -833,10 +833,10 @@ namespace Moritz.Symbols
             return totalCompressibleWidth;
         }
 
-        private float TotalOverlaps(Dictionary<int, float> staffOverlaps)
+        private double TotalOverlaps(Dictionary<int, double> staffOverlaps)
         {
-            float total = 0;
-            foreach(float overlap in staffOverlaps.Values)
+            double total = 0;
+            foreach(double overlap in staffOverlaps.Values)
             {
                 total += overlap;
             }
@@ -849,13 +849,13 @@ namespace Moritz.Symbols
         ///     value: the factor by which the staffMoment will be expanded in order to remove a staffOverlap.
         /// Staff moments can span more than one systemMoment...
         /// </summary>
-        private Dictionary<int, float> GetStaffExpansionFactors(
-            Dictionary<int, float> staffMomentWidthsWithoutBarlines,
-            Dictionary<int, float> staffOverlaps)
+        private Dictionary<int, double> GetStaffExpansionFactors(
+            Dictionary<int, double> staffMomentWidthsWithoutBarlines,
+            Dictionary<int, double> staffOverlaps)
         {
-            Dictionary<int, float> staffExpansionFactors = new Dictionary<int, float>();
-            float originalWidth;
-            float factor;
+            Dictionary<int, double> staffExpansionFactors = new Dictionary<int, double>();
+            double originalWidth;
+            double factor;
             foreach(int msPosition in staffMomentWidthsWithoutBarlines.Keys)
             {
                 if(staffOverlaps.ContainsKey(msPosition))
@@ -873,19 +873,19 @@ namespace Moritz.Symbols
         /// Returns an [msPos, changeFactor] pair for each moment in the system.
         /// The change factor can be 1, compressionFactor, or taken from the staffExpansionFactors.
         /// </summary>
-        private Dictionary<int, float> WidthFactors(
+        private Dictionary<int, double> WidthFactors(
             List<NoteObjectMoment> systemMoments, 
             List<NoteObjectMoment> staffMoments,
-            Dictionary<int, float> staffOverlaps,
-            Dictionary<int, float> barlineWidths,
+            Dictionary<int, double> staffOverlaps,
+            Dictionary<int, double> barlineWidths,
             HashSet<int> nonCompressibleSystemMomentPositions,
-            float compressionFactor)
+            double compressionFactor)
         {
-            Dictionary<int, float> staffMomentWidthsWithoutBarlines =
+            Dictionary<int, double> staffMomentWidthsWithoutBarlines =
                             GetExistingWidthsWithoutBarlines(staffMoments, barlineWidths);
 
             // contains an <msPos, expansionFactor> pair for each staffMoment that will be expanded.
-            Dictionary<int, float> staffExpansionFactors =
+            Dictionary<int, double> staffExpansionFactors =
                             GetStaffExpansionFactors(staffMomentWidthsWithoutBarlines, staffOverlaps);
 
             List<int> systemMomentKeys = new List<int>();
@@ -894,7 +894,7 @@ namespace Moritz.Symbols
                 systemMomentKeys.Add(nom.AbsMsPosition);
             }
 
-            Dictionary<int, float> widthFactors = new Dictionary<int, float>();
+            Dictionary<int, double> widthFactors = new Dictionary<int, double>();
             foreach(int msPos in systemMomentKeys)
             {
                 if(nonCompressibleSystemMomentPositions.Contains(msPos))
@@ -905,7 +905,7 @@ namespace Moritz.Symbols
             // widthFactors now contains an entry for each system Moment
             // Now set the expansionFactors from the staff.
 
-            float expFactor = 0;
+            double expFactor = 0;
             for(int i = 1; i < staffMoments.Count; ++i)
             {
                 int startMsPos = staffMoments[i - 1].AbsMsPosition;
@@ -982,7 +982,7 @@ namespace Moritz.Symbols
 			}
 		}
 
-		private void AlignStaffnamesInLeftMargin(float leftMarginPos, float gap)
+		private void AlignStaffnamesInLeftMargin(double leftMarginPos, double gap)
         {
             foreach(Staff staff in Staves)
             {
@@ -993,8 +993,8 @@ namespace Moritz.Symbols
                         StaffNameMetrics staffNameMetrics = firstBarline.StaffNameMetrics;
                         if(staffNameMetrics != null)
                         {
-                            float alignX = leftMarginPos / 2F;
-                            float deltaX = alignX - staffNameMetrics.OriginX + gap;
+                            double alignX = leftMarginPos / 2F;
+                            double deltaX = alignX - staffNameMetrics.OriginX + gap;
                             staffNameMetrics.Move(deltaX, 0F);
                         }
                         break;
@@ -1062,9 +1062,9 @@ namespace Moritz.Symbols
 				}
             }
         }
-        private void JustifyVertically(float pageWidth, float gap)
+        private void JustifyVertically(double pageWidth, double gap)
         {
-            float stafflinesTop = Staves[0].Metrics.StafflinesTop;
+            double stafflinesTop = Staves[0].Metrics.StafflinesTop;
             if(stafflinesTop != 0)
             {
                 for(int i = 0; i < Staves.Count; ++i)
@@ -1082,13 +1082,13 @@ namespace Moritz.Symbols
             {
                 if(Staves[i].Metrics != null)
                 {
-                    //BottomEdge bottomEdge = new BottomEdge(Staves[i - 1], 0F, pageWidth, gap);
+                    //BottomEdge bottomEdge = new BottomEdge(Staves[i - 1], 0, pageWidth, gap);
                     BottomEdge bottomEdge = GetBottomEdge(i - 1, 0, pageWidth, gap);
                     if(bottomEdge != null)
                     {
-                        TopEdge topEdge = new TopEdge(Staves[i], 0F, pageWidth);
-                        float separation = topEdge.DistanceToEdgeAbove(bottomEdge);
-                        float dy = gap - separation;
+                        TopEdge topEdge = new TopEdge(Staves[i], 0, pageWidth);
+                        double separation = topEdge.DistanceToEdgeAbove(bottomEdge);
+                        double dy = gap - separation;
                         // limit stafflineHeight to multiples of pageFormat.Gap so that stafflines
                         // are not displayed as thick grey lines.
                         dy = dy - (dy % gap) + gap; // the minimum space bewteen stafflines is gap pixels.
@@ -1098,7 +1098,7 @@ namespace Moritz.Symbols
                             {
                                 if(Staves[j].Metrics != null)
                                 {
-                                    Staves[j].Metrics.Move(0F, dy);
+                                    Staves[j].Metrics.Move(0, dy);
                                 }
                             }
                             this.Metrics.StafflinesBottom += dy;
@@ -1115,7 +1115,7 @@ namespace Moritz.Symbols
             M.Assert(this.Metrics.StafflinesTop == 0);
         }
 
-        private BottomEdge GetBottomEdge(int upperStaffIndex, int topVisibleStaffIndex, float pageWidth, float gap)
+        private BottomEdge GetBottomEdge(int upperStaffIndex, int topVisibleStaffIndex, double pageWidth, double gap)
         {
             BottomEdge bottomEdge = null;
             for(int i = upperStaffIndex; i >= topVisibleStaffIndex; --i)
@@ -1123,14 +1123,14 @@ namespace Moritz.Symbols
                 Staff staff = Staves[i];
                 if(staff.Metrics != null)
                 {
-                    bottomEdge = new BottomEdge(staff, 0F, pageWidth, gap);
+                    bottomEdge = new BottomEdge(staff, 0, pageWidth, gap);
                     break;
                 }
             }
             return bottomEdge;
         }
 
-        private TopEdge GetTopEdge(int lowerStaffIndex, float pageWidth)
+        private TopEdge GetTopEdge(int lowerStaffIndex, double pageWidth)
         {
             TopEdge topEdge = null;
             for(int i = lowerStaffIndex; i < Staves.Count; ++i)
@@ -1138,7 +1138,7 @@ namespace Moritz.Symbols
                 Staff staff = Staves[i];
                 if(staff.Metrics != null)
                 {
-                    topEdge = new TopEdge(staff, 0F, pageWidth);
+                    topEdge = new TopEdge(staff, 0, pageWidth);
                     break;
                 }
             }

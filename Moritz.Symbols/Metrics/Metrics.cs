@@ -38,7 +38,7 @@ namespace Moritz.Symbols
 			_usedCSSColorClasses.Clear();
         }
 
-        public virtual void Move(float dx, float dy)
+        public virtual void Move(double dx, double dy)
 		{
 			_left += dx;
 			_top += dy;
@@ -72,9 +72,9 @@ namespace Moritz.Symbols
 		/// than previousMetrics.Right, previousMetrics.Right - this.Left is returned. 
 		/// If there is no vertical overlap, this or the previousMetrics is a RestMetrics, and
 		/// the metrics overlap, half the width of the rest is returned.
-		/// Otherwise float.MinValue is returned.
+		/// Otherwise double.MinValue is returned.
 		/// </summary>
-		public float OverlapWidth(Metrics previousMetrics)
+		public double OverlapWidth(Metrics previousMetrics)
 		{
 			bool verticalOverlap = true;
 			if(!(this is Barline_LineMetrics))
@@ -83,7 +83,7 @@ namespace Moritz.Symbols
 					verticalOverlap = false;
 			}
 
-			float overlap = float.MinValue;
+			double overlap = double.MinValue;
 			if(verticalOverlap && previousMetrics.Right > Left)
 			{
 				overlap = previousMetrics.Right - this.Left;
@@ -107,11 +107,11 @@ namespace Moritz.Symbols
 		/// <summary>
 		/// Returns the positive horizontal distance by which this metrics overlaps the argument metrics.
 		/// The result can be 0, if previousMetrics.Right = this.Metrics.Left.
-		/// If there is no overlap, float.MinValue is returned.
+		/// If there is no overlap, double.MinValue is returned.
 		/// </summary>
-		public float OverlapWidth(AnchorageSymbol previousAS)
+		public double OverlapWidth(AnchorageSymbol previousAS)
 		{
-			float overlap = float.MinValue;
+			double overlap = double.MinValue;
 
 			if(previousAS is OutputChordSymbol chord)
 			{
@@ -132,11 +132,11 @@ namespace Moritz.Symbols
 		/// </summary>
 		/// <param name="arg"></param>
 		/// <returns></returns>
-		public float OverlapHeight(Metrics arg, float padding)
+		public double OverlapHeight(Metrics arg, double padding)
 		{
-			float newArgRight = arg.Right + padding;
-			float newArgLeft = arg.Left - padding;
-			float newArgBottom = arg.Bottom + padding;
+			double newArgRight = arg.Right + padding;
+			double newArgLeft = arg.Left - padding;
+			double newArgBottom = arg.Bottom + padding;
 
 			bool horizontalOverlap = true;
 			if((newArgRight < Left) || (newArgLeft > Right))
@@ -144,69 +144,69 @@ namespace Moritz.Symbols
 
 			if(horizontalOverlap && newArgBottom > Top)
 			{
-				float overlap = newArgBottom - Top;
+				double overlap = newArgBottom - Top;
 				return (overlap);
 			}
 			else
 				return 0F;
 		}
 
-		public void SetTop(float top)
+		public void SetTop(double top)
 		{
 			_top = top;
 		}
 
-		public void SetBottom(float bottom)
+		public void SetBottom(double bottom)
 		{
 			_bottom = bottom;
 		}
 
-		protected void MoveAboveTopBoundary(float topBoundary, float padding)
+		protected void MoveAboveTopBoundary(double topBoundary, double padding)
 		{
 			M.Assert(padding >= 0.0F);
-			float newBottom = topBoundary - padding;
-			Move(0F, newBottom - Bottom);
+			double newBottom = topBoundary - padding;
+			Move(0, newBottom - Bottom);
 		}
-		protected void MoveBelowBottomBoundary(float bottomBoundary, float padding)
+		protected void MoveBelowBottomBoundary(double bottomBoundary, double padding)
 		{
 			M.Assert(padding >= 0.0F);
-			float newTop = bottomBoundary + padding;
-			Move(0F, newTop - Top);
+			double newTop = bottomBoundary + padding;
+			Move(0, newTop - Top);
 		}
 
 		/// <summary>
 		/// The actual position of the top edge of the object in the score.
 		/// </summary>
-		public float Top { get { return _top; } }
-		protected float _top = 0F;
+		public double Top { get { return _top; } }
+		protected double _top = 0F;
 		/// <summary>
 		/// The actual position of the right edge of the object in the score.
 		/// </summary>
-		public float Right { get { return _right; } }
-		protected float _right = 0F;
+		public double Right { get { return _right; } }
+		protected double _right = 0F;
 		/// <summary>
 		/// The actual position of the bottom edge of the object in the score.
 		/// </summary>
-		public virtual float Bottom { get { return _bottom; } }
-		protected float _bottom = 0F;
+		public virtual double Bottom { get { return _bottom; } }
+		protected double _bottom = 0F;
 		/// <summary>
 		/// The actual position of the left edge of the object in the score.
 		/// </summary>
-		public float Left { get { return _left; } }
-		protected float _left = 0F;
+		public double Left { get { return _left; } }
+		protected double _left = 0F;
 
 		/// <summary>
 		/// The actual position of the object's x-origin in the score.
 		/// This is the value written into the SvgScore.
 		/// </summary>
-		public float OriginX { get { return _originX; } }
-		protected float _originX = 0F;
+		public double OriginX { get { return _originX; } }
+		protected double _originX = 0F;
 		/// <summary>
 		/// The actual position of the object's y-origin in the score
 		/// This is the value written into the SvgScore.
 		/// </summary>
-		public float OriginY { get { return _originY; } }
-		protected float _originY = 0F;
+		public double OriginY { get { return _originY; } }
+		protected double _originY = 0F;
 
 
 		public CSSObjectClass CSSObjectClass { get => _cssObjectClass; }
@@ -233,7 +233,7 @@ namespace Moritz.Symbols
 
 	public class PaddedMetrics : Metrics
 	{
-		public PaddedMetrics(Metrics embeddedMetrics, float topPadding, float rightPadding, float bottomPadding, float leftPadding)
+		public PaddedMetrics(Metrics embeddedMetrics, double topPadding, double rightPadding, double bottomPadding, double leftPadding)
 			: base(embeddedMetrics.CSSObjectClass)
 		{
 			_top = embeddedMetrics.Top - topPadding;
@@ -256,16 +256,16 @@ namespace Moritz.Symbols
 			throw new NotImplementedException();
 		}
 
-		public override void Move(float dx, float dy)
+		public override void Move(double dx, double dy)
 		{
 			base.Move(dx, dy);
 			EmbeddedMetrics.Move(dx, dy);
 		}
 
-		public float TopPadding { get; }
-		public float RightPadding { get; }
-		public float BottomPadding { get; }
-		public float LeftPadding { get; }
+		public double TopPadding { get; }
+		public double RightPadding { get; }
+		public double BottomPadding { get; }
+		public double LeftPadding { get; }
 
 		private Metrics EmbeddedMetrics { get; }		
 	}

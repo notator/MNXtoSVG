@@ -13,29 +13,54 @@ namespace Moritz.Symbols
 {
     public class SvgScore
     {
-        public SvgScore(string folder, string scoreFolderName, string keywords, string comment, PageFormat pageFormat)
-        {
-            _pageFormat = pageFormat;
-            SetFilePathAndMetadata(folder, scoreFolderName, pageFormat, keywords, comment);
-        }
+        #region fields
+        #region constructor
+        protected readonly PageFormat PageFormat = null;
+        internal readonly string FileName = null; // The base file name with ".svg"
+        internal readonly string FilePath = null; // The complete path, including the FileName.
+        internal readonly string ScoreTitle = null; // As it appears in the score (can be null or empty).
+        internal readonly string ScoreAuthor = null; // As it appears in the score(can be null or empty).
+        internal readonly Metadata Metadata = new Metadata();
+        #endregion constructor
 
-        private void SetFilePathAndMetadata(string folder, string scoreFolderName, PageFormat pageFormat, string keywords, string comment)
-        {
-            if(!String.IsNullOrEmpty(scoreFolderName))
-            {
-                M.CreateDirectoryIfItDoesNotExist(folder);
-                this._filename = scoreFolderName + ".html";
-                FilePath = folder + @"\" + _filename;
+        public Notator Notator = null;
 
-				Metadata = new Metadata
-				{
-					Page1Title = String.IsNullOrEmpty(pageFormat.Page1Title) ? scoreFolderName : pageFormat.Page1Title,
-					Page1Author = String.IsNullOrEmpty(pageFormat.Page1Author) ? "James Ingram" : pageFormat.Page1Author,
-					Keywords = keywords,
-					Comment = comment,
-					Date = M.NowString
-				};
-			}
+        protected ScoreData ScoreData = null;
+
+        public int PageCount { get { return _pages.Count; } }
+        protected List<SvgPage> _pages = new List<SvgPage>();
+
+        #endregion fields
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="svgData">Page format, line thicknesses, tempo</param>
+        /// <param name="targetFolder">The complete path to the folder that will contain the output file.</param>
+        /// <param name="scoreNameWithoutSuffix">The file name for the score, without '.svg' suffix.</param>
+        /// <param name="scoreTitle">Appears at top of page 1 (can be null or empty)</param>
+        /// <param name="scoreAuthor">Appears at top of page 1 (can be null or empty)</param>
+        /// <param name="metadataKeywords">Can be null or empty</param>
+        /// <param name="metadataComment">Can be null or empty</param>
+        public SvgScore(SVGData svgData,
+                        string targetFolder, string scoreNameWithoutSuffix,
+                        string scoreTitle, string scoreAuthor,
+                        string metadataKeywords, string metadataComment)
+        {
+            this.PageFormat = new PageFormat(svgData);
+
+            ScoreTitle = scoreTitle;
+            ScoreAuthor = scoreAuthor;
+
+            M.CreateDirectoryIfItDoesNotExist(targetFolder);
+            FileName = scoreNameWithoutSuffix + ".svg";
+            FilePath = targetFolder + @"\" + FileName;
+
+            this.Metadata.Date = M.NowString; // printed in info string at top of score.
+            this.Metadata.ScoreTitle = scoreTitle; // can be null or empty
+            this.Metadata.ScoreAuthor = scoreAuthor; // can be null or empty
+            this.Metadata.Keywords = metadataKeywords; // can be null or empty
+            this.Metadata.Comment = metadataComment; // can be null or empty
         }
 
         protected virtual byte MidiChannel(int staffIndex) { throw new NotImplementedException(); }
@@ -82,7 +107,7 @@ namespace Moritz.Symbols
                 w.WriteStartElement("div");
                 w.WriteAttributeString("class", "centredReferenceDiv");
                 string styleString = "position:relative; text-align: left; top: 0px; padding-top: 0px; margin-top: 0px; width: " + 
-                    _pageFormat.ScreenRight.ToString() + "px; margin-left: auto; margin-right: auto;";
+                    SVGData.pageWidth.ToString() + "px; margin-left: auto; margin-right: auto;";
                 w.WriteAttributeString("style", styleString);
 
                 w.WriteStartElement("div");
@@ -95,8 +120,8 @@ namespace Moritz.Symbols
                     w.WriteAttributeString("src", svgPagename);
                     w.WriteAttributeString("content-type", "image/svg+xml");
                     w.WriteAttributeString("class", "svgPage");
-                    w.WriteAttributeString("width", M.FloatToShortString(_pageFormat.ScreenRight));
-                    w.WriteAttributeString("height", M.FloatToShortString(_pageFormat.ScreenBottom));
+                    w.WriteAttributeString("width", M.FloatToShortString(SVGData.pageWidth));
+                    w.WriteAttributeString("height", M.FloatToShortString(SVGData.pageHeight));
                     w.WriteEndElement();
                     w.WriteStartElement("br");
                     w.WriteEndElement();
@@ -160,7 +185,7 @@ namespace Moritz.Symbols
 		/// <summary>
 		/// Writes an SVG file containing one page of the score.
 		/// </summary>
-		public void SaveSVGPage(string pagePath, SvgPage page, Metadata metadata, bool isSinglePageScore, bool graphicsOnly)
+		public void SaveSVGPage(string pagePath, SvgPage page, bool isSinglePageScore, bool graphicsOnly)
         {
             if(File.Exists(pagePath))
             {
@@ -179,7 +204,7 @@ namespace Moritz.Symbols
 
             using(SvgWriter w = new SvgWriter(pagePath, settings))
             {
-                page.WriteSVG(w, metadata, isSinglePageScore, graphicsOnly);
+                page.WriteSVG(w, isSinglePageScore, graphicsOnly);
             }
         }
 
@@ -854,14 +879,9 @@ namespace Moritz.Symbols
 
 		#endregion save single svg score
 		#region fields loaded from .capx files
-		public Metadata Metadata = null;
         public List<SvgSystem> Systems = new List<SvgSystem>();
         #endregion
-        #region moritz-specific private fields
 
-        protected string _filename = "";
-        public string Filename { get { return _filename; } }
-        #endregion
 
         /// <summary>
         /// Adds the staff name to the first barline of each visible staff in the score.
@@ -877,7 +897,7 @@ namespace Moritz.Symbols
                     {
                         if(noteObject is Barline firstBarline)
                         {
-                            float fontHeight = _pageFormat.StaffNameFontHeight;
+                            double fontHeight = _pageFormat.StaffNameFontHeight;
 							StaffNameText staffNameText = new StaffNameText(firstBarline, staff.Staffname, fontHeight);
                             firstBarline.DrawObjects.Add(staffNameText);
                             break;
@@ -1508,14 +1528,14 @@ namespace Moritz.Symbols
 
             List<SvgSystem> systemsOnPage = new List<SvgSystem>();
             bool lastPage = true;
-            float systemHeight = 0;
-            float frameHeight;
+            double systemHeight = 0;
+            double frameHeight;
             if(pageNumber == 1)
                 frameHeight = _pageFormat.FirstPageFrameHeight;
             else
                 frameHeight = _pageFormat.OtherPagesFrameHeight;
 
-            float systemHeightsTotal = 0;
+            double systemHeightsTotal = 0;
             while(systemIndex < Systems.Count)
             {
                 M.Assert(Systems[systemIndex].Metrics != null);
@@ -1744,58 +1764,7 @@ namespace Moritz.Symbols
             }
         }
 
-		public int PageCount { get { return _pages.Count; }}
-        protected List<SvgPage> _pages = new List<SvgPage>();
 
-        public PageFormat PageFormat { get { return _pageFormat; } } 
-        protected PageFormat _pageFormat = null;
-
-        public Notator Notator = null;
-
-		protected ScoreData ScoreData = null;
-
-        /// <summary>
-        /// Needed while creating the PerformanceOptionsDialog
-        /// </summary>
-        public IEnumerable<string> Staffnames
-        {
-            get
-            {
-                M.Assert(_pages.Count > 0);
-                M.Assert(_pages[0].Systems.Count > 0);
-                M.Assert(_pages[0].Systems[0].Staves.Count > 0);
-                foreach(Staff staff in _pages[0].Systems[0].Staves)
-                {
-                    M.Assert(!String.IsNullOrEmpty(staff.Staffname));
-                    yield return staff.Staffname;
-                }
-            }
-        }
-        public IEnumerable<Voice> Voices
-        {
-            get
-            {
-                foreach(SvgSystem system in Systems)
-                    foreach(Staff staff in system.Staves)
-                        foreach(Voice voice in staff.Voices)
-                            yield return voice;
-            }
-        }
-        public string FilePath;
-    }
-
-    internal class ErrorInScoreException : ApplicationException
-    {
-        public ErrorInScoreException(string message)
-            : base(message)
-        { }
-    }
-
-    internal class PerformanceErrorException : ApplicationException
-    {
-        public PerformanceErrorException(string message)
-            : base(message)
-        { }
     }
 }
 

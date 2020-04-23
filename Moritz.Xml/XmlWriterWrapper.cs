@@ -170,7 +170,7 @@ namespace Moritz.Xml
             this._w.WriteValue(value);
         }
 
-        public override void WriteValue(float value)
+        public override void WriteValue(double value)
         {
             this._w.WriteValue(value);
         }

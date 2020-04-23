@@ -12,7 +12,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// Used by the Assistant Composer
         /// </summary>
-        public DurationSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDuration, float fontHeight)
+        public DurationSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDuration, double fontHeight)
             : base(voice, fontHeight)
         {
             _msDuration = msDuration;

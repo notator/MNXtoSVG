@@ -10,13 +10,13 @@ namespace Moritz.Symbols
 {
     internal class ChordMetrics : Metrics
     {
-        public ChordMetrics(Graphics graphics, ChordSymbol chord, VerticalDir voiceStemDirection, float gap, float stemStrokeWidthVBPX, CSSObjectClass chordClass)
+        public ChordMetrics(Graphics graphics, ChordSymbol chord, VerticalDir voiceStemDirection, double gap, double stemStrokeWidthVBPX, CSSObjectClass chordClass)
             : base(chordClass)
         {
-            _top = float.MaxValue;
-            _right = float.MinValue;
-            _bottom = float.MinValue;
-            _left = float.MaxValue;
+            _top = double.MaxValue;
+            _right = double.MinValue;
+            _bottom = double.MinValue;
+            _left = double.MaxValue;
             _drawObjects = chord.DrawObjects;
 
             _gap = gap;
@@ -88,14 +88,14 @@ namespace Moritz.Symbols
         /// <summary>
         /// chord.Heads are in top-down order.
         /// </summary>
-        private void SetHeadsMetrics(ChordSymbol chord, float ledgerlineStemStrokeWidth)
+        private void SetHeadsMetrics(ChordSymbol chord, double ledgerlineStemStrokeWidth)
         {
             _headsMetricsTopDown = new List<HeadMetrics>();
             CSSObjectClass mainHeadClass = GetMainHeadClass(chord);
 
             HeadMetrics hMetrics = new HeadMetrics(chord, null, _gap, mainHeadClass); // the head is horizontally aligned at 0 by default.
-            float horizontalShift = hMetrics.RightStemX - hMetrics.LeftStemX - (ledgerlineStemStrokeWidth / 2F); // the distance to shift left or right if heads would collide
-            float shiftRange = _gap * 0.75F;
+            double horizontalShift = hMetrics.RightStemX - hMetrics.LeftStemX - (ledgerlineStemStrokeWidth / 2F); // the distance to shift left or right if heads would collide
+            double shiftRange = _gap * 0.75F;
 
             if(chord.Stem.Direction == VerticalDir.up)
             {
@@ -106,17 +106,17 @@ namespace Moritz.Symbols
 
                 foreach(Head head in bottomUpHeads)
                 {
-                    float newHeadOriginY = head.GetOriginY(_clef, _gap); // note that the CHORD's originY is always at the top line of the staff
-                    float newHeadAlignX = 0F;
+                    double newHeadOriginY = head.GetOriginY(_clef, _gap); // note that the CHORD's originY is always at the top line of the staff
+                    double newHeadAlignX = 0F;
                     foreach(Metrics headMetric in bottomUpMetrics)
                     {
-                        float existingHeadAlignX = (headMetric.Left + headMetric.Right) / 2F;
+                        double existingHeadAlignX = (headMetric.Left + headMetric.Right) / 2F;
                         if((newHeadOriginY == headMetric.OriginY)
                         || (existingHeadAlignX == 0F
                             && newHeadAlignX < (existingHeadAlignX + horizontalShift)
                             && newHeadOriginY > (headMetric.OriginY - shiftRange)))
                         {
-                            newHeadAlignX = existingHeadAlignX + horizontalShift; // shifts more than once for extreme clusters ( e.g. F,F#,G) 
+                            newHeadAlignX = existingHeadAlignX + horizontalShift; // shifts more than once for extreme clusters ( e.g. ,F#,G) 
                         }
                         else
                             newHeadAlignX = 0;
@@ -136,11 +136,11 @@ namespace Moritz.Symbols
             {
                 foreach(Head head in chord.HeadsTopDown)
                 {
-                    float newHeadOriginY = head.GetOriginY(_clef, _gap); // note that the CHORD's originY is always at the top line of the staff
-                    float newHeadAlignX = 0F;
+                    double newHeadOriginY = head.GetOriginY(_clef, _gap); // note that the CHORD's originY is always at the top line of the staff
+                    double newHeadAlignX = 0F;
                     foreach(HeadMetrics headMetric in _headsMetricsTopDown)
                     {
-                        float existingHeadAlignX = (headMetric.Left + headMetric.Right) / 2F;
+                        double existingHeadAlignX = (headMetric.Left + headMetric.Right) / 2F;
                         if((newHeadOriginY == headMetric.OriginY)
                         || (existingHeadAlignX == 0F
                             && newHeadAlignX < (existingHeadAlignX + horizontalShift)
@@ -195,9 +195,9 @@ namespace Moritz.Symbols
             return lyricClass;
         }
 
-        private void CreateLedgerlineAndAccidentalMetrics(float fontHeight, List<Head> topDownHeads, List<HeadMetrics> topDownHeadsMetrics, float ledgerlineStemStrokeWidth, CSSObjectClass chordClass)
+        private void CreateLedgerlineAndAccidentalMetrics(double fontHeight, List<Head> topDownHeads, List<HeadMetrics> topDownHeadsMetrics, double ledgerlineStemStrokeWidth, CSSObjectClass chordClass)
         {
-            float limbLength = (topDownHeadsMetrics[0].RightStemX - topDownHeadsMetrics[0].LeftStemX) / 2F; // change to taste later
+            double limbLength = (topDownHeadsMetrics[0].RightStemX - topDownHeadsMetrics[0].LeftStemX) / 2F; // change to taste later
 
             CSSObjectClass llsClass = GetLedgerlinesClass(chordClass);
             _upperLedgerlineBlockMetrics = CreateUpperLedgerlineBlock(topDownHeadsMetrics, limbLength, ledgerlineStemStrokeWidth, llsClass);
@@ -237,12 +237,12 @@ namespace Moritz.Symbols
         private void CreateCautionaryBracketsMetrics(ChordSymbol chord)
         {
             PageFormat pageFormat = chord.Voice.Staff.SVGSystem.Score.PageFormat;
-            float gap = pageFormat.Gap;
-            float padding = pageFormat.StafflineStemStrokeWidth;
-            float strokeWidth = pageFormat.StafflineStemStrokeWidth;
-            GetAccidentalsAndHeadsBox(out float top, out float right, out float bottom, out float left, gap, padding);
-            float leftBracketLeft = left - (gap / 2F);
-            float rightBracketRight = right + (gap / 2F);
+            double gap = pageFormat.Gap;
+            double padding = pageFormat.StafflineStemStrokeWidth;
+            double strokeWidth = pageFormat.StafflineStemStrokeWidth;
+            GetAccidentalsAndHeadsBox(out double top, out double right, out double bottom, out double left, gap, padding);
+            double leftBracketLeft = left - (gap / 2F);
+            double rightBracketRight = right + (gap / 2F);
             // the left bracket
             CautionaryBracketMetrics leftBracketMetrics = new CautionaryBracketMetrics(true, top, left, bottom, leftBracketLeft, strokeWidth);
             // the right bracket
@@ -251,13 +251,13 @@ namespace Moritz.Symbols
             _cautionaryBracketsMetrics = new List<CautionaryBracketMetrics>() { leftBracketMetrics, rightBracketMetrics };
         }
 
-        private void GetAccidentalsAndHeadsBox(out float top, out float right, out float bottom, out float left,
-            float gap, float padding)
+        private void GetAccidentalsAndHeadsBox(out double top, out double right, out double bottom, out double left,
+            double gap, double padding)
         {
-            top = float.MaxValue;
-            left = float.MaxValue;
-            bottom = float.MinValue;
-            right = float.MinValue;
+            top = double.MaxValue;
+            left = double.MaxValue;
+            bottom = double.MinValue;
+            right = double.MinValue;
             if(_topDownAccidentalsMetrics != null)
             {
                 foreach(AccidentalMetrics am in _topDownAccidentalsMetrics)
@@ -281,16 +281,16 @@ namespace Moritz.Symbols
 
             if(this._upperLedgerlineBlockMetrics != null)
             {
-                float ledgerlineLeft = _upperLedgerlineBlockMetrics.Left - padding;
-                float ledgerlineRight = _upperLedgerlineBlockMetrics.Right + padding;
+                double ledgerlineLeft = _upperLedgerlineBlockMetrics.Left - padding;
+                double ledgerlineRight = _upperLedgerlineBlockMetrics.Right + padding;
                 left = left < ledgerlineLeft ? left : ledgerlineLeft;
                 right = right > ledgerlineRight ? right : ledgerlineRight;
             }
 
             if(this._lowerLedgerlineBlockMetrics != null)
             {
-                float ledgerlineLeft = _lowerLedgerlineBlockMetrics.Left - padding;
-                float ledgerlineRight = _lowerLedgerlineBlockMetrics.Right + padding;
+                double ledgerlineLeft = _lowerLedgerlineBlockMetrics.Left - padding;
+                double ledgerlineRight = _lowerLedgerlineBlockMetrics.Right + padding;
                 left = left < ledgerlineLeft ? left : ledgerlineLeft;
                 right = right > ledgerlineRight ? right : ledgerlineRight;
             }
@@ -326,13 +326,13 @@ namespace Moritz.Symbols
             }
             #endregion
             #region move left of noteheads
-            float topRange = accidentalMetrics.OriginY - (_gap * 1.51F);
-            float bottomRange = accidentalMetrics.OriginY + (_gap * 1.51F);
+            double topRange = accidentalMetrics.OriginY - (_gap * 1.51F);
+            double bottomRange = accidentalMetrics.OriginY + (_gap * 1.51F);
             foreach(HeadMetrics head in topDownHeadsMetrics)
             {
                 if(head.OriginY > topRange && head.OriginY < bottomRange && head.Overlaps(accidentalMetrics))
                 {
-                    float extraHorizontalSpace = 0;
+                    double extraHorizontalSpace = 0;
                     if(accidentalMetrics.CharacterString == "b")
                         extraHorizontalSpace = accidentalMetrics.FontHeight * -0.03F;
 
@@ -344,7 +344,7 @@ namespace Moritz.Symbols
             if(stemMetrics != null)
             {
                 // Note that the length of the stem is ignored here.
-                float maxRight = stemMetrics.Left - stemMetrics.StrokeWidth;
+                double maxRight = stemMetrics.Left - stemMetrics.StrokeWidth;
                 if(maxRight < accidentalMetrics.Right)
                     accidentalMetrics.Move(maxRight - accidentalMetrics.Right, 0F);
             }
@@ -361,7 +361,7 @@ namespace Moritz.Symbols
         {
             // This delta is very important. Without it, an accidental will collide with the accidental above it,
             // if the upper accidental has been moved left. For example, chord (D1,G1,D2) with an accidental on each notehead.
-            float xDelta = accidental.FontHeight * 0.001F;
+            double xDelta = accidental.FontHeight * 0.001F;
             for(int i = index; i < existingAccidentals.Count; i++)
             {
                 Metrics existingAccidental = existingAccidentals[i];
@@ -388,20 +388,20 @@ namespace Moritz.Symbols
         {
             M.Assert(accidentalM != null && ledgerlineBlockM != null);
 
-            //float top = ledgerlineBlockM.Top - (_gap * 0.51F);
-            //float bottom = ledgerlineBlockM.Bottom + (_gap * 0.51F);
-            float top = ledgerlineBlockM.Top - (_gap * 1.01F);
-            float bottom = ledgerlineBlockM.Bottom + (_gap * 1.01F);
+            //double top = ledgerlineBlockM.Top - (_gap * 0.51F);
+            //double bottom = ledgerlineBlockM.Bottom + (_gap * 0.51F);
+            double top = ledgerlineBlockM.Top - (_gap * 1.01F);
+            double bottom = ledgerlineBlockM.Bottom + (_gap * 1.01F);
             if(accidentalM.OriginY > top && accidentalM.OriginY < bottom)
                 accidentalM.Move(ledgerlineBlockM.Left - accidentalM.Right, 0F);
         }
 
-        private LedgerlineBlockMetrics CreateUpperLedgerlineBlock(List<HeadMetrics> topDownHeadsMetrics, float limbLength, float strokeWidth, CSSObjectClass ledgerlinesClass)
+        private LedgerlineBlockMetrics CreateUpperLedgerlineBlock(List<HeadMetrics> topDownHeadsMetrics, double limbLength, double strokeWidth, CSSObjectClass ledgerlinesClass)
         {
             M.Assert(topDownHeadsMetrics != null);
             #region upper ledgerline block
-            float minLeftX = float.MaxValue;
-            float maxRightX = float.MinValue;
+            double minLeftX = double.MaxValue;
+            double maxRightX = double.MinValue;
             foreach(HeadMetrics head in topDownHeadsMetrics)
             {
                 if(head.OriginY <= _gap * 0.75F)
@@ -410,20 +410,20 @@ namespace Moritz.Symbols
                     maxRightX = maxRightX > head.RightStemX ? maxRightX : head.RightStemX;
                 }
             }
-            float left = minLeftX - limbLength;
-            float right = maxRightX + limbLength;
+            double left = minLeftX - limbLength;
+            double right = maxRightX + limbLength;
             Metrics topHeadMetrics = topDownHeadsMetrics[0];
             LedgerlineBlockMetrics upperLedgerlineBlockMetrics = null;
             if(topHeadMetrics.OriginY < -(_gap * 0.75F))
             {
                 upperLedgerlineBlockMetrics = new LedgerlineBlockMetrics(left, right, strokeWidth, ledgerlinesClass); // contains no ledgerlines
 
-                float topLedgerlineY = topHeadMetrics.OriginY;
+                double topLedgerlineY = topHeadMetrics.OriginY;
                 if((topLedgerlineY % _gap) < 0)
                 {
                     topLedgerlineY += (_gap / 2F);
                 }
-                for(float y = topLedgerlineY; y < 0; y += _gap)
+                for(double y = topLedgerlineY; y < 0; y += _gap)
                 {
                     upperLedgerlineBlockMetrics.AddLedgerline(y, _gap);
                 }
@@ -431,11 +431,11 @@ namespace Moritz.Symbols
             #endregion upper ledgerline block
             return upperLedgerlineBlockMetrics;
         }
-        private LedgerlineBlockMetrics CreateLowerLedgerlineBlock(List<HeadMetrics> topDownHeadsMetrics, float limbLength, float strokeWidth, CSSObjectClass ledgerlinesClass)
+        private LedgerlineBlockMetrics CreateLowerLedgerlineBlock(List<HeadMetrics> topDownHeadsMetrics, double limbLength, double strokeWidth, CSSObjectClass ledgerlinesClass)
         {
             M.Assert(topDownHeadsMetrics != null);
-            float minLeftX = float.MaxValue;
-            float maxRightX = float.MinValue;
+            double minLeftX = double.MaxValue;
+            double maxRightX = double.MinValue;
             foreach(HeadMetrics head in topDownHeadsMetrics)
             {
                 if(head.OriginY >= _gap * _nStafflines)
@@ -444,20 +444,20 @@ namespace Moritz.Symbols
                     maxRightX = maxRightX > head.RightStemX ? maxRightX : head.RightStemX;
                 }
             }
-            float leftX = minLeftX - limbLength;
-            float rightX = maxRightX + limbLength;
+            double leftX = minLeftX - limbLength;
+            double rightX = maxRightX + limbLength;
             Metrics bottomHeadMetrics = topDownHeadsMetrics[topDownHeadsMetrics.Count - 1];
             LedgerlineBlockMetrics lowerLedgerlineBlockMetrics = null;
             if(bottomHeadMetrics.OriginY > (_gap * 4.75))
             {
                 lowerLedgerlineBlockMetrics = new LedgerlineBlockMetrics(leftX, rightX, strokeWidth, ledgerlinesClass); // contains no ledgerlines
 
-                float bottomLedgerlineY = bottomHeadMetrics.OriginY;
+                double bottomLedgerlineY = bottomHeadMetrics.OriginY;
                 if((bottomLedgerlineY % _gap) > 0)
                 {
                     bottomLedgerlineY -= (_gap / 2F);
                 }
-                for(float y = (_gap * _nStafflines); y <= bottomLedgerlineY; y += _gap)
+                for(double y = (_gap * _nStafflines); y <= bottomLedgerlineY; y += _gap)
                 {
                     lowerLedgerlineBlockMetrics.AddLedgerline(y, _gap);
                 }
@@ -467,7 +467,7 @@ namespace Moritz.Symbols
         #endregion heads and accidentals
 
         #region set stem and flags
-        private void SetStemAndFlags(ChordSymbol chord, List<HeadMetrics> topDownHeadsMetrics, float stemThickness)
+        private void SetStemAndFlags(ChordSymbol chord, List<HeadMetrics> topDownHeadsMetrics, double stemThickness)
         {
             DurationClass durationClass = chord.DurationClass;
             _flagsMetrics = null;
@@ -501,7 +501,7 @@ namespace Moritz.Symbols
         /// Returns null if the durationClass does not have a flagsBlock,
         /// otherwise returns the metrics for the flagsBlock attached to this chord, correctly positioned wrt the noteheads.
         /// </summary>
-        private FlagsMetrics GetFlagsMetrics(List<HeadMetrics> topDownHeadsMetrics, DurationClass durationClass, float fontSize, VerticalDir stemDirection, float stemThickness)
+        private FlagsMetrics GetFlagsMetrics(List<HeadMetrics> topDownHeadsMetrics, DurationClass durationClass, double fontSize, VerticalDir stemDirection, double stemThickness)
         {
             M.Assert(durationClass == DurationClass.quaver
                 || durationClass == DurationClass.semiquaver
@@ -526,16 +526,16 @@ namespace Moritz.Symbols
         /// If the stem is up and the bottom of the flagBlock is too low, the flagBlock is moved up.
         /// If the stem is down and the top of the flagBlock is too high, the flagBlock is moved down.
         /// </summary>
-        private void SetFlagsPositionReNoteheads(List<HeadMetrics> topDownHeadsMetrics, FlagsMetrics flagsMetrics, VerticalDir stemDirection, float stemThickness)
+        private void SetFlagsPositionReNoteheads(List<HeadMetrics> topDownHeadsMetrics, FlagsMetrics flagsMetrics, VerticalDir stemDirection, double stemThickness)
         {
             M.Assert(flagsMetrics != null);
 
             HeadMetrics outerNoteheadMetrics = FindOuterNotehead(topDownHeadsMetrics, stemDirection);
             HeadMetrics innerNoteheadMetrics = FindInnerNotehead(topDownHeadsMetrics, stemDirection);
-            float innerNoteheadAlignmentY = (innerNoteheadMetrics.Bottom + innerNoteheadMetrics.Top) / 2F;
-            float minDist = _gap * 1.8F; // constant found by experiment
-            float deltaX = 0;
-            float deltaY = 0;
+            double innerNoteheadAlignmentY = (innerNoteheadMetrics.Bottom + innerNoteheadMetrics.Top) / 2F;
+            double minDist = _gap * 1.8F; // constant found by experiment
+            double deltaX = 0;
+            double deltaY = 0;
             string flagIDString = flagsMetrics.FlagID.ToString();
             if(stemDirection == VerticalDir.up)
             {
@@ -627,17 +627,17 @@ namespace Moritz.Symbols
         /// Called when the ChordMetrics is first constructed.
         /// It does not yet have any beams.
         /// </summary>
-        private void MoveAuxilliaries(VerticalDir stemDirection, float gap)
+        private void MoveAuxilliaries(VerticalDir stemDirection, double gap)
         {
-            MoveAuxilliaries(stemDirection, gap, 0F, 0F);
+            MoveAuxilliaries(stemDirection, gap, 0, 0);
         }
         /// <summary>
         /// The upper beam padding and lower beam padding is used exclusively for auxilliaries placed next to beams.
         /// These values do not affect the positions of auxilliaries on ordinary flags.
         /// </summary
-        private void MoveAuxilliaries(VerticalDir stemDirection, float gap, float upperBeamPadding, float lowerBeamPadding)
+        private void MoveAuxilliaries(VerticalDir stemDirection, double gap, double upperBeamPadding, double lowerBeamPadding)
         {
-            GetTopAndBottomBounds(stemDirection, out float topBoundary, out float bottomBoundary);
+            GetTopAndBottomBounds(stemDirection, out double topBoundary, out double bottomBoundary);
 
             topBoundary -= upperBeamPadding;
             bottomBoundary += lowerBeamPadding;
@@ -651,7 +651,7 @@ namespace Moritz.Symbols
                 MoveDynamicMetrics(gap, ref topBoundary, ref bottomBoundary);
         }
 
-		private void MoveOrnamentMetrics(float gap, ref float topBoundary, ref float bottomBoundary)
+		private void MoveOrnamentMetrics(double gap, ref double topBoundary, ref double bottomBoundary)
 		{
 			// N.B. topPadding was (gap * 0.6F) bottomPadding was (gap * 0.4F).
 			// These have both been increased, to (gap * 0.75F) and (gap * 0.55F).
@@ -663,7 +663,7 @@ namespace Moritz.Symbols
 		/// Moves the lyric to its correct position wrt the topBoundary or bottomBoundary.
 		/// Does nothing if lyricMetrics is null.
 		/// </summary>
-		private void MoveLyricMetrics(float gap, ref float topBoundary, ref float bottomBoundary)
+		private void MoveLyricMetrics(double gap, ref double topBoundary, ref double bottomBoundary)
         {
             MoveMetrics(_lyricMetrics, _lyricMetrics.IsBelow, ref topBoundary, (gap * 0.6F), ref bottomBoundary, (gap * 0.4F));
         }
@@ -671,16 +671,16 @@ namespace Moritz.Symbols
         /// Moves the dynamic to its correct position wrt the topBoundary or bottomBoundary.
         /// Does nothing if dynamicMetrics is null.
         /// </summary>
-        private void MoveDynamicMetrics(float gap, ref float topBoundary, ref float bottomBoundary)
+        private void MoveDynamicMetrics(double gap, ref double topBoundary, ref double bottomBoundary)
         {
             if(_dynamicMetrics != null)
             {
-                float baseLineToTop = _dynamicMetrics.OriginY - _dynamicMetrics.Top;
-                float bottomPadding = (gap * 2.3F) - baseLineToTop; // baselineToTop of forte is gap * 1.386
+                double baseLineToTop = _dynamicMetrics.OriginY - _dynamicMetrics.Top;
+                double bottomPadding = (gap * 2.3F) - baseLineToTop; // baselineToTop of forte is gap * 1.386
                 bottomPadding = (bottomPadding >= 0) ? bottomPadding : 0;
 
-                float bottomToBaseline = _dynamicMetrics.Bottom - _dynamicMetrics.OriginY;
-                float topPadding = (gap * 0.2F) + bottomToBaseline;
+                double bottomToBaseline = _dynamicMetrics.Bottom - _dynamicMetrics.OriginY;
+                double topPadding = (gap * 0.2F) + bottomToBaseline;
 
                 MoveMetrics(_dynamicMetrics, _dynamicMetrics.IsBelow, ref topBoundary, topPadding, ref bottomBoundary, bottomPadding);
             }
@@ -691,8 +691,8 @@ namespace Moritz.Symbols
         /// Does nothing if metrics is null.
         /// </summary>
         private void MoveMetrics(Metrics metrics, bool isBelow,
-            ref float topBoundary, float topPadding,
-            ref float bottomBoundary, float bottomPadding)
+            ref double topBoundary, double topPadding,
+            ref double bottomBoundary, double bottomPadding)
         {
             M.Assert(NoteheadExtendersMetrics == null);
             if(isBelow)
@@ -730,7 +730,7 @@ namespace Moritz.Symbols
         /// <param name="gap"></param>
         /// <param name="lyricIsBelow"></param>
         /// <returns></returns>
-        private LyricMetrics NewLyricMetrics(VerticalDir voiceStemDirection, Graphics graphics, float gap, CSSObjectClass lyricClass)
+        private LyricMetrics NewLyricMetrics(VerticalDir voiceStemDirection, Graphics graphics, double gap, CSSObjectClass lyricClass)
         {
             LyricText lyric = null;
             foreach(DrawObject drawObject in _drawObjects)
@@ -758,7 +758,7 @@ namespace Moritz.Symbols
         /// <param name="gap"></param>
         /// <param name="dynamicIsBelow"></param>
         /// <returns></returns>
-        private DynamicMetrics NewCLichtDynamicMetrics(float gap, bool dynamicIsBelow, CSSObjectClass dynamicClass)
+        private DynamicMetrics NewCLichtDynamicMetrics(double gap, bool dynamicIsBelow, CSSObjectClass dynamicClass)
         {
 			List<string> clichtDynamics = new List<string>();
 			clichtDynamics.AddRange(M.CLichtDynamicsCharacters.Values);
@@ -827,26 +827,26 @@ namespace Moritz.Symbols
         ///     topBoundary is set to topNotehead.Top or top of top accidental, 
         ///     bottomBoundary is set to stemBottomTipY or bottomNoteheadBottom or bottom of bottom accidental. 
         /// </summary>
-        private void GetTopAndBottomBounds(VerticalDir stemDirection, out float topBoundary, out float bottomBoundary)
+        private void GetTopAndBottomBounds(VerticalDir stemDirection, out double topBoundary, out double bottomBoundary)
         {
-            float topStaffline = _clef.Voice.Staff.Metrics.StafflinesTop;
+            double topStaffline = _clef.Voice.Staff.Metrics.StafflinesTop;
 
             topBoundary = topStaffline; // top of staff
             bottomBoundary = topStaffline + (_gap * 4F); // bottom of staff
             if(_stemMetrics == null)
             {
-                float topOfTopHead = _headsMetricsTopDown[0].Top;
+                double topOfTopHead = _headsMetricsTopDown[0].Top;
                 topBoundary = (topBoundary < topOfTopHead) ? topBoundary : topOfTopHead;
 
-                float bottomOfBottomHead = _headsMetricsTopDown[_headsMetricsTopDown.Count - 1].Bottom;
+                double bottomOfBottomHead = _headsMetricsTopDown[_headsMetricsTopDown.Count - 1].Bottom;
                 bottomBoundary = (bottomBoundary > bottomOfBottomHead) ? bottomBoundary : bottomOfBottomHead;
 
                 if(_topDownAccidentalsMetrics != null)
                 {
                     M.Assert(_topDownAccidentalsMetrics.Count > 0);
-                    float topOfTopAccidental = _topDownAccidentalsMetrics[0].Top;
+                    double topOfTopAccidental = _topDownAccidentalsMetrics[0].Top;
                     topBoundary = (topBoundary < topOfTopAccidental) ? topBoundary : topOfTopAccidental;
-                    //float bottomOfBottomAccidental = _topDownAccidentalsMetrics[_topDownAccidentalsMetrics.Count - 1].Bottom;
+                    //double bottomOfBottomAccidental = _topDownAccidentalsMetrics[_topDownAccidentalsMetrics.Count - 1].Bottom;
                     //bottomBoundary = (bottomBoundary > bottomOfBottomAccidental) ? bottomBoundary : bottomOfBottomAccidental;
                 }
             }
@@ -854,23 +854,23 @@ namespace Moritz.Symbols
             {
                 topBoundary = (topBoundary < _stemMetrics.Top) ? topBoundary : _stemMetrics.Top;
 
-                float bottomOfBottomHead = _headsMetricsTopDown[_headsMetricsTopDown.Count - 1].Bottom;
+                double bottomOfBottomHead = _headsMetricsTopDown[_headsMetricsTopDown.Count - 1].Bottom;
                 bottomBoundary = (bottomBoundary > bottomOfBottomHead) ? bottomBoundary : bottomOfBottomHead;
                 //if(_topDownAccidentalsMetrics != null)
                 //{
                 //    M.Assert(_topDownAccidentalsMetrics.Count > 0);
-                //    float bottomOfBottomAccidental = _topDownAccidentalsMetrics[_topDownAccidentalsMetrics.Count - 1].Bottom;
+                //    double bottomOfBottomAccidental = _topDownAccidentalsMetrics[_topDownAccidentalsMetrics.Count - 1].Bottom;
                 //    bottomBoundary = (bottomBoundary > bottomOfBottomAccidental) ? bottomBoundary : bottomOfBottomAccidental;
                 //}
             }
             else
             {
-                float topOfTopHead = _headsMetricsTopDown[0].Top;
+                double topOfTopHead = _headsMetricsTopDown[0].Top;
                 topBoundary = (topBoundary < topOfTopHead) ? topBoundary : topOfTopHead;
                 if(_topDownAccidentalsMetrics != null)
                 {
                     M.Assert(_topDownAccidentalsMetrics.Count > 0);
-                    float topOfTopAccidental = _topDownAccidentalsMetrics[0].Top;
+                    double topOfTopAccidental = _topDownAccidentalsMetrics[0].Top;
                     topBoundary = (topBoundary < topOfTopAccidental) ? topBoundary : topOfTopAccidental;
                 }
 
@@ -878,20 +878,20 @@ namespace Moritz.Symbols
             }
         }
 
-        private void MoveBelowBottomBoundary(Metrics metrics, ref float bottomBoundary, float padding)
+        private void MoveBelowBottomBoundary(Metrics metrics, ref double bottomBoundary, double padding)
         {
             M.Assert(padding >= 0.0F);
-            float newTop = bottomBoundary + padding;
-            metrics.Move(0F, newTop - metrics.Top);
+            double newTop = bottomBoundary + padding;
+            metrics.Move(0, newTop - metrics.Top);
             bottomBoundary = metrics.Bottom;
             SetExternalBoundary();
         }
 
-        private void MoveAboveTopBoundary(Metrics metrics, ref float topBoundary, float padding)
+        private void MoveAboveTopBoundary(Metrics metrics, ref double topBoundary, double padding)
         {
             M.Assert(padding >= 0.0F);
-            float newBottom = topBoundary - padding;
-            metrics.Move(0F, newBottom - metrics.Bottom);
+            double newBottom = topBoundary - padding;
+            metrics.Move(0, newBottom - metrics.Bottom);
             topBoundary = metrics.Top;
             SetExternalBoundary();
         }
@@ -905,10 +905,10 @@ namespace Moritz.Symbols
         /// </summary>
         private void SetExternalBoundary()
         {
-            _top = float.MaxValue;
-            _right = float.MinValue;
-            _bottom = float.MinValue;
-            _left = float.MaxValue;
+            _top = double.MaxValue;
+            _right = double.MinValue;
+            _bottom = double.MinValue;
+            _left = double.MaxValue;
 
             if(_stemMetrics != null)
                 SetBoundary(_stemMetrics);
@@ -1013,7 +1013,7 @@ namespace Moritz.Symbols
             }
         }
 
-        public override void Move(float dx, float dy)
+        public override void Move(double dx, double dy)
         {
             base.Move(dx, dy);
 
@@ -1068,7 +1068,7 @@ namespace Moritz.Symbols
             SetExternalBoundary();
         }
 
-        public void MoveOuterStemTip(float stemTipY, VerticalDir stemDirection)
+        public void MoveOuterStemTip(double stemTipY, VerticalDir stemDirection)
         {
             if(stemDirection == VerticalDir.up)
             {
@@ -1079,7 +1079,7 @@ namespace Moritz.Symbols
                 _stemMetrics.SetBottom(stemTipY);
             }
 
-            MoveAuxilliaries(stemDirection, _gap, 0F, _gap * 0.3F);
+            MoveAuxilliaries(stemDirection, _gap, 0, _gap * 0.3);
             SetExternalBoundary();
         }
 
@@ -1090,7 +1090,7 @@ namespace Moritz.Symbols
         /// is too close to the noteheads in the other chord, the stem tip (and flagsBlock) is moved outwards.
         /// FlagsBlockMetrics exist if the duration class is small enough, and the chord is not owned by a beamBlock.
         /// </summary>
-        public void AdjustStemLengthAndFlagBlock(DurationClass thisDurationClass, float thisFontHeight, List<HeadMetrics> otherHeadsMetrics)
+        public void AdjustStemLengthAndFlagBlock(DurationClass thisDurationClass, double thisFontHeight, List<HeadMetrics> otherHeadsMetrics)
         {
             if(_stemMetrics == null
             || (_stemMetrics.VerticalDir == VerticalDir.up && BottomHeadMetrics.Bottom <= otherHeadsMetrics[0].Top)
@@ -1114,7 +1114,7 @@ namespace Moritz.Symbols
                     if(dummyStemMetrics.Top < _stemMetrics.Top)
                     {
                         MoveOuterStemTip(dummyStemMetrics.Top, _stemMetrics.VerticalDir);
-                        _flagsMetrics.Move(0F, dummyStemMetrics.Top - _flagsMetrics.Top); 
+                        _flagsMetrics.Move(0, dummyStemMetrics.Top - _flagsMetrics.Top); 
                     }
                 }
                 else
@@ -1122,7 +1122,7 @@ namespace Moritz.Symbols
                     if(dummyStemMetrics.Bottom > _stemMetrics.Bottom)
                     {
                         MoveOuterStemTip(dummyStemMetrics.Bottom, _stemMetrics.VerticalDir);
-                        _flagsMetrics.Move(0F, dummyStemMetrics.Bottom - _flagsMetrics.Bottom);
+                        _flagsMetrics.Move(0, dummyStemMetrics.Bottom - _flagsMetrics.Bottom);
                     }
                 }
             }
@@ -1159,30 +1159,30 @@ namespace Moritz.Symbols
         /// the same amount.
         /// If this chord has no lyric, nothing happens.
         /// </summary>
-        public void MoveAuxilliariesToLyricHeight(VerticalDir voiceStemDirection, float lyricTop, float lyricBottom)
+        public void MoveAuxilliariesToLyricHeight(VerticalDir voiceStemDirection, double lyricTop, double lyricBottom)
         {
             if(_lyricMetrics != null)
             {
                 GetRelativePositions(voiceStemDirection, _lyricMetrics, out bool ornamentIsBelow, out bool dynamicIsBelow);
-                float delta = 0F;
+                double delta = 0F;
                 if(_lyricMetrics.IsBelow)
                 {
                     delta = lyricTop - _lyricMetrics.Top;
 					delta *= 0.7F; // this line added 12.08.2015
-                    _lyricMetrics.Move(0F, delta);
+                    _lyricMetrics.Move(0, delta);
                     if(ornamentIsBelow && _ornamentMetrics != null)
-                        _ornamentMetrics.Move(0F, delta);
+                        _ornamentMetrics.Move(0, delta);
                     if(dynamicIsBelow && _dynamicMetrics != null)
-                        _dynamicMetrics.Move(0F, delta);
+                        _dynamicMetrics.Move(0, delta);
                 }
                 else // lyric is above
                 {
                     delta = lyricBottom - _lyricMetrics.Bottom;
-                    _lyricMetrics.Move(0F, delta);
+                    _lyricMetrics.Move(0, delta);
                     if(!ornamentIsBelow && _ornamentMetrics != null)
-                        _ornamentMetrics.Move(0F, delta);
+                        _ornamentMetrics.Move(0, delta);
                     if(!dynamicIsBelow && _dynamicMetrics != null)
-                        _dynamicMetrics.Move(0F, delta);
+                        _dynamicMetrics.Move(0, delta);
                 }
             }
         }
@@ -1190,7 +1190,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// Sets the stem. Pass flagsBlockMetrics=null for duration classes having no flags.
         /// </summary>
-        private StemMetrics NewStemMetrics(List<HeadMetrics> topDownHeadsMetrics, ChordSymbol chord, Metrics flagsBlockMetrics, float strokeWidth)
+        private StemMetrics NewStemMetrics(List<HeadMetrics> topDownHeadsMetrics, ChordSymbol chord, Metrics flagsBlockMetrics, double strokeWidth)
         {
             return NewStemMetrics(topDownHeadsMetrics, chord.Stem.Direction, chord.FontHeight, flagsBlockMetrics, chord.BeamBlock, strokeWidth);
         }
@@ -1198,24 +1198,24 @@ namespace Moritz.Symbols
         private StemMetrics NewStemMetrics(
             List<HeadMetrics> topDownHeadsMetrics, 
             VerticalDir stemDirection, 
-            float fontHeight, 
+            double fontHeight, 
             Metrics flagsBlockMetrics,
             BeamBlock beamBlock,
-            float strokeWidth)
+            double strokeWidth)
         {
             HeadMetrics outerNotehead = FindOuterNotehead(topDownHeadsMetrics, stemDirection);
             HeadMetrics innerNotehead = FindInnerNotehead(topDownHeadsMetrics, stemDirection);
             string characterString = outerNotehead.CharacterString;
             NoteheadStemPositions_px nspPX = CLichtFontMetrics.ClichtNoteheadStemPositionsDictPX[characterString];
-            float outerNoteheadAlignmentY = (outerNotehead.Bottom + outerNotehead.Top) / 2F;
-            float innerNoteheadAlignmentY = (innerNotehead.Bottom + innerNotehead.Top) / 2F;
-            float delta = _gap * 0.1F;
-            float octave = (_gap * 3.5F) + delta; // a little more than 1 octave
-            float sixth = (_gap * 2.5F) + delta; // a little more than 1 sixth
+            double outerNoteheadAlignmentY = (outerNotehead.Bottom + outerNotehead.Top) / 2F;
+            double innerNoteheadAlignmentY = (innerNotehead.Bottom + innerNotehead.Top) / 2F;
+            double delta = _gap * 0.1F;
+            double octave = (_gap * 3.5F) + delta; // a little more than 1 octave
+            double sixth = (_gap * 2.5F) + delta; // a little more than 1 sixth
 
-            float top = 0F;
-            float bottom = 0F;
-            float x = 0F;
+            double top = 0F;
+            double bottom = 0F;
+            double x = 0F;
             if(stemDirection == VerticalDir.up)
             {
                 x = outerNotehead.RightStemX - (strokeWidth / 2);
@@ -1274,10 +1274,10 @@ namespace Moritz.Symbols
         private StemMetrics DummyStemMetrics(
             List<HeadMetrics> otherChordTopDownHeadsMetrics,
             VerticalDir stemDirection,
-            float fontHeight,
+            double fontHeight,
             Metrics flagsBlockMetrics,
             BeamBlock beamBlock,
-            float strokeWidth)
+            double strokeWidth)
         {
             List<HeadMetrics> tempTopDownHeadsMetrics = new List<HeadMetrics>();
             foreach(HeadMetrics headMetrics in otherChordTopDownHeadsMetrics)
@@ -1425,11 +1425,11 @@ namespace Moritz.Symbols
         /// The values are in top-down order.
         /// </summary>
         /// <returns></returns>
-        public List<float> HeadsOriginYs
+        public List<double> HeadsOriginYs
         {
             get
             {
-                List<float> originYs = new List<float>();
+                List<double> originYs = new List<double>();
                 if(_headsMetricsTopDown != null)
                 {
                     foreach(HeadMetrics headMetrics in _headsMetricsTopDown)
@@ -1651,14 +1651,14 @@ namespace Moritz.Symbols
         }
 
         /// <summary>
-        /// returns float.MinValue if no overlap is found
+        /// returns double.MinValue if no overlap is found
         /// </summary>
         /// <param name="followingMetrics"></param>
         /// <returns></returns>
-        public new float OverlapWidth(Metrics followingMetrics)
+        public new double OverlapWidth(Metrics followingMetrics)
         {
-            float maxOverlapWidth = float.MinValue;
-            float overlap = float.MinValue;
+            double maxOverlapWidth = double.MinValue;
+            double overlap = double.MinValue;
             #region _stemMetrics
             if(_stemMetrics != null)
             {
@@ -1744,10 +1744,10 @@ namespace Moritz.Symbols
             return maxOverlapWidth;
 
         }
-        public new float OverlapWidth(AnchorageSymbol previousAnchorageSymbol)
+        public new double OverlapWidth(AnchorageSymbol previousAnchorageSymbol)
         {
-            float maxOverlapWidth = float.MinValue;
-            float overlap = 0;
+            double maxOverlapWidth = double.MinValue;
+            double overlap = 0;
             #region _stemMetrics
             if(_stemMetrics != null)
             {
@@ -1840,10 +1840,10 @@ namespace Moritz.Symbols
         /// it overlaps.
         /// The argument metrics is padded on all sides using the padding argument.
         /// </summary>
-        public new float OverlapHeight(Metrics metrics, float padding)
+        public new double OverlapHeight(Metrics metrics, double padding)
         {
-            float maxOverlapHeight = float.MinValue;
-            float overlap = 0;
+            double maxOverlapHeight = double.MinValue;
+            double overlap = 0;
             #region _stemMetrics
             if(_stemMetrics != null)
             {
@@ -1989,7 +1989,7 @@ namespace Moritz.Symbols
         /// been moved (either left or right) with all its accidentals, ledgerlines etc. so that there are no collisions between 
         /// noteheads.
         /// </summary>
-        public void AdjustAccidentalsForTwoChords(ChordMetrics otherChordMetrics, float staffLineStemStrokeWidth)
+        public void AdjustAccidentalsForTwoChords(ChordMetrics otherChordMetrics, double staffLineStemStrokeWidth)
         {
             // first adjust the accidentals in the rightmost chord so that they are left of the other chord
             ChordMetrics leftChordMetrics = null;
@@ -2064,7 +2064,7 @@ namespace Moritz.Symbols
         private List<HeadMetrics> AllHeadsTopDown(List<HeadMetrics> leftHeadMetrics, List<HeadMetrics> rightHeadMetrics)
         {
             List<HeadMetrics> allHeadsTopDown = new List<HeadMetrics>(leftHeadMetrics);
-            float delta = _gap / 4;
+            double delta = _gap / 4;
             int index = 0;
             foreach(HeadMetrics rightHead in rightHeadMetrics)
             {
@@ -2087,7 +2087,7 @@ namespace Moritz.Symbols
         private List<AccidentalMetrics> AllAccidentalsTopDown(List<AccidentalMetrics> leftAccMetrics, List<AccidentalMetrics> rightAccMetrics)
         {
             List<AccidentalMetrics> allAccsTopDown = new List<AccidentalMetrics>(leftAccMetrics);
-            float delta = _gap / 4;
+            double delta = _gap / 4;
             foreach(AccidentalMetrics rightAcc in rightAccMetrics)
             {
                 int index = allAccsTopDown.Count;
@@ -2105,13 +2105,13 @@ namespace Moritz.Symbols
         }
 
         private LedgerlineBlockMetrics CombinedLedgerlineBlockMetrics(LedgerlineBlockMetrics lbm1, LedgerlineBlockMetrics lbm2,
-            float staffLineStemStrokeWidth)
+            double staffLineStemStrokeWidth)
         {
             LedgerlineBlockMetrics ledgerlineBlockMetrics = null;
-            float top = float.MaxValue;
-            float right = float.MaxValue;
-            float bottom = float.MaxValue;
-            float left = float.MaxValue;
+            double top = double.MaxValue;
+            double right = double.MaxValue;
+            double bottom = double.MaxValue;
+            double left = double.MaxValue;
 
 			if (lbm1 != null && lbm2 != null)
             {
@@ -2134,7 +2134,7 @@ namespace Moritz.Symbols
                 bottom = lbm2.Bottom;
                 left = lbm2.Left;
 			}
-            if(top != float.MaxValue)
+            if(top != double.MaxValue)
             {
                 ledgerlineBlockMetrics = new LedgerlineBlockMetrics(left, right, staffLineStemStrokeWidth, CSSObjectClass.ledgerlines);
                 ledgerlineBlockMetrics.SetTop(top);
@@ -2146,9 +2146,9 @@ namespace Moritz.Symbols
         #endregion public interface
 
         #region private variables
-        private readonly float _gap = 0F;
+        private readonly double _gap = 0F;
         private int _nStafflines = 0;
-        private float _staffOriginY = 0;
+        private double _staffOriginY = 0;
         private Clef _clef = null;
 
         private StemMetrics _stemMetrics = null;

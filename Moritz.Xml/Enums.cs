@@ -12,36 +12,30 @@ namespace Moritz.Xml
         none = 0,
         [Description("cautionary")]
         cautionary = 1,
-        [Description("1/1024")]
-        eightFlags = 2,
-        [Description("1/512")]
-        sevenFlags = 3,
-        [Description("1/256")]
-        sixFlags = 4,
         [Description("1/128")]
-        fiveFlags = 5,
+        fiveFlags = 2,
         [Description("1/64")]
-        fourFlags = 6,
+        fourFlags = 3,
         [Description("1/32")]
-        threeFlags = 7,
+        threeFlags = 4,
         [Description("1/16")]
-        semiquaver = 8,
+        semiquaver = 5,
         [Description("1/8")]
-        quaver = 9,
+        quaver = 6,
         [Description("1/4")]
-        crotchet = 10,
+        crotchet = 7,
         [Description("1/2")]
-        minim = 11,
+        minim = 8,
         [Description("1/1")]
-        semibreve = 12,
+        semibreve = 9,
         [Description("2/1")]
-        breve = 13
+        breve = 10
     };
 	/// <summary>
 	/// Attribute in (layout.distances) "systems"
 	/// CapXML Attribute name: "pageJustified"
 	/// When writing CapXML files, retrieve the field name as a string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum PageJustified { none, exceptLast, all };
 	/// <summary>
@@ -52,7 +46,7 @@ namespace Moritz.Xml
 	/// "0" : head, 
 	/// "1" : stem.
 	/// When writing CapXML files, retrieve the Description attribute string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum ChordHorizAlign
 	{
@@ -71,7 +65,7 @@ namespace Moritz.Xml
 	///  "4" : top,
 	///  "5" : bottom
 	/// When writing CapXML files, retrieve the Description attribute string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum VertAlign 
 	{
@@ -93,14 +87,14 @@ namespace Moritz.Xml
     /// CapXML-1.0.8 Type name: "HorizAlign"
     /// Attribute of CapXML elements "verse", "instrumentNames", "text"
     /// When writing CapXML files, retrieve the field name as a string using
-    ///		A.GetEnumDescription()
+    ///		M.GetEnumDescription()
     /// </summary>
     public enum TextHorizAlign { left, center, right };
     /// <summary>
     /// CapXML-2.0 Type.
     /// CapXML-2.0 Type name: "FrameType"
     /// When writing CapXML files, retrieve the field name as a string using
-    ///		A.GetEnumDescription()
+    ///		M.GetEnumDescription()
     /// </summary>
     public enum TextFrameType { none, rectangle, ellipse, circle };
     /// <summary>
@@ -108,7 +102,7 @@ namespace Moritz.Xml
 	/// CapXML-1.0.8 Type name: "VerticalDir"
 	/// Attribute of CapXML elements "voice", (chord and rest)"display", "tupletBracket", "stem"
 	/// When writing CapXML files, retrieve the field name as a string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum VerticalDir { none, up, down };
 	/// <summary>
@@ -125,7 +119,7 @@ namespace Moritz.Xml
 	/// Attribute name: "mode"
 	/// When writing CapXML files, retrieve the field name or Description attribute
 	/// as a string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
     /// </remarks>
 	public enum BarlinesMode
 	{
@@ -139,7 +133,7 @@ namespace Moritz.Xml
 	/// Attribute in CapXML element (layout.staves.staffLayout)"distances"
 	/// Attribute name: "lineDist"
 	/// When writing CapXML files, retrieve the field name as a string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum LineDist { normal, small };
 	/// <summary>
@@ -150,7 +144,7 @@ namespace Moritz.Xml
 	///  "1" : rectangular frame
 	///  "2" : oval frame
 	/// When writing CapXML files, retrieve the Description attribute string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum BarCountFrame 
 	{
@@ -169,7 +163,7 @@ namespace Moritz.Xml
 	///  "255" : opaque
 	///  "128" : semiTransparent
 	/// When writing CapXML files, retrieve the Description attribute string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum FillOpacity
 	{
@@ -187,7 +181,7 @@ namespace Moritz.Xml
 	///   "short" : short name
 	///   "long" : long name
 	/// When writing CapXML files, retrieve the Description attribute string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum InstrNotation
 	{
@@ -209,7 +203,7 @@ namespace Moritz.Xml
 	///  "3" : large
 	///  "4" : whole bar beams
 	/// When writing CapXML files, retrieve the Description attribute string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum SystemBeamGrouping
 	{ 
@@ -235,7 +229,7 @@ namespace Moritz.Xml
 	///   "split" : stopAll (all beams stop at this chord)
 	///   "divide" : stopAllButOne (all but one beams stop at this chord).
 	/// When writing CapXML files, retrieve the Description attribute string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum BeamContinuation
 	{
@@ -262,7 +256,7 @@ namespace Moritz.Xml
 	///   "strongBeat"
 	/// Currently (CapXML-1.0.8), the only multiple value is "staccato tenuto"
 	/// When writing CapXML files, retrieve the field value as a string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum Articulation { staccato, tenuto, staccatissimo, normalAccent, strongAccent, weakBeat, strongBeat };
 
@@ -274,7 +268,7 @@ namespace Moritz.Xml
 	///   "force" : always display an accidental
 	///   "parenth" : show accidental in parentheses
 	/// When writing CapXML files, retrieve the field value as a string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum DisplayAccidental { auto, suppress, force, parenth };
 	/// <summary>
@@ -289,7 +283,7 @@ namespace Moritz.Xml
     ///   -- and new values for CapXML2, followed by
 	///   "none" : none
 	/// When writing CapXML files, retrieve the field value as a string using
-	///		A.GetEnumDescription()
+	///		M.GetEnumDescription()
 	/// </summary>
 	public enum HeadShape { auto, diamond, crossCircle, crossDiamond, triangle, square,
         // begin CapXML2

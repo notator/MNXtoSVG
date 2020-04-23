@@ -9,7 +9,7 @@ namespace Moritz.Symbols
             Voice = voice; // container
         }
 
-        public NoteObject(Voice voice, float fontHeight)
+        public NoteObject(Voice voice, double fontHeight)
         {
             Voice = voice; // container
             _fontHeight = fontHeight;
@@ -19,13 +19,13 @@ namespace Moritz.Symbols
         /// <summary>
         /// Returns the (positive) horizontal distance by which this noteObject overlaps
         /// (any characters in) the previous noteObjectMoment (which contains symbols from both voices
-        /// in a 2-voice staff). The result can be 0. If there is no overlap, the result is float.Minval.
+        /// in a 2-voice staff). The result can be 0. If there is no overlap, the result is double.Minval.
         /// </summary>
         /// <param name="previousAS"></param>
-        public virtual float OverlapWidth(NoteObjectMoment previousNOM)
+        public virtual double OverlapWidth(NoteObjectMoment previousNOM)
         {
-            float overlap = float.MinValue;
-            float localOverlap = float.MinValue;
+            double overlap = double.MinValue;
+            double localOverlap = double.MinValue;
             foreach(NoteObject noteObject in previousNOM.NoteObjects)
             {
                 if(this.Metrics != null)
@@ -53,7 +53,7 @@ namespace Moritz.Symbols
         /// The containing voice
         /// </summary>
         public Voice Voice = null;
-        public float FontHeight { get { return _fontHeight; } set { _fontHeight = value; } }
-        public float _fontHeight = 0F;
+        public double FontHeight { get { return _fontHeight; } set { _fontHeight = value; } }
+        public double _fontHeight = 0F;
 	}
 }

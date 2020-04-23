@@ -11,7 +11,7 @@ namespace Moritz.Symbols
 {
     public class TextStyle : Metrics
     {
-        public TextStyle(CSSObjectClass cssTextClass, string fontFamily, float fontHeight, TextHorizAlign textAnchor = TextHorizAlign.left, string fill = "black")
+        public TextStyle(CSSObjectClass cssTextClass, string fontFamily, double fontHeight, TextHorizAlign textAnchor = TextHorizAlign.left, string fill = "black")
             : base(cssTextClass)
         {
             FontFamily = fontFamily;
@@ -57,7 +57,7 @@ namespace Moritz.Symbols
         }
 
         public readonly string FontFamily = ""; // "Arial", "CLicht", "Open Sans", "Open Sans Condensed"
-        public readonly float FontHeight = 0F;       
+        public readonly double FontHeight = 0F;       
         public readonly string TextAnchor; // "left", "middle", "right"
         public readonly string Fill; // "none", "black", "white", "red", #AAAAAA" etc
     }
@@ -67,7 +67,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// Used by DynamicMetrics
         /// </summary>
-		public CLichtCharacterMetrics(string characterString, float fontHeight, TextHorizAlign textHorizAlign, CSSObjectClass dynamicClass)
+		public CLichtCharacterMetrics(string characterString, double fontHeight, TextHorizAlign textHorizAlign, CSSObjectClass dynamicClass)
 			: base(dynamicClass, "CLicht", fontHeight, textHorizAlign)
 		{
 			_characterString = characterString;
@@ -91,7 +91,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// Used by RestMetrics and HeadMetrics
         /// </summary>
-		public CLichtCharacterMetrics(DurationClass durationClass, float fontHeight, CSSObjectClass cssClass)
+		public CLichtCharacterMetrics(DurationClass durationClass, double fontHeight, CSSObjectClass cssClass)
 			: base(cssClass, "CLicht", fontHeight)
 		{
 			_characterString = GetClichtCharacterString(durationClass, cssClass == CSSObjectClass.rest);
@@ -114,7 +114,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// Used by AccidentalMetrics
         /// </summary>
-		public CLichtCharacterMetrics(Head head, float fontHeight, CSSObjectClass cssClass)
+		public CLichtCharacterMetrics(Head head, double fontHeight, CSSObjectClass cssClass)
 			: base(cssClass, "CLicht", fontHeight)
 		{
 			_characterString = GetClichtCharacterString(head);
@@ -259,15 +259,15 @@ namespace Moritz.Symbols
 
         public string CharacterString { get { return _characterString; } }
         protected string _characterString = "";
-		protected float _fontHeight;
+		protected double _fontHeight;
 		protected TextHorizAlign _textHorizAlign = TextHorizAlign.left;
     }
     internal class RestMetrics : CLichtCharacterMetrics
 	{
-		public RestMetrics(Graphics graphics, RestSymbol rest, float gap, int numberOfStafflines, float ledgerlineStrokeWidth, CSSObjectClass restClass)
+		public RestMetrics(Graphics graphics, RestSymbol rest, double gap, int numberOfStafflines, double ledgerlineStrokeWidth, CSSObjectClass restClass)
 			: base(rest.DurationClass, rest.FontHeight, restClass)
 		{
-			float dy = 0;
+			double dy = 0;
 			if(numberOfStafflines > 1)
 				dy = gap * (numberOfStafflines / 2);
 
@@ -275,22 +275,22 @@ namespace Moritz.Symbols
 			_bottom += dy;
 			_originY += dy; // the staffline on which the rest is aligned
 			_ledgerlineStub = gap * 0.75F;
-			Move((Left - Right) / 2F, 0F); // centre the glyph horizontally
+			Move((Left - Right) / 2, 0F); // centre the glyph horizontally
             CSSObjectClass llBlockClass = CSSObjectClass.ledgerlines;
 			switch(rest.DurationClass)
 			{
 				case DurationClass.breve:
 				case DurationClass.semibreve:
-					Move(gap * -0.25F, 0F);
+					Move(gap * -0.25, 0F);
 					if(numberOfStafflines == 1)
-						Move(0F, gap);
+						Move(0, gap);
 					_ledgerlineBlockMetrics = new LedgerlineBlockMetrics(Left - _ledgerlineStub, Right + _ledgerlineStub, ledgerlineStrokeWidth, llBlockClass);
 					_ledgerlineBlockMetrics.AddLedgerline(_originY - gap, 0F);
-					_ledgerlineBlockMetrics.Move(gap * 0.17F, 0F);
+					_ledgerlineBlockMetrics.Move(gap * 0.17, 0F);
 					_top -= (gap * 1.5F);
 					break;
 				case DurationClass.minim:
-					Move(gap * 0.18F, 0);
+					Move(gap * 0.18, 0);
 					_ledgerlineBlockMetrics = new LedgerlineBlockMetrics(Left - _ledgerlineStub, Right + _ledgerlineStub - (gap * 0.3F), ledgerlineStrokeWidth, llBlockClass);
 					_ledgerlineBlockMetrics.AddLedgerline(_originY, 0F);
 					_bottom += (gap * 1.5F);
@@ -327,7 +327,7 @@ namespace Moritz.Symbols
 
 		}
 
-        public override void Move(float dx, float dy)
+        public override void Move(double dx, double dy)
 		{
 			base.Move(dx, dy);
 			if(_ledgerlineBlockMetrics != null)
@@ -359,26 +359,26 @@ namespace Moritz.Symbols
 			{
 				if(_ledgerlineBlockMetrics != null && (!_ledgerlineVisible && value))
 				{
-					float width = _ledgerlineBlockMetrics.Right - _ledgerlineBlockMetrics.Left;
-					float padding = width * 0.05F;
+					double width = _ledgerlineBlockMetrics.Right - _ledgerlineBlockMetrics.Left;
+					double padding = width * 0.05F;
 					_left -= (_ledgerlineStub + padding);
 					_right += _ledgerlineStub + padding;
 					_ledgerlineVisible = value;
 				}
 			}
 		}
-		private readonly float _ledgerlineStub;
+		private readonly double _ledgerlineStub;
 		private bool _ledgerlineVisible = false;
 		private LedgerlineBlockMetrics _ledgerlineBlockMetrics = null;
 	}
 	internal class HeadMetrics : CLichtCharacterMetrics
 	{
-		public HeadMetrics(ChordSymbol chord, Head head, float gapVBPX, CSSObjectClass headClass)
+		public HeadMetrics(ChordSymbol chord, Head head, double gapVBPX, CSSObjectClass headClass)
 			: base(chord.DurationClass, chord.FontHeight, headClass)
 		{
-			Move((Left - Right) / 2F, 0F); // centre horizontally
+			Move((Left - Right) / 2, 0F); // centre horizontally
 
-			float horizontalPadding = chord.FontHeight * 0.04F;
+			double horizontalPadding = chord.FontHeight * 0.04F;
 			_leftStemX = _left;
 			_rightStemX = _right;
 			_left -= horizontalPadding;
@@ -398,7 +398,7 @@ namespace Moritz.Symbols
 			// move to position of other head
 			Move(otherHead.OriginX - _originX, otherHead.OriginY - OriginY);
 
-			float horizontalPadding = otherHead.FontHeight * 0.04F;
+			double horizontalPadding = otherHead.FontHeight * 0.04F;
 			_leftStemX = _left;
 			_rightStemX = _right;
 			_left -= horizontalPadding;
@@ -417,13 +417,13 @@ namespace Moritz.Symbols
 		public bool OverlapsHead(HeadMetrics otherHeadMetrics)
 		{
 			// See the above constructor. Sorry, I didnt want to save the value in every Head!
-			float thisHorizontalPadding = this._fontHeight * 0.04F;
-			float thisRealLeft = _left + thisHorizontalPadding;
-			float thisRealRight = _right - thisHorizontalPadding;
+			double thisHorizontalPadding = this._fontHeight * 0.04F;
+			double thisRealLeft = _left + thisHorizontalPadding;
+			double thisRealRight = _right - thisHorizontalPadding;
 
-			float otherHorizontalPadding = otherHeadMetrics.FontHeight * 0.04F;
-			float otherRealLeft = otherHeadMetrics.Left + thisHorizontalPadding;
-			float otherRealRight = otherHeadMetrics.Right - thisHorizontalPadding;
+			double otherHorizontalPadding = otherHeadMetrics.FontHeight * 0.04F;
+			double otherRealLeft = otherHeadMetrics.Left + thisHorizontalPadding;
+			double otherRealRight = otherHeadMetrics.Right - thisHorizontalPadding;
 
 			bool verticalOverlap = this.Bottom >= otherHeadMetrics.Top && this.Top <= otherHeadMetrics.Bottom;
 			bool horizontalOverlap = thisRealRight >= otherRealLeft && thisRealLeft <= otherRealRight;
@@ -437,9 +437,9 @@ namespace Moritz.Symbols
 		public bool OverlapsStem(StemMetrics stemMetrics)
 		{
 			// See the above constructor. Sorry, I didnt want to save the value in every Head!
-			float thisHorizontalPadding = this._fontHeight * 0.04F;
-			float thisRealLeft = _left + thisHorizontalPadding;
-			float thisRealRight = _right - thisHorizontalPadding;
+			double thisHorizontalPadding = this._fontHeight * 0.04F;
+			double thisRealLeft = _left + thisHorizontalPadding;
+			double thisRealRight = _right - thisHorizontalPadding;
 
 			bool verticalOverlap = this.Bottom >= stemMetrics.Top && this.Top <= stemMetrics.Bottom;
 			bool horizontalOverlap = thisRealRight >= stemMetrics.Left && thisRealLeft <= stemMetrics.Right;
@@ -447,7 +447,7 @@ namespace Moritz.Symbols
 			return verticalOverlap && horizontalOverlap;
 		}
 
-		public override void Move(float dx, float dy)
+		public override void Move(double dx, double dy)
 		{
 			base.Move(dx, dy);
 			_leftStemX += dx;
@@ -459,17 +459,17 @@ namespace Moritz.Symbols
 			w.SvgText(CSSObjectClass, CSSColorClass, _characterString, _originX, _originY);
 		}
 
-		public float LeftStemX { get { return _leftStemX; } }
-		private float _leftStemX;
-        public float RightStemX { get { return _rightStemX; } }
-        private float _rightStemX;
+		public double LeftStemX { get { return _leftStemX; } }
+		private double _leftStemX;
+        public double RightStemX { get { return _rightStemX; } }
+        private double _rightStemX;
     }
 	internal class AccidentalMetrics : CLichtCharacterMetrics
 	{
-		public AccidentalMetrics(Head head, float fontHeight, float gap, CSSObjectClass cssClass)
+		public AccidentalMetrics(Head head, double fontHeight, double gap, CSSObjectClass cssClass)
 			: base(head, fontHeight, cssClass)
 		{
-			float verticalPadding = gap / 5;
+			double verticalPadding = gap / 5;
 			_top -= verticalPadding;
 			_bottom += verticalPadding;
 
@@ -516,24 +516,24 @@ namespace Moritz.Symbols
 		/// <param name="isBelow"></param>
 		/// <param name="topBoundary"></param>
 		/// <param name="bottomBoundary"></param>
-		public DynamicMetrics(float gap, TextInfo textInfo, bool isBelow, CSSObjectClass dynamicClass)
+		public DynamicMetrics(double gap, TextInfo textInfo, bool isBelow, CSSObjectClass dynamicClass)
 			: base(textInfo.Text, textInfo.FontHeight, TextHorizAlign.left, dynamicClass)
 		{
 			// visually centre the "italic" dynamic characters
 			if(textInfo.Text == "p" || textInfo.Text == "f") // p, f
 			{
-				Move(textInfo.FontHeight * 0.02F, 0F);
+				Move(textInfo.FontHeight * 0.02, 0F);
 			}
 			else if(textInfo.Text == "F") // mf
 			{
-				Move(textInfo.FontHeight * 0.1F, 0F);
+				Move(textInfo.FontHeight * 0.1, 0F);
 			}
 			else
 			{
-				Move(textInfo.FontHeight * 0.05F, 0F);
+				Move(textInfo.FontHeight * 0.05, 0F);
 			}
-			float dynamicWidth = Right - Left;
-			float moveLeftDelta = -(dynamicWidth / 2F) - (0.25F * gap); // "centre" italics
+			double dynamicWidth = Right - Left;
+			double moveLeftDelta = -(dynamicWidth / 2F) - (0.25F * gap); // "centre" italics
 			Move(moveLeftDelta, 0F);
 
 			IsBelow = isBelow;

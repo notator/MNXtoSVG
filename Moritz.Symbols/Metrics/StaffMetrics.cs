@@ -4,7 +4,7 @@ namespace Moritz.Symbols
 {
     public class StaffMetrics : GroupMetrics
     {
-        public StaffMetrics(float left, float right, float height)
+        public StaffMetrics(double left, double right, double height)
             : base(CSSObjectClass.staff)
         {
             _top = 0F;
@@ -18,7 +18,7 @@ namespace Moritz.Symbols
             _stafflinesRight = _right;
         }
 
-        public override void Move(float dx, float dy)
+        public override void Move(double dx, double dy)
         {
             base.Move(dx, dy);
             _stafflinesTop += dy;
@@ -41,16 +41,16 @@ namespace Moritz.Symbols
 			}
 		}
 
-        public float StafflinesTop { get { return _stafflinesTop; } }
-        private float _stafflinesTop = 0F;
+        public double StafflinesTop { get { return _stafflinesTop; } }
+        private double _stafflinesTop = 0F;
 
-        public float StafflinesBottom { get { return _stafflinesBottom; } }
-        private float _stafflinesBottom = 0F;
+        public double StafflinesBottom { get { return _stafflinesBottom; } }
+        private double _stafflinesBottom = 0F;
 
-        public float StafflinesLeft { get { return _stafflinesLeft; } }
-        private readonly float _stafflinesLeft = 0F;
+        public double StafflinesLeft { get { return _stafflinesLeft; } }
+        private readonly double _stafflinesLeft = 0F;
 
-        public float StafflinesRight { get { return _stafflinesRight; } }
-        private readonly float _stafflinesRight = 0F;
+        public double StafflinesRight { get { return _stafflinesRight; } }
+        private readonly double _stafflinesRight = 0F;
     }
 }

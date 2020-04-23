@@ -100,10 +100,10 @@ namespace Moritz.Midi
         {
             M.Assert(endMsPosition >= currentMsPosition);
 
-            float slideValueDelta = 0f;
-            float slideDuration = endMsPosition - currentMsPosition;
-            float floatCurrentValue = (float)currentValue;
-            float floatEndValue = (float)endValue;
+            double slideValueDelta = 0f;
+            double slideDuration = endMsPosition - currentMsPosition;
+            double floatCurrentValue = (double)currentValue;
+            double floatEndValue = (double)endValue;
 
             if(slideDuration != 0)
                 slideValueDelta = (floatEndValue - floatCurrentValue) / (slideDuration / _defaultSleepTime);

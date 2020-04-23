@@ -16,7 +16,7 @@ namespace Moritz.Midi
     /// </summary>
     public abstract class MidiOffControl : MidiCommand
     {
-        protected MidiOffControl(int channel, ControllerType controller, int value, float xPos)
+        protected MidiOffControl(int channel, ControllerType controller, int value, double xPos)
             : base(channel, controller, value)
         {
             if(xPos > 0.0)
@@ -34,7 +34,7 @@ namespace Moritz.Midi
 	}
 	public class PedalOff : MidiOffControl
 	{
-		public PedalOff(int channel, float xPos)
+		public PedalOff(int channel, double xPos)
 			: base(channel, ControllerType.HoldPedal1, 0, xPos)
 		{
 		}
@@ -48,7 +48,7 @@ namespace Moritz.Midi
 	}
 	public class PortamentoOff : MidiOffControl
 	{
-		public PortamentoOff(int channel, float xPos)
+		public PortamentoOff(int channel, double xPos)
 			: base(channel, ControllerType.Portamento, 0, xPos)
 		{
 		}
@@ -62,7 +62,7 @@ namespace Moritz.Midi
 	}
 	public class ThirdPedalOff : MidiOffControl
 	{
-		public ThirdPedalOff(int channel, float xPos)
+		public ThirdPedalOff(int channel, double xPos)
 			: base(channel, ControllerType.SustenutoPedal, 0, xPos)
 		{
 		}
@@ -76,7 +76,7 @@ namespace Moritz.Midi
 	}
 	public class SoftPedalOff : MidiOffControl
 	{
-		public SoftPedalOff(int channel, float xPos)
+		public SoftPedalOff(int channel, double xPos)
 			: base(channel, ControllerType.SoftPedal, 0, xPos)
 		{
 		}
@@ -90,7 +90,7 @@ namespace Moritz.Midi
 	}
 	public class LegatoPedalOff : MidiOffControl
 	{
-		public LegatoPedalOff(int channel, float xPos)
+		public LegatoPedalOff(int channel, double xPos)
 			: base(channel, ControllerType.LegatoPedal, 0, xPos)
 		{
 		}
@@ -104,7 +104,7 @@ namespace Moritz.Midi
 	}
 	public class FadePedalOff : MidiOffControl
 	{
-		public FadePedalOff(int channel, float xPos)
+		public FadePedalOff(int channel, double xPos)
 			: base(channel, ControllerType.HoldPedal2, 0, xPos)
 		{
 		}
@@ -118,7 +118,7 @@ namespace Moritz.Midi
 	}
 	public class GeneralPurposeButton1Off : MidiOffControl
 	{
-		public GeneralPurposeButton1Off(int channel, float xPos)
+		public GeneralPurposeButton1Off(int channel, double xPos)
 			: base(channel, ControllerType.GeneralPurposeButton1, 0, xPos)
 		{
 		}
@@ -132,7 +132,7 @@ namespace Moritz.Midi
 	}
 	public class GeneralPurposeButton2Off : MidiOffControl
 	{
-		public GeneralPurposeButton2Off(int channel, float xPos)
+		public GeneralPurposeButton2Off(int channel, double xPos)
 			: base(channel, ControllerType.GeneralPurposeButton2, 0, xPos)
 		{
 		}
@@ -146,7 +146,7 @@ namespace Moritz.Midi
 	}
 	public class GeneralPurposeButton3Off : MidiOffControl
 	{
-		public GeneralPurposeButton3Off(int channel, float xPos)
+		public GeneralPurposeButton3Off(int channel, double xPos)
 			: base(channel, ControllerType.GeneralPurposeButton3, 0, xPos)
 		{
 		}
@@ -160,7 +160,7 @@ namespace Moritz.Midi
 	}
 	public class GeneralPurposeButton4Off : MidiOffControl
 	{
-		public GeneralPurposeButton4Off(int channel, float xPos)
+		public GeneralPurposeButton4Off(int channel, double xPos)
 			: base(channel, ControllerType.GeneralPurposeButton4, 0, xPos)
 		{
 		}
@@ -202,7 +202,7 @@ namespace Moritz.Midi
 	}
 	public class LocalKeyboardOff : MidiOffControl
 	{
-		public LocalKeyboardOff(int channel, float xPos)
+		public LocalKeyboardOff(int channel, double xPos)
 			: base(channel, ControllerType.LocalKeyboard, 0, xPos)
 		{
 		}

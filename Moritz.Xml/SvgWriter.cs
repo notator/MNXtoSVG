@@ -60,7 +60,7 @@ namespace Moritz.Xml
 		/// <param name="y1"></param>
 		/// <param name="x2"></param>
 		/// <param name="y2"></param>
-		public void SvgLine(CSSObjectClass cssClass, float x1, float y1, float x2, float y2)
+		public void SvgLine(CSSObjectClass cssClass, double x1, double y1, double x2, double y2)
 		{
 			_w.WriteStartElement("line");
 		    _w.WriteAttributeString("class", cssClass.ToString());
@@ -79,7 +79,7 @@ namespace Moritz.Xml
         /// <param name="top"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public void SvgRect(CSSObjectClass cssClass, float left, float top, float width, float height)
+        public void SvgRect(CSSObjectClass cssClass, double left, double top, double width, double height)
         {
             _w.WriteStartElement("rect");
 			_w.WriteAttributeString("class", cssClass.ToString());
@@ -97,7 +97,7 @@ namespace Moritz.Xml
 		/// <param name="cx"></param>
 		/// <param name="cy"></param>
 		/// <param name="r"></param>
-		public void SvgCircle(CSSObjectClass cssClass, float cx, float cy, float r)
+		public void SvgCircle(CSSObjectClass cssClass, double cx, double cy, double r)
 		{
 			WriteStartElement("circle");
 			_w.WriteAttributeString("class", cssClass.ToString());
@@ -116,7 +116,7 @@ namespace Moritz.Xml
 		/// <param name="cy"></param>
 		/// <param name="rx"></param>
 		/// <param name="ry"></param>
-		public void SvgEllipse(CSSObjectClass cssClass, float cx, float cy, float rx, float ry)
+		public void SvgEllipse(CSSObjectClass cssClass, double cx, double cy, double rx, double ry)
 		{
 			WriteStartElement("ellipse");
 			WriteAttributeString("class", cssClass.ToString());
@@ -131,11 +131,11 @@ namespace Moritz.Xml
         /// <summary>
         /// A square bracket
         /// </summary>
-        public void SvgCautionaryBracket(CSSObjectClass cssClass, bool isLeftBracket, float top, float right, float bottom, float left)
+        public void SvgCautionaryBracket(CSSObjectClass cssClass, bool isLeftBracket, double top, double right, double bottom, double left)
         {
             if(!isLeftBracket)
             {
-                float temp = left;
+                double temp = left;
                 left = right;
                 right = temp;
             }
@@ -164,10 +164,10 @@ namespace Moritz.Xml
         /// <param name="topRightY"></param>
         /// <param name="beamWidth">The vertical distance between the coordinates on the left and right sides.</param>
         /// <param name="isOpaque"></param>
-        public void SvgBeam(float left, float right, float topLeftY, float topRightY, float beamWidth, bool isOpaque)
+        public void SvgBeam(double left, double right, double topLeftY, double topRightY, double beamWidth, bool isOpaque)
         {
-            float bottomLeftY = topLeftY + beamWidth;
-            float bottomRightY = topRightY + beamWidth;
+            double bottomLeftY = topLeftY + beamWidth;
+            double bottomRightY = topRightY + beamWidth;
             StringBuilder dSB = new StringBuilder();
             dSB.Append("M " + left.ToString("0.###", M.En_USNumberFormat) + " " + topLeftY.ToString("0.###", M.En_USNumberFormat) + " ");
             dSB.Append("L " + right.ToString("0.###", M.En_USNumberFormat) + " " + topRightY.ToString("0.###", M.En_USNumberFormat) + " ");
@@ -190,7 +190,7 @@ namespace Moritz.Xml
             _w.WriteEndElement(); // path
         }
 
-		public void SvgText(CSSObjectClass cssClass, string text, float x, float y)
+		public void SvgText(CSSObjectClass cssClass, string text, double x, double y)
 		{
 			_w.WriteStartElement("text");
 			_w.WriteAttributeString("class", cssClass.ToString());
@@ -201,7 +201,7 @@ namespace Moritz.Xml
 		}
 
 		// Currently used only by HeadMetrics (to write coloured noteheads).
-		public void SvgText(CSSObjectClass cssObjectClass, CSSColorClass cssColorClass, string text, float x, float y)
+		public void SvgText(CSSObjectClass cssObjectClass, CSSColorClass cssColorClass, string text, double x, double y)
 		{
 			string classesString = cssObjectClass.ToString();
 			if(cssColorClass != CSSColorClass.none && cssColorClass != CSSColorClass.black)
@@ -227,7 +227,7 @@ namespace Moritz.Xml
 		/// <param name="cssClass">Currently either CSSClass.clef or CSSClass.flag</param>
 		/// <param name="y">This element's y-coordinate.</param>
 		/// <param name="idOfObjectToUse">(Do not include the leading '#'. It will be inserted automatically.)</param>
-		public void SvgUseXY(CSSObjectClass cssClass, string idOfObjectToUse, float x, float y)
+		public void SvgUseXY(CSSObjectClass cssClass, string idOfObjectToUse, double x, double y)
         {
             _w.WriteStartElement("use");
             _w.WriteAttributeString("class", cssClass.ToString());
@@ -248,7 +248,7 @@ namespace Moritz.Xml
         ///     [path d="M 0,1    0,1.12096 0.31809,1.2467 Q 0.299,1.20 0.31809,1.1257" /]
         /// [/g]
         /// </summary>
-        public void WriteFlagBlock(StringBuilder type, int nFlags, bool rightFlag, float fontHeight)
+        public void WriteFlagBlock(StringBuilder type, int nFlags, bool rightFlag, double fontHeight)
         {
             string id = type.ToString();       
             string x1 = "0";
@@ -257,20 +257,20 @@ namespace Moritz.Xml
             string x4 = M.FloatToShortString(0.299F * fontHeight);
             string x5 = M.FloatToShortString(0.31809F * fontHeight);
 
-            float sign = rightFlag ? 1F : -1F;
-            float y1 = 0F;
-            float y2 = sign * 0.12096F * fontHeight;
-            float y3 = sign * 0.2467F * fontHeight;
-            float y4 = sign * 0.2F * fontHeight;
-            float y5 = sign * 0.1257F * fontHeight;
-            float flagOffset = sign * 0.25F * fontHeight;
+            double sign = rightFlag ? 1F : -1F;
+            double y1 = 0F;
+            double y2 = sign * 0.12096F * fontHeight;
+            double y3 = sign * 0.2467F * fontHeight;
+            double y4 = sign * 0.2F * fontHeight;
+            double y5 = sign * 0.1257F * fontHeight;
+            double flagOffset = sign * 0.25F * fontHeight;
 
             _w.WriteStartElement("g");
             _w.WriteAttributeString("id", id);
 
-            for(float flagIndex = 0; flagIndex < nFlags; flagIndex++)
+            for(double flagIndex = 0; flagIndex < nFlags; flagIndex++)
             {
-                float offset = flagIndex * flagOffset;
+                double offset = flagIndex * flagOffset;
                 _w.WriteStartElement("path");
                 StringBuilder dAttributeSB = new StringBuilder();
                 dAttributeSB.Append("M ");

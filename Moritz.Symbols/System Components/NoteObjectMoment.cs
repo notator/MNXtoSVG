@@ -20,14 +20,14 @@ namespace Moritz.Symbols
         /// Returns the distance between the leftmost left edge and this moment's alignment point.
         /// </summary>
         /// <returns></returns>
-        public float LeftEdgeToAlignment()
+        public double LeftEdgeToAlignment()
         {
-            float maxLeftEdgeToAlignmentX = float.MinValue;
+            double maxLeftEdgeToAlignmentX = double.MinValue;
             foreach(NoteObject noteObject in _noteObjects)
             {
                 if(noteObject.Metrics != null) // is null if the noteobject is on an invisibleOutputStaff
                 {
-                    float leftEdgeToAlignmentX = AlignmentX - noteObject.Metrics.Left;
+                    double leftEdgeToAlignmentX = AlignmentX - noteObject.Metrics.Left;
                     maxLeftEdgeToAlignmentX =
                         maxLeftEdgeToAlignmentX > leftEdgeToAlignmentX ? maxLeftEdgeToAlignmentX : leftEdgeToAlignmentX;
                 }
@@ -60,9 +60,9 @@ namespace Moritz.Symbols
         /// returns a dictionary containing staff, rightEdge pairs.
         /// </summary>
         /// <returns></returns>
-        public Dictionary<Staff, float> StaffRights()
+        public Dictionary<Staff, double> StaffRights()
         {
-            Dictionary<Staff, float> dict = new Dictionary<Staff, float>();
+            Dictionary<Staff, double> dict = new Dictionary<Staff, double>();
             foreach(NoteObject noteObject in _noteObjects)
             {
                 Staff staff = noteObject.Voice.Staff;
@@ -79,9 +79,9 @@ namespace Moritz.Symbols
             return dict;
         }
 
-        public void MoveToAlignmentX(float alignmentX)
+        public void MoveToAlignmentX(double alignmentX)
         {
-            float deltaX = alignmentX - AlignmentX;
+            double deltaX = alignmentX - AlignmentX;
             foreach(NoteObject noteObject in _noteObjects)
             {
                 if(noteObject.Metrics != null)
@@ -94,9 +94,9 @@ namespace Moritz.Symbols
         /// Aligns barline glyphs in this moment, moving an immediately preceding clef, but
         /// without moving the following duration symbol (which is aligned at this.AlignmentX).
         /// </summary>
-        public void AlignBarlineAndClefGlyphs(float gap)
+        public void AlignBarlineAndClefGlyphs(double gap)
         {
-            float minBarlineOriginX = float.MaxValue;
+            double minBarlineOriginX = double.MaxValue;
             foreach(NoteObject noteObject in _noteObjects)
             {
 				if(noteObject is Barline b && b.Metrics != null && b.Metrics.OriginX < minBarlineOriginX)
@@ -203,7 +203,7 @@ namespace Moritz.Symbols
             }
         }
 
-        public float AlignmentX = 0F;
+        public double AlignmentX = 0F;
 
         /// <summary>
         /// The logical position in milliseconds from the beginning of the score.

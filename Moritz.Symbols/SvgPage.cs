@@ -58,8 +58,8 @@ namespace Moritz.Symbols
         /// </summary>
         private void MoveSystemsVertically(PageFormat pageFormat, List<SvgSystem> pageSystems, bool firstPage, bool lastPage)
         {
-            float frameTop;
-            float frameHeight;
+            double frameTop;
+            double frameHeight;
             if(firstPage)
             {
                 frameTop = pageFormat.TopMarginPage1;
@@ -74,9 +74,9 @@ namespace Moritz.Symbols
             MoveSystemsVertically(pageSystems, frameTop, frameHeight, pageFormat.DefaultDistanceBetweenSystems, lastPage);
         }
 
-        private void MoveSystemsVertically(List<SvgSystem> pageSystems, float frameTop, float frameHeight, float defaultSystemSeparation, bool lastPage)
+        private void MoveSystemsVertically(List<SvgSystem> pageSystems, double frameTop, double frameHeight, double defaultSystemSeparation, bool lastPage)
         {
-            float systemSeparation = 0;
+            double systemSeparation = 0;
             if(lastPage) // dont justify
             {
                 systemSeparation = defaultSystemSeparation;
@@ -85,7 +85,7 @@ namespace Moritz.Symbols
             {                
                 if(pageSystems.Count >= 1)
                 {
-                    float totalSystemHeight = 0;
+                    double totalSystemHeight = 0;
                     foreach(SvgSystem system in pageSystems)
                     {
                         M.Assert(system.Metrics != null);
@@ -95,17 +95,17 @@ namespace Moritz.Symbols
                 }
             }
 
-            float top = frameTop;
+            double top = frameTop;
             foreach(SvgSystem system in pageSystems)
             {
                 if(system.Metrics != null)
                 {
-                    float deltaY = top - system.Metrics.NotesTop;
+                    double deltaY = top - system.Metrics.NotesTop;
                     // Limit stafflineHeight to multiples of _pageMetrics.Gap
                     // so that stafflines are not displayed as thick grey lines.
                     // The following works, because the top staffline of each system is currently at 0.
                     deltaY -= (deltaY % _pageFormat.Gap);
-                    system.Metrics.Move(0F, deltaY);
+                    system.Metrics.Move(0, deltaY);
                     top = system.Metrics.NotesBottom + systemSeparation;
                 }
             }
@@ -173,7 +173,7 @@ namespace Moritz.Symbols
 			}
 		}
 
-		private void WriteFrameLayer(SvgWriter w, float width, float height)
+		private void WriteFrameLayer(SvgWriter w, double width, double height)
 		{
             w.SvgRect(CSSObjectClass.frame, 0, 0, width, height);
         }
@@ -263,14 +263,14 @@ namespace Moritz.Symbols
 			string titlesFontFamily = "Open Sans";
 
 			TextInfo titleInfo =
-				new TextInfo(metadata.Page1Title, titlesFontFamily, _pageFormat.Page1TitleHeight,
+				new TextInfo(metadata.ScoreTitle, titlesFontFamily, _pageFormat.Page1TitleHeight,
 					null, TextHorizAlign.center);
 			TextInfo authorInfo =
-			  new TextInfo(metadata.Page1Author, titlesFontFamily, _pageFormat.Page1AuthorHeight,
+			  new TextInfo(metadata.ScoreAuthor, titlesFontFamily, _pageFormat.Page1AuthorHeight,
 				  null, TextHorizAlign.right);
 			w.WriteStartElement("g");
 			w.WriteAttributeString("class", CSSObjectClass.titles.ToString());
-			w.SvgText(CSSObjectClass.mainTitle, titleInfo.Text, _pageFormat.Right / 2F, _pageFormat.Page1TitleY);
+			w.SvgText(CSSObjectClass.mainTitle, titleInfo.Text, _pageFormat.Right / 2, _pageFormat.Page1TitleY);
 			w.SvgText(CSSObjectClass.author, authorInfo.Text, _pageFormat.RightMarginPos, _pageFormat.Page1TitleY);
 			w.WriteEndElement(); // group
 		}

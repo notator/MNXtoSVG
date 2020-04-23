@@ -12,13 +12,13 @@ namespace Moritz.Symbols
 {
     public class ClefMetrics : Metrics // defined objects in SVG
     {
-        public ClefMetrics(Clef clef, float gap, CSSObjectClass cssClefClass, ClefID clefID)
+        public ClefMetrics(Clef clef, double gap, CSSObjectClass cssClefClass, ClefID clefID)
             : base(cssClefClass)
         {
-            float trebleTop = -4.35F * gap;
-            float trebleRight = 3.1F * gap;
-            float highTrebleTop = -5.9F * gap;
-            float trebleBottom = 2.7F * gap;
+            double trebleTop = -4.35F * gap;
+            double trebleRight = 3.1F * gap;
+            double highTrebleTop = -5.9F * gap;
+            double trebleBottom = 2.7F * gap;
             #region treble clefs
             switch(clef.ClefType)
             {
@@ -48,16 +48,16 @@ namespace Moritz.Symbols
 
             if(_right > 0F)
             {
-                Move(0F, 3 * gap);
+                Move(0, 3 * gap);
             }
             #endregion treble clefs
 
             if(!(_right > 0F))
             {
-                float bassTop = -gap;
-                float bassRight = trebleRight;
-                float bassBottom = gap * 3F;
-                float lowBassBottom = gap * 4.5F;
+                double bassTop = -gap;
+                double bassRight = trebleRight;
+                double bassBottom = gap * 3F;
+                double lowBassBottom = gap * 4.5F;
                 #region bass clefs
                 switch(clef.ClefType)
                 {
@@ -117,14 +117,14 @@ namespace Moritz.Symbols
     }
 	internal class SmallClefMetrics : ClefMetrics
 	{
-		public SmallClefMetrics(Clef clef, float gap, CSSObjectClass cssClass, ClefID clefID)
+		public SmallClefMetrics(Clef clef, double gap, CSSObjectClass cssClass, ClefID clefID)
 			: base(clef, gap, cssClass, clefID)
 		{
 			_right = 3.5F * gap; // small clefs have proportionally more empty space on the right.
 
 			if(clef.ClefType[0] == 'b' && clef.ClefType.Length > 1)
 			{
-				//float lowBassBottom = gap * 4.5F;
+				//double lowBassBottom = gap * 4.5F;
 				_bottom = gap * 4.65F; // small bass clef octaves are lower than for normal bass clefs
 			}
 		}
@@ -133,7 +133,7 @@ namespace Moritz.Symbols
 	///// tempSmallClefs have no width or height
 	//internal class SmallClefTempMetrics : SmallClefMetrics
 	//{
-	//	public SmallClefTempMetrics(Clef clef, float gap, CSSObjectClass cssClass, ClefID clefID)
+	//	public SmallClefTempMetrics(Clef clef, double gap, CSSObjectClass cssClass, ClefID clefID)
 	//		: base(clef, gap, cssClass, clefID)
 	//	{
 	//		_top = _originY;
@@ -144,7 +144,7 @@ namespace Moritz.Symbols
 
 	//		if(clef.ClefType[0] == 'b' && clef.ClefType.Length > 1)
 	//		{
-	//			//float lowBassBottom = gap * 4.5F;
+	//			//double lowBassBottom = gap * 4.5F;
 	//			_bottom = gap * 4.65F; // small bass clef octaves are lower than for normal bass clefs
 	//		}
 	//	}

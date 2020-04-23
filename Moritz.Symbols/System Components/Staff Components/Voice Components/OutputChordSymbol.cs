@@ -45,7 +45,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// used by CautionaryOutputChordSymbol
         /// </summary>
-        public OutputChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, float fontSize)
+        public OutputChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, double fontSize)
             : base(voice, msDuration, absMsPosition, minimumCrotchetDurationMS, fontSize, false)
         {
 

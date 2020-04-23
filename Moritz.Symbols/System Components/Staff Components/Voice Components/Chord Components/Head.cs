@@ -61,17 +61,17 @@ namespace Moritz.Symbols
         /// The chord's y-origin is the top line of the staff.
         /// (Y-Alignment of a notehead on the top line of the staff is 0.)
         /// Uses the following protected variables (in Metrics) which have been set by GetStaffParameters()
-        ///     protected float _gapVBPX = 0F; 
+        ///     protected double _gapVBPX = 0F; 
         ///     protected int _nStafflines = 0;
         ///     protected ClefSymbol _clef = null;
         /// </summary>
         /// <param name="headIndex"></param>
         /// <param name="?"></param>
         /// <param name="?"></param>
-        public float GetOriginY(Clef clef, float gap)
+        public double GetOriginY(Clef clef, double gap)
         {
             string[] alphabet = { "C", "D", "E", "F", "G", "A", "B" };
-            float shiftFactor = 0F;
+            double shiftFactor = 0F;
             switch(this.Pitch[0])
             {
                 case 'A':
@@ -112,7 +112,7 @@ namespace Moritz.Symbols
             {
                 M.Assert(false, "Error in octave string");
             }
-            float octaveShift = octave - 5F;
+            double octaveShift = octave - 5F;
             shiftFactor -= (octaveShift * 3.5F); // 3.5 spaces is one octave
             // shiftFactor is currently correct for all octaves on a normal treble clef
             switch(clef.ClefType)
@@ -144,7 +144,7 @@ namespace Moritz.Symbols
                     break;
             }
 
-            float headY = shiftFactor * gap;
+            double headY = shiftFactor * gap;
             return headY;
         }
 
@@ -241,8 +241,8 @@ namespace Moritz.Symbols
         ///  parenth: show accidental in parentheses
         /// </summary>
         public DisplayAccidental DisplayAccidental = DisplayAccidental.auto;
-        public float XShift_Gap4 = 0F; // shifts the accidental, not the notehead!
-        public float FontSize = 0F;
+        public double XShift_Gap4 = 0F; // shifts the accidental, not the notehead!
+        public double FontSize = 0F;
 
         private string _pitch;
         private int _alteration = 0;

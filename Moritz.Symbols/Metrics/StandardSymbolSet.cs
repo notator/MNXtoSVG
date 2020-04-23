@@ -41,10 +41,6 @@ namespace Moritz.Symbols
                 WriteClefSymbolDef(w, true, false, false); // treble, normal, output
             if(uc.Contains(ClefID.smallTrebleClef))
                 WriteClefSymbolDef(w, true, true, false); // treble, small, output
-            if(uc.Contains(ClefID.inputTrebleClef))
-                WriteClefSymbolDef(w, true, false, true); // treble, normal, input
-            if(uc.Contains(ClefID.inputSmallTrebleClef))
-                WriteClefSymbolDef(w, true, true, true); // treble, small, input
 
             if(uc.Contains(ClefID.trebleClef8))
                 WriteClef8SymbolDef(w, true, false, false, normalHeight); // treble, normal, output

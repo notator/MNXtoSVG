@@ -156,8 +156,6 @@ namespace Moritz.Symbols
 
         #region stroke widths
         public double StafflineStemStrokeWidth;
-        private SVGData svgData;
-
         public double NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidth * 2F; } }
 		public double ThinBarlineStrokeWidth { get { return NormalBarlineStrokeWidth / 2; } } // a component of double barlines.
 		public double ThickBarlineStrokeWidth { get { return NormalBarlineStrokeWidth * 2; } } // a component of double barlines.

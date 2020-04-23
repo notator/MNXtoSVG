@@ -15,7 +15,7 @@ namespace Moritz.Symbols
     {
         #region fields
         #region constructor
-        protected readonly PageFormat PageFormat = null;
+        public readonly PageFormat PageFormat = null;
         internal readonly string FileName = null; // The base file name with ".svg"
         internal readonly string FilePath = null; // The complete path, including the FileName.
         internal readonly string ScoreTitle = null; // As it appears in the score (can be null or empty).
@@ -213,13 +213,13 @@ namespace Moritz.Symbols
             M.Assert(Notator != null);
 			w.SvgStartDefs(null);
 			WriteStyle(w, pageNumber);
-			Notator.SymbolSet.WriteSymbolDefinitions(w, _pageFormat);
+			Notator.SymbolSet.WriteSymbolDefinitions(w, PageFormat);
 			w.SvgEndDefs(); // end of defs
 		}
 
 		private void WriteStyle(SvgWriter w, int pageNumber)
 		{
-            StringBuilder css = GetStyles(_pageFormat, pageNumber);
+            StringBuilder css = GetStyles(PageFormat, pageNumber);
 
             w.WriteStartElement("style");
 			w.WriteAttributeString("type", "text/css");
@@ -618,28 +618,6 @@ namespace Moritz.Symbols
 
             return rval;
         }
-        private bool OctavedInputClefExists(List<ClefID> usedClefIDs)
-        {
-            bool rval = usedClefIDs.Contains(ClefID.inputTrebleClef8)
-            || usedClefIDs.Contains(ClefID.inputBassClef8)
-            || usedClefIDs.Contains(ClefID.inputTrebleClef2x8)
-            || usedClefIDs.Contains(ClefID.inputBassClef2x8)
-            || usedClefIDs.Contains(ClefID.inputTrebleClef3x8)
-            || usedClefIDs.Contains(ClefID.inputBassClef3x8);
-
-            return rval;
-        }
-        private bool OctavedInputSmallClefExists(List<ClefID> usedClefIDs)
-        {
-            bool rval = usedClefIDs.Contains(ClefID.inputSmallTrebleClef8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef8)
-            || usedClefIDs.Contains(ClefID.inputSmallTrebleClef2x8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef2x8)
-            || usedClefIDs.Contains(ClefID.inputSmallTrebleClef3x8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef3x8);
-
-            return rval;
-        }
 
         private bool ClefXExists(List<ClefID> usedClefIDs)
         {
@@ -656,24 +634,6 @@ namespace Moritz.Symbols
             || usedClefIDs.Contains(ClefID.smallBassClef2x8)
             || usedClefIDs.Contains(ClefID.smallTrebleClef3x8)
             || usedClefIDs.Contains(ClefID.smallBassClef3x8);
-
-            return rval;
-        }
-        private bool InputClefXExists(List<ClefID> usedClefIDs)
-        {
-            bool rval = usedClefIDs.Contains(ClefID.inputTrebleClef2x8)
-            || usedClefIDs.Contains(ClefID.inputBassClef2x8)
-            || usedClefIDs.Contains(ClefID.inputTrebleClef3x8)
-            || usedClefIDs.Contains(ClefID.inputBassClef3x8);
-
-            return rval;
-        }
-        private bool InputSmallClefXExists(List<ClefID> usedClefIDs)
-        {
-            bool rval = usedClefIDs.Contains(ClefID.inputSmallTrebleClef2x8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef2x8)
-            || usedClefIDs.Contains(ClefID.inputSmallTrebleClef3x8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef3x8);
 
             return rval;
         }
@@ -859,7 +819,7 @@ namespace Moritz.Symbols
 		public void SaveSingleSVGScore(bool graphicsOnly)
 		{
 			TextInfo infoTextInfo = GetBasicInfoTextAtTopOfPage(0);
-			SvgPage singlePage = new SvgPage(this, _pageFormat, 0, infoTextInfo, this.Systems, true);
+			SvgPage singlePage = new SvgPage(this, PageFormat, 0, infoTextInfo, this.Systems, true);
 
 			string pageFilename = Path.GetFileNameWithoutExtension(FilePath);
 			if(graphicsOnly)
@@ -897,7 +857,7 @@ namespace Moritz.Symbols
                     {
                         if(noteObject is Barline firstBarline)
                         {
-                            double fontHeight = _pageFormat.StaffNameFontHeight;
+                            double fontHeight = PageFormat.StaffNameFontHeight;
 							StaffNameText staffNameText = new StaffNameText(firstBarline, staff.Staffname, fontHeight);
                             firstBarline.DrawObjects.Add(staffNameText);
                             break;
@@ -990,7 +950,7 @@ namespace Moritz.Symbols
                 while(barNumber <= Systems.Count)
                 {
                     barNumbers.Add(barNumber);
-                    barNumber += _pageFormat.DefaultNumberOfBarsPerSystem;
+                    barNumber += PageFormat.DefaultNumberOfBarsPerSystem;
                 }
             }
 
@@ -1241,9 +1201,9 @@ namespace Moritz.Symbols
 
             AddNormalBarlines(); // 1. add a NormalBarline at the end of each system=bar,
 
-			ReplaceConsecutiveRestsInBars(_pageFormat.MinimumCrotchetDuration);
+			ReplaceConsecutiveRestsInBars(PageFormat.MinimumCrotchetDuration);
 
-            SetSystemsToBeginAtBars(_pageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
+            SetSystemsToBeginAtBars(PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
 
 			SetSystemAbsEndMsPositions();
 
@@ -1531,9 +1491,9 @@ namespace Moritz.Symbols
             double systemHeight = 0;
             double frameHeight;
             if(pageNumber == 1)
-                frameHeight = _pageFormat.FirstPageFrameHeight;
+                frameHeight = PageFormat.FirstPageFrameHeight;
             else
-                frameHeight = _pageFormat.OtherPagesFrameHeight;
+                frameHeight = PageFormat.OtherPagesFrameHeight;
 
             double systemHeightsTotal = 0;
             while(systemIndex < Systems.Count)
@@ -1550,14 +1510,14 @@ namespace Moritz.Symbols
                     break;
                 }
 
-                systemHeightsTotal += _pageFormat.DefaultDistanceBetweenSystems;
+                systemHeightsTotal += PageFormat.DefaultDistanceBetweenSystems;
 
                 systemsOnPage.Add(Systems[systemIndex]);
 
                 systemIndex++;
             }
 
-            return new SvgPage(this, _pageFormat, pageNumber, infoTextInfo, systemsOnPage, lastPage);
+            return new SvgPage(this, PageFormat, pageNumber, infoTextInfo, systemsOnPage, lastPage);
         }
 
         private TextInfo GetBasicInfoTextAtTopOfPage(int pageNumber)
@@ -1579,7 +1539,7 @@ namespace Moritz.Symbols
             if(Metadata != null)
                 infoAtTopOfPageSB.AppendFormat(", " + Metadata.Date);
 
-            return new TextInfo(infoAtTopOfPageSB.ToString(), "Arial", _pageFormat.TimeStampFontHeight, TextHorizAlign.left);
+            return new TextInfo(infoAtTopOfPageSB.ToString(), "Arial", PageFormat.TimeStampFontHeight, TextHorizAlign.left);
         }
 
 
@@ -1633,7 +1593,7 @@ namespace Moritz.Symbols
                     {
                         if(isFirstBarline && system != Systems[0])
                         {
-                            FramedBarNumberText framedBarNumber = new FramedBarNumberText(this, barNumber.ToString(), _pageFormat.Gap, _pageFormat.StafflineStemStrokeWidth);
+                            FramedBarNumberText framedBarNumber = new FramedBarNumberText(this, barNumber.ToString(), PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
 
                             barline.DrawObjects.Add(framedBarNumber);
                             isFirstBarline = false;
@@ -1674,7 +1634,7 @@ namespace Moritz.Symbols
 				{
 					if(regionStartDataBarIndices.Contains(barlineIndex))
 					{
-						FramedRegionStartText frst = new FramedRegionStartText(this, regionStartData[barlineIndex], _pageFormat.Gap, _pageFormat.StafflineStemStrokeWidth);
+						FramedRegionStartText frst = new FramedRegionStartText(this, regionStartData[barlineIndex], PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
 						barline.DrawObjects.Add(frst);
 					}
 					barlineIndex++;
@@ -1722,7 +1682,7 @@ namespace Moritz.Symbols
 				{
 					if(regionEndDataBarIndices.Contains(barlineIndex))
 					{
-						FramedRegionEndText fret = new FramedRegionEndText(this, regionEndData[barlineIndex], _pageFormat.Gap, _pageFormat.StafflineStemStrokeWidth);
+						FramedRegionEndText fret = new FramedRegionEndText(this, regionEndData[barlineIndex], PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
 						barline.DrawObjects.Add(fret);
 					}
 					barlineIndex++;

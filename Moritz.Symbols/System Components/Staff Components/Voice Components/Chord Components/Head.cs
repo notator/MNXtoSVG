@@ -180,10 +180,7 @@ namespace Moritz.Symbols
                     midiPitch = MidiPitch;
                 }
 
-                if(midiPitch < 0 || midiPitch > 127)
-                {
-                    throw new ErrorInScoreException("Error: Head.OctaveTransposition value out of range.");
-                }
+                M.Assert(!(midiPitch < 0 || midiPitch > 127), "Error: Head.OctaveTransposition value out of range.");
             }
         }
         private int _octaveTransposition = 0;

@@ -53,7 +53,7 @@ namespace MNX_Main
                     var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
                     var svgData = new SVGData(svgds);
                     List<Bar> Bars = mnx.ToBars();
-                    CreateSVGScore(Bars);
+                    //CreateSVGScore(Bars);
                 }
             }
             else
@@ -62,7 +62,7 @@ namespace MNX_Main
                 var svgds = new SVGDataStrings(_mnxSVGDatas[selectedIndex - 1].Item2);
                 var svgData = new SVGData(svgds);
                 List<Bar> Bars = mnx.ToBars();
-                CreateSVGScore(Bars);
+                //CreateSVGScore(Bars);
             }
         }
 

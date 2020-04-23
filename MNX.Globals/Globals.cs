@@ -448,8 +448,6 @@ namespace MNX.Globals
 
         #endregion
 
-
-
         #region IntDivision
         /// <summary>
         /// This function divides total into divisor parts, returning a List of ints whose:
@@ -717,7 +715,9 @@ namespace MNX.Globals
         /// <returns></returns>
         public static string FloatToShortString(double value)
         {
-            return value.ToString("0.####", En_USNumberFormat);
+            return string.Format(En_USNumberFormat, "{0:0.0000}%", value);
+
+            //return value.ToString("0.####", En_USNumberFormat);
         }
 
         /// <summary>

@@ -91,7 +91,7 @@ namespace Moritz.Symbols
 			Size maxSize = new Size(int.MaxValue, int.MaxValue);
 			TextFormatFlags flags = TextFormatFlags.NoPadding;
 			Size sizeOfString;
-			using(Font sysFont = new Font(fontFace, fontHeight))
+			using(Font sysFont = new Font(fontFace, (float)fontHeight))
 			{
 				sizeOfString = TextRenderer.MeasureText(g, text, sysFont, maxSize, flags);
 			}

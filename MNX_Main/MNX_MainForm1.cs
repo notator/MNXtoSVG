@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
-using MNX.AGlobals;
+using MNX.Globals;
 using Moritz.Spec;
 
 namespace MNX_Main

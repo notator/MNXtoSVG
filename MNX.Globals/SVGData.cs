@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace MNX.AGlobals
+namespace MNX.Globals
 {
     public class SVGData
     {

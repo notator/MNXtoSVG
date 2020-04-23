@@ -119,9 +119,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MNX.Globals\MNX.AGlobals.csproj">
+    <ProjectReference Include="..\MNX.Globals\MNX.Globals.csproj">
       <Project>{9abe7e06-1560-42cb-86c8-26d64cfb4cff}</Project>
-      <Name>MNX.AGlobals</Name>
+      <Name>MNX.Globals</Name>
     </ProjectReference>
     <ProjectReference Include="..\MNXCommon\MNX.Common.csproj">
       <Project>{6872babe-c7a2-496d-b97a-b7997cd9bfcd}</Project>

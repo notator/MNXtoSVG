@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using MNX.Common;
 using System;
 using System.Xml;

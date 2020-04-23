@@ -1,6 +1,6 @@
 
 using System.Diagnostics;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace Moritz.Spec
 {

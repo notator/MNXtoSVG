@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System;
 
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace Moritz.Spec
 {
@@ -81,7 +81,7 @@ namespace Moritz.Spec
         private bool IsNoteOffMsg(MidiMsg msg)
         {
             int statusHighNibbble = msg.Status & 0xF0;
-            if(statusHighNibbble == C.CMD_NOTE_OFF_0x80 || (statusHighNibbble == C.CMD_NOTE_ON_0x90 && msg.Data2 == 0))
+            if(statusHighNibbble == A.CMD_NOTE_OFF_0x80 || (statusHighNibbble == A.CMD_NOTE_ON_0x90 && msg.Data2 == 0))
             {
                 return true;
             }

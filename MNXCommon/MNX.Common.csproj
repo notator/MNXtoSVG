@@ -72,9 +72,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MNX.Globals\MNX.AGlobals.csproj">
+    <ProjectReference Include="..\MNX.Globals\MNX.Globals.csproj">
       <Project>{9abe7e06-1560-42cb-86c8-26d64cfb4cff}</Project>
-      <Name>MNX.AGlobals</Name>
+      <Name>MNX.Globals</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

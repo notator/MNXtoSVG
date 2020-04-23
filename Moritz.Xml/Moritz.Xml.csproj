@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C84026D4-800E-4590-8127-97E78B471921}</ProjectGuid>
+    <ProjectGuid>{B239C302-A15D-4397-9F3C-EE6CC85440F3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Moritz.Spec</RootNamespace>
-    <AssemblyName>Moritz.Spec</AssemblyName>
+    <RootNamespace>Moritz.Xml</RootNamespace>
+    <AssemblyName>Moritz.Xml</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -33,39 +33,25 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bar.cs" />
-    <Compile Include="BasicMidiChordDef.cs" />
-    <Compile Include="CarryMsgs.cs" />
-    <Compile Include="CautionaryChordDef.cs" />
-    <Compile Include="ClefDef.cs" />
-    <Compile Include="DurationDef.cs" />
-    <Compile Include="Envelope.cs" />
-    <Compile Include="ITrksContainer.cs" />
-    <Compile Include="IUniqueChordDef.cs" />
-    <Compile Include="IUniqueDef.cs" />
-    <Compile Include="IUniqueSplittableChordDef.cs" />
-    <Compile Include="MidiChordDef.cs" />
-    <Compile Include="MidiChordSliderDefs.cs" />
-    <Compile Include="MidiMsg.cs" />
-    <Compile Include="MidiRestDef.cs" />
+    <Compile Include="ColorString.cs" />
+    <Compile Include="ClefID.cs" />
+    <Compile Include="FlagID.cs" />
+    <Compile Include="CSSClasses.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RestDef.cs" />
-    <Compile Include="Seq.cs" />
-    <Compile Include="Trk.cs" />
-    <Compile Include="VoiceDef.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
+    <Compile Include="SvgWriter.cs" />
+    <Compile Include="TextInfo.cs" />
+    <Compile Include="XmlWriterWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -74,10 +60,6 @@
     <ProjectReference Include="..\MNX.Globals\MNX.Globals.csproj">
       <Project>{9abe7e06-1560-42cb-86c8-26d64cfb4cff}</Project>
       <Name>MNX.Globals</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Moritz.Xml\Moritz.Xml.csproj">
-      <Project>{b239c302-a15d-4397-9f3c-ee6cc85440f3}</Project>
-      <Name>Moritz.Xml</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

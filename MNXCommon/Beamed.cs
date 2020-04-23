@@ -1,5 +1,5 @@
 ﻿
-using MNX.AGlobals;
+using MNX.Globals;
 using System;
 using System.Collections.Generic;
 using System.Xml;

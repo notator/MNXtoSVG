@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX.Common
 {

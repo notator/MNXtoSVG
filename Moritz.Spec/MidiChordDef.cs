@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-using MNX.AGlobals;
+using MNX.Globals;
+using Moritz.Xml;
 
 namespace Moritz.Spec
 {
@@ -29,7 +30,7 @@ namespace Moritz.Spec
 		{
 			#region conditions
 			A.Assert(bPitches.Count == bVelocities.Count);
-			C.AssertRange0_127(bPitches);
+			A.AssertRange0_127(bPitches);
 			foreach(byte velocity in bVelocities)
 			{
 				AssertIsVelocityValue(velocity);
@@ -75,7 +76,7 @@ namespace Moritz.Spec
             : base(msDuration)
         {
             A.Assert(rootMidiPitches.Count <= rootMidiVelocities.Count);
-			C.AssertRange0_127(rootMidiPitches);
+			A.AssertRange0_127(rootMidiPitches);
 
             MsPositionReFirstUD = 0;
             _pitchWheelDeviation = pitchWheelDeviation;
@@ -145,7 +146,7 @@ namespace Moritz.Spec
 			}
 
 			// fit the msDurations to total msDuration
-			msDurations = C.IntDivisionSizes(msDuration, msDurations);
+			msDurations = A.IntDivisionSizes(msDuration, msDurations);
 			this.BasicDurationDefs = new List<BasicDurationDef>();
 			for(int i = 0; i < iUniqueDefs.Count; ++i)
 			{
@@ -609,7 +610,7 @@ namespace Moritz.Spec
 		private static void AssertIsVelocityValue(int velocity)
 		{
 			A.Assert(velocity > 0);
-			C.AssertRange0_127(velocity);
+			A.AssertRange0_127(velocity);
 		}
 
 		/// <summary>
@@ -929,7 +930,7 @@ namespace Moritz.Spec
             List<MidiMsg> noteOffMsgs = new List<MidiMsg>();
             foreach(byte pitch in hangingPitches)
             {
-                MidiMsg msg = new MidiMsg(C.CMD_NOTE_OFF_0x80 + channel, pitch, C.DEFAULT_NOTEOFF_VELOCITY_64);
+                MidiMsg msg = new MidiMsg(A.CMD_NOTE_OFF_0x80 + channel, pitch, A.DEFAULT_NOTEOFF_VELOCITY_64);
                 noteOffMsgs.Add(msg);
             }
             return noteOffMsgs;
@@ -995,7 +996,7 @@ namespace Moritz.Spec
 				A.Assert(outerMsDuration >= minimumOutputMsDuration);
 			}
 
-			List<int> intDurations = C.IntDivisionSizes(outerMsDuration, relativeDurations);
+			List<int> intDurations = A.IntDivisionSizes(outerMsDuration, relativeDurations);
 
 			for(int i = 0; i < intDurations.Count; ++i)
 			{
@@ -1183,7 +1184,7 @@ namespace Moritz.Spec
 				// N.B. this value can be set even if value.Count != _notatedMidiVelocities.Count
 				// If the Count is changed, the _notatedMidiVelocities must subsequently be reset,
 				// otherwise a A.Assert will fail when the _notatedMidiVelocities are retrieved.
-				C.AssertRange0_127(value);
+				A.AssertRange0_127(value);
                 _notatedMidiPitches = new List<byte>(value);
             } 
         }

@@ -1,4 +1,4 @@
-﻿namespace MNX.AGlobals
+﻿namespace MNX.Globals
 {
     public enum MNXProfile
     {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 
 
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace Moritz.Spec
 {
@@ -505,7 +505,7 @@ namespace Moritz.Spec
             A.Assert(velocityPerAbsolutePitch.Count == 12);
             for(int i = 0; i < 12; ++i)
             {
-                C.AssertIsVelocityValue(velocityPerAbsolutePitch[i]);
+                A.AssertIsVelocityValue(velocityPerAbsolutePitch[i]);
             }
 			#endregion conditions
             for(int i = 0; i < UniqueDefs.Count; ++i)
@@ -854,7 +854,7 @@ namespace Moritz.Spec
 				{
 					if(this[i] is MidiChordDef mcd)
 					{
-						mcd.PitchWheelDeviation = C.SetRange0_127(deviation);
+						mcd.PitchWheelDeviation = A.SetRange0_127(deviation);
 					}
 				}
 			}
@@ -896,7 +896,7 @@ namespace Moritz.Spec
             {
                 if(_uniqueDefs[i] is MidiChordDef umc)
                 {
-                    umc.PitchWheelDeviation = C.SetRange0_127((int)(pwValueAtBeginIndex * (Math.Pow(pwdfactor, i))));
+                    umc.PitchWheelDeviation = A.SetRange0_127((int)(pwValueAtBeginIndex * (Math.Pow(pwdfactor, i))));
                 }
             }
         }

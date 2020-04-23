@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace Moritz.Spec
 {
@@ -355,7 +355,7 @@ namespace Moritz.Spec
                     List<byte> midiPitches = iucd.NotatedMidiPitches;
                     for(int i = 0; i < midiPitches.Count; ++i)
                     {
-                        midiPitches[i] = C.SetRange0_127(midiPitches[i] + semitonesToTranspose);
+                        midiPitches[i] = A.SetRange0_127(midiPitches[i] + semitonesToTranspose);
                     }
                 }
             }
@@ -866,7 +866,7 @@ namespace Moritz.Spec
                         relativeDurations.Add(iumdd.MsDuration);
                 }
 
-                List<int> newDurations = C.IntDivisionSizes(msDuration, relativeDurations);
+                List<int> newDurations = A.IntDivisionSizes(msDuration, relativeDurations);
 
                 A.Assert(newDurations.Count == relativeDurations.Count);
                 int i = 0;

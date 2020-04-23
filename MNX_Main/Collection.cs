@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX_Main
 {
@@ -9,7 +9,7 @@ namespace MNX_Main
     {        
         public Collection(XmlReader r)
         {
-            A.Assert(r.Name == "collection");           
+            M.Assert(r.Name == "collection");           
 
             throw new NotImplementedException();
         }

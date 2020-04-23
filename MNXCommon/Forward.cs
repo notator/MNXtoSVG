@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -30,14 +30,14 @@ namespace MNX.Common
         {
             TupletLevel = B.CurrentTupletLevel;
 
-            A.Assert(r.Name == "forward");
+            M.Assert(r.Name == "forward");
 
             r.MoveToAttribute("duration");
             DSymbol = new DurationSymbol(r.Value, B.CurrentTupletLevel);
 
-            A.ReadToXmlElementTag(r, "forward");
+            M.ReadToXmlElementTag(r, "forward");
 
-            A.Assert(r.Name == "forward"); // end of forward
+            M.Assert(r.Name == "forward"); // end of forward
 
         }
     }

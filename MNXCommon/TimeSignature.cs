@@ -1,5 +1,5 @@
 ﻿using System.Xml;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -11,7 +11,7 @@ namespace MNX.Common
 
         public TimeSignature(XmlReader r)
         {
-            A.Assert(r.Name == "time");
+            M.Assert(r.Name == "time");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -26,7 +26,7 @@ namespace MNX.Common
                         Measure = r.Value;
                         break;
                     default:
-                        A.ThrowError("Unknown time attribute.");
+                        M.ThrowError("Unknown time attribute.");
                         break;
                 }
             }

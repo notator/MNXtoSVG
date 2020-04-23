@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System;
 using System.Xml;
 
@@ -8,7 +8,7 @@ namespace MNX_Main
     {        
         public Head(XmlReader r)
         {
-            A.Assert(r.Name == "head");
+            M.Assert(r.Name == "head");
             // https://w3c.github.io/mnx/specification/common/#the-score-element
 
             throw new NotImplementedException();

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -9,7 +9,7 @@ namespace MNX.Common
     {
         public ScoreAudio(XmlReader r)
         {
-            A.Assert(r.Name == "score-audio");            
+            M.Assert(r.Name == "score-audio");            
 
             throw new NotImplementedException();
         }

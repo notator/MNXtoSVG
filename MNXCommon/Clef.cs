@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System.Xml;
 
 namespace MNX.Common
@@ -17,7 +17,7 @@ namespace MNX.Common
         public Clef(XmlReader r)
         {
             // https://w3c.github.io/mnx/specification/common/#the-clef-element
-            A.Assert(r.Name == "clef");
+            M.Assert(r.Name == "clef");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -27,7 +27,7 @@ namespace MNX.Common
                 {
                     case "line":
                         int.TryParse(r.Value, out Line);
-                        A.Assert(Line > 0);
+                        M.Assert(Line > 0);
                         break;
                     case "sign":
                         Sign = GetMNXClefSign(r.Value);
@@ -56,12 +56,12 @@ namespace MNX.Common
                         }
                         break;
                     default:
-                        A.ThrowError("Unknown clef attribute.");
+                        M.ThrowError("Unknown clef attribute.");
                         break;
                 }
             }
 
-            A.Assert(Sign != null && Line > 0);
+            M.Assert(Sign != null && Line > 0);
 
             // r.Name is now the name of the last clef attribute that has been read.
         }
@@ -91,7 +91,7 @@ namespace MNX.Common
                     rval = ClefType.none;
                     break;
                 default:
-                    A.ThrowError("Error: unknown clef sign");
+                    M.ThrowError("Error: unknown clef sign");
                     break;
             }
             

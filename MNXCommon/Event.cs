@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -54,7 +54,7 @@ namespace MNX.Common
             set
             {
                 // this function should only be used when stealing ticks for Grace.
-                A.Assert(value >= B.MinimumEventTicks);
+                M.Assert(value >= B.MinimumEventTicks);
                 _ticks = value;
             }
         }
@@ -66,7 +66,7 @@ namespace MNX.Common
         {
             TupletLevel = B.CurrentTupletLevel;
 
-            A.Assert(r.Name == "event");
+            M.Assert(r.Name == "event");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -78,13 +78,13 @@ namespace MNX.Common
                         DSymbol = new DurationSymbol(r.Value, B.CurrentTupletLevel);
                         break;
                     case "measure":
-                        A.ThrowError("Not Implemented");
+                        M.ThrowError("Not Implemented");
                         break;
                     case "orient":
-                        A.ThrowError("Not Implemented");
+                        M.ThrowError("Not Implemented");
                         break;
                     case "staff":
-                        A.ThrowError("Not Implemented");
+                        M.ThrowError("Not Implemented");
                         break;
                     case "duration":
                         TicksOverride = new DurationSymbol(r.Value, B.CurrentTupletLevel);
@@ -93,7 +93,7 @@ namespace MNX.Common
             }
 
             // extend the contained elements as necessary..
-            A.ReadToXmlElementTag(r, "note", "rest", "slur");
+            M.ReadToXmlElementTag(r, "note", "rest", "slur");
 
             while(r.Name == "note" || r.Name == "rest" || r.Name == "slur")
             {
@@ -123,9 +123,9 @@ namespace MNX.Common
                             break;
                     }
                 }
-                A.ReadToXmlElementTag(r, "note", "rest", "slur", "event");
+                M.ReadToXmlElementTag(r, "note", "rest", "slur", "event");
             }
-            A.Assert(r.Name == "event"); // end of event
+            M.Assert(r.Name == "event"); // end of event
 
         }
     }

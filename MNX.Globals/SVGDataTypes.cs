@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MNX.AGlobals
+namespace MNX.Globals
 {
     public class PageSettings
     {

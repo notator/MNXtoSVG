@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -13,10 +13,10 @@ namespace MNX.Common
 
         public MNXCommon(XmlReader r)
         {
-            A.Assert(r.Name == "mnx-common");
+            M.Assert(r.Name == "mnx-common");
             // https://w3c.github.io/mnx/specification/common/#the-mnx-common-element
 
-            A.Profile = null;
+            M.Profile = null;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -29,21 +29,21 @@ namespace MNX.Common
                             switch(r.Value)
                             {
                                 case "standard":
-                                    A.Profile = MNXProfile.MNXCommonStandard;
+                                    M.Profile = MNXProfile.MNXCommonStandard;
                                     break;
                                 default:
-                                    A.ThrowError("Error: unknown profile");
+                                    M.ThrowError("Error: unknown profile");
                                     break;
                             }
                         }
                         break;
                     default:
-                        A.ThrowError("Error: unknown attribute");
+                        M.ThrowError("Error: unknown attribute");
                         break;
                 }
             }
 
-            A.ReadToXmlElementTag(r, "global", "part", "score-audio");
+            M.ReadToXmlElementTag(r, "global", "part", "score-audio");
 
             while(r.Name == "global" || r.Name == "part" || r.Name == "score-audio")
             {
@@ -62,16 +62,16 @@ namespace MNX.Common
                             break;
                     }
                 }
-                A.ReadToXmlElementTag(r, "global", "part", "score-audio", "mnx-common");
+                M.ReadToXmlElementTag(r, "global", "part", "score-audio", "mnx-common");
             }
 
             AdjustForGraceNotes();
 
-            A.Assert(r.Name == "mnx-common"); // end of "mnx-common"
+            M.Assert(r.Name == "mnx-common"); // end of "mnx-common"
 
-            A.Assert(Globals.Count > 0);
-            A.Assert(Parts.Count > 0);
-            A.Assert(ScoreAudios.Count >= 0);
+            M.Assert(Globals.Count > 0);
+            M.Assert(Parts.Count > 0);
+            M.Assert(ScoreAudios.Count >= 0);
         }
 
         private void AdjustForGraceNotes()
@@ -86,9 +86,5 @@ namespace MNX.Common
                 }
             }
         }
-
-
-
-
     }
 }

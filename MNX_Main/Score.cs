@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using MNX.Common;
 using System;
 using System.Xml;
@@ -12,7 +12,7 @@ namespace MNX_Main
 
         public Score(XmlReader r)
         {
-            A.Assert(r.Name == "score");
+            M.Assert(r.Name == "score");
             // https://w3c.github.io/mnx/specification/common/#the-score-element
             // can have a "src" attribute
             int count = r.AttributeCount;
@@ -28,7 +28,7 @@ namespace MNX_Main
             }
 
             // Other score types need to be added and constructed here.
-            A.ReadToXmlElementTag(r, "mnx-common");
+            M.ReadToXmlElementTag(r, "mnx-common");
 
             while(r.Name == "mnx-common")
             {
@@ -41,9 +41,9 @@ namespace MNX_Main
                             break;
                     }
                 }
-                A.ReadToXmlElementTag(r, "mnx-common", "score");
+                M.ReadToXmlElementTag(r, "mnx-common", "score");
             }
-            A.Assert(r.Name == "score"); // end of event        
+            M.Assert(r.Name == "score"); // end of event        
         }
     }
 }

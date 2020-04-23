@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -41,7 +41,7 @@ namespace MNX.Common
 
         public Grace(XmlReader r)
         {            
-            A.Assert(r.Name == "grace");
+            M.Assert(r.Name == "grace");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -64,7 +64,7 @@ namespace MNX.Common
 
             SetDefaultTicks(Seq);
 
-            A.Assert(r.Name == "grace"); // end of grace
+            M.Assert(r.Name == "grace"); // end of grace
 
         }
 
@@ -90,7 +90,7 @@ namespace MNX.Common
                     rval = GraceType.makeTime;
                     break;
                 default:
-                    A.ThrowError("Error: unknown grace type.");
+                    M.ThrowError("Error: unknown grace type.");
                     break;
             }
             return rval;

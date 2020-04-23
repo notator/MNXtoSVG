@@ -1,5 +1,5 @@
 ﻿using System.Xml;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -23,7 +23,7 @@ namespace MNX.Common
         public Slur(XmlReader r)
         {
             // https://w3c.github.io/mnx/specification/common/#the-slur-element
-            A.Assert(r.Name == "slur");
+            M.Assert(r.Name == "slur");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -98,7 +98,7 @@ namespace MNX.Common
                     rval = LineType.dotted;
                     break;
                 default:
-                    A.ThrowError("Error: unknown line type");
+                    M.ThrowError("Error: unknown line type");
                     break;
             }
             return rval;

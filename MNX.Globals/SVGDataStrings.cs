@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace MNX.AGlobals
+namespace MNX.Globals
 {
     public class SVGDataStrings
     {
@@ -22,9 +22,9 @@ namespace MNX.AGlobals
 
             using(XmlReader r = XmlReader.Create(svgDataPath))
             {
-                A.ReadToXmlElementTag(r, "svgData"); // check that this is an svgData file
+                M.ReadToXmlElementTag(r, "svgData"); // check that this is an svgData file
 
-                A.ReadToXmlElementTag(r, "page", "notation");
+                M.ReadToXmlElementTag(r, "page", "notation");
 
                 while(r.Name == "page" || r.Name == "notation")
                 {
@@ -39,11 +39,11 @@ namespace MNX.AGlobals
                                 MNXCommonData = GetMNXCommonData(r);
                                 break;
                         }
-                        A.ReadToXmlElementTag(r, "page", "notation", "svgData");
+                        M.ReadToXmlElementTag(r, "page", "notation", "svgData");
                     }
                     
                 }
-                A.Assert(r.Name == "svgData"); // end of svgData
+                M.Assert(r.Name == "svgData"); // end of svgData
             }
         }
 
@@ -130,7 +130,7 @@ namespace MNX.AGlobals
             using(XmlWriter w = XmlWriter.Create(_svgDataPath, settings))
             {
                 w.WriteStartDocument();
-                w.WriteComment("file created: " + A.NowString);
+                w.WriteComment("file created: " + M.NowString);
 
                 w.WriteStartElement("svgData");
                 w.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -45,7 +45,7 @@ namespace MNX.Common
             }
             set
             {
-                A.Assert(value >= B.MinimumEventTicks);
+                M.Assert(value >= B.MinimumEventTicks);
                 _ticks = value;
             }
         }
@@ -74,7 +74,7 @@ namespace MNX.Common
                 DefaultTicks = GetDefaultTicks();
             }
 
-            A.Assert(DefaultTicks >= B.MinimumEventTicks);
+            M.Assert(DefaultTicks >= B.MinimumEventTicks);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace MNX.Common
                         s = DurationSymbolType.note1024th_8flags;
                         break;
                     default:
-                        A.ThrowError("Error: unknown duration symbol");
+                        M.ThrowError("Error: unknown duration symbol");
                         break;
                 }
 

@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System.Xml;
 
 namespace MNX.Common
@@ -10,7 +10,7 @@ namespace MNX.Common
 
         public KeySignature(XmlReader r)
         {
-            A.Assert(r.Name == "key");
+            M.Assert(r.Name == "key");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -22,7 +22,7 @@ namespace MNX.Common
                         int.TryParse(r.Value, out Fifths);
                         break;
                     default:
-                        A.ThrowError("Unknown key attribute.");
+                        M.ThrowError("Unknown key attribute.");
                         break;
                 }
             }

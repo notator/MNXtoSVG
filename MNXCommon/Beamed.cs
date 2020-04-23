@@ -1,5 +1,5 @@
 ﻿
-using MNX.AGlobals;
+using MNX.Globals;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -14,7 +14,7 @@ namespace MNX.Common
 
         public Beamed(XmlReader r)
         {
-            A.Assert(r.Name == "beamed");
+            M.Assert(r.Name == "beamed");
             // https://w3c.github.io/mnx/specification/common/#the-beamed-element
 
             int count = r.AttributeCount;
@@ -39,7 +39,7 @@ namespace MNX.Common
 
             Seq = GetSequenceContent(r, "beamed", false);
 
-            A.Assert(r.Name == "beamed"); // end of (nested) beamed
+            M.Assert(r.Name == "beamed"); // end of (nested) beamed
         }
     }
 }

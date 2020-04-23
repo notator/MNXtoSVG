@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System.Xml;
 
 namespace MNX.Common
@@ -28,7 +28,7 @@ namespace MNX.Common
         public Note(XmlReader r)
         {
             // https://w3c.github.io/mnx/specification/common/#elementdef-note
-            A.Assert(r.Name == "note");
+            M.Assert(r.Name == "note");
 
             bool noteElementIsEmpty = r.IsEmptyElement; // used below
 
@@ -63,7 +63,7 @@ namespace MNX.Common
 
             if(noteElementIsEmpty == false)
             {
-                A.ReadToXmlElementTag(r, "tied", "notehead", "fret", "string");
+                M.ReadToXmlElementTag(r, "tied", "notehead", "fret", "string");
 
                 while(r.Name == "tied" || r.Name == "notehead" || r.Name == "fret" || r.Name == "string")
                 {
@@ -75,19 +75,19 @@ namespace MNX.Common
                                 Tied = new Tied(r);
                                 break;
                             case "notehead":
-                                A.ThrowError("Error: Not implemented yet.");
+                                M.ThrowError("Error: Not implemented yet.");
                                 break;
                             case "fret":
-                                A.ThrowError("Error: Not implemented yet.");
+                                M.ThrowError("Error: Not implemented yet.");
                                 break;
                             case "string":
-                                A.ThrowError("Error: Not implemented yet.");
+                                M.ThrowError("Error: Not implemented yet.");
                                 break;
                         }
                     }
-                    A.ReadToXmlElementTag(r, "tied", "notehead", "fret", "string", "note");
+                    M.ReadToXmlElementTag(r, "tied", "notehead", "fret", "string", "note");
                 }
-                A.Assert(r.Name == "note"); // end of note
+                M.Assert(r.Name == "note"); // end of note
             }
             //else
             //{

@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -51,7 +51,7 @@ namespace MNX.Common
 
             B.CurrentTupletLevel++;
 
-            A.Assert(r.Name == "tuplet");
+            M.Assert(r.Name == "tuplet");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -99,7 +99,7 @@ namespace MNX.Common
                 SetTicksInContent(outerTicks, this.TupletLevel + 1);
             }
 
-            A.Assert(r.Name == "tuplet"); // end of (nested) tuplet
+            M.Assert(r.Name == "tuplet"); // end of (nested) tuplet
 
             B.CurrentTupletLevel--;
         }
@@ -117,7 +117,7 @@ namespace MNX.Common
             {
                 if(component is Event e)
                 {
-                    A.Assert(e.TupletLevel == localTupletLevel);
+                    M.Assert(e.TupletLevel == localTupletLevel);
 
                     DurationSymbol defaultDuration = e.DSymbol;
                     DurationSymbol ticksOverride = e.TicksOverride;
@@ -138,7 +138,7 @@ namespace MNX.Common
                 else if(component is Tuplet t)
                 {
                     // a nested tuplet
-                    A.Assert(t.TupletLevel == localTupletLevel);
+                    M.Assert(t.TupletLevel == localTupletLevel);
                    
                     DurationSymbol d = t.OuterDuration;
                     int basicTicks = d.GetDefaultTicks();
@@ -202,7 +202,7 @@ namespace MNX.Common
                     rval = Orientation.down;
                     break;
                 default:
-                    A.ThrowError("Error: unknown orientation");
+                    M.ThrowError("Error: unknown orientation");
                     break;
             }
             return rval;
@@ -220,7 +220,7 @@ namespace MNX.Common
                     rval = TupletNumberDisplay.none;
                     break;
                 default:
-                    A.ThrowError("Error: unknown tuplet number display type.");
+                    M.ThrowError("Error: unknown tuplet number display type.");
                     break;
             }
             return rval;
@@ -237,7 +237,7 @@ namespace MNX.Common
                     rval = TupletBracketDisplay.no;
                     break;
                 default:
-                    A.ThrowError("Error: unknown tuplet bracket display type.");
+                    M.ThrowError("Error: unknown tuplet bracket display type.");
                     break;
             }
             return rval;

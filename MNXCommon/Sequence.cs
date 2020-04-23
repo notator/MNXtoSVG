@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -14,7 +14,7 @@ namespace MNX.Common
 
         public Sequence(XmlReader r, bool isGlobal)
         {
-            A.Assert(r.Name == "sequence");
+            M.Assert(r.Name == "sequence");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -41,7 +41,7 @@ namespace MNX.Common
 
             Seq = GetSequenceContent(r, "sequence", isGlobal);
 
-            A.Assert(r.Name == "sequence");
+            M.Assert(r.Name == "sequence");
         }
 
         /// <summary>

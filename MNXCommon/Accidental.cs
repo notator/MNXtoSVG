@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -74,7 +74,7 @@ namespace MNX.Common
                     Type = AccidentalType.tripleFlat;
                     break;
                 default:
-                    A.ThrowError("Error: unknown accidental type.");
+                    M.ThrowError("Error: unknown accidental type.");
                     break;
             }
         }

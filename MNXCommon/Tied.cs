@@ -1,4 +1,4 @@
-﻿using MNX.AGlobals;
+﻿using MNX.Globals;
 using System.Xml;
 
 namespace MNX.Common
@@ -16,7 +16,7 @@ namespace MNX.Common
 
         public Tied(XmlReader r)
         {            
-            A.Assert(r.Name == "tied");
+            M.Assert(r.Name == "tied");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

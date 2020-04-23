@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using MNX.AGlobals;
+using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -14,10 +14,10 @@ namespace MNX.Common
 
         public Part(XmlReader r)
         {
-            A.Assert(r.Name == "part");
+            M.Assert(r.Name == "part");
             // https://w3c.github.io/mnx/specification/common/#the-part-element
 
-            A.ReadToXmlElementTag(r, "part-name", "part-abbreviation", "instrument-sound", "measure");
+            M.ReadToXmlElementTag(r, "part-name", "part-abbreviation", "instrument-sound", "measure");
 
             while(r.Name == "part-name" || r.Name == "part-abbreviation" || r.Name == "instrument-sound" || r.Name == "measure")
             {
@@ -39,9 +39,9 @@ namespace MNX.Common
                             break;
                     }
                 }
-                A.ReadToXmlElementTag(r, "part-name", "part-abbreviation", "instrument-sound", "measure", "part");
+                M.ReadToXmlElementTag(r, "part-name", "part-abbreviation", "instrument-sound", "measure", "part");
             }
-            A.Assert(r.Name == "part"); // end of part
+            M.Assert(r.Name == "part"); // end of part
         }
     }
 }

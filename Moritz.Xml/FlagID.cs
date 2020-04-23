@@ -3,16 +3,22 @@ namespace Moritz.Xml
     public enum FlagID
     {
         none,
-        left1Flag, inputLeft1Flag,
-        left2Flags, inputLeft2Flags,
-        left3Flags, inputLeft3Flags,
-        left4Flags, inputLeft4Flags,
-        left5Flags, inputLeft5Flags,
+        left1Flag,
+        left2Flags, 
+        left3Flags, 
+        left4Flags,
+        left5Flags,
+        left6Flags,
+        left7Flags,
+        left8Flags,
 
-        right1Flag, inputRight1Flag,
-        right2Flags, inputRight2Flags,
-        right3Flags, inputRight3Flags,
-        right4Flags, inputRight4Flags,
-        right5Flags, inputRight5Flags
+        right1Flag, 
+        right2Flags,
+        right3Flags,
+        right4Flags,
+        right5Flags,
+        right6Flags,
+        right7Flags,
+        right8Flags,
     }
 }

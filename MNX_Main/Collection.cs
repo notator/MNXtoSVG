@@ -9,7 +9,7 @@ namespace MNX_Main
     {        
         public Collection(XmlReader r)
         {
-            A.Assert(r.Name == "collection");           
+            M.Assert(r.Name == "collection");           
 
             throw new NotImplementedException();
         }

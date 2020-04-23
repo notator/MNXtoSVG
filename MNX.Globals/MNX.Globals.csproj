@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="Enum.cs" />
     <Compile Include="Globals.cs" />
-    <Compile Include="MoritzGlobals.cs" />
     <Compile Include="SVGDataStrings.cs" />
     <Compile Include="SVGData.cs" />
     <Compile Include="SVGDataTypes.cs" />

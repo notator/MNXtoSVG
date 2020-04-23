@@ -37,7 +37,7 @@ namespace Moritz.Spec
 			foreach(Trk trk in seq.Trks)
             {
                 trk.Container = this;
-				A.Assert(trk.MsDuration == msDuration); // cannot be 0 here.
+				M.Assert(trk.MsDuration == msDuration); // cannot be 0 here.
                 _voiceDefs.Add(trk);
 				clefIndex++;
             }
@@ -47,7 +47,7 @@ namespace Moritz.Spec
 
 		public void Concat(Bar bar2)
         {
-            A.Assert(_voiceDefs.Count == bar2._voiceDefs.Count);
+            M.Assert(_voiceDefs.Count == bar2._voiceDefs.Count);
 
             for(int i = 0; i < _voiceDefs.Count; ++i)
             {
@@ -85,7 +85,7 @@ namespace Moritz.Spec
 				}
 				else
 				{
-					A.Assert(false, "Type error.");
+					M.Assert(false, "Type error.");
 				}
 			}
 			#endregion
@@ -93,13 +93,13 @@ namespace Moritz.Spec
 			int barMsDuration = MsDuration;
 
 			#region 1. The first VoiceDef in a Bar must be a Trk.
-			A.Assert(_voiceDefs[0] is Trk, "The first VoiceDef in a Bar must be a Trk.");
+			M.Assert(_voiceDefs[0] is Trk, "The first VoiceDef in a Bar must be a Trk.");
 			#endregion
 
 			#region 2. All voiceDefs have the same MsDuration.
 			foreach(VoiceDef voiceDef in _voiceDefs)
 			{
-				A.Assert(voiceDef.MsDuration == barMsDuration, "All Trks in a block must have the same duration.");
+				M.Assert(voiceDef.MsDuration == barMsDuration, "All Trks in a block must have the same duration.");
 			}
 			#endregion
 
@@ -116,7 +116,7 @@ namespace Moritz.Spec
 					break;
 				} 				
 			}
-			A.Assert(startFound, "MidiChordDef not found at start.");
+			M.Assert(startFound, "MidiChordDef not found at start.");
 			#endregion
 		}
 
@@ -160,7 +160,7 @@ namespace Moritz.Spec
                 iud.MsDuration = originalMsDuration - msPos;
             }
 
-            A.Assert(originalMsDuration == MsDuration);
+            M.Assert(originalMsDuration == MsDuration);
 
             AssertConsistency();
         }
@@ -256,7 +256,7 @@ namespace Moritz.Spec
                 }
 				foreach(VoiceDef voiceDef in _voiceDefs)
 				{
-					A.Assert(voiceDef.MsDuration == value);
+					M.Assert(voiceDef.MsDuration == value);
 				}				
             }
         }
@@ -266,7 +266,7 @@ namespace Moritz.Spec
             get { return _absMsPosition; }
             set
             {
-                A.Assert(value >= 0);
+                M.Assert(value >= 0);
                 _absMsPosition = value;
             }
         }

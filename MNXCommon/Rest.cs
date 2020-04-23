@@ -12,7 +12,7 @@ namespace MNX.Common
 
         public Rest(XmlReader r)
         {
-            A.Assert(r.Name == "rest");
+            M.Assert(r.Name == "rest");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

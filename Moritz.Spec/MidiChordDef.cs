@@ -29,8 +29,8 @@ namespace Moritz.Spec
 			: base(msDuration)
 		{
 			#region conditions
-			A.Assert(bPitches.Count == bVelocities.Count);
-			A.AssertRange0_127(bPitches);
+			M.Assert(bPitches.Count == bVelocities.Count);
+			M.AssertRange0_127(bPitches);
 			foreach(byte velocity in bVelocities)
 			{
 				AssertIsVelocityValue(velocity);
@@ -75,8 +75,8 @@ namespace Moritz.Spec
             List<BasicMidiChordDef> basicMidiChordDefs)
             : base(msDuration)
         {
-            A.Assert(rootMidiPitches.Count <= rootMidiVelocities.Count);
-			A.AssertRange0_127(rootMidiPitches);
+            M.Assert(rootMidiPitches.Count <= rootMidiVelocities.Count);
+			M.AssertRange0_127(rootMidiPitches);
 
             MsPositionReFirstUD = 0;
             _pitchWheelDeviation = pitchWheelDeviation;
@@ -146,7 +146,7 @@ namespace Moritz.Spec
 			}
 
 			// fit the msDurations to total msDuration
-			msDurations = A.IntDivisionSizes(msDuration, msDurations);
+			msDurations = M.IntDivisionSizes(msDuration, msDurations);
 			this.BasicDurationDefs = new List<BasicDurationDef>();
 			for(int i = 0; i < iUniqueDefs.Count; ++i)
 			{
@@ -321,7 +321,7 @@ namespace Moritz.Spec
         public void Invert(int nPitchesToShiftArg)
         {
             #region conditions
-            A.Assert(nPitchesToShiftArg >= 0);
+            M.Assert(nPitchesToShiftArg >= 0);
             #endregion conditions
 
             foreach(BasicMidiChordDef bmcd in BasicDurationDefs)
@@ -390,7 +390,7 @@ namespace Moritz.Spec
                 {
                     BasicDurationDef bmdd = BasicDurationDefs[i];
                     bmdd.MsDuration = newPositions[i + 1] - newPositions[i];
-                    A.Assert(MinimumBasicMidiChordMsDuration <= bmdd.MsDuration);
+                    M.Assert(MinimumBasicMidiChordMsDuration <= bmdd.MsDuration);
                 }
             }
         }
@@ -458,13 +458,13 @@ namespace Moritz.Spec
         public void SetVelocityPerAbsolutePitch(IReadOnlyList<byte> velocityPerAbsolutePitch)
         {
             #region conditions
-            A.Assert(velocityPerAbsolutePitch.Count == 12);
+            M.Assert(velocityPerAbsolutePitch.Count == 12);
             for(int i = 0; i < 12; ++i)
             {
                 int v = velocityPerAbsolutePitch[i];
 				AssertIsVelocityValue(v);
 			}
-            A.Assert(this.NotatedMidiPitches.Count == NotatedMidiVelocities.Count);
+            M.Assert(this.NotatedMidiPitches.Count == NotatedMidiVelocities.Count);
             #endregion conditions
 
             foreach(BasicMidiChordDef bmcd in BasicDurationDefs)
@@ -520,12 +520,12 @@ namespace Moritz.Spec
 		/// <param name="percent">In range 0..100. The proportion of the final velocity value that comes from this function.</param>
 		public void SetVelocityFromDuration(int msDurationRangeMin, int msDurationRangeMax, byte velocityForMinMsDuration, byte velocityForMaxMsDuration, double percent = 100.0)
         {
-            A.Assert(_msDuration >= msDurationRangeMin && _msDuration <= msDurationRangeMax);
-            A.Assert(msDurationRangeMin <= msDurationRangeMax);
+            M.Assert(_msDuration >= msDurationRangeMin && _msDuration <= msDurationRangeMax);
+            M.Assert(msDurationRangeMin <= msDurationRangeMax);
             // velocityForMinMsDuration can be less than, equal to, or greater than velocityForMaxMsDuration
             AssertIsVelocityValue(velocityForMinMsDuration);
             AssertIsVelocityValue(velocityForMaxMsDuration);
-            A.Assert(percent >= 0 && percent <= 100);
+            M.Assert(percent >= 0 && percent <= 100);
 
             double factorForNewValue = percent / 100;
             double factorForOldValue = 1 - factorForNewValue;
@@ -609,8 +609,8 @@ namespace Moritz.Spec
 		/// </summary>
 		private static void AssertIsVelocityValue(int velocity)
 		{
-			A.Assert(velocity > 0);
-			A.AssertRange0_127(velocity);
+			M.Assert(velocity > 0);
+			M.AssertRange0_127(velocity);
 		}
 
 		/// <summary>
@@ -662,7 +662,7 @@ namespace Moritz.Spec
 
         private void RemoveDuplicateNotes(List<byte> pitches, List<byte> velocities)
         {
-            A.Assert(pitches.Count == velocities.Count);
+            M.Assert(pitches.Count == velocities.Count);
             pitches.Sort(); // just to be sure
             List<int> indicesOfPitchesToRemove = new List<int>();
             for(int i = 1; i < pitches.Count; ++i)
@@ -680,7 +680,7 @@ namespace Moritz.Spec
                     velocities.RemoveAt(i);
                 }
             }
-            A.Assert(pitches.Count == velocities.Count);
+            M.Assert(pitches.Count == velocities.Count);
         }
 
 		/// <summary>
@@ -692,7 +692,7 @@ namespace Moritz.Spec
 		/// <param name="factor">greater than 0</param>
 		public void AdjustVelocities(double factor)
 		{
-			A.Assert(factor > 0.0);
+			M.Assert(factor > 0.0);
 			foreach(BasicMidiChordDef bmcd in BasicDurationDefs)
 			{
 				bmcd.AdjustVelocities(factor);
@@ -727,7 +727,7 @@ namespace Moritz.Spec
 		/// <param name="newDensity">Must be greater than 0</param>
 		public void SetVerticalDensity(int newDensity)
 		{
-            A.Assert(newDensity > 0);
+            M.Assert(newDensity > 0);
 
             foreach(BasicMidiChordDef bmcd in BasicDurationDefs)
             {
@@ -751,7 +751,7 @@ namespace Moritz.Spec
         public void AdjustMsDuration(double factor)
         {
             MsDuration = (int)(_msDuration * factor);
-            A.Assert(MsDuration > 0, "A UniqueDef's MsDuration may not be set to zero!");
+            M.Assert(MsDuration > 0, "A UniqueDef's MsDuration may not be set to zero!");
         }
 
         #endregion IUniqueDef
@@ -858,7 +858,7 @@ namespace Moritz.Spec
         public void WriteSVG(SvgWriter w, int channel, CarryMsgs carryMsgs)
         {
             #region set BasicMidiChordDefs[0] Bank, Patch and PitchWheelDeviation if necessary
-            A.Assert(BasicDurationDefs != null && BasicDurationDefs.Count > 0);
+            M.Assert(BasicDurationDefs != null && BasicDurationDefs.Count > 0);
 
             if(FirstBasicDurationDef.BankIndex == null && Bank != null)
             {
@@ -930,7 +930,7 @@ namespace Moritz.Spec
             List<MidiMsg> noteOffMsgs = new List<MidiMsg>();
             foreach(byte pitch in hangingPitches)
             {
-                MidiMsg msg = new MidiMsg(A.CMD_NOTE_OFF_0x80 + channel, pitch, A.DEFAULT_NOTEOFF_VELOCITY_64);
+                MidiMsg msg = new MidiMsg(M.CMD_NOTE_OFF_0x80 + channel, pitch, M.DEFAULT_NOTEOFF_VELOCITY_64);
                 noteOffMsgs.Add(msg);
             }
             return noteOffMsgs;
@@ -990,13 +990,13 @@ namespace Moritz.Spec
 		/// <returns></returns>
 		private static List<int> GetDurations(int outerMsDuration, List<int> relativeDurations, int minimumOutputMsDuration)
         {
-			A.Assert(relativeDurations.Count > 0);
+			M.Assert(relativeDurations.Count > 0);
 			if(relativeDurations.Count == 1)
 			{
-				A.Assert(outerMsDuration >= minimumOutputMsDuration);
+				M.Assert(outerMsDuration >= minimumOutputMsDuration);
 			}
 
-			List<int> intDurations = A.IntDivisionSizes(outerMsDuration, relativeDurations);
+			List<int> intDurations = M.IntDivisionSizes(outerMsDuration, relativeDurations);
 
 			for(int i = 0; i < intDurations.Count; ++i)
 			{
@@ -1033,8 +1033,8 @@ namespace Moritz.Spec
 
             List<int> msDurations = GetDurations(outerMsDuration, originalDurations, minimumMsDuration);
 
-			A.Assert(originalDurations.Count == msDurations.Count);
-			A.Assert(msDurations[0] > 0);
+			M.Assert(originalDurations.Count == msDurations.Count);
+			M.Assert(msDurations[0] > 0);
 
             List<BasicDurationDef> rList = new List<BasicDurationDef>();
             
@@ -1132,7 +1132,7 @@ namespace Moritz.Spec
             }
             set
             {
-                A.Assert(BasicDurationDefs != null && BasicDurationDefs.Count > 0);
+                M.Assert(BasicDurationDefs != null && BasicDurationDefs.Count > 0);
 
                 _msDuration = value;
                 int sumDurations = 0;
@@ -1184,7 +1184,7 @@ namespace Moritz.Spec
 				// N.B. this value can be set even if value.Count != _notatedMidiVelocities.Count
 				// If the Count is changed, the _notatedMidiVelocities must subsequently be reset,
 				// otherwise a A.Assert will fail when the _notatedMidiVelocities are retrieved.
-				A.AssertRange0_127(value);
+				M.AssertRange0_127(value);
                 _notatedMidiPitches = new List<byte>(value);
             } 
         }
@@ -1198,12 +1198,12 @@ namespace Moritz.Spec
         {
             get
             {
-                A.Assert(_notatedMidiVelocities.Count == _notatedMidiPitches.Count);
+                M.Assert(_notatedMidiVelocities.Count == _notatedMidiPitches.Count);
                 return _notatedMidiVelocities;
             }
             set
             {
-                A.Assert(value.Count == _notatedMidiPitches.Count);
+                M.Assert(value.Count == _notatedMidiPitches.Count);
                 foreach(byte velocity in value)
                 {
                     AssertIsVelocityValue(velocity);

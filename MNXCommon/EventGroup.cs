@@ -70,7 +70,7 @@ namespace MNX.Common
                 // EventGroup Ticks is virtual so that it can be overriden by Grace.
                 // Grace.Ticks implements Ticks.set, so that it can flexiby steal Ticks from Event.
                 // Event also implements Ticks.set.
-                A.ThrowError("Application Error: This function should never be called.");       
+                M.ThrowError("Application Error: This function should never be called.");       
             }
         }
 
@@ -100,7 +100,7 @@ namespace MNX.Common
 
             // Read to the first element inside the caller element.
             // These are all the elements that can occur inside sequence-like elements. (Some of them nest.)
-            A.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "forward");
+            M.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "forward");
 
             while(r.Name == "directions" || r.Name == "event" || r.Name == "grace"
                 || r.Name == "beamed" || r.Name == "tuplet" || r.Name == "forward" || r.Name == "sequence")
@@ -136,12 +136,12 @@ namespace MNX.Common
                     }
                 }
 
-                A.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "forward", "sequence");
+                M.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "forward", "sequence");
             }
 
             CheckDirectionContent(content);
 
-            A.Assert(r.Name == caller); // end of sequence content
+            M.Assert(r.Name == caller); // end of sequence content
 
             return content;
         }
@@ -188,7 +188,7 @@ namespace MNX.Common
                 }
                 intSum += i;
             }
-            A.Assert(intSum <= total);
+            M.Assert(intSum <= total);
             if(intSum < total)
             {
                 int lastDuration = intDivisionSizes[intDivisionSizes.Count - 1];

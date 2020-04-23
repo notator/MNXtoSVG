@@ -19,7 +19,7 @@ namespace MNX.Common
         public OctaveShift(XmlReader r)
             : base()
         {            
-            A.Assert(r.Name == "octave-shift");
+            M.Assert(r.Name == "octave-shift");
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -58,7 +58,7 @@ namespace MNX.Common
                         }
                         break;
                     default:
-                        A.ThrowError("Error: Unknown attribute name.");
+                        M.ThrowError("Error: Unknown attribute name.");
                         break;
                 }
             }
@@ -91,7 +91,7 @@ namespace MNX.Common
                     rval = OctaveShiftType.up3Oct;
                     break;
                 default:
-                    A.ThrowError("Error: unknown octave shift type");
+                    M.ThrowError("Error: unknown octave shift type");
                     break;
             }
 

@@ -75,22 +75,22 @@ namespace Moritz.Spec
 		{
 			base.AssertConsistency();
 
-			A.Assert(MidiChannel >= 0 && MidiChannel <= 15);
+			M.Assert(MidiChannel >= 0 && MidiChannel <= 15);
 
-			A.Assert(Container == null || Container is Seq || Container is Bar);
+			M.Assert(Container == null || Container is Seq || Container is Bar);
 
 			if(Container == null || Container is Seq)
 			{
 				foreach(IUniqueDef iud in UniqueDefs)
 				{
-					A.Assert(iud is MidiChordDef || iud is MidiRestDef);
+					M.Assert(iud is MidiChordDef || iud is MidiRestDef);
 				}
 			}
 			else if(Container is Bar)
 			{
 				foreach(IUniqueDef iud in UniqueDefs)
 				{
-					A.Assert(iud is MidiChordDef || iud is MidiRestDef || iud is ClefDef || iud is CautionaryChordDef);
+					M.Assert(iud is MidiChordDef || iud is MidiRestDef || iud is ClefDef || iud is CautionaryChordDef);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ namespace Moritz.Spec
         /// </summary>
         public override void Add(IUniqueDef iUniqueDef)
         {
-            A.Assert(iUniqueDef is MidiChordDef || iUniqueDef is MidiRestDef || iUniqueDef is CautionaryChordDef || iUniqueDef is ClefDef);
+            M.Assert(iUniqueDef is MidiChordDef || iUniqueDef is MidiRestDef || iUniqueDef is CautionaryChordDef || iUniqueDef is ClefDef);
             _Add(iUniqueDef);
 		}
 		/// <summary>
@@ -114,7 +114,7 @@ namespace Moritz.Spec
 		/// </summary>
 		public override void AddRange(VoiceDef trk)
         {
-            A.Assert(trk is Trk);
+            M.Assert(trk is Trk);
             _AddRange(trk);
         }
 
@@ -127,7 +127,7 @@ namespace Moritz.Spec
 		/// </summary>
 		public void ConcatCloneAt(Trk trk2, int msPositionReThisTrk)
 		{
-			A.Assert(MsDuration <= msPositionReThisTrk);
+			M.Assert(MsDuration <= msPositionReThisTrk);
 			if(msPositionReThisTrk > MsDuration)
 			{
 				int msDuration = (msPositionReThisTrk - MsDuration);
@@ -164,7 +164,7 @@ namespace Moritz.Spec
 		/// </summary>
 		public override void Insert(int index, IUniqueDef iUniqueDef)
         {
-            A.Assert(iUniqueDef is MidiChordDef || iUniqueDef is MidiRestDef || iUniqueDef is ClefDef);
+            M.Assert(iUniqueDef is MidiChordDef || iUniqueDef is MidiRestDef || iUniqueDef is ClefDef);
             _Insert(index, iUniqueDef);
         }
         /// <summary>
@@ -180,7 +180,7 @@ namespace Moritz.Spec
         /// </summary>
         public virtual void Replace(int index, IUniqueDef replacementIUnique)
         {
-            A.Assert(replacementIUnique is MidiChordDef || replacementIUnique is MidiRestDef);
+            M.Assert(replacementIUnique is MidiChordDef || replacementIUnique is MidiRestDef);
             _Replace(index, replacementIUnique);
         }
         #region Superimpose
@@ -200,7 +200,7 @@ namespace Moritz.Spec
         /// <returns>this</returns>
         public virtual Trk Superimpose(Trk trk2)
         {
-            A.Assert(MidiChannel == trk2.MidiChannel);
+            M.Assert(MidiChannel == trk2.MidiChannel);
 
             SuperimposeUniqueDefs(trk2);
 
@@ -219,7 +219,7 @@ namespace Moritz.Spec
         {
             AlignAndJustifyWith(trk2);
 
-            A.Assert(this.MsDuration == trk2.MsDuration);
+            M.Assert(this.MsDuration == trk2.MsDuration);
             int thisIndex = 0;
             int trk2Index = 0;
             List<IUniqueDef> newUniqueDefs = new List<IUniqueDef>();
@@ -274,7 +274,7 @@ namespace Moritz.Spec
                     }
                     else if(iudToAdd.MsPositionReFirstUD < currentDuration)
                     {
-                        A.Assert(false, $"Error: Can't add UniqueDef at current position ({currentDuration}).");
+                        M.Assert(false, $"Error: Can't add UniqueDef at current position ({currentDuration}).");
                     }
                     newUniqueDefs.Add(iudToAdd);
                     currentDuration += iudToAdd.MsDuration;
@@ -502,10 +502,10 @@ namespace Moritz.Spec
 		public virtual void SetVelocityPerAbsolutePitch(List<byte> velocityPerAbsolutePitch)
         {
             #region conditions
-            A.Assert(velocityPerAbsolutePitch.Count == 12);
+            M.Assert(velocityPerAbsolutePitch.Count == 12);
             for(int i = 0; i < 12; ++i)
             {
-                A.AssertIsVelocityValue(velocityPerAbsolutePitch[i]);
+                M.AssertIsVelocityValue(velocityPerAbsolutePitch[i]);
             }
 			#endregion conditions
             for(int i = 0; i < UniqueDefs.Count; ++i)
@@ -513,7 +513,7 @@ namespace Moritz.Spec
                 if(UniqueDefs[i] is MidiChordDef mcd)
                 {
                     mcd.SetVelocityPerAbsolutePitch(velocityPerAbsolutePitch);
-					A.Assert(mcd.NotatedMidiPitches.Count > 0);
+					M.Assert(mcd.NotatedMidiPitches.Count > 0);
                 }
             }
         }
@@ -532,8 +532,8 @@ namespace Moritz.Spec
         /// <param name="velocityForMaxMsDuration">in range 1..127</param>
         public virtual void SetVelocitiesFromDurations(byte velocityForMinMsDuration, byte velocityForMaxMsDuration, double percent = 100.0)
         {
-            A.Assert(velocityForMinMsDuration >= 1 && velocityForMinMsDuration <= 127);
-            A.Assert(velocityForMaxMsDuration >= 1 && velocityForMaxMsDuration <= 127);
+            M.Assert(velocityForMinMsDuration >= 1 && velocityForMinMsDuration <= 127);
+            M.Assert(velocityForMaxMsDuration >= 1 && velocityForMaxMsDuration <= 127);
 
             int msDurationRangeMin = int.MaxValue;
             int msDurationRangeMax = int.MinValue;
@@ -567,8 +567,8 @@ namespace Moritz.Spec
         public void SetVerticalVelocityGradient(byte rootVelocity, byte topVelocity)
         {
             #region conditions
-            A.Assert(rootVelocity > 0 && rootVelocity <= 127);
-            A.Assert(topVelocity > 0 && topVelocity <= 127);
+            M.Assert(rootVelocity > 0 && rootVelocity <= 127);
+            M.Assert(topVelocity > 0 && topVelocity <= 127);
             #endregion conditions
 
             foreach(IUniqueDef iud in UniqueDefs)
@@ -600,7 +600,7 @@ namespace Moritz.Spec
 		/// <param name="durationForHighestPitch"></param>
 		public void SetDurationsFromPitches(int durationForLowestPitch, int durationForHighestPitch, bool useBottomPitch, double percent = 100.0)
         {
-            A.Assert(percent >= 0 && percent <= 100);
+            M.Assert(percent >= 0 && percent <= 100);
 
             List<byte> pitches = new List<byte>();
             #region get pitches
@@ -629,7 +629,7 @@ namespace Moritz.Spec
             }
             else
             {
-                A.Assert(pitches.Count > 1);
+                M.Assert(pitches.Count > 1);
                 pitches.Sort();
                 #region get durations
                 int nPitches = pitches.Count;
@@ -641,8 +641,8 @@ namespace Moritz.Spec
                     msDurations.Add((int)Math.Round(msDuration));
                     msDuration *= factor;
                 }
-                A.Assert(msDurations.Count == nPitches);
-                A.Assert(msDurations[msDurations.Count - 1] == durationForHighestPitch);
+                M.Assert(msDurations.Count == nPitches);
+                M.Assert(msDurations[msDurations.Count - 1] == durationForHighestPitch);
                 #endregion get durations
                 #region get duration per pitch dictionary
                 Dictionary<byte, int> msDurPerPitch = new Dictionary<byte, int>();
@@ -708,7 +708,7 @@ namespace Moritz.Spec
         {
 			if(CheckIndices(beginIndex, nonInclusiveEndIndex))
 			{
-				A.Assert(factor > 0.0);
+				M.Assert(factor > 0.0);
 				for(int i = beginIndex; i < nonInclusiveEndIndex; ++i)
 				{
 					if(_uniqueDefs[i] is MidiChordDef mcd)
@@ -746,7 +746,7 @@ namespace Moritz.Spec
 		/// </summary>
 		public virtual void AdjustVelocities(double factor)
         {
-            A.Assert(factor > 0.0);
+            M.Assert(factor > 0.0);
             for(int i = 0; i < UniqueDefs.Count; ++i)
             {
                 if(UniqueDefs[i] is MidiChordDef mcd)
@@ -777,7 +777,7 @@ namespace Moritz.Spec
         {
 			if(CheckIndices(beginIndex, endIndex))
 			{				
-				A.Assert(startFactor >= 0 && endFactor >= 0);
+				M.Assert(startFactor >= 0 && endFactor >= 0);
 				int nNonMidiChordDefs = GetNumberOfNonMidiChordDefs(beginIndex, endIndex);
 				int steps = endIndex - 1 - beginIndex - nNonMidiChordDefs;
 				if(steps > 0)
@@ -817,7 +817,7 @@ namespace Moritz.Spec
 			int endIndex = beginIndex + count;
 			if(CheckIndices(beginIndex, endIndex))
 			{
-				A.Assert(startPanValue >= 0 && startPanValue <= 127 && endPanValue >= 0 && endPanValue <= 127);
+				M.Assert(startPanValue >= 0 && startPanValue <= 127 && endPanValue >= 0 && endPanValue <= 127);
 
 				int nNonMidiChordDefs = GetNumberOfNonMidiChordDefs(beginIndex, endIndex);
 				int steps = (endIndex - 1 - beginIndex - nNonMidiChordDefs);
@@ -854,7 +854,7 @@ namespace Moritz.Spec
 				{
 					if(this[i] is MidiChordDef mcd)
 					{
-						mcd.PitchWheelDeviation = A.SetRange0_127(deviation);
+						mcd.PitchWheelDeviation = M.SetRange0_127(deviation);
 					}
 				}
 			}
@@ -884,9 +884,9 @@ namespace Moritz.Spec
         /// <param name="finale"></param>
         protected void AdjustPitchWheelDeviations(int beginIndex, int endIndex, int pwValueAtBeginIndex, int pwValueAtEndIndex)
         {
-            A.Assert(beginIndex >= 0 && beginIndex < endIndex && endIndex < Count);
-            A.Assert(pwValueAtBeginIndex >= 0 && pwValueAtEndIndex >= 0);
-            A.Assert(pwValueAtBeginIndex <= 127 && pwValueAtEndIndex <= 127);
+            M.Assert(beginIndex >= 0 && beginIndex < endIndex && endIndex < Count);
+            M.Assert(pwValueAtBeginIndex >= 0 && pwValueAtEndIndex >= 0);
+            M.Assert(pwValueAtBeginIndex <= 127 && pwValueAtEndIndex <= 127);
 
             int nNonMidiChordDefs = GetNumberOfNonMidiChordDefs(beginIndex, endIndex);
 
@@ -896,7 +896,7 @@ namespace Moritz.Spec
             {
                 if(_uniqueDefs[i] is MidiChordDef umc)
                 {
-                    umc.PitchWheelDeviation = A.SetRange0_127((int)(pwValueAtBeginIndex * (Math.Pow(pwdfactor, i))));
+                    umc.PitchWheelDeviation = M.SetRange0_127((int)(pwValueAtBeginIndex * (Math.Pow(pwdfactor, i))));
                 }
             }
         }
@@ -972,13 +972,13 @@ namespace Moritz.Spec
             List<IUniqueDef> lmdds = _uniqueDefs;
             int count = lmdds.Count;
             string msg = "\nError in VoiceDef.cs,\nfunction AlignDefMsPosition()\n\n";
-            A.Assert((anchor1Index < indexToAlign && anchor2Index > indexToAlign),
+            M.Assert((anchor1Index < indexToAlign && anchor2Index > indexToAlign),
                     msg + "Index out of order.\n" +
                     "\nanchor1Index=" + anchor1Index.ToString() +
                     "\nindexToAlign=" + indexToAlign.ToString() +
                     "\nanchor2Index=" + anchor2Index.ToString());
 
-            A.Assert(!(anchor1Index > (count - 2) || indexToAlign > (count - 1) || anchor2Index > count)// anchor2Index can be at the final barline (=count)!
+            M.Assert(!(anchor1Index > (count - 2) || indexToAlign > (count - 1) || anchor2Index > count)// anchor2Index can be at the final barline (=count)!
                 || (anchor1Index < 0 || indexToAlign < 1 || anchor2Index < 2),
                     msg + "Index out of range.\n" +
                     "\ncount=" + count.ToString() +
@@ -996,7 +996,7 @@ namespace Moritz.Spec
             {
                 a2MsPosReFirstIUD = lmdds[anchor2Index].MsPositionReFirstUD;
             }
-            A.Assert((toMsPositionReFirstUD > a1MsPosReFirstUD && toMsPositionReFirstUD < a2MsPosReFirstIUD),
+            M.Assert((toMsPositionReFirstUD > a1MsPosReFirstUD && toMsPositionReFirstUD < a2MsPosReFirstIUD),
                     msg + "Target (msPos) position out of range.\n" +
                     "\nanchor1Index=" + anchor1Index.ToString() +
                     "\nindexToAlign=" + indexToAlign.ToString() +
@@ -1010,7 +1010,7 @@ namespace Moritz.Spec
         /// </summary>
         public void AlignObjectAtIndex(int indexToAlign, int msPositionReContainer)
         {
-            A.Assert(indexToAlign >= 0 && indexToAlign < this.Count);
+            M.Assert(indexToAlign >= 0 && indexToAlign < this.Count);
             int currentMsPositionReContainer = this.MsPositionReContainer + this[indexToAlign].MsPositionReFirstUD;
             int shift = msPositionReContainer - currentMsPositionReContainer;
             this.MsPositionReContainer += shift;
@@ -1041,7 +1041,7 @@ namespace Moritz.Spec
         /// </summary>
         protected void SortByRootNotatedPitch(bool ascending)
         {
-            A.Assert(!(Container is Bar), "Cannot sort inside a Bar.");
+            M.Assert(!(Container is Bar), "Cannot sort inside a Bar.");
 
             List<IUniqueDef> localIUDs = new List<IUniqueDef>(UniqueDefs);
             // Remove any rests from localIUDs, and store them (the rests), with their original indices,
@@ -1067,7 +1067,7 @@ namespace Moritz.Spec
             foreach(IUniqueDef iud in localIUDs)
             {
                 MidiChordDef mcd = iud as MidiChordDef;
-                A.Assert(mcd != null);
+                M.Assert(mcd != null);
                 lowestPitches.Add(mcd.NotatedMidiPitches[0]);
             }
             return lowestPitches;
@@ -1097,7 +1097,7 @@ namespace Moritz.Spec
         /// </summary>
         protected void SortByVelocity(bool increasing)
         {
-            A.Assert(!(Container is Bar), "Cannot sort inside a Bar.");
+            M.Assert(!(Container is Bar), "Cannot sort inside a Bar.");
 
             List<IUniqueDef> localIUDs = new List<IUniqueDef>(UniqueDefs);
             // Remove any rests from localIUDs, and store them (the rests), with their original indices,
@@ -1137,7 +1137,7 @@ namespace Moritz.Spec
                 }
                 if(bytes.Count < maxCount)
                 {
-                    A.Assert(factor > 1);
+                    M.Assert(factor > 1);
                     int remainingCount = maxCount - bytes.Count;
                     for(int i = 0; i < remainingCount; ++i)
                     {
@@ -1145,7 +1145,7 @@ namespace Moritz.Spec
                         factor /= 128;
                     }
                 }
-                A.Assert(factor == (double)1 / 128);
+                M.Assert(factor == (double)1 / 128);
                 values.Add(val);
             }
             return values;
@@ -1162,7 +1162,7 @@ namespace Moritz.Spec
             #region conditions
             foreach(IUniqueDef iud in mcds)
             {
-                A.Assert(iud is MidiChordDef);
+                M.Assert(iud is MidiChordDef);
             }
             #endregion conditions
 
@@ -1289,7 +1289,7 @@ namespace Moritz.Spec
             }
             set
             {
-                A.Assert(_axisIndex < UniqueDefs.Count);
+                M.Assert(_axisIndex < UniqueDefs.Count);
                 _axisIndex = value;
             }
         }

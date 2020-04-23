@@ -22,8 +22,8 @@ namespace MNX_Main
             this.StafflineStemStrokeWidthComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             this.GapSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            string[] mnxPathsArray = Directory.GetFiles(A.MNX_in_Folder, "*.mnx");
-            string[] svgDataArray = Directory.GetFiles(A.SVGData_Folder, "*.svgd");
+            string[] mnxPathsArray = Directory.GetFiles(M.MNX_in_Folder, "*.mnx");
+            string[] svgDataArray = Directory.GetFiles(M.SVGData_Folder, "*.svgd");
 
             var mnxPaths = new List<string>(mnxPathsArray);
             mnxPaths.Sort();
@@ -53,6 +53,7 @@ namespace MNX_Main
                     var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
                     var svgData = new SVGData(svgds);
                     List<Bar> Bars = mnx.ToBars();
+                    CreateSVGScore(Bars);
                 }
             }
             else
@@ -61,6 +62,7 @@ namespace MNX_Main
                 var svgds = new SVGDataStrings(_mnxSVGDatas[selectedIndex - 1].Item2);
                 var svgData = new SVGData(svgds);
                 List<Bar> Bars = mnx.ToBars();
+                CreateSVGScore(Bars);
             }
         }
 
@@ -218,17 +220,17 @@ namespace MNX_Main
         {
             bool rval = true;
 
-            if(rval && A.HasError(this.PageWidthTextBox)) { rval = false; }
-            if(rval && A.HasError(this.PageHeightTextBox)) { rval = false; }
-            if(rval && A.HasError(this.MarginTopPage1TextBox)) { rval = false; }
-            if(rval && A.HasError(this.MarginTopOtherPagesTextBox)) { rval = false; }
-            if(rval && A.HasError(this.MarginRightTextBox)) { rval = false; }
-            if(rval && A.HasError(this.MarginBottomTextBox)) { rval = false; }
-            if(rval && A.HasError(this.MarginLeftTextBox)) { rval = false; }
-            if(rval && A.HasError(this.MinimumGapsBetweenStavesTextBox)) { rval = false; }
-            if(rval && A.HasError(this.MinimumGapsBetweenSystemsTextBox)) { rval = false; }
-            if(rval && A.HasError(this.SystemStartBarsTextBox)) { rval = false; }
-            if(rval && A.HasError(this.CrotchetsPerMinuteTextBox)) { rval = false; }
+            if(rval && M.HasError(this.PageWidthTextBox)) { rval = false; }
+            if(rval && M.HasError(this.PageHeightTextBox)) { rval = false; }
+            if(rval && M.HasError(this.MarginTopPage1TextBox)) { rval = false; }
+            if(rval && M.HasError(this.MarginTopOtherPagesTextBox)) { rval = false; }
+            if(rval && M.HasError(this.MarginRightTextBox)) { rval = false; }
+            if(rval && M.HasError(this.MarginBottomTextBox)) { rval = false; }
+            if(rval && M.HasError(this.MarginLeftTextBox)) { rval = false; }
+            if(rval && M.HasError(this.MinimumGapsBetweenStavesTextBox)) { rval = false; }
+            if(rval && M.HasError(this.MinimumGapsBetweenSystemsTextBox)) { rval = false; }
+            if(rval && M.HasError(this.SystemStartBarsTextBox)) { rval = false; }
+            if(rval && M.HasError(this.CrotchetsPerMinuteTextBox)) { rval = false; }
 
             return rval;
         }
@@ -236,7 +238,7 @@ namespace MNX_Main
         private void IntTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            A.CheckTextBoxIsUInt(textBox);
+            M.CheckTextBoxIsUInt(textBox);
             _settingsHaveChanged = true;
             SetButtons(_settingsHaveChanged);
         }
@@ -250,7 +252,7 @@ namespace MNX_Main
         private void UnsignedDoubleTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            A.CheckTextBoxIsUnsignedDouble(textBox);
+            M.CheckTextBoxIsUnsignedDouble(textBox);
             _settingsHaveChanged = true;
             SetButtons(_settingsHaveChanged);
         }
@@ -258,14 +260,14 @@ namespace MNX_Main
         private void SystemStartBarsTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            A.CheckSystemStartBarsUnsignedIntList(textBox);
+            M.CheckSystemStartBarsUnsignedIntList(textBox);
             _settingsHaveChanged = true;
             SetButtons(_settingsHaveChanged);
         }
 
         private void TextBox_Changed(object sender, EventArgs e)
         {
-            A.SetToWhite(sender as TextBox);
+            M.SetToWhite(sender as TextBox);
         }
 
         private void SaveFormatButton_Click(object sender, EventArgs e)

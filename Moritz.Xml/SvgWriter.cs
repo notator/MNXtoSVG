@@ -64,10 +64,10 @@ namespace Moritz.Xml
 		{
 			_w.WriteStartElement("line");
 		    _w.WriteAttributeString("class", cssClass.ToString());
-			_w.WriteAttributeString("x1", A.FloatToShortString(x1));
-			_w.WriteAttributeString("y1", A.FloatToShortString(y1));
-			_w.WriteAttributeString("x2", A.FloatToShortString(x2));
-            _w.WriteAttributeString("y2", A.FloatToShortString(y2));
+			_w.WriteAttributeString("x1", M.FloatToShortString(x1));
+			_w.WriteAttributeString("y1", M.FloatToShortString(y1));
+			_w.WriteAttributeString("x2", M.FloatToShortString(x2));
+            _w.WriteAttributeString("y2", M.FloatToShortString(y2));
             _w.WriteEndElement(); //line
 		}
 
@@ -83,10 +83,10 @@ namespace Moritz.Xml
         {
             _w.WriteStartElement("rect");
 			_w.WriteAttributeString("class", cssClass.ToString());
-			_w.WriteAttributeString("x", A.FloatToShortString(left));
-            _w.WriteAttributeString("y", A.FloatToShortString(top));
-            _w.WriteAttributeString("width", A.FloatToShortString(width));
-            _w.WriteAttributeString("height", A.FloatToShortString(height));
+			_w.WriteAttributeString("x", M.FloatToShortString(left));
+            _w.WriteAttributeString("y", M.FloatToShortString(top));
+            _w.WriteAttributeString("width", M.FloatToShortString(width));
+            _w.WriteAttributeString("height", M.FloatToShortString(height));
             _w.WriteEndElement(); // rect
         }
 
@@ -101,9 +101,9 @@ namespace Moritz.Xml
 		{
 			WriteStartElement("circle");
 			_w.WriteAttributeString("class", cssClass.ToString());
-			WriteAttributeString("cx", A.FloatToShortString(cx));
-			WriteAttributeString("cy", A.FloatToShortString(cy));
-			WriteAttributeString("r", A.FloatToShortString(r));
+			WriteAttributeString("cx", M.FloatToShortString(cx));
+			WriteAttributeString("cy", M.FloatToShortString(cy));
+			WriteAttributeString("r", M.FloatToShortString(r));
 
 			WriteEndElement(); // circle
 		}
@@ -120,10 +120,10 @@ namespace Moritz.Xml
 		{
 			WriteStartElement("ellipse");
 			WriteAttributeString("class", cssClass.ToString());
-			WriteAttributeString("cx", A.FloatToShortString(cx));
-			WriteAttributeString("cy", A.FloatToShortString(cy));
-			WriteAttributeString("rx", A.FloatToShortString(rx));
-			WriteAttributeString("ry", A.FloatToShortString(ry));
+			WriteAttributeString("cx", M.FloatToShortString(cx));
+			WriteAttributeString("cy", M.FloatToShortString(cy));
+			WriteAttributeString("rx", M.FloatToShortString(rx));
+			WriteAttributeString("ry", M.FloatToShortString(ry));
 
 			WriteEndElement(); // ellipse
 		}
@@ -139,10 +139,10 @@ namespace Moritz.Xml
                 left = right;
                 right = temp;
             }
-            string leftStr = left.ToString("0.###", A.En_USNumberFormat);
-            string topStr = top.ToString("0.###", A.En_USNumberFormat);
-            string rightStr = right.ToString("0.###", A.En_USNumberFormat);
-            string bottomStr = bottom.ToString("0.###", A.En_USNumberFormat);
+            string leftStr = left.ToString("0.###", M.En_USNumberFormat);
+            string topStr = top.ToString("0.###", M.En_USNumberFormat);
+            string rightStr = right.ToString("0.###", M.En_USNumberFormat);
+            string bottomStr = bottom.ToString("0.###", M.En_USNumberFormat);
 
             _w.WriteStartElement("path");
             _w.WriteAttributeString("class", cssClass.ToString());
@@ -164,26 +164,26 @@ namespace Moritz.Xml
         /// <param name="topRightY"></param>
         /// <param name="beamWidth">The vertical distance between the coordinates on the left and right sides.</param>
         /// <param name="isOpaque"></param>
-        public void SvgBeam(float left, float right, float topLeftY, float topRightY, float beamWidth, bool isOpaque, bool isInput)
+        public void SvgBeam(float left, float right, float topLeftY, float topRightY, float beamWidth, bool isOpaque)
         {
             float bottomLeftY = topLeftY + beamWidth;
             float bottomRightY = topRightY + beamWidth;
             StringBuilder dSB = new StringBuilder();
-            dSB.Append("M " + left.ToString("0.###", A.En_USNumberFormat) + " " + topLeftY.ToString("0.###", A.En_USNumberFormat) + " ");
-            dSB.Append("L " + right.ToString("0.###", A.En_USNumberFormat) + " " + topRightY.ToString("0.###", A.En_USNumberFormat) + " ");
-            dSB.Append(right.ToString("0.###", A.En_USNumberFormat) + " " + bottomRightY.ToString("0.###", A.En_USNumberFormat) + " ");
-            dSB.Append(left.ToString("0.###", A.En_USNumberFormat) + " " + bottomLeftY.ToString("0.###", A.En_USNumberFormat) + " z");
+            dSB.Append("M " + left.ToString("0.###", M.En_USNumberFormat) + " " + topLeftY.ToString("0.###", M.En_USNumberFormat) + " ");
+            dSB.Append("L " + right.ToString("0.###", M.En_USNumberFormat) + " " + topRightY.ToString("0.###", M.En_USNumberFormat) + " ");
+            dSB.Append(right.ToString("0.###", M.En_USNumberFormat) + " " + bottomRightY.ToString("0.###", M.En_USNumberFormat) + " ");
+            dSB.Append(left.ToString("0.###", M.En_USNumberFormat) + " " + bottomLeftY.ToString("0.###", M.En_USNumberFormat) + " z");
 
             _w.WriteStartElement("path");
 
             CSSObjectClass beamClass;
             if(isOpaque)
             {
-                beamClass = isInput ? CSSObjectClass.inputOpaqueBeam : CSSObjectClass.opaqueBeam;
+                beamClass = CSSObjectClass.opaqueBeam;
             }
             else
             {
-                beamClass = isInput ? CSSObjectClass.inputBeam : CSSObjectClass.beam;
+                beamClass = CSSObjectClass.beam;
             }
             _w.WriteAttributeString("class", beamClass.ToString());
             _w.WriteAttributeString("d", dSB.ToString());
@@ -194,8 +194,8 @@ namespace Moritz.Xml
 		{
 			_w.WriteStartElement("text");
 			_w.WriteAttributeString("class", cssClass.ToString());
-			_w.WriteAttributeString("x", A.FloatToShortString(x));
-			_w.WriteAttributeString("y", A.FloatToShortString(y));
+			_w.WriteAttributeString("x", M.FloatToShortString(x));
+			_w.WriteAttributeString("y", M.FloatToShortString(y));
 			_w.WriteString(text);
 			_w.WriteEndElement(); // text
 		}
@@ -214,8 +214,8 @@ namespace Moritz.Xml
 			{
 				_w.WriteAttributeString("class", classesString);
 			}
-			_w.WriteAttributeString("x", A.FloatToShortString(x));
-			_w.WriteAttributeString("y", A.FloatToShortString(y));
+			_w.WriteAttributeString("x", M.FloatToShortString(x));
+			_w.WriteAttributeString("y", M.FloatToShortString(y));
 			_w.WriteString(text);
 			_w.WriteEndElement(); // text
 		}
@@ -232,8 +232,8 @@ namespace Moritz.Xml
             _w.WriteStartElement("use");
             _w.WriteAttributeString("class", cssClass.ToString());
             _w.WriteAttributeString("href", "#" + idOfObjectToUse);
-            _w.WriteAttributeString("x", A.FloatToShortString(x));
-            _w.WriteAttributeString("y", A.FloatToShortString(y));
+            _w.WriteAttributeString("x", M.FloatToShortString(x));
+            _w.WriteAttributeString("y", M.FloatToShortString(y));
             _w.WriteEndElement();
         }
         #endregion
@@ -253,9 +253,9 @@ namespace Moritz.Xml
             string id = type.ToString();       
             string x1 = "0";
             string x2 = "0";
-            string x3 = A.FloatToShortString(0.31809F * fontHeight);
-            string x4 = A.FloatToShortString(0.299F * fontHeight);
-            string x5 = A.FloatToShortString(0.31809F * fontHeight);
+            string x3 = M.FloatToShortString(0.31809F * fontHeight);
+            string x4 = M.FloatToShortString(0.299F * fontHeight);
+            string x5 = M.FloatToShortString(0.31809F * fontHeight);
 
             float sign = rightFlag ? 1F : -1F;
             float y1 = 0F;
@@ -274,11 +274,11 @@ namespace Moritz.Xml
                 _w.WriteStartElement("path");
                 StringBuilder dAttributeSB = new StringBuilder();
                 dAttributeSB.Append("M ");
-                dAttributeSB.Append(x1 + "," + A.FloatToShortString(y1 + offset) + " ");
-                dAttributeSB.Append(x2 + "," + A.FloatToShortString(y2 + offset) + " ");
-                dAttributeSB.Append(x3 + "," + A.FloatToShortString(y3 + offset) + " Q ");
-                dAttributeSB.Append(x4 + "," + A.FloatToShortString(y4 + offset) + " ");
-                dAttributeSB.Append(x5 + "," + A.FloatToShortString(y5 + offset));
+                dAttributeSB.Append(x1 + "," + M.FloatToShortString(y1 + offset) + " ");
+                dAttributeSB.Append(x2 + "," + M.FloatToShortString(y2 + offset) + " ");
+                dAttributeSB.Append(x3 + "," + M.FloatToShortString(y3 + offset) + " Q ");
+                dAttributeSB.Append(x4 + "," + M.FloatToShortString(y4 + offset) + " ");
+                dAttributeSB.Append(x5 + "," + M.FloatToShortString(y5 + offset));
                 _w.WriteAttributeString("d", dAttributeSB.ToString());
                 _w.WriteEndElement();
             }

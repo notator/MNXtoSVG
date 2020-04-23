@@ -18,11 +18,11 @@ namespace MNX.Common
 
         public Directions(XmlReader r, bool isGlobal)
         {
-            A.Assert(r.Name == "directions");
+            M.Assert(r.Name == "directions");
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
-            A.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift");
+            M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift");
 
             while(r.Name == "time" || r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift")
             {
@@ -32,9 +32,9 @@ namespace MNX.Common
                     {
                         case "time":
                             // https://w3c.github.io/mnx/specification/common/#the-time-element
-                            if(A.Profile == MNXProfile.MNXCommonStandard && isGlobal == false)
+                            if(M.Profile == MNXProfile.MNXCommonStandard && isGlobal == false)
                             {
-                                A.ThrowError("Error: the time element must be global in standard mnx-common.");
+                                M.ThrowError("Error: the time element must be global in standard mnx-common.");
                             }
                             TimeSignature = new TimeSignature(r);
                             break;
@@ -50,9 +50,9 @@ namespace MNX.Common
                             break;
                     }
                 }
-                A.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "directions");
+                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "directions");
             }
-            A.Assert(r.Name == "directions"); // end of "directions"
+            M.Assert(r.Name == "directions"); // end of "directions"
         }
     }
 }

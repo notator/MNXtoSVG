@@ -43,17 +43,17 @@ namespace Moritz.Spec
 
                 if(DoWriteControl(PanMsbs, carryMsgs.PanState))
                 {
-                    carryMsgs.PanState = WriteCCEnv(w, channel, A.CTL_PAN_10, PanMsbs, msDuration);
+                    carryMsgs.PanState = WriteCCEnv(w, channel, M.CTL_PAN_10, PanMsbs, msDuration);
                 }
 
                 if(DoWriteControl(ModulationWheelMsbs, carryMsgs.ModWheelState))
                 {
-                    carryMsgs.ModWheelState = WriteCCEnv(w, channel, A.CTL_MODWHEEL_1, ModulationWheelMsbs, msDuration);
+                    carryMsgs.ModWheelState = WriteCCEnv(w, channel, M.CTL_MODWHEEL_1, ModulationWheelMsbs, msDuration);
                 }
 
                 if(DoWriteControl(ExpressionMsbs, carryMsgs.ExpressionState))
                 {
-                    carryMsgs.ExpressionState = WriteCCEnv(w, channel, A.CTL_EXPRESSION_11, ExpressionMsbs, msDuration);
+                    carryMsgs.ExpressionState = WriteCCEnv(w, channel, M.CTL_EXPRESSION_11, ExpressionMsbs, msDuration);
                 }
 
                 if(DoWriteControl(PitchWheelMsbs, carryMsgs.PitchWheelState))
@@ -61,7 +61,7 @@ namespace Moritz.Spec
                     string statusString = null;
                     w.WriteStartElement("env"); // envelope
 
-                    statusString = $"0x{(A.CMD_PITCH_WHEEL_0xE0 + channel).ToString("X")}";
+                    statusString = $"0x{(M.CMD_PITCH_WHEEL_0xE0 + channel).ToString("X")}";
                     w.WriteAttributeString("s", statusString);
 
                     carryMsgs.PitchWheelState = WriteD1AndD2VTs(w, PitchWheelMsbs, PitchWheelMsbs, msDuration);
@@ -113,7 +113,7 @@ namespace Moritz.Spec
         /// <returns>The last controller value</returns>
         private byte WriteCCEnv(SvgWriter w, int channel, int d1, List<byte> d2s, int msDuration)
         {
-            string statusString = $"0x{(A.CMD_CONTROL_CHANGE_0xB0 + channel).ToString("X")}"; ;
+            string statusString = $"0x{(M.CMD_CONTROL_CHANGE_0xB0 + channel).ToString("X")}"; ;
             w.WriteStartElement("env"); // envelope
             w.WriteAttributeString("s", statusString);
             w.WriteAttributeString("d1", d1.ToString());
@@ -139,7 +139,7 @@ namespace Moritz.Spec
             List<byte> agglommeratedD2s = rval.Item2;
             for(int i = 0; i < msDurs.Count; ++i)
             {
-                A.Assert(msDurs[i] > 0, "Moritz never writes controller values that would have to be carried to the next moment.");
+                M.Assert(msDurs[i] > 0, "Moritz never writes controller values that would have to be carried to the next moment.");
                 w.WriteStartElement("vt"); // envelope
                 w.WriteAttributeString("d2", agglommeratedD2s[i].ToString());
                 w.WriteAttributeString("msDur", msDurs[i].ToString());
@@ -152,7 +152,7 @@ namespace Moritz.Spec
 
         private Tuple<List<int>, List<byte>> Agglommerate(List<int> msDurs, List<byte> d2s)
         {
-            A.Assert(msDurs.Count == d2s.Count);
+            M.Assert(msDurs.Count == d2s.Count);
 
             List<byte> rD2s = new List<byte>(d2s);
 
@@ -170,7 +170,7 @@ namespace Moritz.Spec
 
         private Tuple<List<int>, List<byte>, List<byte>> Agglommerate(List<int> msDurs, List<byte> d1s, List<byte> d2s)
         {
-            A.Assert(msDurs.Count == d1s.Count && msDurs.Count == d2s.Count);
+            M.Assert(msDurs.Count == d1s.Count && msDurs.Count == d2s.Count);
 
             List<byte> rD1s = new List<byte>(d1s);
             List<byte> rD2s = new List<byte>(d2s);
@@ -196,7 +196,7 @@ namespace Moritz.Spec
         /// <returns>The last controller value</returns>
         private byte WriteD1AndD2VTs(SvgWriter w, List<byte> d1s, List<byte> d2s, int msDuration)
         {
-            A.Assert(d1s.Count == d2s.Count);
+            M.Assert(d1s.Count == d2s.Count);
             byte lastControllerValue = 0; // will always be changed
             List<int> msDurs = GetMsDurs(d1s.Count, msDuration);
             Tuple<List<int>, List<byte>, List<byte>> rVals = Agglommerate(msDurs, d1s, d2s);
@@ -205,7 +205,7 @@ namespace Moritz.Spec
             List<byte> rD2s = rVals.Item3;
             for(int i = 0; i < msDurs.Count; ++i)
             {
-                A.Assert(msDurs[i] > 0, "Moritz never writes controller values that would have to be carried to the next moment.");
+                M.Assert(msDurs[i] > 0, "Moritz never writes controller values that would have to be carried to the next moment.");
                 w.WriteStartElement("vt"); // envelope
                 w.WriteAttributeString("d1", rD1s[i].ToString());
                 w.WriteAttributeString("d2", rD2s[i].ToString());
@@ -227,12 +227,12 @@ namespace Moritz.Spec
                     msDurs.Add(msDuration);
                     break;
                 case 2:
-                    A.Assert(msDuration > 1);
+                    M.Assert(msDuration > 1);
                     msDurs.Add(msDuration - 1);
                     msDurs.Add(1);
                     break;
                 default:
-                    A.Assert(msDuration > 2);
+                    M.Assert(msDuration > 2);
                     float fDuration = ((float)msDuration - 1) / (count - 1);
                     List<int> iPositions = new List<int>();
                     float fPosition = 0;

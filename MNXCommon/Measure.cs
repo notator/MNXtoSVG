@@ -29,7 +29,7 @@ namespace MNX.Common
                 int ticks = Sequences[0].Ticks;
                 for(var i = 1; i < Sequences.Count; i++)
                 {
-                    A.Assert(Sequences[i].Ticks == ticks);
+                    M.Assert(Sequences[i].Ticks == ticks);
                 }
                 return ticks;
             }
@@ -37,7 +37,7 @@ namespace MNX.Common
 
         public Measure(XmlReader r, bool isGlobal)
         {
-            A.Assert(r.Name == "measure");
+            M.Assert(r.Name == "measure");
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
 
             if(r.IsEmptyElement)
@@ -48,7 +48,7 @@ namespace MNX.Common
                 }
                 else
                 {
-                    A.ThrowError("Empty measure in part.");
+                    M.ThrowError("Empty measure in part.");
                 }
             }
 
@@ -60,11 +60,11 @@ namespace MNX.Common
                 {
                     case "index":
                         Index = Int32.Parse(r.Value);
-                        A.Assert(Index > 0);
+                        M.Assert(Index > 0);
                         break;
                     case "number":
                         Number = Int32.Parse(r.Value);
-                        A.Assert(Number > 0);
+                        M.Assert(Number > 0);
                         break;
                     case "barline":
                         Barline = GetBarlineType(r.Value);
@@ -74,7 +74,7 @@ namespace MNX.Common
                 }
             }
 
-            A.ReadToXmlElementTag(r, "directions", "sequence");
+            M.ReadToXmlElementTag(r, "directions", "sequence");
 
             while(r.Name == "directions" || r.Name == "sequence")
             {
@@ -88,15 +88,15 @@ namespace MNX.Common
                         case "sequence":
                             if(isGlobal)
                             {
-                                A.ThrowError("Error in input file.");
+                                M.ThrowError("Error in input file.");
                             }
                             Sequences.Add(new Sequence(r, isGlobal));
                             break;
                     }
                 }
-                A.ReadToXmlElementTag(r, "directions", "sequence", "measure");
+                M.ReadToXmlElementTag(r, "directions", "sequence", "measure");
             }
-            A.Assert(r.Name == "measure"); // end of measure
+            M.Assert(r.Name == "measure"); // end of measure
         }
 
         private BarlineType GetBarlineType(string value)
@@ -138,7 +138,7 @@ namespace MNX.Common
                     rval = BarlineType.none;
                     break;
                 default:
-                    A.ThrowError("Error: unknown barline type");
+                    M.ThrowError("Error: unknown barline type");
                     break;
             }
             return rval;
@@ -188,12 +188,12 @@ namespace MNX.Common
         {
             if(graceIndex == 0)
             {
-                A.ThrowError("Can't steal ticks from the previous measure.");
+                M.ThrowError("Can't steal ticks from the previous measure.");
             }
             IHasTicks previousObject = eventsAndEventGroups[graceIndex - 1];
             if(previousObject is Grace)
             {
-                A.ThrowError("Can't steal ticks from a Grace.");
+                M.ThrowError("Can't steal ticks from a Grace.");
             }
             Event previousEvent = null;
             if(previousObject is EventGroup eg)
@@ -213,12 +213,12 @@ namespace MNX.Common
         {
             if(graceIndex == (eventsAndEventGroups.Count - 1))
             {
-                A.ThrowError("Can't steal ticks from the next measure.");
+                M.ThrowError("Can't steal ticks from the next measure.");
             }
             IHasTicks nextObject = eventsAndEventGroups[graceIndex + 1];
             if(nextObject is Grace)
             {
-                A.ThrowError("Can't steal ticks from a Grace.");
+                M.ThrowError("Can't steal ticks from a Grace.");
             }
             Event nextEvent = null;
             if(nextObject is EventGroup eg)

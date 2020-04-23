@@ -12,24 +12,30 @@ namespace Moritz.Xml
         none = 0,
         [Description("cautionary")]
         cautionary = 1,
+        [Description("1/1024")]
+        eightFlags = 2,
+        [Description("1/512")]
+        sevenFlags = 3,
+        [Description("1/256")]
+        sixFlags = 4,
         [Description("1/128")]
-        fiveFlags = 2,
+        fiveFlags = 5,
         [Description("1/64")]
-        fourFlags = 3,
+        fourFlags = 6,
         [Description("1/32")]
-        threeFlags = 4,
+        threeFlags = 7,
         [Description("1/16")]
-        semiquaver = 5,
+        semiquaver = 8,
         [Description("1/8")]
-        quaver = 6,
+        quaver = 9,
         [Description("1/4")]
-        crotchet = 7,
+        crotchet = 10,
         [Description("1/2")]
-        minim = 8,
+        minim = 11,
         [Description("1/1")]
-        semibreve = 9,
+        semibreve = 12,
         [Description("2/1")]
-        breve = 10
+        breve = 13
     };
 	/// <summary>
 	/// Attribute in (layout.distances) "systems"

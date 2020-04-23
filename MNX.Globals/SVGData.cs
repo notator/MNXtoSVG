@@ -32,13 +32,13 @@ namespace MNX.Globals
             marginRight = int.Parse(svgds.Page.marginRight);
             marginBottom = int.Parse(svgds.Page.marginBottom);
             marginLeft = int.Parse(svgds.Page.marginLeft);
-            stafflineStemStrokeWidth = double.Parse(svgds.MNXCommonData.stafflineStemStrokeWidth, A.En_USNumberFormat);
-            gap = double.Parse(svgds.MNXCommonData.gapSize, A.En_USNumberFormat);
+            stafflineStemStrokeWidth = double.Parse(svgds.MNXCommonData.stafflineStemStrokeWidth, M.En_USNumberFormat);
+            gap = double.Parse(svgds.MNXCommonData.gapSize, M.En_USNumberFormat);
             minGapsBetweenStaves = int.Parse(svgds.MNXCommonData.minGapsBetweenStaves);
             minGapsBetweenSystems = int.Parse(svgds.MNXCommonData.minGapsBetweenSystems);
             char[] delimiters = { ',', ' ' };
-            systemStartBars = A.StringToIntList(svgds.MNXCommonData.systemStartBars, delimiters);
-            crotchetsPerMinute = double.Parse(svgds.MNXCommonData.crotchetsPerMinute, A.En_USNumberFormat);
+            systemStartBars = M.StringToIntList(svgds.MNXCommonData.systemStartBars, delimiters);
+            crotchetsPerMinute = double.Parse(svgds.MNXCommonData.crotchetsPerMinute, M.En_USNumberFormat);
         }
     }
 

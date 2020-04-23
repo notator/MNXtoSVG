@@ -9,7 +9,7 @@ namespace MNX.Common
     {
         public ScoreAudio(XmlReader r)
         {
-            A.Assert(r.Name == "score-audio");            
+            M.Assert(r.Name == "score-audio");            
 
             throw new NotImplementedException();
         }

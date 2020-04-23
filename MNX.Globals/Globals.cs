@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,7 +17,7 @@ namespace MNX.Globals
     /// <summary>
     /// MNX Globals
     /// </summary>
-    public static class A
+    public static class M
     {
         #region MNX application constants
         private static string GetMNX_MainFolder()
@@ -45,7 +47,7 @@ namespace MNX.Globals
         public static NumberFormatInfo En_USNumberFormat = ci.NumberFormat;
         #endregion
 
-        // These are set for the score currently being constructed.
+        // Set for the score currently being constructed.
         public static MNXProfile? Profile = null;
 
         #region Form1
@@ -71,7 +73,7 @@ namespace MNX.Globals
             }
             else
             {
-                textBox.BackColor = A.TextBoxErrorColor;
+                textBox.BackColor = M.TextBoxErrorColor;
             }
         }
 
@@ -81,7 +83,7 @@ namespace MNX.Globals
 
         public static bool HasError(TextBox textBox)
         {
-            return textBox.BackColor == A.TextBoxErrorColor;
+            return textBox.BackColor == M.TextBoxErrorColor;
         }
 
         public static void CheckTextBoxIsUInt(TextBox textBox)
@@ -315,7 +317,7 @@ namespace MNX.Globals
         /// </summary>
         public static void AssertIsVelocityValue(int velocity)
         {
-            A.Assert(velocity >= 1 && velocity <= 127);
+            M.Assert(velocity >= 1 && velocity <= 127);
         }
 
         /// <summary>
@@ -501,7 +503,7 @@ namespace MNX.Globals
                 }
                 intSum += i;
             }
-            A.Assert(intSum <= total);
+            M.Assert(intSum <= total);
             if(intSum < total)
             {
                 int lastDuration = intDivisionSizes[intDivisionSizes.Count - 1];
@@ -639,9 +641,74 @@ namespace MNX.Globals
         /// </summary>
         static public Dictionary<string, int> MidiPitchDict = new Dictionary<string, int>();
 
+        /// <summary>
+        /// The current time measured in milliseconds.
+        /// </summary>
+        public static int NowMilliseconds
+        {
+            get
+            {
+                return (int)DateTime.Now.Ticks / 10000;
+            }
+        }
+
+        /// <summary>
+        /// Note that Moritz does not use M.Dynamic.ffff even though it is defined in CLicht.
+        /// </summary>
+        public enum Dynamic
+        {
+            none, pppp, ppp, pp, p, mp, mf, f, ff, fff
+        }
+
+        /// <summary>
+        /// The key is one of the following strings: "fff", "ff", "f", "mf", "mp", "p", "pp", "ppp", "pppp".
+        /// The value is used to determine Moritz' transcription of velocity -> dynamic symbol.
+        /// Note that Moritz does not use M.Dynamic.ffff even though it is defined in CLicht.
+        /// </summary>
+        public static Dictionary<M.Dynamic, byte> MaxMidiVelocity = new Dictionary<M.Dynamic, byte>()
+        {
+            // March 2016:  equal steps between 15 (max pppp) and 127 (max fff)
+            { M.Dynamic.fff, 127},
+            { M.Dynamic.ff, 113},
+            { M.Dynamic.f, 99},
+            { M.Dynamic.mf, 85},
+            { M.Dynamic.mp, 71},
+            { M.Dynamic.p, 57},
+            { M.Dynamic.pp, 43},
+            { M.Dynamic.ppp, 29},
+            { M.Dynamic.pppp, 15}
+        };
+
+        /// <summary>
+        /// The key is one of the following strings: "fff", "ff", "f", "mf", "mp", "p", "pp", "ppp", "pppp".
+        /// The value is a string containing the equivalent CLicht character.
+        /// Note that Moritz does not use M.Dynamic.ffff even though it is defined in CLicht.
+        /// </summary>
+        public static Dictionary<M.Dynamic, string> CLichtDynamicsCharacters = new Dictionary<M.Dynamic, string>()
+        {
+            { M.Dynamic.fff, "Ï"},
+            { M.Dynamic.ff, "ƒ"},
+            { M.Dynamic.f, "f"},
+            { M.Dynamic.mf, "F"},
+            { M.Dynamic.mp, "P"},
+            { M.Dynamic.p, "p"},
+            { M.Dynamic.pp, "π"},
+            { M.Dynamic.ppp, "∏"},
+            { M.Dynamic.pppp, "Ø"}
+        };
+
         #endregion MIDI
 
         #region XML
+        public static void CreateDirectoryIfItDoesNotExist(string directoryPath)
+        {
+            if(!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+                while(!Directory.Exists(directoryPath))
+                    Thread.Sleep(100);
+            }
+        }
         /// <summary>
         /// Converts the value to a string, using as few decimal places as possible (maximum 4) and a '.' decimal point where necessary.
         /// Use this whenever writing an attribute to SVG.
@@ -651,6 +718,41 @@ namespace MNX.Globals
         public static string FloatToShortString(float value)
         {
             return value.ToString("0.####", En_USNumberFormat);
+        }
+
+        /// <summary>
+        /// Returns the name of an enum field as a string, or (if the field has a Description Attribute)
+        /// its Description attribute.
+        /// </summary>
+        /// <example>
+        /// If enum Language is defined as follows:
+        /// 
+        /// 	public enum Language
+        /// 	{
+        ///										Basic,
+        /// 		[Description("Kernigan")]   C,
+        /// 		[Description("Stroustrup")]	CPP,
+        /// 		[Description("Gosling")]	Java,
+        /// 		[Description("Helzberg")]	CSharp
+        /// 	}
+        /// 
+        ///		string languageDescription = GetEnumDescription(Language.Basic);
+        /// sets languageDescription to "Basic"
+        /// 
+        ///		string languageDescription = GetEnumDescription(Language.CPP);
+        /// sets languageDescription to "Stroustrup"
+        /// </example>
+        /// <param name="field">A field of any enum</param>
+        /// <returns>
+        /// If the enum field has no Description attribute, the field's name as a string.
+        /// If the enum field has a Description attribute, the value of that attribute.
+        /// </returns>
+        public static string GetEnumDescription(Enum field)
+        {
+            FieldInfo fieldInfo = field.GetType().GetField(field.ToString());
+            DescriptionAttribute[] attribs =
+                (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            return (attribs.Length == 0 ? field.ToString() : attribs[0].Description);
         }
         #endregion
     }

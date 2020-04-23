@@ -11,7 +11,7 @@ namespace MNX.Common
 
         public Global(XmlReader r)
         {
-            A.Assert(r.Name == "global");
+            M.Assert(r.Name == "global");
             // https://w3c.github.io/mnx/specification/common/#the-global-element
 
             // can have a "parts" attribute
@@ -28,7 +28,7 @@ namespace MNX.Common
                 }
             }
 
-            A.ReadToXmlElementTag(r, "measure");
+            M.ReadToXmlElementTag(r, "measure");
 
             while(r.Name == "measure")
             {
@@ -36,11 +36,11 @@ namespace MNX.Common
                 {
                     Measures.Add(new Measure(r, true));
                 }
-                A.ReadToXmlElementTag(r, "measure", "global");
+                M.ReadToXmlElementTag(r, "measure", "global");
             }
-            A.Assert(r.Name == "global"); // end of global
+            M.Assert(r.Name == "global"); // end of global
 
-            A.Assert(Measures.Count > 0);
+            M.Assert(Measures.Count > 0);
         }
     }
 }

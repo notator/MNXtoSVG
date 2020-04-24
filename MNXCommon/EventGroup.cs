@@ -145,58 +145,5 @@ namespace MNX.Common
 
             return content;
         }
-
-        /// <summary>
-        /// This code is the same as in Moritz.Globals.IntDivisionSizes(total, relativeSizes).
-        /// The function divides total into relativeSizes.Count parts, returning a List whose:
-        ///     * Count is relativeSizes.Count.
-        ///     * sum is exactly equal to total
-        ///     * members have the relative sizes (as nearly as possible) to the values in the relativeSizes argument. 
-        /// </summary>
-        protected static List<int> GetJustifiedInnerTicks(int total, List<int> relativeSizes)
-        {
-            int divisor = relativeSizes.Count;
-            int sumRelative = 0;
-            for(int i = 0; i < divisor; ++i)
-            {
-                sumRelative += relativeSizes[i];
-            }
-            double factor = ((double)total / (double)sumRelative);
-            double fPos = 0;
-            List<int> intPositions = new List<int>();
-            for(int i = 0; i < divisor; ++i)
-            {
-                intPositions.Add((int)(Math.Floor(fPos)));
-                fPos += (relativeSizes[i] * factor);
-            }
-            intPositions.Add((int)Math.Floor(fPos));
-
-            List<int> intDivisionSizes = new List<int>();
-            for(int i = 0; i < divisor; ++i)
-            {
-                int intDuration = (int)(intPositions[i + 1] - intPositions[i]);
-                intDivisionSizes.Add(intDuration);
-            }
-
-            int intSum = 0;
-            foreach(int i in intDivisionSizes)
-            {
-                //A.Assert(i >= 0);
-                if(i < 0)
-                {
-                    throw new ApplicationException();
-                }
-                intSum += i;
-            }
-            M.Assert(intSum <= total);
-            if(intSum < total)
-            {
-                int lastDuration = intDivisionSizes[intDivisionSizes.Count - 1];
-                lastDuration += (total - intSum);
-                intDivisionSizes.RemoveAt(intDivisionSizes.Count - 1);
-                intDivisionSizes.Add(lastDuration);
-            }
-            return intDivisionSizes;
-        }
     }
 }

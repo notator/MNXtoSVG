@@ -12,23 +12,55 @@ namespace Moritz.Composer
         public SVGMIDIScore(List<Bar> bars, 
             string targetFolder, string targetFilenameWithoutSuffix,
             SVGData svgData, Metadata metadata)
-            : base(targetFolder, targetFilenameWithoutSuffix, svgData, metadata)
-        {	
+            : base(targetFolder, targetFilenameWithoutSuffix)
+        {
 
-			CheckBars(bars);
+            CheckBars(bars);
 
-			this.ScoreData = _algorithm.SetScoreRegionsData(bars);
+            this.Metadata = metadata;
+            this.Metadata.Date = M.NowString; // printed in info string at top of score.
 
-			InsertInitialClefDefs(bars, _pageFormat.InitialClefPerMIDIChannel);
+            PageFormat = new PageFormat(svgData);
 
-			CreateEmptySystems(bars); // one system per bar
+            CreateScore(bars);
 
-			bool success = true;
-			if(_pageFormat.ChordSymbolType != "none") // set by AudioButtonsControl
+            if(svgData.IsScrollScore)
+            {
+                PageFormat.BottomVBPX = GetNewBottomVBPX(Systems);
+                PageFormat.BottomMarginPosVBPX = (int)(PageFormat.BottomVBPX - PageFormat.DefaultDistanceBetweenSystemsVBPX);
+                SaveSingleSVGScore(svgData.omitMIDIData, svgData.printTitleAndAuthorOnPage1);
+            }
+            else
+            {
+                SaveMultiPageScore(svgData.omitMIDIData, svgData.printTitleAndAuthorOnPage1);
+            }
+        }
+        private int GetNewBottomVBPX(List<SvgSystem> Systems)
+        {
+            int frameHeight = PageFormat.TopMarginPage1VBPX + 20;
+            foreach(SvgSystem system in Systems)
+            {
+                SystemMetrics sm = system.Metrics;
+                frameHeight += (int)((sm.Bottom - sm.Top) + PageFormat.DefaultDistanceBetweenSystemsVBPX);
+            }
+
+            return frameHeight;
+        }
+
+        private void CreateScore(List<Bar> bars)
+        {
+            this.ScoreData = _algorithm.SetScoreRegionsData(bars);
+
+            InsertInitialClefDefs(bars, PageFormat.InitialClefPerMIDIChannel);
+
+            CreateEmptySystems(bars); // one system per bar
+
+            bool success = true;
+            if(PageFormat.ChordSymbolType != "none") // set by AudioButtonsControl
             {
                 Notator.ConvertVoiceDefsToNoteObjects(this.Systems);
 
-				FinalizeSystemStructure(); // adds barlines, joins bars to create systems, etc.
+                FinalizeSystemStructure(); // adds barlines, joins bars to create systems, etc.
 
                 /// The systems do not yet contain Metrics info.
                 /// The systems are given Metrics inside the following function then justified internally,
@@ -37,15 +69,15 @@ namespace Moritz.Composer
                 success = CreatePages();
             }
 
-			CheckSystems(this.Systems);
+            CheckSystems(this.Systems);
         }
 
-		/// <summary>
-		/// Inserts a ClefDef at the beginning of each Trk in each bar, taking any cautionaryChordDefs into account.
-		/// </summary>
-		/// <param name="bars"></param>
-		/// <param name="initialClefPerMIDIChannel">The clefs at the beginning of the score.</param>
-		private void InsertInitialClefDefs(List<Bar> bars, List<string> initialClefPerMIDIChannel)
+        /// <summary>
+        /// Inserts a ClefDef at the beginning of each Trk in each bar, taking any cautionaryChordDefs into account.
+        /// </summary>
+        /// <param name="bars"></param>
+        /// <param name="initialClefPerMIDIChannel">The clefs at the beginning of the score.</param>
+        private void InsertInitialClefDefs(List<Bar> bars, List<string> initialClefPerMIDIChannel)
 		{
 			// bars can currently contain cautionary clefs, but no initial clefs
 			List<string> currentClefs = new List<string>(initialClefPerMIDIChannel);
@@ -90,7 +122,7 @@ namespace Moritz.Composer
         {
 			string errorString = null;
 			//List<int> visibleLowerVoiceIndices = new List<int>();
-			//Dictionary<int, string> upperVoiceClefDict = GetUpperVoiceClefDict(bars[0], _pageFormat, /*sets*/ visibleLowerVoiceIndices);
+			//Dictionary<int, string> upperVoiceClefDict = GetUpperVoiceClefDict(bars[0], PageFormat, /*sets*/ visibleLowerVoiceIndices);
 
 			for (int barIndex = 0; barIndex < bars.Count; ++barIndex)
 			{
@@ -157,7 +189,7 @@ namespace Moritz.Composer
 			List<int> lowerVoiceIndices = new List<int>();
 			int voiceIndex = 0;
 			
-			List<List<byte>> outputChPerStaff = _pageFormat.OutputMIDIChannelsPerStaff;
+			List<List<byte>> outputChPerStaff = PageFormat.OutputMIDIChannelsPerStaff;
 
 			for(int staffIndex = 0; staffIndex < outputChPerStaff.Count; ++staffIndex)
 			{
@@ -168,7 +200,7 @@ namespace Moritz.Composer
 				}
 				voiceIndex++;
 			}
-			List<List<byte>> inputChPerStaff = _pageFormat.InputMIDIChannelsPerStaff;
+			List<List<byte>> inputChPerStaff = PageFormat.InputMIDIChannelsPerStaff;
 			int nStaves = inputChPerStaff.Count + outputChPerStaff.Count;
 			for(int staffIndex = 0; staffIndex < inputChPerStaff.Count; ++staffIndex)
 			{
@@ -296,8 +328,8 @@ namespace Moritz.Composer
 		/// Each OutputStaff is allocated parallel (empty) OutputVoice fields.
 		/// Each Voice has a VoiceDef field that is allocated to the corresponding
 		/// VoiceDef from the argument.
-		/// The OutputVoices have MIDIChannels arranged according to _pageFormat.OutputMIDIChannelsPerStaff.
-		/// The InputVoices have MIDIChannels arranged according to _pageFormat.InputMIDIChannelsPerStaff.
+		/// The OutputVoices have MIDIChannels arranged according to PageFormat.OutputMIDIChannelsPerStaff.
+		/// The InputVoices have MIDIChannels arranged according to PageFormat.InputMIDIChannelsPerStaff.
 		/// OutputVoices are given a midi channel allocated from top to bottom in the printed score.
 		/// </summary>
 		public void CreateEmptySystems(List<Bar> bars)
@@ -314,7 +346,7 @@ namespace Moritz.Composer
 
         private void CreateEmptyOutputStaves(List<Bar> bars)
         {
-            int nStaves = _pageFormat.OutputMIDIChannelsPerStaff.Count;
+            int nStaves = PageFormat.OutputMIDIChannelsPerStaff.Count;
 
 			for(int systemIndex = 0; systemIndex < Systems.Count; systemIndex++)
             {
@@ -325,9 +357,9 @@ namespace Moritz.Composer
 				for(int staffIndex = 0; staffIndex < nStaves; staffIndex++)
                 {
                     string staffname = StaffName(systemIndex, staffIndex);
-                    OutputStaff outputStaff = new OutputStaff(system, staffname, _pageFormat.StafflinesPerStaff[staffIndex], _pageFormat.Gap, _pageFormat.StafflineStemStrokeWidth);
+                    OutputStaff outputStaff = new OutputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
 
-                    List<byte> outputVoiceIndices = _pageFormat.OutputMIDIChannelsPerStaff[staffIndex];
+                    List<byte> outputVoiceIndices = PageFormat.OutputMIDIChannelsPerStaff[staffIndex];
                     for(int ovIndex = 0; ovIndex < outputVoiceIndices.Count; ++ovIndex)
                     {
                         Trk trkDef = voiceDefs[outputVoiceIndices[ovIndex]] as Trk;
@@ -347,9 +379,9 @@ namespace Moritz.Composer
 
         private void CreateEmptyInputStaves(List<Bar> bars)
         {
-            int nPrintedOutputStaves = _pageFormat.OutputMIDIChannelsPerStaff.Count;
-            int nPrintedInputStaves = _pageFormat.InputMIDIChannelsPerStaff.Count;
-            int nStaffNames = _pageFormat.ShortStaffNames.Count;
+            int nPrintedOutputStaves = PageFormat.OutputMIDIChannelsPerStaff.Count;
+            int nPrintedInputStaves = PageFormat.InputMIDIChannelsPerStaff.Count;
+            int nStaffNames = PageFormat.ShortStaffNames.Count;
 
             for(int i = 0; i < Systems.Count; i++)
             {
@@ -361,11 +393,11 @@ namespace Moritz.Composer
                     int staffNameIndex = nPrintedOutputStaves + staffIndex;
                     string staffname = StaffName(i, staffNameIndex);
 
-                    double gap = _pageFormat.Gap * _pageFormat.InputSizeFactor;
-                    double stafflineStemStrokeWidth = _pageFormat.StafflineStemStrokeWidth * _pageFormat.InputSizeFactor;
-                    InputStaff inputStaff = new InputStaff(system, staffname, _pageFormat.StafflinesPerStaff[staffIndex], gap, stafflineStemStrokeWidth);
+                    double gap = PageFormat.Gap * PageFormat.InputSizeFactor;
+                    double stafflineStemStrokeWidth = PageFormat.StafflineStemStrokeWidth * PageFormat.InputSizeFactor;
+                    InputStaff inputStaff = new InputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], gap, stafflineStemStrokeWidth);
 
-                    List<byte> inputVoiceIndices = _pageFormat.InputMIDIChannelsPerStaff[staffIndex];
+                    List<byte> inputVoiceIndices = PageFormat.InputMIDIChannelsPerStaff[staffIndex];
                     for(int ivIndex = 0; ivIndex < inputVoiceIndices.Count; ++ivIndex)
                     {
                         InputVoiceDef inputVoiceDef = voiceDefs[inputVoiceIndices[ivIndex] + _algorithm.MidiChannelPerOutputVoice.Count] as InputVoiceDef;
@@ -386,11 +418,11 @@ namespace Moritz.Composer
         {
             if(systemIndex == 0)
             {
-                return _pageFormat.LongStaffNames[staffIndex];
+                return PageFormat.LongStaffNames[staffIndex];
             }
             else
             {
-                return _pageFormat.ShortStaffNames[staffIndex];
+                return PageFormat.ShortStaffNames[staffIndex];
             }
         }
 

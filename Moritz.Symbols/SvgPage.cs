@@ -29,26 +29,10 @@ namespace Moritz.Symbols
 
             Systems = pageSystems;
 
-			if(pageNumber == 0)
-			{
-				pageFormat.BottomVBPX = GetNewBottomVBPX(pageSystems);
-				pageFormat.BottomMarginPos = (int) (pageFormat.BottomVBPX - pageFormat.DefaultDistanceBetweenSystems);
-			}
-
             MoveSystemsVertically(pageFormat, pageSystems, (pageNumber == 1 || pageNumber == 0), lastPage);
         }
 
-		private int GetNewBottomVBPX(List<SvgSystem> pageSystems)
-		{
-			int frameHeight = _pageFormat.TopMarginPage1 + 20;
-			foreach(SvgSystem system in pageSystems)
-			{
-				SystemMetrics sm = system.Metrics;
-				frameHeight += (int)((sm.Bottom - sm.Top) + _pageFormat.DefaultDistanceBetweenSystems);
-			}
 
-			return frameHeight;
-		}
 
         /// <summary>
         /// Moves the systems to their correct vertical position. Justifies on all but the last page.
@@ -62,16 +46,16 @@ namespace Moritz.Symbols
             double frameHeight;
             if(firstPage)
             {
-                frameTop = pageFormat.TopMarginPage1;
+                frameTop = pageFormat.TopMarginPage1VBPX;
 				frameHeight = pageFormat.FirstPageFrameHeight; // property uses BottomMarginPos
             }
             else
             {
-                frameTop = pageFormat.TopMarginOtherPages;
+                frameTop = pageFormat.TopMarginOtherPagesVBPX;
                 frameHeight = pageFormat.OtherPagesFrameHeight;
             }
 
-            MoveSystemsVertically(pageSystems, frameTop, frameHeight, pageFormat.DefaultDistanceBetweenSystems, lastPage);
+            MoveSystemsVertically(pageSystems, frameTop, frameHeight, pageFormat.DefaultDistanceBetweenSystemsVBPX, lastPage);
         }
 
         private void MoveSystemsVertically(List<SvgSystem> pageSystems, double frameTop, double frameHeight, double defaultSystemSeparation, bool lastPage)
@@ -104,7 +88,7 @@ namespace Moritz.Symbols
                     // Limit stafflineHeight to multiples of _pageMetrics.Gap
                     // so that stafflines are not displayed as thick grey lines.
                     // The following works, because the top staffline of each system is currently at 0.
-                    deltaY -= (deltaY % _pageFormat.Gap);
+                    deltaY -= (deltaY % _pageFormat.GapVBPX);
                     system.Metrics.Move(0, deltaY);
                     top = system.Metrics.NotesBottom + systemSeparation;
                 }
@@ -144,7 +128,7 @@ namespace Moritz.Symbols
 
 			if(_pageNumber > 0)
 			{ 
-				WriteFrameLayer(w, _pageFormat.Right, _pageFormat.Bottom);
+				WriteFrameLayer(w, _pageFormat.RightVBPX, _pageFormat.BottomVBPX);
 			}
 
 			WriteSystemsLayer(w, _pageNumber, metadata, graphicsOnly, printTitleAndAuthorOnScorePage1);
@@ -249,8 +233,8 @@ namespace Moritz.Symbols
 				w.WriteAttributeString("data-scoreType", null, "https://www.james-ingram-act-two.de/open-source/cmn_core.html");
 			}
 
-            w.WriteAttributeString("width", M.DoubleToShortString(_pageFormat.ScreenRight)); // the intended screen display size (100%)
-            w.WriteAttributeString("height", M.DoubleToShortString(_pageFormat.ScreenBottom)); // the intended screen display size (100%)
+            w.WriteAttributeString("width", M.DoubleToShortString(_pageFormat.RightVBPX / _pageFormat.ViewBoxMagnification)); // the intended screen display size (100%)
+            w.WriteAttributeString("height", M.DoubleToShortString(_pageFormat.BottomVBPX / _pageFormat.ViewBoxMagnification)); // the intended screen display size (100%)
             string viewBox = "0 0 " + _pageFormat.RightVBPX.ToString() + " " + _pageFormat.BottomVBPX.ToString();
             w.WriteAttributeString("viewBox", viewBox); // the size of SVG's internal drawing surface (10 x the width and height -- see)            
         }
@@ -271,7 +255,7 @@ namespace Moritz.Symbols
 			w.WriteStartElement("g");
 			w.WriteAttributeString("class", CSSObjectClass.titles.ToString());
 			w.SvgText(CSSObjectClass.mainTitle, titleInfo.Text, _pageFormat.Right / 2, _pageFormat.Page1TitleY);
-			w.SvgText(CSSObjectClass.author, authorInfo.Text, _pageFormat.RightMarginPos, _pageFormat.Page1TitleY);
+			w.SvgText(CSSObjectClass.author, authorInfo.Text, _pageFormat.RightMarginPosVBPX, _pageFormat.Page1TitleY);
 			w.WriteEndElement(); // group
 		}
 

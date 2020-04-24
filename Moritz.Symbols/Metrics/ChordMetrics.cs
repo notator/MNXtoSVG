@@ -237,9 +237,9 @@ namespace Moritz.Symbols
         private void CreateCautionaryBracketsMetrics(ChordSymbol chord)
         {
             PageFormat pageFormat = chord.Voice.Staff.SVGSystem.Score.PageFormat;
-            double gap = pageFormat.Gap;
-            double padding = pageFormat.StafflineStemStrokeWidth;
-            double strokeWidth = pageFormat.StafflineStemStrokeWidth;
+            double gap = pageFormat.GapVBPX;
+            double padding = pageFormat.StafflineStemStrokeWidthVBPX;
+            double strokeWidth = pageFormat.StafflineStemStrokeWidthVBPX;
             GetAccidentalsAndHeadsBox(out double top, out double right, out double bottom, out double left, gap, padding);
             double leftBracketLeft = left - (gap / 2F);
             double rightBracketRight = right + (gap / 2F);

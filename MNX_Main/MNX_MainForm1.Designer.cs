@@ -64,10 +64,25 @@
             this.StafflineAndStemStrokeWidthLabel = new System.Windows.Forms.Label();
             this.WriteButton = new System.Windows.Forms.Button();
             this.RevertFormatButton = new System.Windows.Forms.Button();
+            this.MetadataGroupBox = new System.Windows.Forms.GroupBox();
+            this.MetadataCommentTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataCommentLabel = new System.Windows.Forms.Label();
+            this.MetadataKeywordsTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataKeywordsLabel = new System.Windows.Forms.Label();
+            this.MetadataTitleTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataTitleLabel = new System.Windows.Forms.Label();
+            this.MetadataAuthorTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataAuthorLabel = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.OptionsGroupBox = new System.Windows.Forms.GroupBox();
             this.PaperSizeGroupBox.SuspendLayout();
             this.MarginsGroupBox.SuspendLayout();
             this.NotationGroupBox.SuspendLayout();
             this.SpeedGroupBox.SuspendLayout();
+            this.MetadataGroupBox.SuspendLayout();
+            this.OptionsGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // MNXLabel
@@ -75,7 +90,7 @@
             this.MNXLabel.AutoSize = true;
             this.MNXLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MNXLabel.ForeColor = System.Drawing.Color.OliveDrab;
-            this.MNXLabel.Location = new System.Drawing.Point(29, 9);
+            this.MNXLabel.Location = new System.Drawing.Point(344, 9);
             this.MNXLabel.Name = "MNXLabel";
             this.MNXLabel.Size = new System.Drawing.Size(34, 15);
             this.MNXLabel.TabIndex = 0;
@@ -85,7 +100,7 @@
             // 
             this.MNXSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MNXSelect.FormattingEnabled = true;
-            this.MNXSelect.Location = new System.Drawing.Point(32, 27);
+            this.MNXSelect.Location = new System.Drawing.Point(347, 29);
             this.MNXSelect.Name = "MNXSelect";
             this.MNXSelect.Size = new System.Drawing.Size(158, 23);
             this.MNXSelect.TabIndex = 5;
@@ -111,12 +126,12 @@
             this.PaperSizeGroupBox.Enabled = false;
             this.PaperSizeGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PaperSizeGroupBox.ForeColor = System.Drawing.Color.Crimson;
-            this.PaperSizeGroupBox.Location = new System.Drawing.Point(31, 86);
+            this.PaperSizeGroupBox.Location = new System.Drawing.Point(347, 86);
             this.PaperSizeGroupBox.Name = "PaperSizeGroupBox";
             this.PaperSizeGroupBox.Size = new System.Drawing.Size(223, 77);
             this.PaperSizeGroupBox.TabIndex = 4;
             this.PaperSizeGroupBox.TabStop = false;
-            this.PaperSizeGroupBox.Text = "paper size";
+            this.PaperSizeGroupBox.Text = "page size";
             // 
             // PageHeightTextBox
             // 
@@ -154,7 +169,7 @@
             this.DimensionsLabel.AutoSize = true;
             this.DimensionsLabel.Enabled = false;
             this.DimensionsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DimensionsLabel.Location = new System.Drawing.Point(29, 61);
+            this.DimensionsLabel.Location = new System.Drawing.Point(344, 66);
             this.DimensionsLabel.Name = "DimensionsLabel";
             this.DimensionsLabel.Size = new System.Drawing.Size(374, 15);
             this.DimensionsLabel.TabIndex = 5;
@@ -175,7 +190,7 @@
             this.MarginsGroupBox.Enabled = false;
             this.MarginsGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MarginsGroupBox.ForeColor = System.Drawing.Color.Crimson;
-            this.MarginsGroupBox.Location = new System.Drawing.Point(31, 169);
+            this.MarginsGroupBox.Location = new System.Drawing.Point(347, 169);
             this.MarginsGroupBox.Name = "MarginsGroupBox";
             this.MarginsGroupBox.Size = new System.Drawing.Size(223, 191);
             this.MarginsGroupBox.TabIndex = 5;
@@ -291,7 +306,7 @@
             // 
             this.SaveFormatButton.Enabled = false;
             this.SaveFormatButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveFormatButton.Location = new System.Drawing.Point(211, 372);
+            this.SaveFormatButton.Location = new System.Drawing.Point(527, 374);
             this.SaveFormatButton.Name = "SaveFormatButton";
             this.SaveFormatButton.Size = new System.Drawing.Size(139, 51);
             this.SaveFormatButton.TabIndex = 3;
@@ -315,7 +330,7 @@
             this.NotationGroupBox.Enabled = false;
             this.NotationGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.NotationGroupBox.ForeColor = System.Drawing.Color.Crimson;
-            this.NotationGroupBox.Location = new System.Drawing.Point(276, 86);
+            this.NotationGroupBox.Location = new System.Drawing.Point(592, 86);
             this.NotationGroupBox.Name = "NotationGroupBox";
             this.NotationGroupBox.Size = new System.Drawing.Size(255, 274);
             this.NotationGroupBox.TabIndex = 6;
@@ -494,7 +509,7 @@
             // WriteButton
             // 
             this.WriteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.WriteButton.Location = new System.Drawing.Point(391, 372);
+            this.WriteButton.Location = new System.Drawing.Point(707, 374);
             this.WriteButton.Name = "WriteButton";
             this.WriteButton.Size = new System.Drawing.Size(139, 51);
             this.WriteButton.TabIndex = 1;
@@ -506,7 +521,7 @@
             // 
             this.RevertFormatButton.Enabled = false;
             this.RevertFormatButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RevertFormatButton.Location = new System.Drawing.Point(31, 372);
+            this.RevertFormatButton.Location = new System.Drawing.Point(347, 374);
             this.RevertFormatButton.Name = "RevertFormatButton";
             this.RevertFormatButton.Size = new System.Drawing.Size(139, 51);
             this.RevertFormatButton.TabIndex = 8;
@@ -514,12 +529,166 @@
             this.RevertFormatButton.UseVisualStyleBackColor = true;
             this.RevertFormatButton.Click += new System.EventHandler(this.RevertFormatButton_Click);
             // 
+            // MetadataGroupBox
+            // 
+            this.MetadataGroupBox.Controls.Add(this.MetadataAuthorTextBox);
+            this.MetadataGroupBox.Controls.Add(this.MetadataAuthorLabel);
+            this.MetadataGroupBox.Controls.Add(this.MetadataTitleTextBox);
+            this.MetadataGroupBox.Controls.Add(this.MetadataTitleLabel);
+            this.MetadataGroupBox.Controls.Add(this.MetadataCommentTextBox);
+            this.MetadataGroupBox.Controls.Add(this.MetadataCommentLabel);
+            this.MetadataGroupBox.Controls.Add(this.MetadataKeywordsTextBox);
+            this.MetadataGroupBox.Controls.Add(this.MetadataKeywordsLabel);
+            this.MetadataGroupBox.Enabled = false;
+            this.MetadataGroupBox.ForeColor = System.Drawing.Color.Crimson;
+            this.MetadataGroupBox.Location = new System.Drawing.Point(29, 130);
+            this.MetadataGroupBox.Name = "MetadataGroupBox";
+            this.MetadataGroupBox.Size = new System.Drawing.Size(293, 230);
+            this.MetadataGroupBox.TabIndex = 10;
+            this.MetadataGroupBox.TabStop = false;
+            this.MetadataGroupBox.Text = "metadata";
+            // 
+            // MetadataCommentTextBox
+            // 
+            this.MetadataCommentTextBox.Location = new System.Drawing.Point(16, 127);
+            this.MetadataCommentTextBox.Multiline = true;
+            this.MetadataCommentTextBox.Name = "MetadataCommentTextBox";
+            this.MetadataCommentTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.MetadataCommentTextBox.Size = new System.Drawing.Size(262, 83);
+            this.MetadataCommentTextBox.TabIndex = 1;
+            // 
+            // MetadataCommentLabel
+            // 
+            this.MetadataCommentLabel.AutoSize = true;
+            this.MetadataCommentLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.MetadataCommentLabel.Location = new System.Drawing.Point(13, 110);
+            this.MetadataCommentLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.MetadataCommentLabel.Name = "MetadataCommentLabel";
+            this.MetadataCommentLabel.Size = new System.Drawing.Size(50, 13);
+            this.MetadataCommentLabel.TabIndex = 137;
+            this.MetadataCommentLabel.Text = "comment";
+            // 
+            // MetadataKeywordsTextBox
+            // 
+            this.MetadataKeywordsTextBox.Location = new System.Drawing.Point(68, 86);
+            this.MetadataKeywordsTextBox.Name = "MetadataKeywordsTextBox";
+            this.MetadataKeywordsTextBox.Size = new System.Drawing.Size(210, 20);
+            this.MetadataKeywordsTextBox.TabIndex = 0;
+            // 
+            // MetadataKeywordsLabel
+            // 
+            this.MetadataKeywordsLabel.AutoSize = true;
+            this.MetadataKeywordsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.MetadataKeywordsLabel.Location = new System.Drawing.Point(13, 89);
+            this.MetadataKeywordsLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.MetadataKeywordsLabel.Name = "MetadataKeywordsLabel";
+            this.MetadataKeywordsLabel.Size = new System.Drawing.Size(52, 13);
+            this.MetadataKeywordsLabel.TabIndex = 135;
+            this.MetadataKeywordsLabel.Text = "keywords";
+            // 
+            // MetadataTitleTextBox
+            // 
+            this.MetadataTitleTextBox.Location = new System.Drawing.Point(68, 27);
+            this.MetadataTitleTextBox.Name = "MetadataTitleTextBox";
+            this.MetadataTitleTextBox.Size = new System.Drawing.Size(210, 20);
+            this.MetadataTitleTextBox.TabIndex = 138;
+            // 
+            // MetadataTitleLabel
+            // 
+            this.MetadataTitleLabel.AutoSize = true;
+            this.MetadataTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.MetadataTitleLabel.Location = new System.Drawing.Point(40, 30);
+            this.MetadataTitleLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.MetadataTitleLabel.Name = "MetadataTitleLabel";
+            this.MetadataTitleLabel.Size = new System.Drawing.Size(23, 13);
+            this.MetadataTitleLabel.TabIndex = 139;
+            this.MetadataTitleLabel.Text = "title";
+            // 
+            // MetadataAuthorTextBox
+            // 
+            this.MetadataAuthorTextBox.Location = new System.Drawing.Point(68, 56);
+            this.MetadataAuthorTextBox.Name = "MetadataAuthorTextBox";
+            this.MetadataAuthorTextBox.Size = new System.Drawing.Size(210, 20);
+            this.MetadataAuthorTextBox.TabIndex = 140;
+            // 
+            // MetadataAuthorLabel
+            // 
+            this.MetadataAuthorLabel.AutoSize = true;
+            this.MetadataAuthorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.MetadataAuthorLabel.Location = new System.Drawing.Point(26, 59);
+            this.MetadataAuthorLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.MetadataAuthorLabel.Name = "MetadataAuthorLabel";
+            this.MetadataAuthorLabel.Size = new System.Drawing.Size(37, 13);
+            this.MetadataAuthorLabel.TabIndex = 141;
+            this.MetadataAuthorLabel.Text = "author";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox1.Location = new System.Drawing.Point(10, 67);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(116, 17);
+            this.checkBox1.TabIndex = 11;
+            this.checkBox1.Text = "print score as scroll";
+            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBox2.Checked = true;
+            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox2.Location = new System.Drawing.Point(16, 44);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(110, 17);
+            this.checkBox2.TabIndex = 12;
+            this.checkBox2.Text = "include MIDI data";
+            this.checkBox2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBox3.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox3.Location = new System.Drawing.Point(20, 21);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(106, 17);
+            this.checkBox3.TabIndex = 13;
+            this.checkBox3.Text = "print page 1 titles";
+            this.checkBox3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // OptionsGroupBox
+            // 
+            this.OptionsGroupBox.Controls.Add(this.checkBox3);
+            this.OptionsGroupBox.Controls.Add(this.checkBox1);
+            this.OptionsGroupBox.Controls.Add(this.checkBox2);
+            this.OptionsGroupBox.ForeColor = System.Drawing.Color.Crimson;
+            this.OptionsGroupBox.Location = new System.Drawing.Point(181, 23);
+            this.OptionsGroupBox.Name = "OptionsGroupBox";
+            this.OptionsGroupBox.Size = new System.Drawing.Size(141, 99);
+            this.OptionsGroupBox.TabIndex = 14;
+            this.OptionsGroupBox.TabStop = false;
+            this.OptionsGroupBox.Text = "options";
+            // 
             // MNX_MainForm1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(255)))), ((int)(((byte)(245)))));
-            this.ClientSize = new System.Drawing.Size(562, 437);
+            this.ClientSize = new System.Drawing.Size(879, 437);
+            this.Controls.Add(this.OptionsGroupBox);
+            this.Controls.Add(this.MetadataGroupBox);
             this.Controls.Add(this.RevertFormatButton);
             this.Controls.Add(this.WriteButton);
             this.Controls.Add(this.NotationGroupBox);
@@ -542,6 +711,10 @@
             this.NotationGroupBox.PerformLayout();
             this.SpeedGroupBox.ResumeLayout(false);
             this.SpeedGroupBox.PerformLayout();
+            this.MetadataGroupBox.ResumeLayout(false);
+            this.MetadataGroupBox.PerformLayout();
+            this.OptionsGroupBox.ResumeLayout(false);
+            this.OptionsGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -584,6 +757,19 @@
         private System.Windows.Forms.Button RevertFormatButton;
         private System.Windows.Forms.TextBox SystemStartBarsTextBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox MetadataGroupBox;
+        private System.Windows.Forms.TextBox MetadataAuthorTextBox;
+        private System.Windows.Forms.Label MetadataAuthorLabel;
+        private System.Windows.Forms.TextBox MetadataTitleTextBox;
+        private System.Windows.Forms.Label MetadataTitleLabel;
+        private System.Windows.Forms.TextBox MetadataCommentTextBox;
+        private System.Windows.Forms.Label MetadataCommentLabel;
+        private System.Windows.Forms.TextBox MetadataKeywordsTextBox;
+        private System.Windows.Forms.Label MetadataKeywordsLabel;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.GroupBox OptionsGroupBox;
     }
 }
 

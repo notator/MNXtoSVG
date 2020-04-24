@@ -94,10 +94,10 @@ namespace Moritz.Symbols
                     if(staffIndex < Staves.Count - 1)
                     {
                         //TopEdge topEdge = new TopEdge(Staves[staffIndex + 1], 0, pageFormat.Right);
-                        TopEdge topEdge = GetTopEdge(staffIndex + 1, pageFormat.Right);
+                        TopEdge topEdge = GetTopEdge(staffIndex + 1, pageFormat.RightVBPX);
                         if(topEdge != null)
                         {
-                            BottomEdge bottomEdge = new BottomEdge(staff, 0, pageFormat.Right, pageFormat.Gap);
+                            BottomEdge bottomEdge = new BottomEdge(staff, 0, pageFormat.RightVBPX, pageFormat.GapVBPX);
                             isFirstBarline = true;
 
                             for(int i = 0; i < voice.NoteObjects.Count; ++i)
@@ -154,9 +154,9 @@ namespace Moritz.Symbols
 			// are moved to their correct X- and Y- positions after all the DurationObjects and
 			// Barlines have been moved to their final positions on the staff.
 
-            MoveClefsAndBarlines(pageFormat.StafflineStemStrokeWidth);
+            MoveClefsAndBarlines(pageFormat.StafflineStemStrokeWidthVBPX);
 
-            List<NoteObjectMoment> moments = MomentSymbols(pageFormat.Gap);
+            List<NoteObjectMoment> moments = MomentSymbols(pageFormat.GapVBPX);
 
 			SymbolSet symbolSet = Score.Notator.SymbolSet;
 
@@ -174,7 +174,7 @@ namespace Moritz.Symbols
 			symbolSet.AdjustRestsVertically(Staves);
 			symbolSet.SetBeamedStemLengths(Staves); // see the comment next to the function
 
-			List<Tuple<int, int, string>> overlapsInfoList = JustifyHorizontally(systemNumber, moments, barlineWidths, pageFormat.StafflineStemStrokeWidth);
+			List<Tuple<int, int, string>> overlapsInfoList = JustifyHorizontally(systemNumber, moments, barlineWidths, pageFormat.StafflineStemStrokeWidthVBPX);
 
 			symbolSet.FinalizeBeamBlocks(Staves);
             symbolSet.AlignLyrics(Staves);
@@ -183,16 +183,16 @@ namespace Moritz.Symbols
             {
                 nextSystem = this.Score.Systems[systemNumber];
             }
-            symbolSet.AddNoteheadExtenderLines(Staves, pageFormat.RightMarginPos, pageFormat.Gap,
-                pageFormat.NoteheadExtenderStrokeWidth, pageFormat.StafflineStemStrokeWidth, nextSystem);
+            symbolSet.AddNoteheadExtenderLines(Staves, pageFormat.RightMarginPosVBPX, pageFormat.GapVBPX,
+                pageFormat.NoteheadExtenderStrokeWidth, pageFormat.StafflineStemStrokeWidthVBPX, nextSystem);
 
             SetBarlineVisibility(pageFormat.BarlineContinuesDownList);
 
 			SetBarlineFramedTextsMetricsPosition();
-			AlignStaffnamesInLeftMargin(leftMargin, pageFormat.Gap);
+			AlignStaffnamesInLeftMargin(leftMargin, pageFormat.GapVBPX);
 			ResetStaffMetricsBoundaries();
 
-			JustifyVertically(pageFormat.Right, pageFormat.Gap);
+			JustifyVertically(pageFormat.Right, pageFormat.GapVBPX);
 
 			return overlapsInfoList;
         }
@@ -205,7 +205,7 @@ namespace Moritz.Symbols
                 Staff staff = Staves[staffIndex];
 
                 double staffHeight = staff.Gap * (staff.NumberOfStafflines - 1);
-                staff.Metrics = new StaffMetrics(leftMarginPos, pageFormat.RightMarginPos, staffHeight);
+                staff.Metrics = new StaffMetrics(leftMarginPos, pageFormat.RightMarginPosVBPX, staffHeight);
 
                 for(int voiceIndex = 0; voiceIndex < staff.Voices.Count; ++voiceIndex)
                 {
@@ -234,7 +234,7 @@ namespace Moritz.Symbols
                     staff.AdjustTwoPartChords();
                 }
 
-                staff.Metrics.Move(0f, pageFormat.DefaultDistanceBetweenStaves * staffIndex);
+                staff.Metrics.Move(0f, pageFormat.DefaultDistanceBetweenStavesVBPX * staffIndex);
                 this.Metrics.Add(staff.Metrics);
             }
 
@@ -648,7 +648,7 @@ namespace Moritz.Symbols
 
             double leftEdgeToFirstAlignment = moments[0].LeftEdgeToAlignment();
 
-            double spreadWidth = pageFormat.RightMarginPos - leftMarginPos - leftEdgeToFirstAlignment - totalBarlineWidths;
+            double spreadWidth = pageFormat.RightMarginPosVBPX - leftMarginPos - leftEdgeToFirstAlignment - totalBarlineWidths;
 
             double factor = spreadWidth / totalMomentWidths;
 
@@ -1150,7 +1150,7 @@ namespace Moritz.Symbols
         public int AbsEndMsPosition;
 
         public List<Staff> Staves = new List<Staff>();
-        internal SystemMetrics Metrics = null;
+        public SystemMetrics Metrics = null;
 
 		public SvgScore Score; // the containing score
 

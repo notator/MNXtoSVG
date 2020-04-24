@@ -383,7 +383,7 @@ namespace Moritz.Symbols
         /// <param name="upperChord"></param>
         public void AdjustAccidentalsX(ChordSymbol upperChord)
         {
-            double stafflineStemStrokeWidth = Voice.Staff.SVGSystem.Score.PageFormat.StafflineStemStrokeWidth;
+            double stafflineStemStrokeWidth = Voice.Staff.SVGSystem.Score.PageFormat.StafflineStemStrokeWidthVBPX;
 
             this.ChordMetrics.AdjustAccidentalsForTwoChords(upperChord.ChordMetrics, stafflineStemStrokeWidth);
         }

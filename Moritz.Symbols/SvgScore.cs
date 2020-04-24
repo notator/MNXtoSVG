@@ -14,42 +14,38 @@ namespace Moritz.Symbols
     public class SvgScore
     {
         #region fields
+
         #region constructor
-        public readonly PageFormat PageFormat = null;
         internal readonly string FileName = null; // The base file name with ".svg" (appears in info string at top of each page)
         internal readonly string FilePath = null; // The complete path, including the FileName.
-        internal readonly Metadata Metadata = null;
-        internal readonly bool PrintTitleAndAuthorOnScorePage1 = true;
         #endregion constructor
+
+        #region subclass constructor
+        public PageFormat PageFormat = null;
+        public Metadata Metadata = null;
+        #endregion
+
+
 
         public Notator Notator = null;
 
         protected ScoreData ScoreData = null;
 
         public int PageCount { get { return _pages.Count; } }
+
+       
+
         protected List<SvgPage> _pages = new List<SvgPage>();
 
         #endregion fields
        
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="targetFolder">The complete path to the folder that will contain the output file.</param>
         /// <param name="targetFilenameWithoutSuffix">The file name for the score, without '.svg' suffix.</param>
-        /// <param name="svgData">Page format, line thicknesses, tempo</param>
-        /// <param name="metadata"></param>
-        public SvgScore(string targetFolder, string targetFilenameWithoutSuffix,
-                        SVGData svgData, Metadata metadata, bool printTitleAndAuthorOnScorePage1)
-        {
-            this.Metadata = metadata;
-            this.Metadata.Date = M.NowString; // printed in info string at top of score.
-
+        public SvgScore(string targetFolder, string targetFilenameWithoutSuffix)
+        { 
             M.CreateDirectoryIfItDoesNotExist(targetFolder);
             FileName = targetFilenameWithoutSuffix + ".svg";
             FilePath = targetFolder + @"\" + FileName;
-            PrintTitleAndAuthorOnScorePage1 = printTitleAndAuthorOnScorePage1;
-
-            this.PageFormat = new PageFormat(svgData, printTitleAndAuthorOnScorePage1);
         }
 
         #region functions
@@ -62,8 +58,12 @@ namespace Moritz.Symbols
         ///     a) the metadata element, and all its required namespaces,
         ///     b) the score namespace, and all its enclosed (temporal and alignment) information.
         /// </summary>
-        public void SaveMultiPageScore(bool graphicsOnly)
+        public void SaveMultiPageScore(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
         {
+            if(printTitleAndAuthorOnPage1)
+            {
+                PageFormat.TopMarginPage1VBPX = PageFormat.TopMarginOtherPagesVBPX;
+            }
             List<string> svgPagenames = SaveSVGPages(graphicsOnly);
 
             if(File.Exists(FilePath))
@@ -81,7 +81,6 @@ namespace Moritz.Symbols
 				Encoding = Encoding.GetEncoding("utf-8")
 			};
 
-
             using(XmlWriter w = XmlWriter.Create(FilePath, settings))
             {
                 w.WriteDocType("html", null, null, null);
@@ -96,7 +95,7 @@ namespace Moritz.Symbols
                 w.WriteStartElement("div");
                 w.WriteAttributeString("class", "centredReferenceDiv");
                 string styleString = "position:relative; text-align: left; top: 0px; padding-top: 0px; margin-top: 0px; width: " + 
-                    SVGData.pageWidth.ToString() + "px; margin-left: auto; margin-right: auto;";
+                    PageFormat.BottomVBPX.ToString() + "px; margin-left: auto; margin-right: auto;";
                 w.WriteAttributeString("style", styleString);
 
                 w.WriteStartElement("div");
@@ -109,8 +108,8 @@ namespace Moritz.Symbols
                     w.WriteAttributeString("src", svgPagename);
                     w.WriteAttributeString("content-type", "image/svg+xml");
                     w.WriteAttributeString("class", "svgPage");
-                    w.WriteAttributeString("width", M.DoubleToShortString(SVGData.pageWidth));
-                    w.WriteAttributeString("height", M.DoubleToShortString(SVGData.pageHeight));
+                    w.WriteAttributeString("width", M.DoubleToShortString(PageFormat.RightVBPX));
+                    w.WriteAttributeString("height", M.DoubleToShortString(PageFormat.BottomVBPX));
                     w.WriteEndElement();
                     w.WriteStartElement("br");
                     w.WriteEndElement();
@@ -156,7 +155,7 @@ namespace Moritz.Symbols
 
                 pageFilenames.Add(pageFilename);
 
-                SaveSVGPage(pagePath, page, this.Metadata, false, graphicsOnly, PrintTitleAndAuthorOnScorePage1);
+                SaveSVGPage(pagePath, page, this.Metadata, false, graphicsOnly, PrintTitleAndAuthorOnPage1);
                 pageNumber++;
             }
 
@@ -193,7 +192,7 @@ namespace Moritz.Symbols
 
             using(SvgWriter w = new SvgWriter(pagePath, settings))
             {
-                page.WriteSVG(w, isSinglePageScore, graphicsOnly, printTitleAndAuthorOnScorePage1);
+                page.WriteSVG(w, Metadata, isSinglePageScore, graphicsOnly, printTitleAndAuthorOnScorePage1);
             }
         }
 
@@ -633,7 +632,7 @@ namespace Moritz.Symbols
         {
             StringBuilder lineStyles = new StringBuilder();
             
-            string strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
+            string strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX);
             StringBuilder standardLineClasses = GetStandardLineClasses(usedCSSClasses, defineFlagStyle);
 			//".staffline, .ledgerline, .stem, .beam, .flag, regionFrameConnector
 			lineStyles.Append($@"{standardLineClasses.ToString()}
@@ -723,7 +722,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBracket))
             {
-                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX);
                 lineStyles.Append($@".cautionaryBracket
             {{
                 stroke:black;
@@ -735,7 +734,7 @@ namespace Moritz.Symbols
 
             if(pageNumber > 0) // pageNumber is 0 for scroll
             {
-                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX);
                 lineStyles.Append($@".frame
             {{
                 stroke:black;
@@ -745,7 +744,7 @@ namespace Moritz.Symbols
             ");
             }
 
-            strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
+            strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX);
             if(usedCSSClasses.Contains(CSSObjectClass.beamBlock))
             {
                 lineStyles.Append($@".opaqueBeam
@@ -807,10 +806,16 @@ namespace Moritz.Symbols
         /// If printTitleAndAuthorOnScorePage1 is false then the main title and author information is omitted on page 1, and page 1
         /// has the margins otherwise allocated for all the other pages.
         /// </summary>
-        public void SaveSingleSVGScore(bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
+        public void SaveSingleSVGScore(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
 		{
-			TextInfo infoTextInfo = GetBasicInfoTextAtTopOfPage(0);
-			SvgPage singlePage = new SvgPage(this, PageFormat, 0, infoTextInfo, this.Systems, true);
+            if(printTitleAndAuthorOnPage1)
+            {
+                PageFormat.TopMarginPage1VBPX = PageFormat.TopMarginOtherPagesVBPX;
+            }
+
+            TextInfo infoTextInfo = GetBasicInfoTextAtTopOfPage(0);
+
+            SvgPage singlePage = new SvgPage(this, PageFormat, 0, infoTextInfo, this.Systems, true);
 
 			string pageFilename = Path.GetFileNameWithoutExtension(FilePath);
 			if(graphicsOnly)
@@ -824,7 +829,7 @@ namespace Moritz.Symbols
 			}
 			string pagePath = Path.GetDirectoryName(FilePath) + @"\" + pageFilename;
 
-			SaveSVGPage(pagePath, singlePage, this.Metadata, true, graphicsOnly, printTitleAndAuthorOnScorePage1);
+			SaveSVGPage(pagePath, singlePage, this.Metadata, true, graphicsOnly, printTitleAndAuthorOnPage1);
 		}
 
 
@@ -1502,7 +1507,7 @@ namespace Moritz.Symbols
                     break;
                 }
 
-                systemHeightsTotal += PageFormat.DefaultDistanceBetweenSystems;
+                systemHeightsTotal += PageFormat.DefaultDistanceBetweenSystemsVBPX;
 
                 systemsOnPage.Add(Systems[systemIndex]);
 
@@ -1585,7 +1590,7 @@ namespace Moritz.Symbols
                     {
                         if(isFirstBarline && system != Systems[0])
                         {
-                            FramedBarNumberText framedBarNumber = new FramedBarNumberText(this, barNumber.ToString(), PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
+                            FramedBarNumberText framedBarNumber = new FramedBarNumberText(this, barNumber.ToString(), PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
 
                             barline.DrawObjects.Add(framedBarNumber);
                             isFirstBarline = false;
@@ -1626,7 +1631,7 @@ namespace Moritz.Symbols
 				{
 					if(regionStartDataBarIndices.Contains(barlineIndex))
 					{
-						FramedRegionStartText frst = new FramedRegionStartText(this, regionStartData[barlineIndex], PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
+						FramedRegionStartText frst = new FramedRegionStartText(this, regionStartData[barlineIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
 						barline.DrawObjects.Add(frst);
 					}
 					barlineIndex++;
@@ -1674,7 +1679,7 @@ namespace Moritz.Symbols
 				{
 					if(regionEndDataBarIndices.Contains(barlineIndex))
 					{
-						FramedRegionEndText fret = new FramedRegionEndText(this, regionEndData[barlineIndex], PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
+						FramedRegionEndText fret = new FramedRegionEndText(this, regionEndData[barlineIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
 						barline.DrawObjects.Add(fret);
 					}
 					barlineIndex++;

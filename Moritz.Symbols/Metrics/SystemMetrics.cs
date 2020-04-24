@@ -2,7 +2,7 @@
 
 namespace Moritz.Symbols
 {
-    internal class SystemMetrics : GroupMetrics
+    public class SystemMetrics : GroupMetrics
     {
         public SystemMetrics()
             : base(CSSObjectClass.system)

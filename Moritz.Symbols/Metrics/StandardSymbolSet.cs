@@ -388,7 +388,7 @@ namespace Moritz.Symbols
 
         public override Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, double gap, PageFormat pageFormat)
         {
-            double strokeWidth = pageFormat.StafflineStemStrokeWidth;
+            double strokeWidth = pageFormat.StafflineStemStrokeWidthVBPX;
 
             Metrics returnMetrics = null;
             SmallClef smallClef = noteObject as SmallClef;
@@ -668,7 +668,7 @@ namespace Moritz.Symbols
                         if(voiceStemDirection == VerticalDir.none || voiceStemDirection == VerticalDir.down)
                         {
                             // the lyrics are below the staff
-                            double lyricMinTop = staff.Metrics.StafflinesBottom + (staff.SVGSystem.Score.PageFormat.Gap * 1.5F);
+                            double lyricMinTop = staff.Metrics.StafflinesBottom + (staff.SVGSystem.Score.PageFormat.GapVBPX * 1.5F);
                             lyricMaxTop = lyricMaxTop > lyricMinTop ? lyricMaxTop : lyricMinTop;
                         }
                         foreach(ChordSymbol chordSymbol in staff.Voices[voiceIndex].ChordSymbols)
@@ -773,8 +773,8 @@ namespace Moritz.Symbols
 				// so draw extenders to the right margin.
 				// extend to the right margin
 				PageFormat pageFormat = cautionaryChordSymbol1.Voice.Staff.SVGSystem.Score.PageFormat;
-				double rightMarginPos = pageFormat.RightMarginPos;
-				double gap = pageFormat.Gap;
+				double rightMarginPos = pageFormat.RightMarginPosVBPX;
+				double gap = pageFormat.GapVBPX;
 				x2s = GetEqualFloats(rightMarginPos + gap, ys.Count);
 			}
 			return x2s;

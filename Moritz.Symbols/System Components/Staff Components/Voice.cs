@@ -280,7 +280,7 @@ namespace Moritz.Symbols
                         else if(chordsBeamedTogether.Count > 1)
                         {
                             double beamThickness = pageFormat.BeamThickness;
-                            double beamStrokeThickness = pageFormat.StafflineStemStrokeWidth;
+                            double beamStrokeThickness = pageFormat.StafflineStemStrokeWidthVBPX;
                             chordsBeamedTogether[0].BeamBlock =
                                 new BeamBlock(currentClef, chordsBeamedTogether, this.StemDirection, beamThickness, beamStrokeThickness);
                         }

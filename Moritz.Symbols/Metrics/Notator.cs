@@ -252,7 +252,7 @@ namespace Moritz.Symbols
 
 		private double GetLeftMarginPos(SvgSystem system, Graphics graphics, PageFormat pageFormat)
         {
-            double leftMarginPos = pageFormat.LeftMarginPos;
+            double leftMarginPos = pageFormat.LeftMarginPosVBPX;
             double maxNameWidth = 0;
             foreach(Staff staff in system.Staves)
             {
@@ -275,8 +275,8 @@ namespace Moritz.Symbols
 					}
 				}
             }
-            leftMarginPos = maxNameWidth + (pageFormat.Gap * 2.0F);
-            leftMarginPos = (leftMarginPos > pageFormat.LeftMarginPos) ? leftMarginPos : pageFormat.LeftMarginPos;
+            leftMarginPos = maxNameWidth + (pageFormat.GapVBPX * 2.0F);
+            leftMarginPos = (leftMarginPos > pageFormat.LeftMarginPosVBPX) ? leftMarginPos : pageFormat.LeftMarginPosVBPX;
 
             return leftMarginPos;
         }

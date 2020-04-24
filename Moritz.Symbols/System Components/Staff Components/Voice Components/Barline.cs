@@ -271,12 +271,12 @@ namespace Moritz.Symbols
         public bool IsVisible = true;
 
 		private PageFormat PageFormat { get { return Voice.Staff.SVGSystem.Score.PageFormat; } }
-		protected double StafflineStrokeWidth { get { return PageFormat.StafflineStemStrokeWidth; } }
+		protected double StafflineStrokeWidth { get { return PageFormat.StafflineStemStrokeWidthVBPX; } }
 		protected double ThinStrokeWidth { get { return PageFormat.ThinBarlineStrokeWidth; } }
 		protected double NormalStrokeWidth { get { return PageFormat.NormalBarlineStrokeWidth; } }
 		protected double ThickStrokeWidth { get { return PageFormat.ThickBarlineStrokeWidth; } }
 		protected double DoubleBarPadding { get { return PageFormat.ThickBarlineStrokeWidth * 0.75; } }
-		protected double Gap { get { return PageFormat.Gap; } }
+		protected double Gap { get { return PageFormat.GapVBPX; } }
 		protected double TopY(double topStafflineY, bool isEndOfSystem)
 		{
 			double topY = topStafflineY;

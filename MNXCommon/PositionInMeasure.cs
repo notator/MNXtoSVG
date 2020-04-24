@@ -69,7 +69,7 @@ namespace MNX.Common
                     default:
                         if(value.IndexOf('.') >= 0)
                         {
-                            Position = new DurationSymbol(value, B.CurrentTupletLevel);
+                            Position = new DurationSymbol(value, C.CurrentTupletLevel);
                         }
                         break;
                 }
@@ -80,7 +80,7 @@ namespace MNX.Common
                 string[] mStrs = value.Split(separator, System.StringSplitOptions.None);
                 int.TryParse(mStrs[0], out int measureNumber);
                 MeasureNumber = measureNumber;
-                Position = new DurationSymbol(mStrs[1], B.CurrentTupletLevel);
+                Position = new DurationSymbol(mStrs[1], C.CurrentTupletLevel);
             }
         }
     }

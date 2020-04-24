@@ -47,9 +47,9 @@ namespace MNX.Common
 
         public Tuplet(XmlReader r)
         {
-            TupletLevel = B.CurrentTupletLevel; // top level tuplet has tuplet level 0
+            TupletLevel = C.CurrentTupletLevel; // top level tuplet has tuplet level 0
 
-            B.CurrentTupletLevel++;
+            C.CurrentTupletLevel++;
 
             M.Assert(r.Name == "tuplet");
 
@@ -60,10 +60,10 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "outer":
-                        OuterDuration = new DurationSymbol(r.Value, B.CurrentTupletLevel);
+                        OuterDuration = new DurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                     case "inner":
-                        InnerDuration = new DurationSymbol(r.Value, B.CurrentTupletLevel);
+                        InnerDuration = new DurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                     case "orient":
                         Orient = GetMNXOrientation(r.Value);
@@ -92,7 +92,7 @@ namespace MNX.Common
 
             Seq = GetSequenceContent(r, "tuplet", false);
 
-            if(B.CurrentTupletLevel == 1)
+            if(C.CurrentTupletLevel == 1)
             {
                 int outerTicks = this.OuterDuration.GetDefaultTicks();
                 this.OuterDuration.Ticks = outerTicks;
@@ -101,7 +101,7 @@ namespace MNX.Common
 
             M.Assert(r.Name == "tuplet"); // end of (nested) tuplet
 
-            B.CurrentTupletLevel--;
+            C.CurrentTupletLevel--;
         }
 
         /// <summary>

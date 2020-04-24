@@ -54,7 +54,7 @@ namespace MNX.Common
             set
             {
                 // this function should only be used when stealing ticks for Grace.
-                M.Assert(value >= B.MinimumEventTicks);
+                M.Assert(value >= M.MinimumEventTicks);
                 _ticks = value;
             }
         }
@@ -64,7 +64,7 @@ namespace MNX.Common
 
         public Event(XmlReader r)
         {
-            TupletLevel = B.CurrentTupletLevel;
+            TupletLevel = C.CurrentTupletLevel;
 
             M.Assert(r.Name == "event");
 
@@ -75,7 +75,7 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "value":
-                        DSymbol = new DurationSymbol(r.Value, B.CurrentTupletLevel);
+                        DSymbol = new DurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                     case "measure":
                         M.ThrowError("Not Implemented");
@@ -87,7 +87,7 @@ namespace MNX.Common
                         M.ThrowError("Not Implemented");
                         break;
                     case "duration":
-                        TicksOverride = new DurationSymbol(r.Value, B.CurrentTupletLevel);
+                        TicksOverride = new DurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                 }
             }

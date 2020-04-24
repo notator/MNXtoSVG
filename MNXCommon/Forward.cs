@@ -28,12 +28,12 @@ namespace MNX.Common
 
         public Forward(XmlReader r)
         {
-            TupletLevel = B.CurrentTupletLevel;
+            TupletLevel = C.CurrentTupletLevel;
 
             M.Assert(r.Name == "forward");
 
             r.MoveToAttribute("duration");
-            DSymbol = new DurationSymbol(r.Value, B.CurrentTupletLevel);
+            DSymbol = new DurationSymbol(r.Value, C.CurrentTupletLevel);
 
             M.ReadToXmlElementTag(r, "forward");
 

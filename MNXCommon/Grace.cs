@@ -76,7 +76,7 @@ namespace MNX.Common
             foreach(var e in eventList)
             {
                 int nTicks = e.DSymbol.DefaultTicks / 3;
-                e.DSymbol.Ticks = (nTicks < B.MinimumEventTicks) ? B.MinimumEventTicks : nTicks;
+                e.DSymbol.Ticks = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
             }
         }
 

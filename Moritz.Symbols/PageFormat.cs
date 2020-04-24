@@ -19,7 +19,7 @@ namespace Moritz.Symbols
         {
         }
 
-        public PageFormat(SVGData svgData, string page1Title, string page1Author)
+        public PageFormat(SVGData svgData, bool printTitleAndAuthorOnScorePage1)
         {
             RightVBPX = svgData.pageWidth * ViewBoxMagnification;
             BottomVBPX = svgData.pageHeight * ViewBoxMagnification;
@@ -38,9 +38,6 @@ namespace Moritz.Symbols
             SystemStartBars = svgData.systemStartBars;
 
             MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * svgData.crotchetsPerMinute);
-
-            Page1Title = page1Title;
-            Page1Author = page1Author;
         }
 
 

@@ -16,11 +16,10 @@ namespace Moritz.Symbols
         #region fields
         #region constructor
         public readonly PageFormat PageFormat = null;
-        internal readonly string FileName = null; // The base file name with ".svg"
+        internal readonly string FileName = null; // The base file name with ".svg" (appears in info string at top of each page)
         internal readonly string FilePath = null; // The complete path, including the FileName.
-        internal readonly string ScoreTitle = null; // As it appears in the score (can be null or empty).
-        internal readonly string ScoreAuthor = null; // As it appears in the score(can be null or empty).
-        internal readonly Metadata Metadata = new Metadata();
+        internal readonly Metadata Metadata = null;
+        internal readonly bool PrintTitleAndAuthorOnScorePage1 = true;
         #endregion constructor
 
         public Notator Notator = null;
@@ -31,18 +30,7 @@ namespace Moritz.Symbols
         protected List<SvgPage> _pages = new List<SvgPage>();
 
         #endregion fields
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// 
-        /// 
-        /// 
-        /// <param name="scoreTitle">Appears at top of page 1 (can be null or empty)</param>
-        /// <param name="scoreAuthor">Appears at top of page 1 (can be null or empty)</param>
-        /// <param name="metadataKeywords">Can be null or empty</param>
-        /// <param name="metadataComment">Can be null or empty</param>
-        /*******/
+       
         /// <summary>
         /// 
         /// </summary>
@@ -51,26 +39,28 @@ namespace Moritz.Symbols
         /// <param name="svgData">Page format, line thicknesses, tempo</param>
         /// <param name="metadata"></param>
         public SvgScore(string targetFolder, string targetFilenameWithoutSuffix,
-                        SVGData svgData, Metadata metadata)
+                        SVGData svgData, Metadata metadata, bool printTitleAndAuthorOnScorePage1)
         {
-            this.PageFormat = new PageFormat(svgData);
             this.Metadata = metadata;
             this.Metadata.Date = M.NowString; // printed in info string at top of score.
 
             M.CreateDirectoryIfItDoesNotExist(targetFolder);
             FileName = targetFilenameWithoutSuffix + ".svg";
             FilePath = targetFolder + @"\" + FileName;
+            PrintTitleAndAuthorOnScorePage1 = printTitleAndAuthorOnScorePage1;
+
+            this.PageFormat = new PageFormat(svgData, printTitleAndAuthorOnScorePage1);
         }
 
-        protected virtual byte MidiChannel(int staffIndex) { throw new NotImplementedException(); }
+        #region functions
 
         #region save multi-page score
         /// <summary>
         /// Silently overwrites the .html and all current .svg pages.
         /// An SVGScore consists of an .html file which references one .svg file per page of the score.
-		/// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
-		///     a) the metadata element, and all its required namespaces,
-		///     b) the score namespace, and all its enclosed (temporal and alignment) information.
+        /// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
+        ///     a) the metadata element, and all its required namespaces,
+        ///     b) the score namespace, and all its enclosed (temporal and alignment) information.
         /// </summary>
         public void SaveMultiPageScore(bool graphicsOnly)
         {
@@ -166,7 +156,7 @@ namespace Moritz.Symbols
 
                 pageFilenames.Add(pageFilename);
 
-                SaveSVGPage(pagePath, page, this.Metadata, false, graphicsOnly);
+                SaveSVGPage(pagePath, page, this.Metadata, false, graphicsOnly, PrintTitleAndAuthorOnScorePage1);
                 pageNumber++;
             }
 
@@ -184,7 +174,7 @@ namespace Moritz.Symbols
 		/// <summary>
 		/// Writes an SVG file containing one page of the score.
 		/// </summary>
-		public void SaveSVGPage(string pagePath, SvgPage page, bool isSinglePageScore, bool graphicsOnly)
+		public void SaveSVGPage(string pagePath, SvgPage page, Metadata metadata, bool isSinglePageScore, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
         {
             if(File.Exists(pagePath))
             {
@@ -203,7 +193,7 @@ namespace Moritz.Symbols
 
             using(SvgWriter w = new SvgWriter(pagePath, settings))
             {
-                page.WriteSVG(w, isSinglePageScore, graphicsOnly);
+                page.WriteSVG(w, isSinglePageScore, graphicsOnly, printTitleAndAuthorOnScorePage1);
             }
         }
 
@@ -803,19 +793,21 @@ namespace Moritz.Symbols
             return rval;
         }
 
-		#endregion line styles
+        #endregion line styles
 
-		#endregion save multi-page score
+        #endregion save multi-page score
 
-		#region save single svg score
-		/// <summary>
-		/// <summary>
-		/// Writes the "scroll" version of the score. This is a standalone SVG file.
-		/// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
-		///     a) the metadata element, and all its required namespaces,
-		///     b) the score namespace, and all its enclosed (temporal and alignment) information.
-		/// </summary>
-		public void SaveSingleSVGScore(bool graphicsOnly)
+        #region save single svg score
+        /// <summary>
+        /// <summary>
+        /// Writes the "scroll" version of the score. This is a standalone SVG file.
+        /// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
+        ///     a) the metadata element, and all its required namespaces,
+        ///     b) all temporal (i.e.MIDI etc.) informaton the score namespace, and all its enclosed (temporal and alignment) information.
+        /// If printTitleAndAuthorOnScorePage1 is false then the main title and author information is omitted on page 1, and page 1
+        /// has the margins otherwise allocated for all the other pages.
+        /// </summary>
+        public void SaveSingleSVGScore(bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
 		{
 			TextInfo infoTextInfo = GetBasicInfoTextAtTopOfPage(0);
 			SvgPage singlePage = new SvgPage(this, PageFormat, 0, infoTextInfo, this.Systems, true);
@@ -832,15 +824,16 @@ namespace Moritz.Symbols
 			}
 			string pagePath = Path.GetDirectoryName(FilePath) + @"\" + pageFilename;
 
-			SaveSVGPage(pagePath, singlePage, this.Metadata, true, graphicsOnly);
+			SaveSVGPage(pagePath, singlePage, this.Metadata, true, graphicsOnly, printTitleAndAuthorOnScorePage1);
 		}
 
 
 		#endregion save single svg score
-		#region fields loaded from .capx files
-        public List<SvgSystem> Systems = new List<SvgSystem>();
-        #endregion
 
+        /// <summary>
+        /// The score's systems
+        /// </summary>
+        public List<SvgSystem> Systems = new List<SvgSystem>();
 
         /// <summary>
         /// Adds the staff name to the first barline of each visible staff in the score.
@@ -1523,8 +1516,8 @@ namespace Moritz.Symbols
         {
             StringBuilder infoAtTopOfPageSB = new StringBuilder();
 
-            if(!String.IsNullOrEmpty(_filename))
-                infoAtTopOfPageSB.Append(Path.GetFileNameWithoutExtension(_filename));
+            if(!String.IsNullOrEmpty(FileName))
+                infoAtTopOfPageSB.Append(Path.GetFileNameWithoutExtension(FileName));
 
 			if(pageNumber == 0)
 			{
@@ -1604,7 +1597,7 @@ namespace Moritz.Symbols
         }
 
 		/// <summary>
-		/// Adds a FramedRegionStartText to each Barline that is the start of one or more regions.
+		/// Adds a FramedRegionStartText to each Barline that is the start of one or more (repeat) regions.
 		/// Such regionStart info is left-aligned to the barline, so is never added to the *final* barline on a system
 		/// </summary>
 		private void AddRegionStartInfo()
@@ -1723,6 +1716,7 @@ namespace Moritz.Symbols
             }
         }
 
+        #endregion functions
 
     }
 }

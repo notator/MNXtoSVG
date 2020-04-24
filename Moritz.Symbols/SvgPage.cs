@@ -115,7 +115,7 @@ namespace Moritz.Symbols
         /// Writes this page.
         /// </summary>
         /// <param name="w"></param>
-        public void WriteSVG(SvgWriter w, Metadata metadata, bool isSinglePageScore, bool graphicsOnly)
+        public void WriteSVG(SvgWriter w, Metadata metadata, bool isSinglePageScore, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
         {
 			int nOutputVoices = 0;
 			int nInputVoices = 0;
@@ -147,7 +147,7 @@ namespace Moritz.Symbols
 				WriteFrameLayer(w, _pageFormat.Right, _pageFormat.Bottom);
 			}
 
-			WriteSystemsLayer(w, _pageNumber, metadata, graphicsOnly);
+			WriteSystemsLayer(w, _pageNumber, metadata, graphicsOnly, printTitleAndAuthorOnScorePage1);
 
             w.WriteComment(@" Annotations that are added here will be ignored by the AssistantPerformer. ");
 
@@ -178,7 +178,7 @@ namespace Moritz.Symbols
             w.SvgRect(CSSObjectClass.frame, 0, 0, width, height);
         }
 
-		private void WriteSystemsLayer(SvgWriter w, int pageNumber, Metadata metadata, bool graphicsOnly)
+		private void WriteSystemsLayer(SvgWriter w, int pageNumber, Metadata metadata, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
 		{
             w.SvgStartGroup(CSSObjectClass.systems.ToString());
 
@@ -191,8 +191,8 @@ namespace Moritz.Symbols
 
 			w.SvgText(CSSObjectClass.timeStamp, _infoTextInfo.Text, 32, _infoTextInfo.FontHeight);
 
-			if(pageNumber == 1 || pageNumber == 0)
-			{
+			if((pageNumber == 1 || pageNumber == 0) && printTitleAndAuthorOnScorePage1)
+            {
 				WritePage1TitleAndAuthor(w, metadata);
 			}
 

@@ -74,7 +74,7 @@ namespace Moritz.Symbols
 		{			
 			if(barnumberMetrics != null && regionInfoMetrics != null)
 			{
-				double padding = Gap * 1.5F;
+				double padding = Gap * 1.5;
 				double shift = barnumberMetrics.Bottom - regionInfoMetrics.Top + padding;
 				barnumberMetrics.Move(0, -shift);
 			}
@@ -94,7 +94,7 @@ namespace Moritz.Symbols
 		{
 			if(framedTextMetrics != null) 
 			{
-				double bottomPadding = Gap * 1.5F;
+				double bottomPadding = Gap * 1.5;
 				double xPadding = Gap * 4;
 				PaddedMetrics paddedMetrics = new PaddedMetrics(framedTextMetrics, 0, xPadding, bottomPadding, xPadding);
 
@@ -153,7 +153,7 @@ namespace Moritz.Symbols
 		/// </summary>
 		private void MovePaddedMetricsAboveNoteObject(PaddedMetrics paddedMetrics, NoteObject fixedNoteObject)
 		{
-			double verticalOverlap = 0F;
+			double verticalOverlap = 0;
 			if(fixedNoteObject.Metrics is ChordMetrics chordMetrics)
 			{
 				verticalOverlap = chordMetrics.OverlapHeight(paddedMetrics, 0F);
@@ -176,7 +176,7 @@ namespace Moritz.Symbols
 
 		private void MoveFramedTextAboveBeamBlock(Metrics framedTextMetrics, BeamBlock beamBlock)
 		{
-			double padding = Gap * 1.5F;
+			double padding = Gap * 1.5;
 
 			double verticalOverlap = beamBlock.OverlapHeight(framedTextMetrics, padding);
 			if(verticalOverlap > 0)
@@ -188,7 +188,7 @@ namespace Moritz.Symbols
 
 		private void MoveFramedTextAboveNoteheadExtenders(Metrics framedTextMetrics, List<NoteheadExtenderMetrics> noteheadExtendersMetrics)
 		{
-			double padding = Gap * 1.5F;
+			double padding = Gap * 1.5;
 			int indexOfTopExtender = 0;
 			for(int i = 1; i < noteheadExtendersMetrics.Count; ++i)
 			{
@@ -275,7 +275,7 @@ namespace Moritz.Symbols
 		protected double ThinStrokeWidth { get { return PageFormat.ThinBarlineStrokeWidth; } }
 		protected double NormalStrokeWidth { get { return PageFormat.NormalBarlineStrokeWidth; } }
 		protected double ThickStrokeWidth { get { return PageFormat.ThickBarlineStrokeWidth; } }
-		protected double DoubleBarPadding { get { return PageFormat.ThickBarlineStrokeWidth * 0.75F; } }
+		protected double DoubleBarPadding { get { return PageFormat.ThickBarlineStrokeWidth * 0.75; } }
 		protected double Gap { get { return PageFormat.Gap; } }
 		protected double TopY(double topStafflineY, bool isEndOfSystem)
 		{

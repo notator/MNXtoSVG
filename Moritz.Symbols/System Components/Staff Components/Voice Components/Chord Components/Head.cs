@@ -61,7 +61,7 @@ namespace Moritz.Symbols
         /// The chord's y-origin is the top line of the staff.
         /// (Y-Alignment of a notehead on the top line of the staff is 0.)
         /// Uses the following protected variables (in Metrics) which have been set by GetStaffParameters()
-        ///     protected double _gapVBPX = 0F; 
+        ///     protected double _gapVBPX = 0; 
         ///     protected int _nStafflines = 0;
         ///     protected ClefSymbol _clef = null;
         /// </summary>
@@ -71,29 +71,29 @@ namespace Moritz.Symbols
         public double GetOriginY(Clef clef, double gap)
         {
             string[] alphabet = { "C", "D", "E", "F", "G", "A", "B" };
-            double shiftFactor = 0F;
+            double shiftFactor = 0;
             switch(this.Pitch[0])
             {
                 case 'A':
-                    shiftFactor = 2.5F;
+                    shiftFactor = 2.5;
                     break;
                 case 'B':
-                    shiftFactor = 2F;
+                    shiftFactor = 2;
                     break;
                 case 'C':
                     shiftFactor = 5;
                     break;
                 case 'D':
-                    shiftFactor = 4.5F;
+                    shiftFactor = 4.5;
                     break;
                 case 'E':
-                    shiftFactor = 4F;
+                    shiftFactor = 4;
                     break;
                 case 'F':
-                    shiftFactor = 3.5F;
+                    shiftFactor = 3.5;
                     break;
                 case 'G':
-                    shiftFactor = 3F;
+                    shiftFactor = 3;
                     break;
             }
 
@@ -112,7 +112,7 @@ namespace Moritz.Symbols
             {
                 M.Assert(false, "Error in octave string");
             }
-            double octaveShift = octave - 5F;
+            double octaveShift = octave - 5;
             shiftFactor -= (octaveShift * 3.5F); // 3.5 spaces is one octave
             // shiftFactor is currently correct for all octaves on a normal treble clef
             switch(clef.ClefType)
@@ -120,25 +120,25 @@ namespace Moritz.Symbols
                 case "t":
                     break;
                 case "t1": // trebleClef8
-                    shiftFactor += 3.5F; // shift down one octave
+                    shiftFactor += 3.5; // shift down one octave
                     break;
                 case "t2": // trebleClef2x8
-                    shiftFactor += 7F; // shift down two octaves
+                    shiftFactor += 7; // shift down two octaves
                     break;
                 case "t3": // trebleClef3x8
-                    shiftFactor += 10.5F; // shift down three octaves
+                    shiftFactor += 10.5; // shift down three octaves
                     break;
                 case "b":
-                    shiftFactor -= 6F; // shift up six spaces
+                    shiftFactor -= 6; // shift up six spaces
                     break;
                 case "b1": // bassClef8
-                    shiftFactor -= 9.5F; // shift up six spaces + 1 octave
+                    shiftFactor -= 9.5; // shift up six spaces + 1 octave
                     break;
                 case "b2": // bassClef2x8
-                    shiftFactor -= 13F; // shift up six spaces + 2 octaves
+                    shiftFactor -= 13; // shift up six spaces + 2 octaves
                     break;
                 case "b3": // bassClef3x8
-                    shiftFactor -= 16.5F; // shift up six spaces + 3 octaves
+                    shiftFactor -= 16.5; // shift up six spaces + 3 octaves
                     break;
                 default:
                     break;
@@ -238,8 +238,8 @@ namespace Moritz.Symbols
         ///  parenth: show accidental in parentheses
         /// </summary>
         public DisplayAccidental DisplayAccidental = DisplayAccidental.auto;
-        public double XShift_Gap4 = 0F; // shifts the accidental, not the notehead!
-        public double FontSize = 0F;
+        public double XShift_Gap4 = 0; // shifts the accidental, not the notehead!
+        public double FontSize = 0;
 
         private string _pitch;
         private int _alteration = 0;

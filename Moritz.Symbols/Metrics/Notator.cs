@@ -208,7 +208,7 @@ namespace Moritz.Symbols
                 using(Graphics graphics = Graphics.FromImage(image)) // used for measuring strings
                 {
                     double system1LeftMarginPos = GetLeftMarginPos(systems[0], graphics, _pageFormat);
-                    double otherSystemsLeftMarginPos = 0F;
+                    double otherSystemsLeftMarginPos = 0;
                     if(systems.Count > 1)
                         otherSystemsLeftMarginPos = GetLeftMarginPos(systems[1], graphics, _pageFormat);
 

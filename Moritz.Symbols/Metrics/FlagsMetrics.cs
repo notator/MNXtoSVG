@@ -18,7 +18,7 @@ namespace Moritz.Symbols
         public FlagsMetrics(DurationClass durationClass, double fontHeight, VerticalDir stemDirection)
             : base(CSSObjectClass.flag)
         {
-			_left = 0F;           
+			_left = 0;           
             
             // (0.31809F * fontHeight) is maximum x in the flag def.
             _right = (0.31809F * fontHeight);
@@ -28,10 +28,10 @@ namespace Moritz.Symbols
                 _right += rightPadding;
             }
             
-			_originX = 0F;
-			_originY = 0F;
+			_originX = 0;
+			_originY = 0;
 
-			double offset = 0F;
+			double offset = 0;
 			switch(durationClass)
 			{
                 // Bravura says there is a maximum of 8 flags
@@ -46,49 +46,49 @@ namespace Moritz.Symbols
 						_flagID = FlagID.right2Flags;
 					else
 						_flagID = FlagID.left2Flags;
-					offset = 0.25F;
+					offset = 0.25;
 					break;
 				case DurationClass.threeFlags:
 					if(stemDirection == VerticalDir.up)
 						_flagID = FlagID.right3Flags;
 					else
 						_flagID = FlagID.left3Flags;
-					offset = 0.5F;
+					offset = 0.5;
 					break;
 				case DurationClass.fourFlags:
 					if(stemDirection == VerticalDir.up)
 						_flagID = FlagID.right4Flags;
 					else
 						_flagID = FlagID.left4Flags;
-					offset = 0.75F;
+					offset = 0.75;
 					break;
                 case DurationClass.fiveFlags:
                     if(stemDirection == VerticalDir.up)
                         _flagID = FlagID.right5Flags;
                     else
                         _flagID = FlagID.left5Flags;
-                    offset = 1F;
+                    offset = 1;
                     break;
                 case DurationClass.sixFlags:
                     if(stemDirection == VerticalDir.up)
                         _flagID = FlagID.right6Flags;
                     else
                         _flagID = FlagID.left6Flags;
-                    offset = 1.25F;
+                    offset = 1.25;
                     break;
                 case DurationClass.sevenFlags:
                     if(stemDirection == VerticalDir.up)
                         _flagID = FlagID.right7Flags;
                     else
                         _flagID = FlagID.left7Flags;
-                    offset = 1.5F;
+                    offset = 1.5;
                     break;
                 case DurationClass.eightFlags:
                     if(stemDirection == VerticalDir.up)
                         _flagID = FlagID.right8Flags;
                     else
                         _flagID = FlagID.left8Flags;
-                    offset = 1.75F;
+                    offset = 1.75;
                     break;
                 default:
 					M.Assert(false, "This duration class has no flags.");
@@ -96,13 +96,13 @@ namespace Moritz.Symbols
 			}
 			if(stemDirection == VerticalDir.up)
 			{
-				_top = 0F;
+				_top = 0;
 				_bottom = (0.2467F + offset) * fontHeight;
 			}
 			else
 			{
 				_top = (-(0.2467F + offset)) * fontHeight;
-				_bottom = 0F;
+				_bottom = 0;
 			}
 
             if(!_usedFlagIDs.Contains((FlagID) _flagID))

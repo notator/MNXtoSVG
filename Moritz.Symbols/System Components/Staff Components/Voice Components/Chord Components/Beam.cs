@@ -15,8 +15,8 @@ namespace Moritz.Symbols
         {
             LeftX = left;
             RightX = right;
-            _leftTopY = 0F;
-            _rightTopY = 0F;
+            _leftTopY = 0;
+            _rightTopY = 0;
         }
 
         public void MoveYs(double dLeftY, double dRightY)
@@ -37,7 +37,7 @@ namespace Moritz.Symbols
         /// <param name="nGaps"></param>
         protected void ShiftYsForBeamBlock(double outerLeftY, double gap, VerticalDir stemDirection, double beamThickness, int nGaps)
         {
-            double dy = 0F;
+            double dy = 0;
             if(stemDirection == VerticalDir.down)
             {
                 dy = -(beamThickness + (gap * nGaps));

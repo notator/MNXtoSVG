@@ -954,7 +954,7 @@ namespace Moritz.Spec
 		//{
 		//    bool okay = true;
 		//    int numberOfOrnamentChords = 1;
-		//    double factor = 1.0F;
+		//    double factor = 1.0;
 		//    // try each ornament length in turn until okay is true
 		//    for(int numChords = relativeDurations.Count; numChords > 0; --numChords)
 		//    {

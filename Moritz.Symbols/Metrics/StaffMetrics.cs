@@ -7,7 +7,7 @@ namespace Moritz.Symbols
         public StaffMetrics(double left, double right, double height)
             : base(CSSObjectClass.staff)
         {
-            _top = 0F;
+            _top = 0;
             _right = right;
             _bottom = height;
             _left = left;
@@ -42,15 +42,15 @@ namespace Moritz.Symbols
 		}
 
         public double StafflinesTop { get { return _stafflinesTop; } }
-        private double _stafflinesTop = 0F;
+        private double _stafflinesTop = 0;
 
         public double StafflinesBottom { get { return _stafflinesBottom; } }
-        private double _stafflinesBottom = 0F;
+        private double _stafflinesBottom = 0;
 
         public double StafflinesLeft { get { return _stafflinesLeft; } }
-        private readonly double _stafflinesLeft = 0F;
+        private readonly double _stafflinesLeft = 0;
 
         public double StafflinesRight { get { return _stafflinesRight; } }
-        private readonly double _stafflinesRight = 0F;
+        private readonly double _stafflinesRight = 0;
     }
 }

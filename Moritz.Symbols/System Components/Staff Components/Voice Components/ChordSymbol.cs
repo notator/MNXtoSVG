@@ -22,7 +22,7 @@ namespace Moritz.Symbols
         public VerticalDir DefaultStemDirection(Clef clef)
         {
             M.Assert(this.HeadsTopDown.Count > 0);
-            double gap = 32F; // dummy value
+            double gap = 32; // dummy value
             List<double> topDownHeadOriginYs = new List<double>();
             int lastMidiPitch = int.MaxValue;
             foreach(Head head in this.HeadsTopDown)
@@ -32,7 +32,7 @@ namespace Moritz.Symbols
             }
 
             double heightOfMiddleStaffLine = (this.Voice.Staff.NumberOfStafflines / 2) * gap;
-            double halfHeight = 0F;
+            double halfHeight = 0;
             if(topDownHeadOriginYs.Count == 1)
                 halfHeight = topDownHeadOriginYs[0];
             else
@@ -398,7 +398,7 @@ namespace Moritz.Symbols
         public override double OverlapWidth(NoteObjectMoment previousNOM)
         {
             double overlap = double.MinValue;
-            double localOverlap = 0F;
+            double localOverlap = 0;
             foreach(AnchorageSymbol previousAS in previousNOM.AnchorageSymbols)
             {
 				//if(this is Study2b2ChordSymbol)

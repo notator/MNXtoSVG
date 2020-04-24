@@ -37,7 +37,7 @@ namespace Moritz.Symbols
             throw new NotImplementedException();
         }
 
-        public readonly double StrokeWidthPixels = 0F;
+        public readonly double StrokeWidthPixels = 0;
         public readonly string Stroke = "none"; // "none", "black", "white", "#333" etc
         public readonly string Fill = "none"; // "none", "black", "white", "#333" etc
         public readonly string LineCap = "butt"; // "butt", "round", "square" 
@@ -234,7 +234,7 @@ namespace Moritz.Symbols
 
         public string StrokeColor { get { return _strokeColor; } }
         private readonly string _strokeColor;
-		private readonly double _strokeWidth = 0F;
+		private readonly double _strokeWidth = 0;
 		private readonly bool _drawExtender;
 	}
 
@@ -244,9 +244,9 @@ namespace Moritz.Symbols
 			CSSObjectClass lineClass1 = CSSObjectClass.normalBarline, CSSObjectClass lineClass2 = CSSObjectClass.normalBarline)
 			: base(lineClass1, lineClass2)
 		{
-			_originX = 0F;
-			_left = leftReOriginX; // for a normal, thin barline: -(strokeWidth / 2F);
-			_right = rightReOriginX; // for a normal, thin barline: strokeWidth / 2F;
+			_originX = 0;
+			_left = leftReOriginX; // for a normal, thin barline: -(strokeWidth / 2);
+			_right = rightReOriginX; // for a normal, thin barline: strokeWidth / 2;
 		}
 
 		//public override void Move(double dx, double dy)

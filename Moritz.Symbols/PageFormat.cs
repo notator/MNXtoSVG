@@ -57,8 +57,8 @@ namespace Moritz.Symbols
         public bool IsLandscape = false;
         public int RightVBPX = 0;
         public int BottomVBPX = 0;
-        public readonly double HorizontalPixelsPerMillimeter = 3.4037F; // on my computer (December 2010).
-        public readonly double VerticalPixelsPerMillimeter = 2.9464F; // on my computer (December 2010).
+        public readonly double HorizontalPixelsPerMillimeter = 3.4037; // on my computer (December 2010).
+        public readonly double VerticalPixelsPerMillimeter = 2.9464; // on my computer (December 2010).
 		#endregion
 
 		#region page 1 titles
@@ -130,8 +130,8 @@ namespace Moritz.Symbols
         public double CrotchetsPerMinute = 0;
 
         #region constants
-        public double SmallSizeFactor { get { return 0.8F; } } // The relatve size of cautionary and small objects
-        public double OpaqueBeamOpacity { get { return 0.65F; } } // The opacity of opaque beams
+        public double SmallSizeFactor { get { return 0.8; } } // The relatve size of cautionary and small objects
+        public double OpaqueBeamOpacity { get { return 0.65; } } // The opacity of opaque beams
         #endregion
 
         public double Gap;
@@ -139,32 +139,32 @@ namespace Moritz.Symbols
         /// <summary>
         /// the normal font size on staves having Gap sized spaces (after experimenting with cLicht). 
         /// </summary>
-        public double MusicFontHeight { get { return (Gap * 4) * 0.98F; } }
+        public double MusicFontHeight { get { return (Gap * 4) * 0.98; } }
         /// Arial (new 26.06.2017)
-        public double TimeStampFontHeight { get { return Gap * 2.25F; } }
-        public double StaffNameFontHeight { get { return Gap * 2.2F; } }
-		public double BarNumberNumberFontHeight { get { return Gap * 1.9992F; } }
-		public double RegionInfoStringFontHeight { get { return Gap * 3F; } }
-		public double LyricFontHeight { get { return Gap * 1.96F; } }
-        public double ClefOctaveNumberHeight { get { return Gap * 2.6264F; } }
-        public double ClefXFontHeight { get { return Gap * 1.568F; } }
+        public double TimeStampFontHeight { get { return Gap * 2.25; } }
+        public double StaffNameFontHeight { get { return Gap * 2.2; } }
+		public double BarNumberNumberFontHeight { get { return Gap * 1.9992; } }
+		public double RegionInfoStringFontHeight { get { return Gap * 3; } }
+		public double LyricFontHeight { get { return Gap * 1.96; } }
+        public double ClefOctaveNumberHeight { get { return Gap * 2.6264; } }
+        public double ClefXFontHeight { get { return Gap * 1.568; } }
 		/// Open Sans, Open Sans Condensed (new 26.06.2017)
-		public double OrnamentFontHeight { get { return Gap * 2.156F; } }
+		public double OrnamentFontHeight { get { return Gap * 2.156; } }
 		/// CLicht (new 26.06.2017)
-		public double DynamicFontHeight { get { return MusicFontHeight * 0.75F; } }
+		public double DynamicFontHeight { get { return MusicFontHeight * 0.75; } }
         #endregion
 
         #region stroke widths
         public double StafflineStemStrokeWidth;
-        public double NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidth * 2F; } }
+        public double NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidth * 2; } }
 		public double ThinBarlineStrokeWidth { get { return NormalBarlineStrokeWidth / 2; } } // a component of double barlines.
 		public double ThickBarlineStrokeWidth { get { return NormalBarlineStrokeWidth * 2; } } // a component of double barlines.
-		public double NoteheadExtenderStrokeWidth { get { return StafflineStemStrokeWidth * 3.4F; } }
-		public double BarNumberFrameStrokeWidth { get { return StafflineStemStrokeWidth * 1.2F; } }
-		public double RegionInfoFrameStrokeWidth { get { return BarNumberFrameStrokeWidth * 1.5F; } }
+		public double NoteheadExtenderStrokeWidth { get { return StafflineStemStrokeWidth * 3.4; } }
+		public double BarNumberFrameStrokeWidth { get { return StafflineStemStrokeWidth * 1.2; } }
+		public double RegionInfoFrameStrokeWidth { get { return BarNumberFrameStrokeWidth * 1.5; } }
 		#endregion
 
-        public double BeamThickness { get { return Gap * 0.42F; } }
+        public double BeamThickness { get { return Gap * 0.42; } }
 
         #endregion
 

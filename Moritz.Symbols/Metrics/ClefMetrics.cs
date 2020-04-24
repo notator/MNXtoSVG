@@ -56,8 +56,8 @@ namespace Moritz.Symbols
             {
                 double bassTop = -gap;
                 double bassRight = trebleRight;
-                double bassBottom = gap * 3F;
-                double lowBassBottom = gap * 4.5F;
+                double bassBottom = gap * 3;
+                double lowBassBottom = gap * 4.5;
                 #region bass clefs
                 switch(clef.ClefType)
                 {
@@ -124,8 +124,8 @@ namespace Moritz.Symbols
 
 			if(clef.ClefType[0] == 'b' && clef.ClefType.Length > 1)
 			{
-				//double lowBassBottom = gap * 4.5F;
-				_bottom = gap * 4.65F; // small bass clef octaves are lower than for normal bass clefs
+				//double lowBassBottom = gap * 4.5;
+				_bottom = gap * 4.65; // small bass clef octaves are lower than for normal bass clefs
 			}
 		}
 	}
@@ -144,8 +144,8 @@ namespace Moritz.Symbols
 
 	//		if(clef.ClefType[0] == 'b' && clef.ClefType.Length > 1)
 	//		{
-	//			//double lowBassBottom = gap * 4.5F;
-	//			_bottom = gap * 4.65F; // small bass clef octaves are lower than for normal bass clefs
+	//			//double lowBassBottom = gap * 4.5;
+	//			_bottom = gap * 4.65; // small bass clef octaves are lower than for normal bass clefs
 	//		}
 	//	}
 	//}

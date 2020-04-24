@@ -326,11 +326,11 @@ namespace Moritz.Symbols
 
         private double DurationClassDeltaAbove(DurationClass durationClass, double gap)
         {
-            double delta = 0F;
+            double delta = 0;
             switch(durationClass)
             {
                 case DurationClass.semibreve:
-                    delta = gap / -2F;
+                    delta = gap / -2;
                     break;
                 case DurationClass.breve:
                 case DurationClass.minim:
@@ -340,39 +340,39 @@ namespace Moritz.Symbols
                 case DurationClass.threeFlags:
                     break;
                 case DurationClass.fourFlags:
-                    delta = gap / -2F;
+                    delta = gap / -2;
                     break;
                 case DurationClass.fiveFlags:
-                    delta = gap * -1.5F;
+                    delta = gap * -1.5;
                     break;
             }
             return delta;
         }
         private double DurationClassDeltaBelow(DurationClass durationClass, double gap)
         {
-            double delta = 0F;
+            double delta = 0;
             switch(durationClass)
             {
                 case DurationClass.breve:
                 case DurationClass.semibreve:
                     break;
                 case DurationClass.minim:
-                    delta = gap / 2F;
+                    delta = gap / 2;
                     break;
                 case DurationClass.crotchet:
-                    delta = gap / 3F;
+                    delta = gap / 3;
                     break;
                 case DurationClass.quaver:
                 case DurationClass.semiquaver:
                     break;
                 case DurationClass.threeFlags:
-                    delta = gap / 2F;
+                    delta = gap / 2;
                     break;
                 case DurationClass.fourFlags:
-                    delta = gap / -2F;
+                    delta = gap / -2;
                     break;
                 case DurationClass.fiveFlags:
-                    delta = gap * -1.5F;
+                    delta = gap * -1.5;
                     break;
             }
             return delta;
@@ -576,8 +576,8 @@ namespace Moritz.Symbols
         /// </summary>
         private double LowerChordDeltaX(List<HeadMetrics> upperHM, List<HeadMetrics> lowerHM, StemMetrics lowerChordStemMetrics)
         {
-            double deltaX = 0F;
-            double iota = 0.001F; // tolerance for double comparisons
+            double deltaX = 0;
+            double iota = 0.001; // tolerance for double comparisons
             double stemThickness = SVGSystem.Score.PageFormat.StafflineStemStrokeWidth;
             double upperHeadRightStemX = upperHM[upperHM.Count - 1].RightStemX;
             double lowerHeadLeftStemX = lowerHM[0].LeftStemX;

@@ -46,8 +46,8 @@ namespace Moritz.Symbols
 
         static CLichtFontMetrics()
         {
-            double hScale = 3.4037F / 800F;
-            double vScale = 2.9464F / 800F;
+            double hScale = 3.4037F / 800;
+            double vScale = 2.9464F / 800;
             foreach(string key in CLichtGlyphBoundingBoxesDictMM.Keys)
             {
                 GlyphBoundingBoxMM gbbMM = CLichtGlyphBoundingBoxesDictMM[key];

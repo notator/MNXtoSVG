@@ -54,6 +54,6 @@ namespace Moritz.Symbols
         /// </summary>
         public Voice Voice = null;
         public double FontHeight { get { return _fontHeight; } set { _fontHeight = value; } }
-        public double _fontHeight = 0F;
+        public double _fontHeight = 0;
 	}
 }

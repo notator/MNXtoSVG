@@ -95,7 +95,7 @@ namespace Moritz.Symbols
 
             HeadMetrics hMetrics = new HeadMetrics(chord, null, _gap, mainHeadClass); // the head is horizontally aligned at 0 by default.
             double horizontalShift = hMetrics.RightStemX - hMetrics.LeftStemX - (ledgerlineStemStrokeWidth / 2F); // the distance to shift left or right if heads would collide
-            double shiftRange = _gap * 0.75F;
+            double shiftRange = _gap * 0.75;
 
             if(chord.Stem.Direction == VerticalDir.up)
             {
@@ -107,10 +107,10 @@ namespace Moritz.Symbols
                 foreach(Head head in bottomUpHeads)
                 {
                     double newHeadOriginY = head.GetOriginY(_clef, _gap); // note that the CHORD's originY is always at the top line of the staff
-                    double newHeadAlignX = 0F;
+                    double newHeadAlignX = 0;
                     foreach(Metrics headMetric in bottomUpMetrics)
                     {
-                        double existingHeadAlignX = (headMetric.Left + headMetric.Right) / 2F;
+                        double existingHeadAlignX = (headMetric.Left + headMetric.Right) / 2;
                         if((newHeadOriginY == headMetric.OriginY)
                         || (existingHeadAlignX == 0F
                             && newHeadAlignX < (existingHeadAlignX + horizontalShift)
@@ -137,10 +137,10 @@ namespace Moritz.Symbols
                 foreach(Head head in chord.HeadsTopDown)
                 {
                     double newHeadOriginY = head.GetOriginY(_clef, _gap); // note that the CHORD's originY is always at the top line of the staff
-                    double newHeadAlignX = 0F;
+                    double newHeadAlignX = 0;
                     foreach(HeadMetrics headMetric in _headsMetricsTopDown)
                     {
-                        double existingHeadAlignX = (headMetric.Left + headMetric.Right) / 2F;
+                        double existingHeadAlignX = (headMetric.Left + headMetric.Right) / 2;
                         if((newHeadOriginY == headMetric.OriginY)
                         || (existingHeadAlignX == 0F
                             && newHeadAlignX < (existingHeadAlignX + horizontalShift)
@@ -197,7 +197,7 @@ namespace Moritz.Symbols
 
         private void CreateLedgerlineAndAccidentalMetrics(double fontHeight, List<Head> topDownHeads, List<HeadMetrics> topDownHeadsMetrics, double ledgerlineStemStrokeWidth, CSSObjectClass chordClass)
         {
-            double limbLength = (topDownHeadsMetrics[0].RightStemX - topDownHeadsMetrics[0].LeftStemX) / 2F; // change to taste later
+            double limbLength = (topDownHeadsMetrics[0].RightStemX - topDownHeadsMetrics[0].LeftStemX) / 2; // change to taste later
 
             CSSObjectClass llsClass = GetLedgerlinesClass(chordClass);
             _upperLedgerlineBlockMetrics = CreateUpperLedgerlineBlock(topDownHeadsMetrics, limbLength, ledgerlineStemStrokeWidth, llsClass);
@@ -299,8 +299,8 @@ namespace Moritz.Symbols
             bottom += padding;
             if((bottom - top) < gap)
             {
-                top -= gap / 3F;
-                bottom += gap / 3F;
+                top -= gap / 3;
+                bottom += gap / 3;
             }
         }
 
@@ -334,7 +334,7 @@ namespace Moritz.Symbols
                 {
                     double extraHorizontalSpace = 0;
                     if(accidentalMetrics.CharacterString == "b")
-                        extraHorizontalSpace = accidentalMetrics.FontHeight * -0.03F;
+                        extraHorizontalSpace = accidentalMetrics.FontHeight * -0.03;
 
                     accidentalMetrics.Move(head.Left - extraHorizontalSpace - accidentalMetrics.Right, 0);
                 }
@@ -361,7 +361,7 @@ namespace Moritz.Symbols
         {
             // This delta is very important. Without it, an accidental will collide with the accidental above it,
             // if the upper accidental has been moved left. For example, chord (D1,G1,D2) with an accidental on each notehead.
-            double xDelta = accidental.FontHeight * 0.001F;
+            double xDelta = accidental.FontHeight * 0.001;
             for(int i = index; i < existingAccidentals.Count; i++)
             {
                 Metrics existingAccidental = existingAccidentals[i];
@@ -370,11 +370,11 @@ namespace Moritz.Symbols
                     if(existingAccidental.OriginY < (accidental.OriginY - (_gap * 1.75)))
                     {
                         if(accidental.CharacterString == "n")
-                            xDelta = accidental.FontHeight * -0.05F;
+                            xDelta = accidental.FontHeight * -0.05;
                         else if(accidental.CharacterString == "b")
-                            xDelta = accidental.FontHeight * -0.14F;
+                            xDelta = accidental.FontHeight * -0.14;
                         //else if(accidental.CharacterString == "#")
-                        //    xDelta = accidental.FontHeight * 0.03F;
+                        //    xDelta = accidental.FontHeight * 0.03;
                     }
 
                     accidental.Move(existingAccidental.Left - xDelta - accidental.Right, 0);
@@ -532,8 +532,8 @@ namespace Moritz.Symbols
 
             HeadMetrics outerNoteheadMetrics = FindOuterNotehead(topDownHeadsMetrics, stemDirection);
             HeadMetrics innerNoteheadMetrics = FindInnerNotehead(topDownHeadsMetrics, stemDirection);
-            double innerNoteheadAlignmentY = (innerNoteheadMetrics.Bottom + innerNoteheadMetrics.Top) / 2F;
-            double minDist = _gap * 1.8F; // constant found by experiment
+            double innerNoteheadAlignmentY = (innerNoteheadMetrics.Bottom + innerNoteheadMetrics.Top) / 2;
+            double minDist = _gap * 1.8; // constant found by experiment
             double deltaX = 0;
             double deltaY = 0;
             string flagIDString = flagsMetrics.FlagID.ToString();
@@ -1164,11 +1164,11 @@ namespace Moritz.Symbols
             if(_lyricMetrics != null)
             {
                 GetRelativePositions(voiceStemDirection, _lyricMetrics, out bool ornamentIsBelow, out bool dynamicIsBelow);
-                double delta = 0F;
+                double delta = 0;
                 if(_lyricMetrics.IsBelow)
                 {
                     delta = lyricTop - _lyricMetrics.Top;
-					delta *= 0.7F; // this line added 12.08.2015
+					delta *= 0.7; // this line added 12.08.2015
                     _lyricMetrics.Move(0, delta);
                     if(ornamentIsBelow && _ornamentMetrics != null)
                         _ornamentMetrics.Move(0, delta);
@@ -1207,15 +1207,15 @@ namespace Moritz.Symbols
             HeadMetrics innerNotehead = FindInnerNotehead(topDownHeadsMetrics, stemDirection);
             string characterString = outerNotehead.CharacterString;
             NoteheadStemPositions_px nspPX = CLichtFontMetrics.ClichtNoteheadStemPositionsDictPX[characterString];
-            double outerNoteheadAlignmentY = (outerNotehead.Bottom + outerNotehead.Top) / 2F;
-            double innerNoteheadAlignmentY = (innerNotehead.Bottom + innerNotehead.Top) / 2F;
-            double delta = _gap * 0.1F;
-            double octave = (_gap * 3.5F) + delta; // a little more than 1 octave
-            double sixth = (_gap * 2.5F) + delta; // a little more than 1 sixth
+            double outerNoteheadAlignmentY = (outerNotehead.Bottom + outerNotehead.Top) / 2;
+            double innerNoteheadAlignmentY = (innerNotehead.Bottom + innerNotehead.Top) / 2;
+            double delta = _gap * 0.1;
+            double octave = (_gap * 3.5) + delta; // a little more than 1 octave
+            double sixth = (_gap * 2.5) + delta; // a little more than 1 sixth
 
-            double top = 0F;
-            double bottom = 0F;
-            double x = 0F;
+            double top = 0;
+            double bottom = 0;
+            double x = 0;
             if(stemDirection == VerticalDir.up)
             {
                 x = outerNotehead.RightStemX - (strokeWidth / 2);
@@ -2146,7 +2146,7 @@ namespace Moritz.Symbols
         #endregion public interface
 
         #region private variables
-        private readonly double _gap = 0F;
+        private readonly double _gap = 0;
         private int _nStafflines = 0;
         private double _staffOriginY = 0;
         private Clef _clef = null;

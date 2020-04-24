@@ -111,12 +111,12 @@ namespace Moritz.Symbols
 		public FramedBarNumberText(object container, string text, double gap, double stafflinethickness)
 			: base(container, text, "Arial", (gap * 2F), TextHorizAlign.center)
 		{
-			double paddingX = 22F;
+			double paddingX = 22;
 			if(text.Length > 1)
-				paddingX = 10F;
-			double paddingY = 22F;
+				paddingX = 10;
+			double paddingY = 22;
 
-			double strokeWidth = stafflinethickness * 1.2F;
+			double strokeWidth = stafflinethickness * 1.2;
 
 			_frameInfo = new FramePadding(TextFrameType.rectangle, paddingY, paddingX, paddingY, paddingX);
 		}
@@ -178,10 +178,10 @@ namespace Moritz.Symbols
 		public FramedMultilineText(object container, List<string> textStrings, double gap, double stafflinethickness, TextHorizAlign hAlign)
 			: base(container, textStrings, gap, stafflinethickness, hAlign)
 		{
-			double paddingTop = 40F;
-			double paddingRight = 26F;
-			double paddingBottom = 30F;
-			double paddingLeft = 26F;
+			double paddingTop = 40;
+			double paddingRight = 26;
+			double paddingBottom = 30;
+			double paddingLeft = 26;
 
 			_frameInfo = new FramePadding(TextFrameType.rectangle, paddingTop, paddingRight, paddingBottom, paddingLeft);
 		}
@@ -224,9 +224,9 @@ namespace Moritz.Symbols
 				{
 					TextFrameType frameType = _frameInfo.FrameType;
 					double paddingTop = _frameInfo.Top;
-					double paddingRight = _frameInfo.Right + 15F; // compensate for missing arrow width
+					double paddingRight = _frameInfo.Right + 15; // compensate for missing arrow width
 					double paddingBottom = _frameInfo.Bottom;
-					double paddingLeft = _frameInfo.Left + 15F; // compensate for missing arrow width
+					double paddingLeft = _frameInfo.Left + 15; // compensate for missing arrow width
 
 					_frameInfo = new FramePadding(frameType, paddingTop, paddingRight, paddingBottom, paddingLeft);
 

@@ -436,7 +436,7 @@ namespace Moritz.Symbols
             for(int i = 1; i < moments.Count; i++)
             {
                 absMsPos = moments[i].AbsMsPosition;
-                double barlineWidth = 0F;
+                double barlineWidth = 0;
                 M.Assert(moments.Count > 1);
 
                 barline = moments[i].Barline;
@@ -631,16 +631,16 @@ namespace Moritz.Symbols
             double momentWidth = 0;
             for(int i = 1; i < moments.Count; i++)
             {
-                momentWidth = (moments[i].AbsMsPosition - moments[i - 1].AbsMsPosition) * 10000F;
+                momentWidth = (moments[i].AbsMsPosition - moments[i - 1].AbsMsPosition) * 10000;
                 momentWidths.Add(momentWidth);
             }
             momentWidths.Add(0F); // final barline
 
-            double totalMomentWidths = 0F;
+            double totalMomentWidths = 0;
             foreach(double width in momentWidths)
                 totalMomentWidths += width;
 
-            double totalBarlineWidths = 0F;
+            double totalBarlineWidths = 0;
             foreach(double width in barlineWidths.Values)
             {
                 totalBarlineWidths += width;
@@ -824,7 +824,7 @@ namespace Moritz.Symbols
         private double TotalCompressibleWidth(Dictionary<int, double> originalSystemMomentWidths,
                                             HashSet<int> nonCompressibleSystemMomentPositions)
         {
-            double totalCompressibleWidth = 0F;
+            double totalCompressibleWidth = 0;
             foreach(int msPos in originalSystemMomentWidths.Keys)
             {
                 if(!nonCompressibleSystemMomentPositions.Contains(msPos))
@@ -993,7 +993,7 @@ namespace Moritz.Symbols
                         StaffNameMetrics staffNameMetrics = firstBarline.StaffNameMetrics;
                         if(staffNameMetrics != null)
                         {
-                            double alignX = leftMarginPos / 2F;
+                            double alignX = leftMarginPos / 2;
                             double deltaX = alignX - staffNameMetrics.OriginX + gap;
                             staffNameMetrics.Move(deltaX, 0F);
                         }

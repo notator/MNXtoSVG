@@ -90,7 +90,7 @@ namespace Moritz.Symbols
                 if(this is AccidentalMetrics aMetrics && (aMetrics.CharacterString == "b" || aMetrics.CharacterString == "n"))
 				{
                     overlap -= ((this.Right - this.Left) * 0.15F);
-                    overlap = overlap > 0F ? overlap : 0F;
+                    overlap = overlap > 0F ? overlap : 0;
                 }
 			}
 
@@ -148,7 +148,7 @@ namespace Moritz.Symbols
 				return (overlap);
 			}
 			else
-				return 0F;
+				return 0;
 		}
 
 		public void SetTop(double top)
@@ -178,35 +178,35 @@ namespace Moritz.Symbols
 		/// The actual position of the top edge of the object in the score.
 		/// </summary>
 		public double Top { get { return _top; } }
-		protected double _top = 0F;
+		protected double _top = 0;
 		/// <summary>
 		/// The actual position of the right edge of the object in the score.
 		/// </summary>
 		public double Right { get { return _right; } }
-		protected double _right = 0F;
+		protected double _right = 0;
 		/// <summary>
 		/// The actual position of the bottom edge of the object in the score.
 		/// </summary>
 		public virtual double Bottom { get { return _bottom; } }
-		protected double _bottom = 0F;
+		protected double _bottom = 0;
 		/// <summary>
 		/// The actual position of the left edge of the object in the score.
 		/// </summary>
 		public double Left { get { return _left; } }
-		protected double _left = 0F;
+		protected double _left = 0;
 
 		/// <summary>
 		/// The actual position of the object's x-origin in the score.
 		/// This is the value written into the SvgScore.
 		/// </summary>
 		public double OriginX { get { return _originX; } }
-		protected double _originX = 0F;
+		protected double _originX = 0;
 		/// <summary>
 		/// The actual position of the object's y-origin in the score
 		/// This is the value written into the SvgScore.
 		/// </summary>
 		public double OriginY { get { return _originY; } }
-		protected double _originY = 0F;
+		protected double _originY = 0;
 
 
 		public CSSObjectClass CSSObjectClass { get => _cssObjectClass; }

@@ -223,7 +223,7 @@ namespace Moritz.Symbols
 
             if(String.Compare(mainID, "smallBassClef8") == 0 || String.Compare(mainID, "inputSmallBassClef8") == 0)
             {
-                y *= 1.2F; // lower the number
+                y *= 1.2; // lower the number
             }
 
             w.WriteStartElement("g");
@@ -262,7 +262,7 @@ namespace Moritz.Symbols
                     }
                     else
                     {
-                        y *= 1.2F;
+                        y *= 1.2;
                         idSB.Append("inputSmallBassClef");
                     }
                 }
@@ -277,7 +277,7 @@ namespace Moritz.Symbols
                     }
                     else
                     {
-                        y *= 1.2F;
+                        y *= 1.2;
                         idSB.Append("smallBassClef");
                     }
                 }

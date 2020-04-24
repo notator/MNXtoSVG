@@ -43,8 +43,8 @@ namespace Moritz.Symbols
 		/// <param name="textInfo"></param>
 		private void SetDefaultMetrics(Graphics graphics, TextInfo textInfo)
 		{
-			//double maxFontSize = System.Single.MaxValue - 10F;
-			double maxFontSize = 1000F;
+			//double maxFontSize = System.Single.MaxValue - 10;
+			double maxFontSize = 1000;
 			Size textMaxSize = new Size();
 			try
 			{
@@ -60,17 +60,17 @@ namespace Moritz.Symbols
 			{
 				case "Open Sans": // titles
 				case "Open Sans Condensed": // ornaments
-					_top = textInfo.FontHeight * -0.699F; // The difference between the height
-					_bottom = 0F;
+					_top = textInfo.FontHeight * -0.699; // The difference between the height
+					_bottom = 0;
 					break;
 				case "Arial": // date stamp, lyrics, staff names
-					//_top = textInfo.FontHeight * -0.818F; // using MeasureTextDemo
-					_top = textInfo.FontHeight * -0.71F; // by experiment!
-					_bottom = 0F;
+					//_top = textInfo.FontHeight * -0.818; // using MeasureTextDemo
+					_top = textInfo.FontHeight * -0.71; // by experiment!
+					_bottom = 0;
 					break;
 				//case "Times New Roman": // staff names
-				//	_top = textInfo.FontHeight * -1.12F;
-				//	_bottom = 0F;
+				//	_top = textInfo.FontHeight * -1.12;
+				//	_bottom = 0;
 				//	break;
 				default:
 					M.Assert(false, "Unknown font");
@@ -115,8 +115,8 @@ namespace Moritz.Symbols
 			: base(lyricClass, graphics, textInfo)
 		{
 			double width = _right - _left;
-			double newWidth = width * 0.75F;
-			double widthMargin = (width - newWidth) / 2.0F;
+			double newWidth = width * 0.75;
+			double widthMargin = (width - newWidth) / 2.0;
 			_left += widthMargin;
 			_right -= widthMargin;
 
@@ -182,8 +182,8 @@ namespace Moritz.Symbols
 		{
 			Gap = gap;
 
-			double maxWidth = 0F;
-			double nextTop = 0F;
+			double maxWidth = 0;
+			double nextTop = 0;
 			
 
 			foreach(Text text in texts)

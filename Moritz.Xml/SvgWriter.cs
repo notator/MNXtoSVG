@@ -257,8 +257,8 @@ namespace Moritz.Xml
             string x4 = M.DoubleToShortString(0.299F * fontHeight);
             string x5 = M.DoubleToShortString(0.31809F * fontHeight);
 
-            double sign = rightFlag ? 1F : -1F;
-            double y1 = 0F;
+            double sign = rightFlag ? 1F : -1;
+            double y1 = 0;
             double y2 = sign * 0.12096F * fontHeight;
             double y3 = sign * 0.2467F * fontHeight;
             double y4 = sign * 0.2F * fontHeight;

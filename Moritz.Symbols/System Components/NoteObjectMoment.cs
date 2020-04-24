@@ -203,7 +203,7 @@ namespace Moritz.Symbols
             }
         }
 
-        public double AlignmentX = 0F;
+        public double AlignmentX = 0;
 
         /// <summary>
         /// The logical position in milliseconds from the beginning of the score.

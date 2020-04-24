@@ -57,7 +57,7 @@ namespace Moritz.Symbols
         }
 
         public readonly string FontFamily = ""; // "Arial", "CLicht", "Open Sans", "Open Sans Condensed"
-        public readonly double FontHeight = 0F;       
+        public readonly double FontHeight = 0;       
         public readonly string TextAnchor; // "left", "middle", "right"
         public readonly string Fill; // "none", "black", "white", "red", #AAAAAA" etc
     }
@@ -274,7 +274,7 @@ namespace Moritz.Symbols
 			_top = _top + dy;
 			_bottom += dy;
 			_originY += dy; // the staffline on which the rest is aligned
-			_ledgerlineStub = gap * 0.75F;
+			_ledgerlineStub = gap * 0.75;
 			Move((Left - Right) / 2, 0F); // centre the glyph horizontally
             CSSObjectClass llBlockClass = CSSObjectClass.ledgerlines;
 			switch(rest.DurationClass)
@@ -296,31 +296,31 @@ namespace Moritz.Symbols
 					_bottom += (gap * 1.5F);
 					break;
 				case DurationClass.quaver:
-					_top -= gap * 0.5F;
-					_bottom += gap * 0.5F;
+					_top -= gap * 0.5;
+					_bottom += gap * 0.5;
 					break;
 				case DurationClass.semiquaver:
-					_top -= gap * 0.5F;
-					_bottom += gap * 0.5F;
+					_top -= gap * 0.5;
+					_bottom += gap * 0.5;
 					break;
 				case DurationClass.threeFlags:
-					_top -= gap * 0.5F;
-					_right += gap * 0.2F;
-					_bottom += gap * 0.5F;
-					_left -= gap * 0.2F;
+					_top -= gap * 0.5;
+					_right += gap * 0.2;
+					_bottom += gap * 0.5;
+					_left -= gap * 0.2;
 					break;
 				case DurationClass.fourFlags:
-					_top -= gap * 0.5F;
-					_right += gap * 0.1F;
-					_bottom += gap * 1.25F;
-					_left -= gap * 0.1F;
+					_top -= gap * 0.5;
+					_right += gap * 0.1;
+					_bottom += gap * 1.25;
+					_left -= gap * 0.1;
 					_originY += gap;
 					break;
 				case DurationClass.fiveFlags:
-					_top -= gap * 1.5F;
-					_right += gap * 0.2F;
-					_bottom += gap * 1.25F;
-					_left -= gap * 0.2F;
+					_top -= gap * 1.5;
+					_right += gap * 0.2;
+					_bottom += gap * 1.25;
+					_left -= gap * 0.2;
 					_originY += gap;
 					break;
 			}
@@ -360,7 +360,7 @@ namespace Moritz.Symbols
 				if(_ledgerlineBlockMetrics != null && (!_ledgerlineVisible && value))
 				{
 					double width = _ledgerlineBlockMetrics.Right - _ledgerlineBlockMetrics.Left;
-					double padding = width * 0.05F;
+					double padding = width * 0.05;
 					_left -= (_ledgerlineStub + padding);
 					_right += _ledgerlineStub + padding;
 					_ledgerlineVisible = value;
@@ -378,7 +378,7 @@ namespace Moritz.Symbols
 		{
 			Move((Left - Right) / 2, 0F); // centre horizontally
 
-			double horizontalPadding = chord.FontHeight * 0.04F;
+			double horizontalPadding = chord.FontHeight * 0.04;
 			_leftStemX = _left;
 			_rightStemX = _right;
 			_left -= horizontalPadding;
@@ -398,7 +398,7 @@ namespace Moritz.Symbols
 			// move to position of other head
 			Move(otherHead.OriginX - _originX, otherHead.OriginY - OriginY);
 
-			double horizontalPadding = otherHead.FontHeight * 0.04F;
+			double horizontalPadding = otherHead.FontHeight * 0.04;
 			_leftStemX = _left;
 			_rightStemX = _right;
 			_left -= horizontalPadding;
@@ -417,11 +417,11 @@ namespace Moritz.Symbols
 		public bool OverlapsHead(HeadMetrics otherHeadMetrics)
 		{
 			// See the above constructor. Sorry, I didnt want to save the value in every Head!
-			double thisHorizontalPadding = this._fontHeight * 0.04F;
+			double thisHorizontalPadding = this._fontHeight * 0.04;
 			double thisRealLeft = _left + thisHorizontalPadding;
 			double thisRealRight = _right - thisHorizontalPadding;
 
-			double otherHorizontalPadding = otherHeadMetrics.FontHeight * 0.04F;
+			double otherHorizontalPadding = otherHeadMetrics.FontHeight * 0.04;
 			double otherRealLeft = otherHeadMetrics.Left + thisHorizontalPadding;
 			double otherRealRight = otherHeadMetrics.Right - thisHorizontalPadding;
 
@@ -437,7 +437,7 @@ namespace Moritz.Symbols
 		public bool OverlapsStem(StemMetrics stemMetrics)
 		{
 			// See the above constructor. Sorry, I didnt want to save the value in every Head!
-			double thisHorizontalPadding = this._fontHeight * 0.04F;
+			double thisHorizontalPadding = this._fontHeight * 0.04;
 			double thisRealLeft = _left + thisHorizontalPadding;
 			double thisRealRight = _right - thisHorizontalPadding;
 
@@ -476,16 +476,16 @@ namespace Moritz.Symbols
 			switch(_characterString)
 			{
 				case "b":
-					_left -= gap * 0.2F;
-					_right += gap * 0.2F;
+					_left -= gap * 0.2;
+					_right += gap * 0.2;
 					break;
 				case "n":
-					_left -= gap * 0.2F;
-					_right += gap * 0.2F;
+					_left -= gap * 0.2;
+					_right += gap * 0.2;
 					break;
 				case "#":
-					_left -= gap * 0.1F;
-					_right += gap * 0.1F;
+					_left -= gap * 0.1;
+					_right += gap * 0.1;
 					break;
 			}
             if(head != null)

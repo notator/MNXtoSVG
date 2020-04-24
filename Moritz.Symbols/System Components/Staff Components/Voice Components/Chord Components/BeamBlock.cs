@@ -282,7 +282,7 @@ namespace Moritz.Symbols
                         double shiftY = 0;
                         while(shiftY < positiveDeltaY)
                         {
-                            shiftY += _gap * 0.75F;
+                            shiftY += _gap * 0.75;
                         }
                         Move(shiftY);
                     }
@@ -315,7 +315,7 @@ namespace Moritz.Symbols
                         double shiftY = 0;
                         while(shiftY > negativeDeltaY)
                         {
-                            shiftY -= _gap * 0.75F;
+                            shiftY -= _gap * 0.75;
                         }
                         Move(shiftY);
                     }
@@ -347,7 +347,7 @@ namespace Moritz.Symbols
         private void SetBeamStubs(HashSet<Beam> beamsHash)
         {
             List<Beam> beams = new List<Beam>(beamsHash);
-            double stubWidth = _gap * 1.2F;
+            double stubWidth = _gap * 1.2;
 
             for(int i = 0; i < beams.Count; ++i)
             {
@@ -429,8 +429,8 @@ namespace Moritz.Symbols
         {
             List<Beam> newBeams = new List<Beam>();
             bool inBeam = false;
-            double beamLeft = -1F;
-            double beamRight = -1F;
+            double beamLeft = -1;
+            double beamRight = -1;
 
             ChordMetrics rightMostChordMetrics = (ChordMetrics)Chords[Chords.Count - 1].Metrics;
             double rightMostStemX = rightMostChordMetrics.StemMetrics.OriginX;
@@ -685,7 +685,7 @@ namespace Moritz.Symbols
         private Dictionary<DurationClass, double> GetBeamThicknessesPerDurationClass(HashSet<DurationClass> durationClasses)
         {
             Dictionary<DurationClass, double> btpdc = new Dictionary<DurationClass, double>();
-            double thickness = 0F;
+            double thickness = 0;
             foreach(DurationClass dc in durationClasses)
             {
                 switch(dc)
@@ -761,10 +761,10 @@ namespace Moritz.Symbols
             double width = rightChordMetrics.StemMetrics.OriginX - leftChordMetrics.StemMetrics.OriginX;
             double tanAlpha = (height / width) / 3;
 
-            if(tanAlpha > 0.10F)
-                tanAlpha = 0.10F;
-            if(tanAlpha < -0.10F)
-                tanAlpha = -0.10F;
+            if(tanAlpha > 0.10)
+                tanAlpha = 0.10;
+            if(tanAlpha < -0.10)
+                tanAlpha = -0.10;
 
             return tanAlpha;
         }
@@ -820,7 +820,7 @@ namespace Moritz.Symbols
         {
             double staffTopY = Chords[0].Voice.Staff.Metrics.OriginY;
             double staffBottomY = staffTopY + (_gap * (Chords[0].Voice.Staff.NumberOfStafflines - 1));
-            double staffMiddleY = (staffTopY + staffBottomY) / 2F;
+            double staffMiddleY = (staffTopY + staffBottomY) / 2;
             double deltaY = 0;
             if(this._stemDirection == VerticalDir.up)
             {
@@ -912,7 +912,7 @@ namespace Moritz.Symbols
             M.Assert(qBeam != null);
 
 			List<HLine> outerEdge = new List<HLine>();
-			double hlineY = 0F;
+			double hlineY = 0;
 			if(_stemDirection == VerticalDir.up)
 				hlineY = qBeam.LeftTopY;
 			else
@@ -961,7 +961,7 @@ namespace Moritz.Symbols
             }
             if(otherChords.Count > 0)
             {
-                double minimumDistanceToChords = _gap * 2F;
+                double minimumDistanceToChords = _gap * 2;
                 double distanceToChords = DistanceToChords(otherChords);
                 if(_stemDirection == VerticalDir.up) // move the beam up
                 {

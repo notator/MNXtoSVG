@@ -49,8 +49,8 @@ namespace Moritz.Symbols
         private double _stafflinesBottom = double.MinValue;
 
         public double NotesTop { get { return _notesTop; } set { _notesTop = value; } }
-        private double _notesTop = 0F;
+        private double _notesTop = 0;
         public double NotesBottom { get { return _notesBottom; } set { _notesBottom = value; } }
-        private double _notesBottom = 0F;
+        private double _notesBottom = 0;
     }
 }

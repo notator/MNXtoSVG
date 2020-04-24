@@ -64,7 +64,7 @@
     <Compile Include="Tied.cs" />
     <Compile Include="TimeSignature.cs" />
     <Compile Include="Tuplet.cs" />
-    <Compile Include="BGlobals.cs" />
+    <Compile Include="CurrentTupletLevel.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="Interfaces.cs" />
   </ItemGroup>

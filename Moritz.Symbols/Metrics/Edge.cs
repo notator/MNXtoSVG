@@ -11,7 +11,7 @@ namespace Moritz.Symbols
         /// <param name="leftX">The left x-coordinate</param>
         /// <param name="rightX">The right x-coordinate</param>
         /// <param name="y">The y-coordinate</param>
-        public HLine(float leftX, float rightX, float y)
+        public HLine(double leftX, double rightX, double y)
         {
             M.Assert(leftX < rightX);
             Left = leftX;
@@ -19,11 +19,11 @@ namespace Moritz.Symbols
             Y = y;
         }
 
-        public Dictionary<float, HLine> Split(float x)
+        public Dictionary<double, HLine> Split(double x)
         {
             M.Assert(Left < x && Right > x);
 
-            Dictionary<float, HLine> linesDict = new Dictionary<float, HLine>();
+            Dictionary<double, HLine> linesDict = new Dictionary<double, HLine>();
             HLine line1 = new HLine(Left, x, Y);
             HLine line2 = new HLine(x, Right, Y);
             linesDict.Add(line1.Left, line1);
@@ -31,11 +31,11 @@ namespace Moritz.Symbols
             return linesDict;
         }
 
-        public Dictionary<float, HLine> Split(List<float> Xs)
+        public Dictionary<double, HLine> Split(List<double> Xs)
         {
             #region conditions
             // Xs can be empty, in which case this function returns the original line in the dict.
-            foreach(float x in Xs)
+            foreach(double x in Xs)
             {
                 M.Assert(x > Left && x < Right);
             }
@@ -48,8 +48,8 @@ namespace Moritz.Symbols
             }
             #endregion conditions;
 
-            Dictionary<float, HLine> lines = new Dictionary<float, HLine>();
-			List<float> allXs = new List<float>
+            Dictionary<double, HLine> lines = new Dictionary<double, HLine>();
+			List<double> allXs = new List<double>
 			{
 				Left
 			};
@@ -64,9 +64,9 @@ namespace Moritz.Symbols
         }
 
 
-        public float Left;
-        public float Right;
-        public float Y;
+        public double Left;
+        public double Right;
+        public double Y;
     }
     public abstract class HorizontalEdge
     {
@@ -79,7 +79,7 @@ namespace Moritz.Symbols
         {
         }
 
-        public abstract float YatX(float X);
+        public abstract double YatX(double X);
  
         /// <summary>
         /// returns the y-coordinate of this BottomEdge at X.
@@ -91,9 +91,9 @@ namespace Moritz.Symbols
         ///     else the returned value is the lower (=greater) of the two Ys
         /// }
         /// </summary>
-        protected float YatX(float X, bool isTopEdge)
+        protected double YatX(double X, bool isTopEdge)
         {
-            float y = float.MaxValue;
+            double y = double.MaxValue;
             for(int i = 0; i < this.Lines.Count; ++i)
             {
                 HLine hLine = this.Lines[i];
@@ -120,7 +120,7 @@ namespace Moritz.Symbols
                     }
                 }
             }
-             M.Assert(y != float.MaxValue);
+             M.Assert(y != double.MaxValue);
             return y;
         }
         
@@ -182,7 +182,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// The top edge of a staff.
         /// </summary>
-        public TopEdge(Staff staff, float leftMargin, float rightMargin)
+        public TopEdge(Staff staff, double leftMargin, double rightMargin)
             : base()
         {
             StafflineMetrics topStaffLineMetrics = new StafflineMetrics(leftMargin, rightMargin, staff.Metrics.OriginY);
@@ -212,7 +212,7 @@ namespace Moritz.Symbols
         /// If X is equal to the rightX of an Hline and there is no other HLine to the right,
         /// then the returned value is HLine.Y
         /// </summary>
-        public override float YatX(float X)
+        public override double YatX(double X)
         {
             return YatX(X, true);
         }
@@ -238,22 +238,22 @@ namespace Moritz.Symbols
 
         public void AddLineToUpperEdge(HLine newLine)
         {
-            M.Assert(newLine.Y != float.MaxValue);
+            M.Assert(newLine.Y != double.MaxValue);
             if(Lines.Count == 0)
             {
                 Lines.Add(newLine);
             }
             else
             {
-                float leftY = this.YatX(newLine.Left);
-                float rightY = this.YatX(newLine.Right);
-                Dictionary<float, HLine> splitEdge = SplitEdge(newLine, leftY, rightY);
-                List<float> splitXsOnNewLine = SplitXsOnNewLine(newLine);
-                Dictionary<float, HLine> splitNewLine = newLine.Split(splitXsOnNewLine); // if 
+                double leftY = this.YatX(newLine.Left);
+                double rightY = this.YatX(newLine.Right);
+                Dictionary<double, HLine> splitEdge = SplitEdge(newLine, leftY, rightY);
+                List<double> splitXsOnNewLine = SplitXsOnNewLine(newLine);
+                Dictionary<double, HLine> splitNewLine = newLine.Split(splitXsOnNewLine); // if 
 
                 List<HLine> newLines = new List<HLine>();
-                float currentX = splitEdge[0].Left;
-                foreach(float x in splitEdge.Keys)
+                double currentX = splitEdge[0].Left;
+                foreach(double x in splitEdge.Keys)
                 {
                     if(splitNewLine.ContainsKey(x))
                     {
@@ -289,18 +289,18 @@ namespace Moritz.Symbols
         /// The HLines from this edge, with the HLines at the beginning and end of the newLine split into two. 
         /// The dictionary's key is the left edge of each HLine.
         /// </summary>
-        private Dictionary<float, HLine> SplitEdge(HLine newLine, float leftY, float rightY)
+        private Dictionary<double, HLine> SplitEdge(HLine newLine, double leftY, double rightY)
         {
             M.Assert(Lines.Count > 0);
 
-            Dictionary<float, HLine> splitEdge = new Dictionary<float, HLine>();
+            Dictionary<double, HLine> splitEdge = new Dictionary<double, HLine>();
             foreach(HLine hline in Lines)
             {
                 if(hline.Left < newLine.Left && hline.Right > newLine.Left && leftY > newLine.Y)
                 {
-                    Dictionary<float, HLine> splitLines1 = hline.Split(newLine.Left);
-                    Dictionary<float, HLine> splitLines2 = new Dictionary<float, HLine>();
-                    foreach(float x in splitLines1.Keys)
+                    Dictionary<double, HLine> splitLines1 = hline.Split(newLine.Left);
+                    Dictionary<double, HLine> splitLines2 = new Dictionary<double, HLine>();
+                    foreach(double x in splitLines1.Keys)
                     {
                         HLine line = splitLines1[x];
                         if(line.Left < newLine.Right && line.Right > newLine.Right && line.Y > newLine.Y)
@@ -308,13 +308,13 @@ namespace Moritz.Symbols
                             splitLines2 = line.Split(newLine.Right);
                         }
                     }
-                    foreach(float x in splitLines1.Keys)
+                    foreach(double x in splitLines1.Keys)
                     {
                         if(!splitLines2.ContainsKey(x))
                             splitEdge.Add(splitLines1[x].Left, splitLines1[x]);
                     }
 
-                    foreach(float x in splitLines2.Keys)
+                    foreach(double x in splitLines2.Keys)
                     {
                         splitEdge.Add(splitLines2[x].Left, splitLines2[x]);
                     }
@@ -322,8 +322,8 @@ namespace Moritz.Symbols
                 }
                 else if(hline.Left < newLine.Right && hline.Right > newLine.Right && rightY > newLine.Y)
                 {
-                    Dictionary<float, HLine> splitLines = hline.Split(newLine.Right);
-                    foreach(float x in splitLines.Keys)
+                    Dictionary<double, HLine> splitLines = hline.Split(newLine.Right);
+                    foreach(double x in splitLines.Keys)
                     {
                         splitEdge.Add(splitLines[x].Left, splitLines[x]);
                     }
@@ -342,9 +342,9 @@ namespace Moritz.Symbols
         /// (The edge considered as a continuous, joined up line).
         /// This does NOT include the end points of the newLine.
         /// </summary>
-        private List<float> SplitXsOnNewLine(HLine newLine)
+        private List<double> SplitXsOnNewLine(HLine newLine)
         {
-            List<float> splitXs = new List<float>();
+            List<double> splitXs = new List<double>();
             for(int i = 1; i < Lines.Count; ++i)
             {
                 HLine leftEdgeLine = Lines[i - 1];
@@ -387,23 +387,23 @@ namespace Moritz.Symbols
         /// <param name="currentMinDist"></param>
         /// <param name="rightEdge"></param>
         /// <returns></returns>
-        public float DistanceToEdgeAbove(BottomEdge bottomEdge)
+        public double DistanceToEdgeAbove(BottomEdge bottomEdge)
         {
-            float minDist = float.MaxValue;
-            HashSet<float> allLeftXs = AllLeftXsInBothEdges(bottomEdge);
-            foreach(float leftX in allLeftXs)
+            double minDist = double.MaxValue;
+            HashSet<double> allLeftXs = AllLeftXsInBothEdges(bottomEdge);
+            foreach(double leftX in allLeftXs)
             {
-                float bottomEdgeYatLeftX = bottomEdge.YatX(leftX);
-                float topEdgeYatLeftX = this.YatX(leftX);
-                float dist = topEdgeYatLeftX - bottomEdgeYatLeftX;
+                double bottomEdgeYatLeftX = bottomEdge.YatX(leftX);
+                double topEdgeYatLeftX = this.YatX(leftX);
+                double dist = topEdgeYatLeftX - bottomEdgeYatLeftX;
                 minDist = minDist < dist ? minDist : dist;
             }
             return minDist;
         }
 
-        private HashSet<float> AllLeftXsInBothEdges(BottomEdge bottomEdge)
+        private HashSet<double> AllLeftXsInBothEdges(BottomEdge bottomEdge)
         {
-            HashSet<float> allXs = new HashSet<float>();
+            HashSet<double> allXs = new HashSet<double>();
             foreach(HLine ht in Lines)
             {
                 allXs.Add(ht.Left);
@@ -425,7 +425,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// The bottom edge of a staff.
         /// </summary>
-        public BottomEdge(Staff staff, float left, float right, float gap)
+        public BottomEdge(Staff staff, double left, double right, double gap)
             : base()
         {
             StafflineMetrics bottomStafflineMetrics = new StafflineMetrics(left, right,
@@ -443,7 +443,7 @@ namespace Moritz.Symbols
         /// If X is equal to the rightX of an Hline and there is no other HLine to the right,
         /// then the returned value is HLine.Y
         /// </summary>
-        public override float YatX(float X)
+        public override double YatX(double X)
         {
             return YatX(X, false);
         }

@@ -9,7 +9,7 @@ namespace Moritz.Symbols
 {
     public abstract class Staff
     {
-        public Staff(SvgSystem svgSystem, string staffName, int numberOfStafflines, float gap, float stafflineStemStrokeWidth)
+        public Staff(SvgSystem svgSystem, string staffName, int numberOfStafflines, double gap, double stafflineStemStrokeWidth)
         {
             SVGSystem = svgSystem;
             Staffname = staffName;
@@ -30,7 +30,7 @@ namespace Moritz.Symbols
             CSSObjectClass stafflineClass = CSSObjectClass.staffline;
 
             w.SvgStartGroup(stafflinesClass.ToString());
-            float stafflineY = this.Metrics.StafflinesTop;
+            double stafflineY = this.Metrics.StafflinesTop;
             for(int staffLineIndex = 0; staffLineIndex < NumberOfStafflines; staffLineIndex++)
             {
 				w.SvgLine(stafflineClass, this.Metrics.StafflinesLeft, stafflineY, this.Metrics.StafflinesRight, stafflineY);
@@ -176,14 +176,14 @@ namespace Moritz.Symbols
                         {
                             if(rest.DurationClass == DurationClass.breve || rest.DurationClass == DurationClass.semibreve)
                                 metrics.LedgerlineVisible = true; // only affects breves, semibreves and minims
-                            metrics.Move(0F, this.Gap * -2);
+                            metrics.Move(0, this.Gap * -2);
                         }
                         else
                         {
                             if(rest.DurationClass == DurationClass.breve || rest.DurationClass == DurationClass.semibreve)
-                                metrics.Move(0F, this.Gap * 3);
+                                metrics.Move(0, this.Gap * 3);
                             else
-                                metrics.Move(0F, this.Gap * 2);
+                                metrics.Move(0, this.Gap * 2);
                         }
                     }
                 }
@@ -222,24 +222,24 @@ namespace Moritz.Symbols
                             if(topRest.AbsMsPosition == lowerRestSymbol.AbsMsPosition)
                             {
                                 RestMetrics lowerRestMetrics = (RestMetrics)lowerRestSymbol.Metrics;
-                                float verticalOverlap = lowerRestMetrics.OverlapHeight(upperRestMetrics, 0F);
+                                double verticalOverlap = lowerRestMetrics.OverlapHeight(upperRestMetrics, 0F);
                                 bool moveBottomRest = true;
                                 while(verticalOverlap > 0)
                                 {
-                                    float newMinBottom = upperRestMetrics.Bottom - verticalOverlap;
+                                    double newMinBottom = upperRestMetrics.Bottom - verticalOverlap;
                                     
                                     if(upperRestMetrics.Bottom > newMinBottom)
                                     {
                                         if(moveBottomRest)
                                         {
                                             lowerRestMetrics.LedgerlineVisible = true; // only affects breves, semibreves and minims
-                                            lowerRestMetrics.Move(0F, Gap);
+                                            lowerRestMetrics.Move(0, Gap);
                                             moveBottomRest = false;
                                         }
                                         else
                                         {
                                             upperRestMetrics.LedgerlineVisible = true; // only affects breves, semibreves and minims
-                                            upperRestMetrics.Move(0F, -Gap);
+                                            upperRestMetrics.Move(0, -Gap);
                                             moveBottomRest = true;
                                         }
                                     }
@@ -288,31 +288,31 @@ namespace Moritz.Symbols
                             {
                                 RestMetrics restMetrics = restSymbol.RestMetrics;
                                 ChordMetrics chordMetrics = chordSymbol.ChordMetrics;
-                                //float verticalOverlap = chordMetrics.OverlapHeight(restMetrics, Gap / 2F);
-                                float verticalOverlap = chordMetrics.OverlapHeight(restMetrics, 0F);
+                                //double verticalOverlap = chordMetrics.OverlapHeight(restMetrics, Gap / 2F);
+                                double verticalOverlap = chordMetrics.OverlapHeight(restMetrics, 0F);
                                 if(verticalOverlap > 0)
                                 {
                                     if(shiftRestUp)
                                     {
-                                        //float newMaxBottom = chordMetrics.Top - Gap;
-                                        float newMaxBottom = chordMetrics.Top;
+                                        //double newMaxBottom = chordMetrics.Top - Gap;
+                                        double newMaxBottom = chordMetrics.Top;
                                         newMaxBottom += DurationClassDeltaAbove(restSymbol.DurationClass, Gap);
                                         while(restMetrics.Bottom > newMaxBottom)
                                         {
                                             restMetrics.LedgerlineVisible = true; // only affects breves, semibreves and minims
-                                            restMetrics.Move(0F, -Gap);
+                                            restMetrics.Move(0, -Gap);
                                         }
                                         break; // to next rest symbol
                                     }
                                     else
                                     {
-                                        //float newMinTop = chordMetrics.Bottom + Gap;
-                                        float newMinTop = chordMetrics.Bottom;
+                                        //double newMinTop = chordMetrics.Bottom + Gap;
+                                        double newMinTop = chordMetrics.Bottom;
                                         newMinTop += DurationClassDeltaBelow(restSymbol.DurationClass, Gap);
                                         while(restMetrics.Top < newMinTop)
                                         {
                                             restMetrics.LedgerlineVisible = true; // only affects breves, semibreves and minims
-                                            restMetrics.Move(0F, Gap);
+                                            restMetrics.Move(0, Gap);
                                         }
                                         break; // to next rest symbol
                                     }
@@ -324,13 +324,13 @@ namespace Moritz.Symbols
             }
         }
 
-        private float DurationClassDeltaAbove(DurationClass durationClass, float gap)
+        private double DurationClassDeltaAbove(DurationClass durationClass, double gap)
         {
-            float delta = 0F;
+            double delta = 0;
             switch(durationClass)
             {
                 case DurationClass.semibreve:
-                    delta = gap / -2F;
+                    delta = gap / -2;
                     break;
                 case DurationClass.breve:
                 case DurationClass.minim:
@@ -340,39 +340,39 @@ namespace Moritz.Symbols
                 case DurationClass.threeFlags:
                     break;
                 case DurationClass.fourFlags:
-                    delta = gap / -2F;
+                    delta = gap / -2;
                     break;
                 case DurationClass.fiveFlags:
-                    delta = gap * -1.5F;
+                    delta = gap * -1.5;
                     break;
             }
             return delta;
         }
-        private float DurationClassDeltaBelow(DurationClass durationClass, float gap)
+        private double DurationClassDeltaBelow(DurationClass durationClass, double gap)
         {
-            float delta = 0F;
+            double delta = 0;
             switch(durationClass)
             {
                 case DurationClass.breve:
                 case DurationClass.semibreve:
                     break;
                 case DurationClass.minim:
-                    delta = gap / 2F;
+                    delta = gap / 2;
                     break;
                 case DurationClass.crotchet:
-                    delta = gap / 3F;
+                    delta = gap / 3;
                     break;
                 case DurationClass.quaver:
                 case DurationClass.semiquaver:
                     break;
                 case DurationClass.threeFlags:
-                    delta = gap / 2F;
+                    delta = gap / 2;
                     break;
                 case DurationClass.fourFlags:
-                    delta = gap / -2F;
+                    delta = gap / -2;
                     break;
                 case DurationClass.fiveFlags:
-                    delta = gap * -1.5F;
+                    delta = gap * -1.5;
                     break;
             }
             return delta;
@@ -456,7 +456,7 @@ namespace Moritz.Symbols
                     }
                     if(adjustVoiceIndex == 0)
                     {
-                        float minStemTip = float.MaxValue;
+                        double minStemTip = double.MaxValue;
                         foreach(ChordSymbol beamedChord in beamBlock.Chords)
                         {
                             minStemTip = minStemTip < beamedChord.ChordMetrics.StemMetrics.Top ? minStemTip : beamedChord.ChordMetrics.StemMetrics.Top;
@@ -468,7 +468,7 @@ namespace Moritz.Symbols
                     }
                     else
                     {
-                        float maxStemTip = float.MinValue;
+                        double maxStemTip = double.MinValue;
                         foreach(ChordSymbol beamedChord in beamBlock.Chords)
                         {
                             maxStemTip = maxStemTip > beamedChord.ChordMetrics.StemMetrics.Bottom ? maxStemTip : beamedChord.ChordMetrics.StemMetrics.Bottom;
@@ -560,7 +560,7 @@ namespace Moritz.Symbols
             List<HeadMetrics> lowerChordHeadMetrics = lowerChord.ChordMetrics.HeadsMetrics; // a clone
             StemMetrics lowerChordStemMetrics = lowerChord.ChordMetrics.StemMetrics; // a clone
 
-            float deltaX = LowerChordDeltaX(upperChordHeadMetrics, lowerChordHeadMetrics, lowerChordStemMetrics);
+            double deltaX = LowerChordDeltaX(upperChordHeadMetrics, lowerChordHeadMetrics, lowerChordStemMetrics);
 
             if(deltaX != 0)
             {
@@ -574,20 +574,20 @@ namespace Moritz.Symbols
         /// Returns the amount by which to move the lower of two synchronous 
         /// chords to avoid notehead and stem collisions between them.
         /// </summary>
-        private float LowerChordDeltaX(List<HeadMetrics> upperHM, List<HeadMetrics> lowerHM, StemMetrics lowerChordStemMetrics)
+        private double LowerChordDeltaX(List<HeadMetrics> upperHM, List<HeadMetrics> lowerHM, StemMetrics lowerChordStemMetrics)
         {
-            float deltaX = 0F;
-            float iota = 0.001F; // tolerance for float comparisons
-            float stemThickness = SVGSystem.Score.PageFormat.StafflineStemStrokeWidth;
-            float upperHeadRightStemX = upperHM[upperHM.Count - 1].RightStemX;
-            float lowerHeadLeftStemX = lowerHM[0].LeftStemX;
-            float verticalChordOverlap = upperHM[upperHM.Count - 1].Top - lowerHM[0].Top + Gap;
+            double deltaX = 0;
+            double iota = 0.001; // tolerance for double comparisons
+            double stemThickness = SVGSystem.Score.PageFormat.StafflineStemStrokeWidth;
+            double upperHeadRightStemX = upperHM[upperHM.Count - 1].RightStemX;
+            double lowerHeadLeftStemX = lowerHM[0].LeftStemX;
+            double verticalChordOverlap = upperHM[upperHM.Count - 1].Top - lowerHM[0].Top + Gap;
 
             // position 1: if there is no vertical overlap between the chords, deltaX is 0
             if(verticalChordOverlap > 0F)
             {  
                 // position 2: hairline left of upper noteheads
-                float testDeltaX = - (stemThickness * 2F);
+                double testDeltaX = - (stemThickness * 2F);
                 if(NoNoteheadCollisions(testDeltaX + iota, upperHM, lowerHM))
                 {
                     deltaX = testDeltaX;
@@ -648,7 +648,7 @@ namespace Moritz.Symbols
             return deltaX;
         }
 
-        private bool NoNoteheadCollisions(float deltaX, List<HeadMetrics> upperHMList, List<HeadMetrics> lowerHMList)
+        private bool NoNoteheadCollisions(double deltaX, List<HeadMetrics> upperHMList, List<HeadMetrics> lowerHMList)
         {
             // N.B. Notehead metrics.Left and metrics.Right include horizontal padding,
             // so this function does not use the standard Metrics.Overlaps functions.
@@ -671,7 +671,7 @@ namespace Moritz.Symbols
             return !noteheadCollisions;
         }
 
-        private bool NoHeadStemCollisions(float deltaX, List<HeadMetrics> upperHMList, StemMetrics lowerStemMetrics)
+        private bool NoHeadStemCollisions(double deltaX, List<HeadMetrics> upperHMList, StemMetrics lowerStemMetrics)
         {
             // N.B. Notehead metrics.Left and metrics.Right include horizontal padding,
             // so this function does not use the standard Metrics.Overlaps functions.
@@ -700,7 +700,7 @@ namespace Moritz.Symbols
             
             if(topDownHeadMetrics.Count > 1)
             {
-                float leftLimit = 
+                double leftLimit = 
                     topDownHeadMetrics[0].Left - ((topDownHeadMetrics[0].Right - topDownHeadMetrics[0].Left) / 4F);
 
                 for(int i = 1; i < topDownHeadMetrics.Count; ++i)
@@ -792,8 +792,8 @@ namespace Moritz.Symbols
         /// </summary>
         internal readonly SvgSystem SVGSystem;
         internal readonly int NumberOfStafflines = 0;
-        internal readonly float Gap = 0;
-        internal readonly float StafflineStemStrokeWidth = 0;
+        internal readonly double Gap = 0;
+        internal readonly double StafflineStemStrokeWidth = 0;
         // Empty staves are invisble. Their Metrics attribute remains null.
         internal StaffMetrics Metrics = null;
         #endregion

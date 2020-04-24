@@ -47,8 +47,8 @@ namespace Moritz.Symbols
 				if(noteObject is Barline barline)
 				{
 					bool isLastNoteObject = (i == (NoteObjects.Count - 1));
-					float top = Staff.Metrics.StafflinesTop;
-					float bottom = Staff.Metrics.StafflinesBottom;
+					double top = Staff.Metrics.StafflinesTop;
+					double bottom = Staff.Metrics.StafflinesBottom;
 					if(barline.IsVisible)
 					{
 						barline.WriteSVG(w, top, bottom, isLastNoteObject);
@@ -279,8 +279,8 @@ namespace Moritz.Symbols
                         }
                         else if(chordsBeamedTogether.Count > 1)
                         {
-                            float beamThickness = pageFormat.BeamThickness;
-                            float beamStrokeThickness = pageFormat.StafflineStemStrokeWidth;
+                            double beamThickness = pageFormat.BeamThickness;
+                            double beamStrokeThickness = pageFormat.StafflineStemStrokeWidth;
                             chordsBeamedTogether[0].BeamBlock =
                                 new BeamBlock(currentClef, chordsBeamedTogether, this.StemDirection, beamThickness, beamStrokeThickness);
                         }

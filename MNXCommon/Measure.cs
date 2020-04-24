@@ -159,7 +159,7 @@ namespace MNX.Common
                         {
                             case GraceType.stealPrevious:
                                 Event previousEvent = FindPreviousEvent(eventsAndEventGroups, graceIndex);
-                                stealableTicks = (previousEvent.Ticks - B.MinimumEventTicks);
+                                stealableTicks = (previousEvent.Ticks - M.MinimumEventTicks);
                                 if(grace.Ticks > stealableTicks)
                                 {
                                     grace.Ticks = stealableTicks;
@@ -168,7 +168,7 @@ namespace MNX.Common
                                 break;
                             case GraceType.stealFollowing:
                                 Event nextEvent = FindNextEvent(eventsAndEventGroups, graceIndex);
-                                stealableTicks = (nextEvent.Ticks - B.MinimumEventTicks);
+                                stealableTicks = (nextEvent.Ticks - M.MinimumEventTicks);
                                 if(grace.Ticks > stealableTicks)
                                 {
                                     grace.Ticks = stealableTicks;

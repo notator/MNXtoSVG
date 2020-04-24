@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="DrawObjects.cs" />
     <Compile Include="FramePadding.cs" />
-    <Compile Include="Metadata.cs" />
     <Compile Include="Metrics\ChordMetrics.cs" />
     <Compile Include="Metrics\CLichtFontMetrics.cs" />
     <Compile Include="Metrics\Edge.cs" />

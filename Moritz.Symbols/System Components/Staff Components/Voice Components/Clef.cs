@@ -13,7 +13,7 @@ namespace Moritz.Symbols
         /// </summary>
         /// <param name="voice"></param>
         /// <param name="clefType"></param>
-        public Clef(Voice voice, string clefType, float fontHeight)
+        public Clef(Voice voice, string clefType, double fontHeight)
             : base(voice)
         {
             _clefType = clefType;
@@ -29,7 +29,7 @@ namespace Moritz.Symbols
         /// Writes a clef or smallClef to the SVG file.
         /// The Character metrics have been set in SvgSystem.Justify()
         /// </summary>
-        public void WriteSVG(SvgWriter w, ClefID clefOrSmallClefID, float originX, float originY)
+        public void WriteSVG(SvgWriter w, ClefID clefOrSmallClefID, double originX, double originY)
         {
             CSSObjectClass clefClass = CSSObjectClass.clef;                    
             w.SvgUseXY(clefClass, clefOrSmallClefID.ToString(), originX, originY);

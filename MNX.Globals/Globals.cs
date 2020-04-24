@@ -45,7 +45,46 @@ namespace MNX.Globals
         //Creates and initializes the CultureInfo which uses the international sort.
         public static CultureInfo ci = new CultureInfo("en-US", false);
         public static NumberFormatInfo En_USNumberFormat = ci.NumberFormat;
-        #endregion
+
+        #region ticks
+
+        /// <summary>
+        /// The minimum number of Ticks in an ITicks object.
+        /// </summary>
+        public static readonly int MinimumEventTicks = 4;
+
+        // This value could be raised by any power of 2.
+        public static int TicksPerCrotchet = 1024;
+
+        public readonly static int[] DurationSymbolTicks = GetDurationSymbolTicks();
+
+        private static int[] GetDurationSymbolTicks()
+        {
+            int[] tickss = new int[12];
+            tickss[0] = M.TicksPerCrotchet * 8;  // noteDoubleWhole_breve
+            tickss[1] = M.TicksPerCrotchet * 4;  // noteWhole_semibreve
+            tickss[2] = M.TicksPerCrotchet * 2;  // noteHalf_minim
+            tickss[3] = M.TicksPerCrotchet;      // noteQuarter_crotchet
+            tickss[4] = M.TicksPerCrotchet / 2;  // note8th_1flag_quaver
+            tickss[5] = M.TicksPerCrotchet / 4;  // note16th_2flags_semiquaver
+            tickss[6] = M.TicksPerCrotchet / 8;  // note32nd_3flags_demisemiquaver
+            tickss[7] = M.TicksPerCrotchet / 16; // note64th_4flags
+            tickss[8] = M.TicksPerCrotchet / 32; // note128th_5flags
+            tickss[9] = M.TicksPerCrotchet / 64; // note256th_6flags
+            tickss[10] = M.TicksPerCrotchet / 128; // note512th_7flags
+            tickss[11] = M.TicksPerCrotchet / 256; // note1024th_8flags
+
+            if(tickss[11] < MinimumEventTicks)
+            {
+                throw new ApplicationException("TicksPerCrotchet was too small.");
+            }
+
+            return tickss;
+        }
+
+        #endregion ticks
+
+        #endregion MNX application constants
 
         // Set for the score currently being constructed.
         public static MNXProfile? Profile = null;
@@ -448,8 +487,6 @@ namespace MNX.Globals
 
         #endregion
 
-
-
         #region IntDivision
         /// <summary>
         /// This function divides total into divisor parts, returning a List of ints whose:
@@ -476,8 +513,8 @@ namespace MNX.Globals
             {
                 sumRelative += relativeSizes[i];
             }
-            float factor = ((float)total / (float)sumRelative);
-            float fPos = 0;
+            double factor = ((double)total / (double)sumRelative);
+            double fPos = 0;
             List<int> intPositions = new List<int>();
             for(int i = 0; i < divisor; ++i)
             {
@@ -715,9 +752,9 @@ namespace MNX.Globals
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string FloatToShortString(float value)
+        public static string DoubleToShortString(double value)
         {
-            return value.ToString("0.####", En_USNumberFormat);
+            return ((float)value).ToString("0.####", En_USNumberFormat);
         }
 
         /// <summary>

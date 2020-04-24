@@ -11,10 +11,10 @@ namespace Moritz.Symbols
     /// </summary>
     internal class NoteheadStemPositions_px
     {
-        public float LeftStemX_px;
-        public float LeftStemY_px;
-        public float RightStemX_px;
-        public float RightStemY_px;
+        public double LeftStemX_px;
+        public double LeftStemY_px;
+        public double RightStemX_px;
+        public double RightStemY_px;
     }
 
 
@@ -29,7 +29,7 @@ namespace Moritz.Symbols
         /// </summary>
         internal class CLichtGlyphBoxMetric : Metrics
         {
-            public CLichtGlyphBoxMetric(float top, float right, float bottom, float left)
+            public CLichtGlyphBoxMetric(double top, double right, double bottom, double left)
                 : base(CSSObjectClass.none)
             {
                 _top = top;
@@ -46,15 +46,15 @@ namespace Moritz.Symbols
 
         static CLichtFontMetrics()
         {
-            float hScale = 3.4037F / 800F;
-            float vScale = 2.9464F / 800F;
+            double hScale = 3.4037F / 800;
+            double vScale = 2.9464F / 800;
             foreach(string key in CLichtGlyphBoundingBoxesDictMM.Keys)
             {
                 GlyphBoundingBoxMM gbbMM = CLichtGlyphBoundingBoxesDictMM[key];
-                float top_1px = (float) gbbMM.mmTop * vScale;
-                float left_1px = (float) gbbMM.mmLeft * hScale;
-                float bottom_1px = (float) gbbMM.mmBottom * vScale;
-                float right_1px = (float) gbbMM.mmRight * hScale;
+                double top_1px = (double) gbbMM.mmTop * vScale;
+                double left_1px = (double) gbbMM.mmLeft * hScale;
+                double bottom_1px = (double) gbbMM.mmBottom * vScale;
+                double right_1px = (double) gbbMM.mmRight * hScale;
                 CLichtGlyphBoxMetric metrics_1px =
                    new CLichtGlyphBoxMetric(top_1px, right_1px, bottom_1px, left_1px);
                 CLichtGlyphBoundingBoxesDictPX.Add(key, metrics_1px);
@@ -64,10 +64,10 @@ namespace Moritz.Symbols
                 NoteheadStemPositionsMM nspMM = ClichtNoteheadStemPositionsDictMM[key];
                 NoteheadStemPositions_px nspPX = new NoteheadStemPositions_px()
                 {
-                    LeftStemX_px = (float) nspMM.mmLeftStemX * hScale,
-                    LeftStemY_px = (float) nspMM.mmLeftStemY * vScale,
-                    RightStemX_px = (float) nspMM.mmRightStemX * hScale,
-                    RightStemY_px = (float) nspMM.mmRightStemY * vScale
+                    LeftStemX_px = (double) nspMM.mmLeftStemX * hScale,
+                    LeftStemY_px = (double) nspMM.mmLeftStemY * vScale,
+                    RightStemX_px = (double) nspMM.mmRightStemX * hScale,
+                    RightStemY_px = (double) nspMM.mmRightStemY * vScale
                 };
                 ClichtNoteheadStemPositionsDictPX.Add(key, nspPX);
             }

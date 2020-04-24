@@ -207,14 +207,14 @@ namespace Moritz.Symbols
             {
                 using(Graphics graphics = Graphics.FromImage(image)) // used for measuring strings
                 {
-                    float system1LeftMarginPos = GetLeftMarginPos(systems[0], graphics, _pageFormat);
-                    float otherSystemsLeftMarginPos = 0F;
+                    double system1LeftMarginPos = GetLeftMarginPos(systems[0], graphics, _pageFormat);
+                    double otherSystemsLeftMarginPos = 0;
                     if(systems.Count > 1)
                         otherSystemsLeftMarginPos = GetLeftMarginPos(systems[1], graphics, _pageFormat);
 
                     for(int sysIndex = 0; sysIndex < systems.Count; ++sysIndex)
                     {
-                        float leftMargin = (sysIndex == 0) ? system1LeftMarginPos : otherSystemsLeftMarginPos;
+                        double leftMargin = (sysIndex == 0) ? system1LeftMarginPos : otherSystemsLeftMarginPos;
                         overlaps = systems[sysIndex].MakeGraphics(graphics, sysIndex + 1, _pageFormat, leftMargin);
 						foreach(Tuple<int, int, string> overlap in overlaps)
 						{
@@ -250,10 +250,10 @@ namespace Moritz.Symbols
 			MessageBox.Show(sb.ToString(), "Overlap(s) Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 
-		private float GetLeftMarginPos(SvgSystem system, Graphics graphics, PageFormat pageFormat)
+		private double GetLeftMarginPos(SvgSystem system, Graphics graphics, PageFormat pageFormat)
         {
-            float leftMarginPos = pageFormat.LeftMarginPos;
-            float maxNameWidth = 0;
+            double leftMarginPos = pageFormat.LeftMarginPos;
+            double maxNameWidth = 0;
             foreach(Staff staff in system.Staves)
             {
                 foreach(NoteObject noteObject in staff.Voices[0].NoteObjects)
@@ -267,7 +267,7 @@ namespace Moritz.Symbols
 								M.Assert(staffName.TextInfo != null);
 
 								TextMetrics staffNameMetrics = new TextMetrics(CSSObjectClass.staffName, graphics, staffName.TextInfo);
-								float nameWidth = staffNameMetrics.Right - staffNameMetrics.Left;
+								double nameWidth = staffNameMetrics.Right - staffNameMetrics.Left;
 								maxNameWidth = (maxNameWidth > nameWidth) ? maxNameWidth : nameWidth;
 							}
 						}

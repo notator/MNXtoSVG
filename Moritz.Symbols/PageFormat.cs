@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using MNX.Globals;
 
 namespace Moritz.Symbols
 {
@@ -8,15 +9,42 @@ namespace Moritz.Symbols
     /// </summary>
     public class PageFormat
     {
+        public readonly int ViewBoxMagnification = 10;
+
+        #region Attributes set by SVGData
+
+        #endregion Attributes set by SVGData
+
         public PageFormat()
         {
         }
 
-        public readonly int ViewBoxMagnification = 10;
+        public PageFormat(SVGData svgData, bool printTitleAndAuthorOnScorePage1)
+        {
+            RightVBPX = svgData.pageWidth * ViewBoxMagnification;
+            BottomVBPX = svgData.pageHeight * ViewBoxMagnification;
+            TopMarginPage1 = svgData.marginTopPage1 * ViewBoxMagnification;
+            TopMarginOtherPages = svgData.marginTopOther * ViewBoxMagnification;
+            RightMarginPos = RightVBPX - (svgData.marginRight * ViewBoxMagnification);
+            LeftMarginPos = svgData.marginLeft * ViewBoxMagnification;
+            BottomMarginPos = BottomVBPX - (svgData.marginBottom * ViewBoxMagnification);
+
+            StafflineStemStrokeWidth = svgData.stafflineStemStrokeWidth * ViewBoxMagnification;
+            Gap = svgData.gap * ViewBoxMagnification;
+
+            DefaultDistanceBetweenStaves = svgData.gap * svgData.minGapsBetweenStaves * ViewBoxMagnification;
+            DefaultDistanceBetweenSystems = svgData.gap * svgData.minGapsBetweenSystems * ViewBoxMagnification;
+ 
+            SystemStartBars = svgData.systemStartBars;
+
+            MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * svgData.crotchetsPerMinute);
+        }
+
+
 
         #region paper size
-        public float Right { get { return RightVBPX; } }
-        public float Bottom 
+        public double Right { get { return RightVBPX; } }
+        public double Bottom 
         { 
             get 
             { 
@@ -24,28 +52,28 @@ namespace Moritz.Symbols
                 return nGaps * Gap;
             }
         }
-        public float ScreenRight { get { return RightVBPX / ViewBoxMagnification; } }
-        public float ScreenBottom { get { return BottomVBPX / ViewBoxMagnification; } }
+        public double ScreenRight { get { return RightVBPX / ViewBoxMagnification; } }
+        public double ScreenBottom { get { return BottomVBPX / ViewBoxMagnification; } }
 
         public string PaperSize; // default
         public bool IsLandscape = false;
         public int RightVBPX = 0;
         public int BottomVBPX = 0;
-        public readonly float HorizontalPixelsPerMillimeter = 3.4037F; // on my computer (December 2010).
-        public readonly float VerticalPixelsPerMillimeter = 2.9464F; // on my computer (December 2010).
+        public readonly double HorizontalPixelsPerMillimeter = 3.4037; // on my computer (December 2010).
+        public readonly double VerticalPixelsPerMillimeter = 2.9464; // on my computer (December 2010).
 		#endregion
 
 		#region page 1 titles
 		public string Page1Title;
 		public string Page1Author;
-        public float Page1ScreenTitleY { get { return Page1TitleY / ViewBoxMagnification; } }
-        public float Page1TitleHeight;
-        public float Page1AuthorHeight;
-        public float Page1TitleY;
+        public double Page1ScreenTitleY { get { return Page1TitleY / ViewBoxMagnification; } }
+        public double Page1TitleHeight;
+        public double Page1AuthorHeight;
+        public double Page1TitleY;
         #endregion
 
         #region frame
-        public float LeftScreenMarginPos { get { return LeftMarginPos / ViewBoxMagnification; } }
+        public double LeftScreenMarginPos { get { return LeftMarginPos / ViewBoxMagnification; } }
         public int FirstPageFrameHeight { get { return BottomMarginPos - TopMarginPage1; } }
         public int OtherPagesFrameHeight { get { return BottomMarginPos - TopMarginOtherPages; } }
         public int TopMarginPage1;
@@ -76,7 +104,7 @@ namespace Moritz.Symbols
         public string ChordSymbolType = "none";
         #region standard chord notation options
         /// <summary>
-        /// This value is used to find the duration class of DurationSymbols
+        /// Moritz uses this value to decide the duration class of a DurationSymbol
         /// </summary>
         public int MinimumCrotchetDuration;
         public bool BeamsCrossBarlines;
@@ -85,11 +113,11 @@ namespace Moritz.Symbols
         /// <summary>
         /// The view box pixel distance between staves when they are not vertically justified.
         /// </summary>
-        public float DefaultDistanceBetweenStaves;
+        public double DefaultDistanceBetweenStaves;
         /// <summary>
         /// The view box pixel distance between systems when they are not vertically justified.
         /// </summary>
-        public float DefaultDistanceBetweenSystems;
+        public double DefaultDistanceBetweenSystems;
         public List<List<byte>> OutputMIDIChannelsPerStaff = null;
 		public List<string> ClefPerStaff = null;
 		public List<string> InitialClefPerMIDIChannel = null;
@@ -101,42 +129,47 @@ namespace Moritz.Symbols
         public List<int> SystemStartBars = null;
         public int DefaultNumberOfBarsPerSystem { get { return 5; } }
 
+        public double MillisecondsPerTick = 0;
+
         #region constants
-        public float SmallSizeFactor { get { return 0.8F; } } // The relatve size of cautionary and small objects
-        public float OpaqueBeamOpacity { get { return 0.65F; } } // The opacity of opaque beams
+        // The relatve size of cautionary and small objects
+        public double SmallSizeFactor { get { return 0.8; } }
+        // The opacity of opaque beams
+        // (Opaque beams are written between the beam and stafflines to make the stafflines appear grey.)
+        public double OpaqueBeamOpacity { get { return 0.65; } }
         #endregion
 
-        public float Gap;
+        public double Gap;
         #region font heights
         /// <summary>
         /// the normal font size on staves having Gap sized spaces (after experimenting with cLicht). 
         /// </summary>
-        public float MusicFontHeight { get { return (Gap * 4) * 0.98F; } }
+        public double MusicFontHeight { get { return (Gap * 4) * 0.98; } }
         /// Arial (new 26.06.2017)
-        public float TimeStampFontHeight { get { return Gap * 2.25F; } }
-        public float StaffNameFontHeight { get { return Gap * 2.2F; } }
-		public float BarNumberNumberFontHeight { get { return Gap * 1.9992F; } }
-		public float RegionInfoStringFontHeight { get { return Gap * 3F; } }
-		public float LyricFontHeight { get { return Gap * 1.96F; } }
-        public float ClefOctaveNumberHeight { get { return Gap * 2.6264F; } }
-        public float ClefXFontHeight { get { return Gap * 1.568F; } }
+        public double TimeStampFontHeight { get { return Gap * 2.25; } }
+        public double StaffNameFontHeight { get { return Gap * 2.2; } }
+		public double BarNumberNumberFontHeight { get { return Gap * 1.9992; } }
+		public double RegionInfoStringFontHeight { get { return Gap * 3; } }
+		public double LyricFontHeight { get { return Gap * 1.96; } }
+        public double ClefOctaveNumberHeight { get { return Gap * 2.6264; } }
+        public double ClefXFontHeight { get { return Gap * 1.568; } }
 		/// Open Sans, Open Sans Condensed (new 26.06.2017)
-		public float OrnamentFontHeight { get { return Gap * 2.156F; } }
+		public double OrnamentFontHeight { get { return Gap * 2.156; } }
 		/// CLicht (new 26.06.2017)
-		public float DynamicFontHeight { get { return MusicFontHeight * 0.75F; } }
+		public double DynamicFontHeight { get { return MusicFontHeight * 0.75; } }
         #endregion
 
         #region stroke widths
-        public float StafflineStemStrokeWidth;
-        public float NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidth * 2F; } }
-		public float ThinBarlineStrokeWidth { get { return NormalBarlineStrokeWidth / 2; } } // a component of double barlines.
-		public float ThickBarlineStrokeWidth { get { return NormalBarlineStrokeWidth * 2; } } // a component of double barlines.
-		public float NoteheadExtenderStrokeWidth { get { return StafflineStemStrokeWidth * 3.4F; } }
-		public float BarNumberFrameStrokeWidth { get { return StafflineStemStrokeWidth * 1.2F; } }
-		public float RegionInfoFrameStrokeWidth { get { return BarNumberFrameStrokeWidth * 1.5F; } }
+        public double StafflineStemStrokeWidth;
+        public double NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidth * 2; } }
+		public double ThinBarlineStrokeWidth { get { return NormalBarlineStrokeWidth / 2; } } // a component of double barlines.
+		public double ThickBarlineStrokeWidth { get { return NormalBarlineStrokeWidth * 2; } } // a component of double barlines.
+		public double NoteheadExtenderStrokeWidth { get { return StafflineStemStrokeWidth * 3.4; } }
+		public double BarNumberFrameStrokeWidth { get { return StafflineStemStrokeWidth * 1.2; } }
+		public double RegionInfoFrameStrokeWidth { get { return BarNumberFrameStrokeWidth * 1.5; } }
 		#endregion
 
-        public float BeamThickness { get { return Gap * 0.42F; } }
+        public double BeamThickness { get { return Gap * 0.42; } }
 
         #endregion
 

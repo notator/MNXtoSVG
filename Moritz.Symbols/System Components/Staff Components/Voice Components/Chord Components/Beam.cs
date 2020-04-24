@@ -11,21 +11,21 @@ namespace Moritz.Symbols
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <param name="y"></param>
-        public Beam(float left, float right)
+        public Beam(double left, double right)
         {
             LeftX = left;
             RightX = right;
-            _leftTopY = 0F;
-            _rightTopY = 0F;
+            _leftTopY = 0;
+            _rightTopY = 0;
         }
 
-        public void MoveYs(float dLeftY, float dRightY)
+        public void MoveYs(double dLeftY, double dRightY)
         {
             _leftTopY += dLeftY;
             _rightTopY += dRightY;
         }
 
-        public abstract void ShiftYsForBeamBlock(float outerLeftY, float gap, VerticalDir stemDirection, float beamThickness);
+        public abstract void ShiftYsForBeamBlock(double outerLeftY, double gap, VerticalDir stemDirection, double beamThickness);
 
         /// <summary>
         /// Shifts a horizontal beam vertically to the correct position (wrt the beamBlock) for its duration class 
@@ -35,9 +35,9 @@ namespace Moritz.Symbols
         /// <param name="stemDirection"></param>
         /// <param name="beamThickness"></param>
         /// <param name="nGaps"></param>
-        protected void ShiftYsForBeamBlock(float outerLeftY, float gap, VerticalDir stemDirection, float beamThickness, int nGaps)
+        protected void ShiftYsForBeamBlock(double outerLeftY, double gap, VerticalDir stemDirection, double beamThickness, int nGaps)
         {
-            float dy = 0F;
+            double dy = 0;
             if(stemDirection == VerticalDir.down)
             {
                 dy = -(beamThickness + (gap * nGaps));
@@ -53,47 +53,47 @@ namespace Moritz.Symbols
         /// <summary>
         /// Exposed as public function by each IBeamStub
         /// </summary>
-        protected void ShearStub(float shearAxis, float tanAlpha, float stemX)
+        protected void ShearStub(double shearAxis, double tanAlpha, double stemX)
         {
             if(LeftX == stemX || RightX == stemX)
             {
-                float dLeftY = (LeftX - shearAxis) * tanAlpha;
-                float dRightY = (RightX - shearAxis) * tanAlpha;
+                double dLeftY = (LeftX - shearAxis) * tanAlpha;
+                double dRightY = (RightX - shearAxis) * tanAlpha;
                 MoveYs(dLeftY, dRightY);
             }
             // else do nothing
         }
 
-        public readonly float LeftX;
-        public readonly float RightX;
-        public readonly float StrokeWidth;
-        public float LeftTopY { get { return _leftTopY; } }
-        public float RightTopY { get { return _rightTopY; } }
+        public readonly double LeftX;
+        public readonly double RightX;
+        public readonly double StrokeWidth;
+        public double LeftTopY { get { return _leftTopY; } }
+        public double RightTopY { get { return _rightTopY; } }
 
-        protected float _leftTopY;
-        protected float _rightTopY;
+        protected double _leftTopY;
+        protected double _rightTopY;
     }
 
     internal class QuaverBeam : Beam
     {
-        public QuaverBeam(float left, float right)
+        public QuaverBeam(double left, double right)
             : base(left, right)
         {
         }
 
-        public override void ShiftYsForBeamBlock(float outerLeftY, float gap, VerticalDir stemDirection, float beamThickness)
+        public override void ShiftYsForBeamBlock(double outerLeftY, double gap, VerticalDir stemDirection, double beamThickness)
         {
             ShiftYsForBeamBlock(outerLeftY, gap, stemDirection, beamThickness, 0);
         }
     }
     internal class SemiquaverBeam : Beam
     {
-        public SemiquaverBeam(float left, float right)
+        public SemiquaverBeam(double left, double right)
             : base(left, right)
         {
         }
 
-        public override void ShiftYsForBeamBlock(float outerLeftY, float gap, VerticalDir stemDirection, float beamThickness)
+        public override void ShiftYsForBeamBlock(double outerLeftY, double gap, VerticalDir stemDirection, double beamThickness)
         {
             ShiftYsForBeamBlock(outerLeftY, gap, stemDirection, beamThickness, 1);
         }
@@ -101,12 +101,12 @@ namespace Moritz.Symbols
     }
     internal class ThreeFlagsBeam : Beam
     {
-        public ThreeFlagsBeam(float left, float right)
+        public ThreeFlagsBeam(double left, double right)
             : base(left, right)
         {
         }
 
-        public override void ShiftYsForBeamBlock(float outerLeftY, float gap, VerticalDir stemDirection, float beamThickness)
+        public override void ShiftYsForBeamBlock(double outerLeftY, double gap, VerticalDir stemDirection, double beamThickness)
         {
             ShiftYsForBeamBlock(outerLeftY, gap, stemDirection, beamThickness, 2);
         }
@@ -114,12 +114,12 @@ namespace Moritz.Symbols
     }
     internal class FourFlagsBeam : Beam
     {
-        public FourFlagsBeam(float left, float right)
+        public FourFlagsBeam(double left, double right)
             : base(left, right)
         {
         }
 
-        public override void ShiftYsForBeamBlock(float outerLeftY, float gap, VerticalDir stemDirection, float beamThickness)
+        public override void ShiftYsForBeamBlock(double outerLeftY, double gap, VerticalDir stemDirection, double beamThickness)
         {
             ShiftYsForBeamBlock(outerLeftY, gap, stemDirection, beamThickness, 3);
         }
@@ -127,12 +127,12 @@ namespace Moritz.Symbols
     }
     internal class FiveFlagsBeam : Beam
     {
-        public FiveFlagsBeam(float left, float right)
+        public FiveFlagsBeam(double left, double right)
             : base(left, right)
         {
         }
 
-        public override void ShiftYsForBeamBlock(float outerLeftY, float gap, VerticalDir stemDirection, float beamThickness)
+        public override void ShiftYsForBeamBlock(double outerLeftY, double gap, VerticalDir stemDirection, double beamThickness)
         {
             ShiftYsForBeamBlock(outerLeftY, gap, stemDirection, beamThickness, 4);
         }
@@ -142,17 +142,17 @@ namespace Moritz.Symbols
 	public interface IBeamStub
 	{
 		DurationClass DurationClass { get; }
-        void ShearBeamStub(float shearAxis, float tanAlpha, float stemX);
+        void ShearBeamStub(double shearAxis, double tanAlpha, double stemX);
     }
 
 	internal class SemiquaverBeamStub : SemiquaverBeam, IBeamStub
 	{
-		public SemiquaverBeamStub(float left, float right)
+		public SemiquaverBeamStub(double left, double right)
 			: base(left, right)
 		{
 		}
 
-		public void ShearBeamStub(float shearAxis, float tanAlpha, float stemX)
+		public void ShearBeamStub(double shearAxis, double tanAlpha, double stemX)
 		{
 			base.ShearStub(shearAxis, tanAlpha, stemX);
 		}
@@ -161,12 +161,12 @@ namespace Moritz.Symbols
 	}
     internal class ThreeFlagsBeamStub : ThreeFlagsBeam, IBeamStub
     {
-        public ThreeFlagsBeamStub(float left, float right)
+        public ThreeFlagsBeamStub(double left, double right)
             : base(left, right)
         {
         }
 
-        public void ShearBeamStub(float shearAxis, float tanAlpha, float stemX)
+        public void ShearBeamStub(double shearAxis, double tanAlpha, double stemX)
         {
             base.ShearStub(shearAxis, tanAlpha, stemX);
         }
@@ -175,12 +175,12 @@ namespace Moritz.Symbols
 	}
     internal class FourFlagsBeamStub : FourFlagsBeam, IBeamStub
     {
-        public FourFlagsBeamStub(float left, float right)
+        public FourFlagsBeamStub(double left, double right)
             : base(left, right)
         {
         }
 
-        public void ShearBeamStub(float shearAxis, float tanAlpha, float stemX)
+        public void ShearBeamStub(double shearAxis, double tanAlpha, double stemX)
         {
             base.ShearStub(shearAxis, tanAlpha, stemX);
         }
@@ -189,12 +189,12 @@ namespace Moritz.Symbols
 	}
     internal class FiveFlagsBeamStub : FiveFlagsBeam, IBeamStub
     {
-        public FiveFlagsBeamStub(float left, float right)
+        public FiveFlagsBeamStub(double left, double right)
             : base(left, right)
         {
         }
 
-        public void ShearBeamStub(float shearAxis, float tanAlpha, float stemX)
+        public void ShearBeamStub(double shearAxis, double tanAlpha, double stemX)
         {
             base.ShearStub(shearAxis, tanAlpha, stemX);
         }

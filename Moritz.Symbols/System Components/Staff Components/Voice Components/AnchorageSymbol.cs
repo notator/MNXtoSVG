@@ -15,7 +15,7 @@ namespace Moritz.Symbols
         {
         }
 
-        public AnchorageSymbol(Voice voice, float fontHeight)
+        public AnchorageSymbol(Voice voice, double fontHeight)
             : base(voice, fontHeight)
         {
         }

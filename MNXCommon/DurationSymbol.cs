@@ -45,7 +45,7 @@ namespace MNX.Common
             }
             set
             {
-                M.Assert(value >= B.MinimumEventTicks);
+                M.Assert(value >= M.MinimumEventTicks);
                 _ticks = value;
             }
         }
@@ -74,7 +74,7 @@ namespace MNX.Common
                 DefaultTicks = GetDefaultTicks();
             }
 
-            M.Assert(DefaultTicks >= B.MinimumEventTicks);
+            M.Assert(DefaultTicks >= M.MinimumEventTicks);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace MNX.Common
         public int GetDefaultTicks()
         {
             int dots = (int)NumberOfDots;
-            int baseTicks = B.DurationSymbolTicks[(int)DurationSymbolTyp];
+            int baseTicks = M.DurationSymbolTicks[(int)DurationSymbolTyp];
             int extraTicks = baseTicks / 2;
             int rval = baseTicks;
             while(dots > 0 && extraTicks > 0)

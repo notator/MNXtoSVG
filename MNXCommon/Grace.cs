@@ -31,7 +31,9 @@ namespace MNX.Common
                 {
                     innerTicks.Add(ev.Ticks);
                 }
-                List<int> newTicks = GetJustifiedInnerTicks(outerTicks, innerTicks);
+
+                List<int> newTicks = M.IntDivisionSizes(outerTicks, innerTicks);
+
                 for(var i = 0; i < newTicks.Count; i++)
                 {
                     events[i].Ticks = newTicks[i];
@@ -74,7 +76,7 @@ namespace MNX.Common
             foreach(var e in eventList)
             {
                 int nTicks = e.DSymbol.DefaultTicks / 3;
-                e.DSymbol.Ticks = (nTicks < B.MinimumEventTicks) ? B.MinimumEventTicks : nTicks;
+                e.DSymbol.Ticks = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
             }
         }
 

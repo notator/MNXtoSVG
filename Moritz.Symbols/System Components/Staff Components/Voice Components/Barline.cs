@@ -30,7 +30,7 @@ namespace Moritz.Symbols
 			throw new ApplicationException();
 		}
 
-		public abstract void WriteSVG(SvgWriter w, float topStafflineY, float bottomStafflineY, bool isEndOfSystem);
+		public abstract void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem);
 
 		public abstract void CreateMetrics(Graphics graphics);
 
@@ -44,15 +44,15 @@ namespace Moritz.Symbols
 					CSSObjectClass staffClass = CSSObjectClass.staffName;
 					StaffNameMetrics = new StaffNameMetrics(staffClass, graphics, staffNameText.TextInfo);
 					// move the staffname vertically to the middle of this staff
-					float staffheight = staffMetrics.StafflinesBottom - staffMetrics.StafflinesTop;
-					float dy = (staffheight * 0.5F) + (Gap * 0.8F);
-					StaffNameMetrics.Move(0F, dy);
+					double staffheight = staffMetrics.StafflinesBottom - staffMetrics.StafflinesTop;
+					double dy = (staffheight * 0.5F) + (Gap * 0.8F);
+					StaffNameMetrics.Move(0, dy);
 				}
 				if(drawObject is FramedBarNumberText framedBarNumberText)
 				{
 					BarnumberMetrics = new BarnumberMetrics(graphics, framedBarNumberText.TextInfo, framedBarNumberText.FrameInfo);
 					// move the bar number to its default (=lowest) position above this staff.
-					BarnumberMetrics.Move(0F, staffMetrics.StafflinesTop - BarnumberMetrics.Bottom - (Gap * 3));
+					BarnumberMetrics.Move(0, staffMetrics.StafflinesTop - BarnumberMetrics.Bottom - (Gap * 3));
 				}
 			}
 		}
@@ -74,16 +74,16 @@ namespace Moritz.Symbols
 		{			
 			if(barnumberMetrics != null && regionInfoMetrics != null)
 			{
-				float padding = Gap * 1.5F;
-				float shift = barnumberMetrics.Bottom - regionInfoMetrics.Top + padding;
+				double padding = Gap * 1.5;
+				double shift = barnumberMetrics.Bottom - regionInfoMetrics.Top + padding;
 				barnumberMetrics.Move(0, -shift);
 			}
 		}
 
 		protected void MoveFramedTextBottomToDefaultPosition(Metrics framedTextMetrics)
 		{			
-			float staffTop = this.Voice.Staff.Metrics.StafflinesTop;
-			float defaultBottom = staffTop - (Gap * 3);
+			double staffTop = this.Voice.Staff.Metrics.StafflinesTop;
+			double defaultBottom = staffTop - (Gap * 3);
 			if(framedTextMetrics != null)
 			{
 				framedTextMetrics.Move(0, defaultBottom - framedTextMetrics.Bottom);
@@ -94,9 +94,9 @@ namespace Moritz.Symbols
 		{
 			if(framedTextMetrics != null) 
 			{
-				float bottomPadding = Gap * 1.5F;
-				float xPadding = Gap * 4;
-				PaddedMetrics paddedMetrics = new PaddedMetrics(framedTextMetrics, 0F, xPadding, bottomPadding, xPadding);
+				double bottomPadding = Gap * 1.5;
+				double xPadding = Gap * 4;
+				PaddedMetrics paddedMetrics = new PaddedMetrics(framedTextMetrics, 0, xPadding, bottomPadding, xPadding);
 
 				foreach(NoteObject noteObject in fixedNoteObjects)
 				{
@@ -153,7 +153,7 @@ namespace Moritz.Symbols
 		/// </summary>
 		private void MovePaddedMetricsAboveNoteObject(PaddedMetrics paddedMetrics, NoteObject fixedNoteObject)
 		{
-			float verticalOverlap = 0F;
+			double verticalOverlap = 0;
 			if(fixedNoteObject.Metrics is ChordMetrics chordMetrics)
 			{
 				verticalOverlap = chordMetrics.OverlapHeight(paddedMetrics, 0F);
@@ -170,36 +170,36 @@ namespace Moritz.Symbols
 			if(verticalOverlap > 0)
 			{
 				verticalOverlap = (verticalOverlap > paddedMetrics.BottomPadding) ? verticalOverlap : paddedMetrics.BottomPadding;
-				paddedMetrics.Move(0F, -verticalOverlap);				
+				paddedMetrics.Move(0, -verticalOverlap);				
 			}
 		}
 
 		private void MoveFramedTextAboveBeamBlock(Metrics framedTextMetrics, BeamBlock beamBlock)
 		{
-			float padding = Gap * 1.5F;
+			double padding = Gap * 1.5;
 
-			float verticalOverlap = beamBlock.OverlapHeight(framedTextMetrics, padding);
+			double verticalOverlap = beamBlock.OverlapHeight(framedTextMetrics, padding);
 			if(verticalOverlap > 0)
 			{
 				verticalOverlap = (verticalOverlap > padding) ? verticalOverlap : padding;
-				framedTextMetrics.Move(0F, -verticalOverlap );
+				framedTextMetrics.Move(0, -verticalOverlap );
 			}
 		}
 
 		private void MoveFramedTextAboveNoteheadExtenders(Metrics framedTextMetrics, List<NoteheadExtenderMetrics> noteheadExtendersMetrics)
 		{
-			float padding = Gap * 1.5F;
+			double padding = Gap * 1.5;
 			int indexOfTopExtender = 0;
 			for(int i = 1; i < noteheadExtendersMetrics.Count; ++i)
 			{
 				indexOfTopExtender = (noteheadExtendersMetrics[indexOfTopExtender].Top < noteheadExtendersMetrics[i].Top) ? indexOfTopExtender : i;
 			}
 			NoteheadExtenderMetrics topExtender = noteheadExtendersMetrics[indexOfTopExtender];
-			float verticalOverlap = topExtender.OverlapHeight(framedTextMetrics, padding);
+			double verticalOverlap = topExtender.OverlapHeight(framedTextMetrics, padding);
 			if(verticalOverlap > 0)
 			{
 				verticalOverlap = (verticalOverlap > padding) ? verticalOverlap : padding;
-				framedTextMetrics.Move(0F, -(verticalOverlap));
+				framedTextMetrics.Move(0, -(verticalOverlap));
 			}
 		}
 
@@ -222,9 +222,9 @@ namespace Moritz.Symbols
 
 		protected virtual void DrawRegionFrameConnector(SvgWriter w, FramedRegionInfoMetrics framedRegionInfoMetrics)
 		{			
-			float x = this.Metrics.OriginX;
-			float top = framedRegionInfoMetrics.Bottom;
-			float bottom = this.Metrics.Top;
+			double x = this.Metrics.OriginX;
+			double top = framedRegionInfoMetrics.Bottom;
+			double bottom = this.Metrics.Top;
 
 			w.SvgLine(CSSObjectClass.regionFrameConnector, x, top, x, bottom);
 		}
@@ -271,28 +271,28 @@ namespace Moritz.Symbols
         public bool IsVisible = true;
 
 		private PageFormat PageFormat { get { return Voice.Staff.SVGSystem.Score.PageFormat; } }
-		protected float StafflineStrokeWidth { get { return PageFormat.StafflineStemStrokeWidth; } }
-		protected float ThinStrokeWidth { get { return PageFormat.ThinBarlineStrokeWidth; } }
-		protected float NormalStrokeWidth { get { return PageFormat.NormalBarlineStrokeWidth; } }
-		protected float ThickStrokeWidth { get { return PageFormat.ThickBarlineStrokeWidth; } }
-		protected float DoubleBarPadding { get { return PageFormat.ThickBarlineStrokeWidth * 0.75F; } }
-		protected float Gap { get { return PageFormat.Gap; } }
-		protected float TopY(float topStafflineY, bool isEndOfSystem)
+		protected double StafflineStrokeWidth { get { return PageFormat.StafflineStemStrokeWidth; } }
+		protected double ThinStrokeWidth { get { return PageFormat.ThinBarlineStrokeWidth; } }
+		protected double NormalStrokeWidth { get { return PageFormat.NormalBarlineStrokeWidth; } }
+		protected double ThickStrokeWidth { get { return PageFormat.ThickBarlineStrokeWidth; } }
+		protected double DoubleBarPadding { get { return PageFormat.ThickBarlineStrokeWidth * 0.75; } }
+		protected double Gap { get { return PageFormat.Gap; } }
+		protected double TopY(double topStafflineY, bool isEndOfSystem)
 		{
-			float topY = topStafflineY;
+			double topY = topStafflineY;
 			if(isEndOfSystem)
 			{
-				float halfStafflineWidth = (StafflineStrokeWidth / 2);
+				double halfStafflineWidth = (StafflineStrokeWidth / 2);
 				topY -= halfStafflineWidth;
 			}
 			return topY;
 		}
-		protected float BottomY(float bottomStafflineY, bool isEndOfSystem)
+		protected double BottomY(double bottomStafflineY, bool isEndOfSystem)
 		{
-			float bottomY = bottomStafflineY;
+			double bottomY = bottomStafflineY;
 			if(isEndOfSystem)
 			{
-				float halfStafflineWidth = (StafflineStrokeWidth / 2);
+				double halfStafflineWidth = (StafflineStrokeWidth / 2);
 				bottomY += halfStafflineWidth;
 			}
 			return bottomY;
@@ -317,10 +317,10 @@ namespace Moritz.Symbols
 		///        (if the staff's lower neighbour is in the same group)
 		/// </summary>
 		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, float topStafflineY, float bottomStafflineY, bool isEndOfSystem)
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem)
 		{
-			float topY = TopY(topStafflineY, isEndOfSystem);
-			float bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
 			w.SvgLine(CSSObjectClass.normalBarline, this.Barline_LineMetrics.OriginX, topY, this.Barline_LineMetrics.OriginX, bottomY);
 		}
@@ -374,16 +374,16 @@ namespace Moritz.Symbols
 		///        (if the staff's lower neighbour is in the same group)
 		/// </summary>
 		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, float topStafflineY, float bottomStafflineY, bool isEndOfSystem)
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem)
 		{
-			float topY = TopY(topStafflineY, isEndOfSystem);
-			float bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			float thickLeftLineOriginX = Barline_LineMetrics.OriginX;
+			double thickLeftLineOriginX = Barline_LineMetrics.OriginX;
 			w.SvgStartGroup(CSSObjectClass.startRegionBarline.ToString());
 			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
 
-			float thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
+			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
 			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
@@ -421,7 +421,7 @@ namespace Moritz.Symbols
 		{
 			#region alignX
 			base.AlignBarnumberX();
-			float originX = Barline_LineMetrics.OriginX;
+			double originX = Barline_LineMetrics.OriginX;
 			if(FramedRegionStartTextMetrics != null)
 			{
 				FramedRegionStartTextMetrics.Move(originX - FramedRegionStartTextMetrics.Left, 0);
@@ -438,8 +438,8 @@ namespace Moritz.Symbols
 
 		public override void CreateMetrics(Graphics graphics)
 		{
-			float leftEdge = -(ThickStrokeWidth / 2F);
-			float rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
+			double leftEdge = -(ThickStrokeWidth / 2F);
+			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
 			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
@@ -488,16 +488,16 @@ namespace Moritz.Symbols
 		///        (if the staff's lower neighbour is in the same group)
 		/// </summary>
 		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, float topStafflineY, float bottomStafflineY, bool isEndOfSystem)
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem)
 		{
-			float topY = TopY(topStafflineY, isEndOfSystem);
-			float bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			float thinLeftLineOriginX = Barline_LineMetrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (ThinStrokeWidth / 2F);
+			double thinLeftLineOriginX = Barline_LineMetrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 			w.SvgStartGroup(CSSObjectClass.endRegionBarline.ToString());
 			w.SvgLine(CSSObjectClass.thinBarline, thinLeftLineOriginX, topY, thinLeftLineOriginX, bottomY);
 
-			float thickRightLineOriginX = Barline_LineMetrics.OriginX;
+			double thickRightLineOriginX = Barline_LineMetrics.OriginX;
 			w.SvgLine(CSSObjectClass.thickBarline, thickRightLineOriginX, topY, thickRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
@@ -530,7 +530,7 @@ namespace Moritz.Symbols
 		{
 			#region alignX
 			base.AlignBarnumberX();
-			float originX = Barline_LineMetrics.OriginX;
+			double originX = Barline_LineMetrics.OriginX;
 			if(FramedRegionEndTextMetrics != null)
 			{
 				FramedRegionEndTextMetrics.Move(originX - FramedRegionEndTextMetrics.Right, 0);
@@ -556,8 +556,8 @@ namespace Moritz.Symbols
 
 		public override void CreateMetrics(Graphics graphics)
 		{
-			float leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth);
-			float rightEdge = (ThickStrokeWidth / 2F);
+			double leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth);
+			double rightEdge = (ThickStrokeWidth / 2F);
 			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
@@ -601,20 +601,20 @@ namespace Moritz.Symbols
 		///        (if the staff's lower neighbour is in the same group)
 		/// </summary>
 		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, float topStafflineY, float bottomStafflineY, bool isEndOfSystem)
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem)
 		{
-			float topY = TopY(topStafflineY, isEndOfSystem);
-			float bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 			
 			w.SvgStartGroup(CSSObjectClass.endAndStartRegionBarline.ToString());
 
-			float thinLeftLineOriginX = Barline_LineMetrics.OriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
+			double thinLeftLineOriginX = Barline_LineMetrics.OriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 			w.SvgLine(CSSObjectClass.thinBarline, thinLeftLineOriginX, topY, thinLeftLineOriginX, bottomY);
 
-			float thickCentreLineOriginX = Barline_LineMetrics.OriginX;
+			double thickCentreLineOriginX = Barline_LineMetrics.OriginX;
 			w.SvgLine(CSSObjectClass.thickBarline, thickCentreLineOriginX, topY, thickCentreLineOriginX, bottomY);
 
-			float thinRightLineOriginX = thickCentreLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
+			double thinRightLineOriginX = thickCentreLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
 			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
 
 			w.SvgEndGroup();
@@ -680,7 +680,7 @@ namespace Moritz.Symbols
 			// so it can't have a barnumber, and there's no reason to call base.AlignBarnumberX();
 			M.Assert(BarnumberMetrics == null);
 
-			float originX = Barline_LineMetrics.OriginX;
+			double originX = Barline_LineMetrics.OriginX;
 			if(FramedRegionEndTextMetrics != null)
 			{
 				FramedRegionEndTextMetrics.Move(originX - FramedRegionEndTextMetrics.Right, 0);
@@ -701,8 +701,8 @@ namespace Moritz.Symbols
 
 		public override void CreateMetrics(Graphics graphics)
 		{
-			float rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			float leftEdge = -rightEdge;
+			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
+			double leftEdge = -rightEdge;
 			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
@@ -762,16 +762,16 @@ namespace Moritz.Symbols
 		///        (if the staff's lower neighbour is in the same group)
 		/// </summary>
 		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, float topStafflineY, float bottomStafflineY, bool isEndOfSystem)
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem)
 		{
-			float topY = TopY(topStafflineY, isEndOfSystem);
-			float bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			float normalLeftLineOriginX = Barline_LineMetrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (NormalStrokeWidth / 2F);
+			double normalLeftLineOriginX = Barline_LineMetrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (NormalStrokeWidth / 2F);
 			w.SvgStartGroup(CSSObjectClass.endOfScoreBarline.ToString());
 			w.SvgLine(CSSObjectClass.normalBarline, normalLeftLineOriginX, topY, normalLeftLineOriginX, bottomY);
 
-			float thickRightLineOriginX = Barline_LineMetrics.OriginX;
+			double thickRightLineOriginX = Barline_LineMetrics.OriginX;
 			w.SvgLine(CSSObjectClass.thickBarline, thickRightLineOriginX, topY, thickRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
@@ -784,8 +784,8 @@ namespace Moritz.Symbols
 
 		public override void CreateMetrics(Graphics graphics)
 		{
-			float leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + NormalStrokeWidth);
-			float rightEdge = (ThickStrokeWidth / 2F);
+			double leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + NormalStrokeWidth);
+			double rightEdge = (ThickStrokeWidth / 2F);
 			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.normalBarline, CSSObjectClass.thickBarline);
 
 			foreach(DrawObject drawObject in DrawObjects)

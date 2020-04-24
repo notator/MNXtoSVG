@@ -43,8 +43,8 @@ namespace Moritz.Symbols
 		/// <param name="textInfo"></param>
 		private void SetDefaultMetrics(Graphics graphics, TextInfo textInfo)
 		{
-			//float maxFontSize = System.Single.MaxValue - 10F;
-			float maxFontSize = 1000F;
+			//double maxFontSize = System.Single.MaxValue - 10;
+			double maxFontSize = 1000;
 			Size textMaxSize = new Size();
 			try
 			{
@@ -60,17 +60,17 @@ namespace Moritz.Symbols
 			{
 				case "Open Sans": // titles
 				case "Open Sans Condensed": // ornaments
-					_top = textInfo.FontHeight * -0.699F; // The difference between the height
-					_bottom = 0F;
+					_top = textInfo.FontHeight * -0.699; // The difference between the height
+					_bottom = 0;
 					break;
 				case "Arial": // date stamp, lyrics, staff names
-					//_top = textInfo.FontHeight * -0.818F; // using MeasureTextDemo
-					_top = textInfo.FontHeight * -0.71F; // by experiment!
-					_bottom = 0F;
+					//_top = textInfo.FontHeight * -0.818; // using MeasureTextDemo
+					_top = textInfo.FontHeight * -0.71; // by experiment!
+					_bottom = 0;
 					break;
 				//case "Times New Roman": // staff names
-				//	_top = textInfo.FontHeight * -1.12F;
-				//	_bottom = 0F;
+				//	_top = textInfo.FontHeight * -1.12;
+				//	_bottom = 0;
 				//	break;
 				default:
 					M.Assert(false, "Unknown font");
@@ -86,12 +86,12 @@ namespace Moritz.Symbols
 			_originY = 0; // SVG originY is the baseline of the text
 		}
 
-		private Size MeasureText(Graphics g, string text, string fontFace, float fontHeight)
+		private Size MeasureText(Graphics g, string text, string fontFace, double fontHeight)
 		{
 			Size maxSize = new Size(int.MaxValue, int.MaxValue);
 			TextFormatFlags flags = TextFormatFlags.NoPadding;
 			Size sizeOfString;
-			using(Font sysFont = new Font(fontFace, fontHeight))
+			using(Font sysFont = new Font(fontFace, (float)fontHeight))
 			{
 				sizeOfString = TextRenderer.MeasureText(g, text, sysFont, maxSize, flags);
 			}
@@ -111,12 +111,12 @@ namespace Moritz.Symbols
 
 	internal class LyricMetrics : TextMetrics, ICloneable
 	{
-		public LyricMetrics(float gap, Graphics graphics, TextInfo textInfo, bool isBelow, CSSObjectClass lyricClass)
+		public LyricMetrics(double gap, Graphics graphics, TextInfo textInfo, bool isBelow, CSSObjectClass lyricClass)
 			: base(lyricClass, graphics, textInfo)
 		{
-			float width = _right - _left;
-			float newWidth = width * 0.75F;
-			float widthMargin = (width - newWidth) / 2.0F;
+			double width = _right - _left;
+			double newWidth = width * 0.75;
+			double widthMargin = (width - newWidth) / 2.0;
 			_left += widthMargin;
 			_right -= widthMargin;
 
@@ -156,7 +156,7 @@ namespace Moritz.Symbols
 			_left = _barNumberNumberMetrics.Left - framePadding.Left;
 		}
 
-        public override void Move(float dx, float dy)
+        public override void Move(double dx, double dy)
         {
             base.Move(dx, dy);
             _barNumberNumberMetrics.Move(dx, dy);
@@ -177,20 +177,20 @@ namespace Moritz.Symbols
 	// FramedRegionInfoMetrics(graphics, framedRegionEndText.Texts, framedRegionEndText.FrameInfo)
 	public class FramedRegionInfoMetrics : GroupMetrics
 	{
-		public FramedRegionInfoMetrics(Graphics graphics, List<Text> texts, FramePadding framePadding, float gap)
+		public FramedRegionInfoMetrics(Graphics graphics, List<Text> texts, FramePadding framePadding, double gap)
 			: base(CSSObjectClass.framedRegionInfo)
 		{
 			Gap = gap;
 
-			float maxWidth = 0F;
-			float nextTop = 0F;
+			double maxWidth = 0;
+			double nextTop = 0;
 			
 
 			foreach(Text text in texts)
 			{
 				TextMetrics tm = new TextMetrics(CSSObjectClass.regionInfoString, graphics, text.TextInfo);
 				tm.Move(-tm.Left, -tm.Top);
-				float width = tm.Right - tm.Left;
+				double width = tm.Right - tm.Left;
 				maxWidth = (maxWidth > width) ? maxWidth : width;
 				tm.Move(0, nextTop);
 				nextTop = tm.Top + ((tm.Bottom - tm.Top) * 1.7F);
@@ -204,7 +204,7 @@ namespace Moritz.Symbols
 			{
 				foreach(TextMetrics tm in _textMetrics)
 				{
-					float deltaX = maxWidth - (tm.Right - tm.Left);
+					double deltaX = maxWidth - (tm.Right - tm.Left);
 					tm.Move(deltaX, 0);
 
 					// move tm.OriginX so that the text is right aligned (OriginX is used by WriteSVG())
@@ -217,7 +217,7 @@ namespace Moritz.Symbols
 				foreach(TextMetrics tm in _textMetrics)
 				{ 
 					// move tm.OriginX so that the text is left aligned (OriginX is used by WriteSVG())
-					float deltaX = (tm.Right - tm.Left) / 2;
+					double deltaX = (tm.Right - tm.Left) / 2;
 					tm.Move(deltaX, 0);
 				}
 			}
@@ -241,7 +241,7 @@ namespace Moritz.Symbols
 			}			
 		}
 
-		public override void Move(float dx, float dy)
+		public override void Move(double dx, double dy)
 		{
 			base.Move(dx, dy);
 			foreach(TextMetrics tm in _textMetrics)
@@ -257,10 +257,10 @@ namespace Moritz.Symbols
 		/// <param name="framedRegionInfoMetrics"></param>
 		internal void MoveAbove(FramedRegionInfoMetrics framedRegionInfoMetrics)
 		{
-			float verticalOverlap = this.OverlapHeight(framedRegionInfoMetrics, -1F);
+			double verticalOverlap = this.OverlapHeight(framedRegionInfoMetrics, -1F);
 			if(verticalOverlap > 0F)
 			{
-				this.Move(0F, Bottom - (verticalOverlap - (2 * Gap)));
+				this.Move(0, Bottom - (verticalOverlap - (2 * Gap)));
 			}
 		}
 
@@ -283,6 +283,6 @@ namespace Moritz.Symbols
 		List<TextMetrics> _textMetrics = new List<TextMetrics>();
 		List<string> _textStrings = new List<string>();
 
-		public float Gap { get; }
+		public double Gap { get; }
 	}
 }

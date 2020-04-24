@@ -28,7 +28,7 @@ namespace Moritz.Xml
 		system, // Used and defined on every page. Not recorded. Container:systems.
 		staffName, // recorded and used. Container:voice.
 		staff, // recorded and used. Container:system.
-		stafflines, // used but not recorded. Container:staff.
+		stafflines, // used but not recorded. Not defined. Container:staff.
 		staffline, // used but not recorded. Defined if staff exists. Container:stafflines.
 		voice, // used, but has no Metrics, inherits definition from staff. Container:staff.
 
@@ -70,21 +70,22 @@ namespace Moritz.Xml
 
 		#region chord classes
 		chord, // Container:voice
-		cautionaryChord, // The small, tied, stemless chord at the beginning of a staff. Container:voice
+		cautionaryChord, // Container:voice
 		#endregion chord classes
 
 		#region chord components
 		stem, // used and recorded. Defined if they exist. Container:chord
-		flag, // flags whose ID (e.g. "left3Flags") has been recorded in FlagIDs will be written to the defs. Defined if flags exist. Container:chord
+						 // flags whose ID has been recorded in FlagIDs will be written to the defs.
+		flag, // path classes used in defs. Defined if flags exist. Container:chord
 		notehead, cautionaryNotehead, // Container:chord/cautionaryChord
 		accidental, cautionaryAccidental, // Container:chord/cautionaryChord
-		ledgerlines,   // recorded and used. There are no cautionaryLedgerlines. Container:chord/cautionaryChord
-		ledgerline,    // used, but not recorded. Defined if ledgerlines exist. Container: ledgerlines
+		ledgerlines, // recorded and used. There are no cautionaryLedgerlines. Container:chord/cautionaryChord
+		ledgerline, // used, but not recorded. Defined if ledgerlines exist. Container: ledgerlines
 		ornament,       // Container:chord. There are no cautionary ornaments
 		lyric,   // Container:chord. There are no cautionaryLyrics
 		dynamic,   // Container:chord. There are no cautionaryDynamics
 		cautionaryBracket,  // Container:chord/cautionaryChord.
-		noteExtender,       // Container:chord/cautionaryChord.
+		noteExtender, // Container:chord/cautionaryChord.
 		#endregion chord components
 
 		#region rest

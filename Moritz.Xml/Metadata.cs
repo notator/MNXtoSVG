@@ -5,38 +5,46 @@ using System.IO;
 using System.Text;
 
 using MNX.Globals;
-using Moritz.Xml;
 
-namespace Moritz.Symbols
+namespace Moritz.Xml
 {
 	public class Metadata
 	{
+        public string Date;
+        public readonly string ScoreTitle;
+        public readonly string ScoreAuthor;
+        public readonly string Keywords;
+        public readonly string Comment;
+
         /// <summary>
-        /// Contains default values.
+        /// Metadata (compatible with Inkscape's) written into the SVG file
         /// </summary>
-        /// <param name="score"></param>
-        public Metadata()
+        /// <param name="scoreTitle">May not be null or empty.</param>
+        /// <param name="scoreAuthor">May not null or empty</param>
+        /// <param name="keywords">Can be null or empty</param>
+        /// <param name="comment">Can be null or empty</param>
+        public Metadata(string scoreTitle, string scoreAuthor, string keywords, string comment)
         {
+            M.Assert(!String.IsNullOrEmpty(scoreTitle));
+            M.Assert(!String.IsNullOrEmpty(scoreAuthor));
+
+            Date = M.NowString;
+            ScoreTitle = scoreTitle;
+            ScoreAuthor = scoreAuthor;
+            Keywords = keywords;
+            Comment = comment;
         }
 
-		/// <summary>
-		/// Writes a metadata element compatible with Inkscape's
-		/// </summary>
-		/// <param name="w"></param>
-		/// <param name="pageNumber"></param>
-		/// <param name="nScorePages"></param>
 		public void WriteSVG(SvgWriter w, int pageNumber, int nScorePages, string aboutThePieceLinkURL, int nOutputVoices, int nInputVoices)
         {
-			M.Assert(!String.IsNullOrEmpty(Page1Title));
-
 			string pageTitle;
 			if(pageNumber == 0)
 			{
-				pageTitle = Page1Title + " (scroll)";
+				pageTitle = ScoreTitle + " (scroll)";
 			}
 			else
 			{
-				pageTitle = Page1Title + ", page " + pageNumber.ToString() + " of " + nScorePages.ToString();
+				pageTitle = ScoreTitle + ", page " + pageNumber.ToString() + " of " + nScorePages.ToString();
 			}
 
             w.WriteStartElement("title");
@@ -122,12 +130,5 @@ namespace Moritz.Symbols
 			w.WriteEndElement(); // ends the rdf:RDF element
 			w.WriteEndElement(); // ends the metadata element            
         }
- 
-        public string Page1Title = "";
-		public string Comment = "";
-		public string Keywords = "";
-		public string Page1Author = "";
-		public string Date = "";
 	}
-
 }

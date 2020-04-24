@@ -9,7 +9,7 @@ namespace Moritz.Symbols
 {
     public abstract class ChordSymbol : DurationSymbol
     {
-        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, float fontSize, bool beamContinues)
+        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, double fontSize, bool beamContinues)
             : base(voice,  msDuration, absMsPosition, minimumCrotchetDurationMS, fontSize)
         {            
             // note that all chord symbols have a stem! 
@@ -22,8 +22,8 @@ namespace Moritz.Symbols
         public VerticalDir DefaultStemDirection(Clef clef)
         {
             M.Assert(this.HeadsTopDown.Count > 0);
-            float gap = 32F; // dummy value
-            List<float> topDownHeadOriginYs = new List<float>();
+            double gap = 32; // dummy value
+            List<double> topDownHeadOriginYs = new List<double>();
             int lastMidiPitch = int.MaxValue;
             foreach(Head head in this.HeadsTopDown)
             {
@@ -31,8 +31,8 @@ namespace Moritz.Symbols
                 topDownHeadOriginYs.Add(head.GetOriginY(clef, gap));
             }
 
-            float heightOfMiddleStaffLine = (this.Voice.Staff.NumberOfStafflines / 2) * gap;
-            float halfHeight = 0F;
+            double heightOfMiddleStaffLine = (this.Voice.Staff.NumberOfStafflines / 2) * gap;
+            double halfHeight = 0;
             if(topDownHeadOriginYs.Count == 1)
                 halfHeight = topDownHeadOriginYs[0];
             else
@@ -383,7 +383,7 @@ namespace Moritz.Symbols
         /// <param name="upperChord"></param>
         public void AdjustAccidentalsX(ChordSymbol upperChord)
         {
-            float stafflineStemStrokeWidth = Voice.Staff.SVGSystem.Score.PageFormat.StafflineStemStrokeWidth;
+            double stafflineStemStrokeWidth = Voice.Staff.SVGSystem.Score.PageFormat.StafflineStemStrokeWidth;
 
             this.ChordMetrics.AdjustAccidentalsForTwoChords(upperChord.ChordMetrics, stafflineStemStrokeWidth);
         }
@@ -395,10 +395,10 @@ namespace Moritz.Symbols
         /// This function is used by rests and barlines.It is overridden by chords.
         /// </summary>
         /// <param name="previousAS"></param>
-        public override float OverlapWidth(NoteObjectMoment previousNOM)
+        public override double OverlapWidth(NoteObjectMoment previousNOM)
         {
-            float overlap = float.MinValue;
-            float localOverlap = 0F;
+            double overlap = double.MinValue;
+            double localOverlap = 0;
             foreach(AnchorageSymbol previousAS in previousNOM.AnchorageSymbols)
             {
 				//if(this is Study2b2ChordSymbol)

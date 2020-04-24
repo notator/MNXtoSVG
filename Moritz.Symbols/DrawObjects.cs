@@ -56,7 +56,7 @@ namespace Moritz.Symbols
 
 	public class Text : DrawObject
 	{
-		public Text(object container, string text, string fontName, float fontHeight, TextHorizAlign align)
+		public Text(object container, string text, string fontName, double fontHeight, TextHorizAlign align)
 			: base(container)
 		{
 			_textInfo = new TextInfo(text, fontName, fontHeight, align);
@@ -95,7 +95,7 @@ namespace Moritz.Symbols
 
 	internal class StaffNameText : Text
 	{
-		public StaffNameText(object container, string staffName, float fontHeight)
+		public StaffNameText(object container, string staffName, double fontHeight)
 			: base(container, staffName, "Arial", fontHeight, TextHorizAlign.center)
 		{
 		}
@@ -108,15 +108,15 @@ namespace Moritz.Symbols
 
 	internal class FramedBarNumberText : Text
 	{
-		public FramedBarNumberText(object container, string text, float gap, float stafflinethickness)
+		public FramedBarNumberText(object container, string text, double gap, double stafflinethickness)
 			: base(container, text, "Arial", (gap * 2F), TextHorizAlign.center)
 		{
-			float paddingX = 22F;
+			double paddingX = 22;
 			if(text.Length > 1)
-				paddingX = 10F;
-			float paddingY = 22F;
+				paddingX = 10;
+			double paddingY = 22;
 
-			float strokeWidth = stafflinethickness * 1.2F;
+			double strokeWidth = stafflinethickness * 1.2;
 
 			_frameInfo = new FramePadding(TextFrameType.rectangle, paddingY, paddingX, paddingY, paddingX);
 		}
@@ -131,7 +131,7 @@ namespace Moritz.Symbols
 
 	internal class TextList : DrawObject
 	{
-		public TextList(object container, List<string> textStrings, float gap, float stafflinethickness, TextHorizAlign hAlign)
+		public TextList(object container, List<string> textStrings, double gap, double stafflinethickness, TextHorizAlign hAlign)
 		{
 			foreach(string textString in textStrings)
 			{
@@ -175,13 +175,13 @@ namespace Moritz.Symbols
 
 	internal class FramedMultilineText : TextList
 	{
-		public FramedMultilineText(object container, List<string> textStrings, float gap, float stafflinethickness, TextHorizAlign hAlign)
+		public FramedMultilineText(object container, List<string> textStrings, double gap, double stafflinethickness, TextHorizAlign hAlign)
 			: base(container, textStrings, gap, stafflinethickness, hAlign)
 		{
-			float paddingTop = 40F;
-			float paddingRight = 26F;
-			float paddingBottom = 30F;
-			float paddingLeft = 26F;
+			double paddingTop = 40;
+			double paddingRight = 26;
+			double paddingBottom = 30;
+			double paddingLeft = 26;
 
 			_frameInfo = new FramePadding(TextFrameType.rectangle, paddingTop, paddingRight, paddingBottom, paddingLeft);
 		}
@@ -202,7 +202,7 @@ namespace Moritz.Symbols
 
 	internal class FramedRegionStartText : FramedMultilineText
 	{
-		public FramedRegionStartText(object container, List<string> textStrings, float gap, float stafflinethickness)
+		public FramedRegionStartText(object container, List<string> textStrings, double gap, double stafflinethickness)
 			: base(container, textStrings, gap, stafflinethickness, TextHorizAlign.left)
 		{
 		}
@@ -215,7 +215,7 @@ namespace Moritz.Symbols
 
 	internal class FramedRegionEndText : FramedMultilineText
 	{
-		public FramedRegionEndText(object container, List<string> textStrings, float gap, float stafflinethickness)
+		public FramedRegionEndText(object container, List<string> textStrings, double gap, double stafflinethickness)
 			: base(container, textStrings, gap, stafflinethickness, TextHorizAlign.right)
 		{
 			foreach(string text in textStrings)
@@ -223,10 +223,10 @@ namespace Moritz.Symbols
 				if(text.Contains("➔"))
 				{
 					TextFrameType frameType = _frameInfo.FrameType;
-					float paddingTop = _frameInfo.Top;
-					float paddingRight = _frameInfo.Right + 15F; // compensate for missing arrow width
-					float paddingBottom = _frameInfo.Bottom;
-					float paddingLeft = _frameInfo.Left + 15F; // compensate for missing arrow width
+					double paddingTop = _frameInfo.Top;
+					double paddingRight = _frameInfo.Right + 15; // compensate for missing arrow width
+					double paddingBottom = _frameInfo.Bottom;
+					double paddingLeft = _frameInfo.Left + 15; // compensate for missing arrow width
 
 					_frameInfo = new FramePadding(frameType, paddingTop, paddingRight, paddingBottom, paddingLeft);
 
@@ -249,7 +249,7 @@ namespace Moritz.Symbols
 
 	internal class OrnamentText : Text
 	{
-		public OrnamentText(object container, string text, float ornamentFontHeight)
+		public OrnamentText(object container, string text, double ornamentFontHeight)
 			: base(container, text, "Open Sans Condensed", ornamentFontHeight, TextHorizAlign.center)
 		{
 		}
@@ -262,7 +262,7 @@ namespace Moritz.Symbols
 
 	internal class LyricText : Text
 	{
-		public LyricText(object container, string text, float chordFontHeight)
+		public LyricText(object container, string text, double chordFontHeight)
 			: base(container, text, "Arial", (chordFontHeight / 2F), TextHorizAlign.center)
 		{
 		}
@@ -275,8 +275,8 @@ namespace Moritz.Symbols
 
 	internal class DynamicText : Text
 	{
-		public DynamicText(object container, string text, float chordFontHeight)
-			: base(container, text, "CLicht", chordFontHeight * 0.75F, TextHorizAlign.left)
+		public DynamicText(object container, string text, double chordFontHeight)
+			: base(container, text, "CLicht", chordFontHeight * 0.75, TextHorizAlign.left)
 		{
 		}
 

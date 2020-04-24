@@ -33,18 +33,14 @@ namespace Moritz.Symbols
         {
             List<ClefID> uc = new List<ClefID>(ClefMetrics.UsedClefIDs) as List<ClefID>;
 
-            float normalHeight = pageFormat.MusicFontHeight;
-            float smallHeight = normalHeight * pageFormat.SmallSizeFactor;
+            double normalHeight = pageFormat.MusicFontHeight;
+            double smallHeight = normalHeight * pageFormat.SmallSizeFactor;
 
             // treble clefs
             if(uc.Contains(ClefID.trebleClef))
                 WriteClefSymbolDef(w, true, false, false); // treble, normal, output
             if(uc.Contains(ClefID.smallTrebleClef))
                 WriteClefSymbolDef(w, true, true, false); // treble, small, output
-            if(uc.Contains(ClefID.inputTrebleClef))
-                WriteClefSymbolDef(w, true, false, true); // treble, normal, input
-            if(uc.Contains(ClefID.inputSmallTrebleClef))
-                WriteClefSymbolDef(w, true, true, true); // treble, small, input
 
             if(uc.Contains(ClefID.trebleClef8))
                 WriteClef8SymbolDef(w, true, false, false, normalHeight); // treble, normal, output
@@ -92,12 +88,12 @@ namespace Moritz.Symbols
             w.WriteString(innerText);
             w.WriteEndElement();
         }
-        private void WriteTextElement(SvgWriter w, string className, float x, float y, string innerText)
+        private void WriteTextElement(SvgWriter w, string className, double x, double y, string innerText)
         {
             w.WriteStartElement("text");
             w.WriteAttributeString("class", className);
-            w.WriteAttributeString("x", M.FloatToShortString(x));
-            w.WriteAttributeString("y", M.FloatToShortString(y));
+            w.WriteAttributeString("x", M.DoubleToShortString(x));
+            w.WriteAttributeString("y", M.DoubleToShortString(y));
             w.WriteString(innerText);
             w.WriteEndElement();
         }
@@ -164,10 +160,10 @@ namespace Moritz.Symbols
             }
             w.WriteEndElement(); // g
         }
-        private void WriteClef8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, bool isInput, float fontHeight)
+        private void WriteClef8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, bool isInput, double fontHeight)
         {
-            float x = isTreble ? (0.28F * fontHeight) : (0.16F * fontHeight);
-            float y = isTreble ? (-1.17F * fontHeight) : (1.1F * fontHeight);
+            double x = isTreble ? (0.28F * fontHeight) : (0.16F * fontHeight);
+            double y = isTreble ? (-1.17F * fontHeight) : (1.1F * fontHeight);
 
             string mainID = "";
             string clefClass = "";
@@ -227,7 +223,7 @@ namespace Moritz.Symbols
 
             if(String.Compare(mainID, "smallBassClef8") == 0 || String.Compare(mainID, "inputSmallBassClef8") == 0)
             {
-                y *= 1.2F; // lower the number
+                y *= 1.2; // lower the number
             }
 
             w.WriteStartElement("g");
@@ -237,12 +233,12 @@ namespace Moritz.Symbols
             w.WriteEndElement(); // g
         }
 
-        private void WriteClefMulti8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, bool isInput, int octaveShift, float fontHeight)
+        private void WriteClefMulti8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, bool isInput, int octaveShift, double fontHeight)
         {
-            float x1 = isTreble ? (0.036F * fontHeight) : 0;
-            float x2 = isTreble ? (0.252F * fontHeight) : (0.215F * fontHeight);
-            float x3 = isTreble ? (0.48F * fontHeight) : (0.435F * fontHeight);
-            float y = isTreble ? (-1.17F * fontHeight) : (1.1F * fontHeight);
+            double x1 = isTreble ? (0.036F * fontHeight) : 0;
+            double x2 = isTreble ? (0.252F * fontHeight) : (0.215F * fontHeight);
+            double x3 = isTreble ? (0.48F * fontHeight) : (0.435F * fontHeight);
+            double y = isTreble ? (-1.17F * fontHeight) : (1.1F * fontHeight);
 
             string numberStr = (octaveShift == 2) ? "™" : "£";
 
@@ -266,7 +262,7 @@ namespace Moritz.Symbols
                     }
                     else
                     {
-                        y *= 1.2F;
+                        y *= 1.2;
                         idSB.Append("inputSmallBassClef");
                     }
                 }
@@ -281,7 +277,7 @@ namespace Moritz.Symbols
                     }
                     else
                     {
-                        y *= 1.2F;
+                        y *= 1.2;
                         idSB.Append("smallBassClef");
                     }
                 }
@@ -341,7 +337,7 @@ namespace Moritz.Symbols
                 usedFlagIDs.Add(flagID.ToString());
             }
 
-            float normalHeight = pageFormat.MusicFontHeight;
+            double normalHeight = pageFormat.MusicFontHeight;
 
             for(int i = 1; i < 6; i++)
             {
@@ -353,7 +349,7 @@ namespace Moritz.Symbols
             }
         }
 
-        private void WriteRightFlagBlock(SvgWriter w, int nFlags, float fontHeight, List<string> usedFlagIDs)
+        private void WriteRightFlagBlock(SvgWriter w, int nFlags, double fontHeight, List<string> usedFlagIDs)
         {
             StringBuilder id = GetFlagID(true, nFlags);
             if(usedFlagIDs.Contains(id.ToString()))
@@ -362,7 +358,7 @@ namespace Moritz.Symbols
             }
         }
 
-        private void WriteLeftFlagBlock(SvgWriter w, int nFlags, float fontHeight, List<string> usedFlagIDs)
+        private void WriteLeftFlagBlock(SvgWriter w, int nFlags, double fontHeight, List<string> usedFlagIDs)
         {
             StringBuilder id = GetFlagID(false, nFlags);
             if(usedFlagIDs.Contains(id.ToString()))
@@ -390,9 +386,9 @@ namespace Moritz.Symbols
         }
         #endregion symbol definitions
 
-        public override Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, float gap, PageFormat pageFormat)
+        public override Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, double gap, PageFormat pageFormat)
         {
-            float strokeWidth = pageFormat.StafflineStemStrokeWidth;
+            double strokeWidth = pageFormat.StafflineStemStrokeWidth;
 
             Metrics returnMetrics = null;
             SmallClef smallClef = noteObject as SmallClef;
@@ -656,8 +652,8 @@ namespace Moritz.Symbols
                             voiceStemDirection = VerticalDir.down; // bottom voice
                     }
 
-                    float lyricMaxTop = float.MinValue;
-                    float lyricMinBottom = float.MaxValue;
+                    double lyricMaxTop = double.MinValue;
+                    double lyricMinBottom = double.MaxValue;
                     foreach(ChordSymbol chordSymbol in staff.Voices[voiceIndex].ChordSymbols)
                     {
                         Metrics lyricMetrics = chordSymbol.ChordMetrics.LyricMetrics;
@@ -667,12 +663,12 @@ namespace Moritz.Symbols
                             lyricMinBottom = (lyricMinBottom < lyricMetrics.Bottom) ? lyricMinBottom : lyricMetrics.Bottom;
                         }
                     }
-                    if(lyricMaxTop != float.MinValue)
+                    if(lyricMaxTop != double.MinValue)
                     {   // the voice has lyrics
                         if(voiceStemDirection == VerticalDir.none || voiceStemDirection == VerticalDir.down)
                         {
                             // the lyrics are below the staff
-                            float lyricMinTop = staff.Metrics.StafflinesBottom + (staff.SVGSystem.Score.PageFormat.Gap * 1.5F);
+                            double lyricMinTop = staff.Metrics.StafflinesBottom + (staff.SVGSystem.Score.PageFormat.Gap * 1.5F);
                             lyricMaxTop = lyricMaxTop > lyricMinTop ? lyricMaxTop : lyricMinTop;
                         }
                         foreach(ChordSymbol chordSymbol in staff.Voices[voiceIndex].ChordSymbols)
@@ -684,14 +680,14 @@ namespace Moritz.Symbols
             }
         }
 
-        public override void AddNoteheadExtenderLines(List<Staff> staves, float rightMarginPos, float gap, float extenderStrokeWidth, float hairlinePadding, SvgSystem nextSystem)
+        public override void AddNoteheadExtenderLines(List<Staff> staves, double rightMarginPos, double gap, double extenderStrokeWidth, double hairlinePadding, SvgSystem nextSystem)
         {
             AddExtendersAtTheBeginningsofStaves(staves, rightMarginPos, gap, extenderStrokeWidth, hairlinePadding);
             AddExtendersInStaves(staves, extenderStrokeWidth, gap, hairlinePadding);
             AddExtendersAtTheEndsOfStaves(staves, rightMarginPos, gap, extenderStrokeWidth, hairlinePadding, nextSystem);
         }
         #region private to AddNoteheadExtenderLines()
-        private void AddExtendersAtTheBeginningsofStaves(List<Staff> staves, float rightMarginPos, float gap, float extenderStrokeWidth, float hairlinePadding)
+        private void AddExtendersAtTheBeginningsofStaves(List<Staff> staves, double rightMarginPos, double gap, double extenderStrokeWidth, double hairlinePadding)
         {
             foreach(Staff staff in staves)
             {
@@ -727,9 +723,9 @@ namespace Moritz.Symbols
                         Metrics clefMetrics = firstClef.Metrics;
 
                         // extender left of cautionary
-                        List<float> ys = cautionaryChordSymbol.ChordMetrics.HeadsOriginYs;
-                        List<float> x1s = GetEqualFloats(clefMetrics.Right - (hairlinePadding * 2), ys.Count);
-                        List<float> x2s = GetEqualFloats(cbMetrics[0].Left, ys.Count);
+                        List<double> ys = cautionaryChordSymbol.ChordMetrics.HeadsOriginYs;
+                        List<double> x1s = GetEqualFloats(clefMetrics.Right - (hairlinePadding * 2), ys.Count);
+                        List<double> x2s = GetEqualFloats(cbMetrics[0].Left, ys.Count);
                         for(int i = 0; i < x2s.Count; ++i)
                         {
                             if((x2s[i] - x1s[i]) < gap)
@@ -749,16 +745,16 @@ namespace Moritz.Symbols
                 }
             }
         }
-        private List<float> GetCautionaryRightExtenderX2s(ChordSymbol cautionaryChordSymbol1,
-            List<NoteObject> noteObjects, List<float> x1s, List<float> ys, float hairlinePadding)
+        private List<double> GetCautionaryRightExtenderX2s(ChordSymbol cautionaryChordSymbol1,
+            List<NoteObject> noteObjects, List<double> x1s, List<double> ys, double hairlinePadding)
         {
-            List<float> x2s = new List<float>();
+            List<double> x2s = new List<double>();
             NoteObject no2 = GetFollowingChordRestOrBarlineSymbol(noteObjects);
 			ChordSymbol chord2 = no2 as ChordSymbol;
 			RestSymbol rest2 = no2 as RestSymbol;
 			if(no2 is Barline barline)
 			{
-				float x2 = barline.Metrics.OriginX;
+				double x2 = barline.Metrics.OriginX;
 				x2s = GetEqualFloats(x2, x1s.Count);
 			}
 			else if(chord2 != null)
@@ -767,7 +763,7 @@ namespace Moritz.Symbols
 			}
 			else if(rest2 != null)
 			{
-				float x2 = rest2.Metrics.Left - hairlinePadding;
+				double x2 = rest2.Metrics.Left - hairlinePadding;
 				x2s = GetEqualFloats(x2, x1s.Count);
 			}
 			else // no2 == null
@@ -777,8 +773,8 @@ namespace Moritz.Symbols
 				// so draw extenders to the right margin.
 				// extend to the right margin
 				PageFormat pageFormat = cautionaryChordSymbol1.Voice.Staff.SVGSystem.Score.PageFormat;
-				float rightMarginPos = pageFormat.RightMarginPos;
-				float gap = pageFormat.Gap;
+				double rightMarginPos = pageFormat.RightMarginPos;
+				double gap = pageFormat.Gap;
 				x2s = GetEqualFloats(rightMarginPos + gap, ys.Count);
 			}
 			return x2s;
@@ -829,7 +825,7 @@ namespace Moritz.Symbols
             }
             return noteObjectToReturn;
         }
-        private void AddExtendersInStaves(List<Staff> staves, float extenderStrokeWidth, float gap, float hairlinePadding)
+        private void AddExtendersInStaves(List<Staff> staves, double extenderStrokeWidth, double gap, double hairlinePadding)
         {
             foreach(Staff staff in staves)
             {
@@ -843,9 +839,9 @@ namespace Moritz.Symbols
                         // chord or rest is found, and it should always be less than noteObjects.Count.
                         if(noteObjects[index] is ChordSymbol chord1)
                         {
-                            List<float> x1s = GetX1sFromChord1(chord1.ChordMetrics, hairlinePadding);
-                            List<float> x2s = null;
-                            List<float> ys = null;
+                            List<double> x1s = GetX1sFromChord1(chord1.ChordMetrics, hairlinePadding);
+                            List<double> x2s = null;
+                            List<double> ys = null;
                             ++index;
                             if(chord1.MsDurationToNextBarline != null)
                             {
@@ -865,7 +861,7 @@ namespace Moritz.Symbols
 									}
 									else if(rest2 != null)
 									{
-										float x2 = rest2.Metrics.Left - hairlinePadding;
+										double x2 = rest2.Metrics.Left - hairlinePadding;
 										ys = chord1.ChordMetrics.HeadsOriginYs;
 										x2s = GetEqualFloats(x2, x1s.Count);
 										break;
@@ -882,7 +878,7 @@ namespace Moritz.Symbols
 
                                     if(noteObjects[index - 1] is Barline barline)
                                     {
-                                        float x2 = barline.Metrics.OriginX;
+                                        double x2 = barline.Metrics.OriginX;
                                         x2s = GetEqualFloats(x2, x1s.Count);
                                     }
                                     bool drawExtender = false;
@@ -904,8 +900,8 @@ namespace Moritz.Symbols
                 }
             }
         }
-        private void AddExtendersAtTheEndsOfStaves(List<Staff> staves, float rightMarginPos, float gap, float extenderStrokeWidth,
-            float hairlinePadding, SvgSystem nextSystem)
+        private void AddExtendersAtTheEndsOfStaves(List<Staff> staves, double rightMarginPos, double gap, double extenderStrokeWidth,
+            double hairlinePadding, SvgSystem nextSystem)
         {
             for(int staffIndex = 0; staffIndex < staves.Count; ++staffIndex)
             {
@@ -933,9 +929,9 @@ namespace Moritz.Symbols
 
                     if(lastChord != null && lastChord.MsDurationToNextBarline != null)
                     {
-                        List<float> x1s = GetX1sFromChord1(lastChord.ChordMetrics, hairlinePadding);
-                        List<float> x2s;
-                        List<float> ys = lastChord.ChordMetrics.HeadsOriginYs;
+                        List<double> x1s = GetX1sFromChord1(lastChord.ChordMetrics, hairlinePadding);
+                        List<double> x2s;
+                        List<double> ys = lastChord.ChordMetrics.HeadsOriginYs;
                         if(nextSystem != null && FirstDurationSymbolOnNextSystemIsCautionary(nextSystem.Staves[staffIndex].Voices[voiceIndex]))
                         {
                             x2s = GetEqualFloats(rightMarginPos + gap, x1s.Count);
@@ -973,7 +969,7 @@ namespace Moritz.Symbols
         /// This is so that extenders become part of the staff's edge, which is used when shifting staves and drawing barlines.
         /// Extenders shorter than a gap are not created.
         /// </summary>
-        private List<NoteheadExtenderMetrics> CreateExtenders(List<float> x1s, List<float> x2s, List<float> ys, List<HeadMetrics> headMetrics, float extenderStrokeWidth, float gap, bool drawExtender)
+        private List<NoteheadExtenderMetrics> CreateExtenders(List<double> x1s, List<double> x2s, List<double> ys, List<HeadMetrics> headMetrics, double extenderStrokeWidth, double gap, bool drawExtender)
         {
             M.Assert(ys.Count == x1s.Count);
             M.Assert(ys.Count == x2s.Count);
@@ -994,9 +990,9 @@ namespace Moritz.Symbols
             }
             return noteheadExtendersMetrics;
         }
-        private List<float> GetX1sFromChord1(ChordMetrics chord1Metrics, float hairlinePadding)
+        private List<double> GetX1sFromChord1(ChordMetrics chord1Metrics, double hairlinePadding)
         {
-            List<float> x1s = new List<float>();
+            List<double> x1s = new List<double>();
             LedgerlineBlockMetrics upperLedgerlineMetrics = chord1Metrics.UpperLedgerlineBlockMetrics;
             LedgerlineBlockMetrics lowerLedgerlineMetrics = chord1Metrics.LowerLedgerlineBlockMetrics;
             List<HeadMetrics> headsMetrics = chord1Metrics.HeadsMetrics;
@@ -1004,7 +1000,7 @@ namespace Moritz.Symbols
 
             foreach(HeadMetrics headmetrics in headsMetrics)
             {
-                float x1 = headmetrics.Right;
+                double x1 = headmetrics.Right;
                 if(upperLedgerlineMetrics != null
                 && headmetrics.OriginY >= upperLedgerlineMetrics.Top && headmetrics.OriginY <= upperLedgerlineMetrics.Bottom)
                     x1 = upperLedgerlineMetrics.Right;
@@ -1016,19 +1012,19 @@ namespace Moritz.Symbols
             }
             return x1s;
         }
-        private List<float> GetX2sFromChord2(List<float> ys, ChordMetrics chord2Metrics, float hairlinePadding)
+        private List<double> GetX2sFromChord2(List<double> ys, ChordMetrics chord2Metrics, double hairlinePadding)
         {
-            List<float> x2s = new List<float>();
+            List<double> x2s = new List<double>();
             LedgerlineBlockMetrics c2UpperLedgerlineMetrics = chord2Metrics.UpperLedgerlineBlockMetrics;
             LedgerlineBlockMetrics c2LowerLedgerlineMetrics = chord2Metrics.LowerLedgerlineBlockMetrics;
             List<HeadMetrics> c2headsMetrics = chord2Metrics.HeadsMetrics;
             M.Assert(c2headsMetrics.Count > 0);
             List<AccidentalMetrics> c2AccidentalsMetrics = chord2Metrics.TopDownAccidentalsMetrics;
 
-            float verticalPadding = hairlinePadding * 4.0f;
-            foreach(float y in ys)
+            double verticalPadding = hairlinePadding * 4.0f;
+            foreach(double y in ys)
             {
-                float x2 = float.MaxValue;
+                double x2 = double.MaxValue;
                 if(c2UpperLedgerlineMetrics != null)
                 {
                     if(y >= (c2UpperLedgerlineMetrics.Top - verticalPadding)
@@ -1053,24 +1049,24 @@ namespace Moritz.Symbols
                     && y <= (accidentalMetrics.Bottom + verticalPadding))
                         x2 = x2 < accidentalMetrics.Left ? x2 : accidentalMetrics.Left;
                 }
-                x2 = x2 < float.MaxValue ? x2 : chord2Metrics.Left;
+                x2 = x2 < double.MaxValue ? x2 : chord2Metrics.Left;
                 x2s.Add(x2 - hairlinePadding);
             }
 
-            float minX = float.MaxValue;
-            foreach(float x in x2s)
+            double minX = double.MaxValue;
+            foreach(double x in x2s)
             {
                 minX = minX < x ? minX : x;
             }
-            List<float> x2sMinimum = new List<float>();
-            foreach(float x in x2s)
+            List<double> x2sMinimum = new List<double>();
+            foreach(double x in x2s)
                 x2sMinimum.Add(minX);
 
             return x2sMinimum;
         }
-        private List<float> GetEqualFloats(float x2, int count)
+        private List<double> GetEqualFloats(double x2, int count)
         {
-            List<float> x2s = new List<float>();
+            List<double> x2s = new List<double>();
             for(int i = 0; i < count; ++i)
             {
                 x2s.Add(x2);

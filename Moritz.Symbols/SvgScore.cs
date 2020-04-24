@@ -13,40 +13,54 @@ namespace Moritz.Symbols
 {
     public class SvgScore
     {
-        public SvgScore(string folder, string scoreFolderName, string keywords, string comment, PageFormat pageFormat)
+        #region fields
+        #region constructor
+        public readonly PageFormat PageFormat = null;
+        internal readonly string FileName = null; // The base file name with ".svg" (appears in info string at top of each page)
+        internal readonly string FilePath = null; // The complete path, including the FileName.
+        internal readonly Metadata Metadata = null;
+        internal readonly bool PrintTitleAndAuthorOnScorePage1 = true;
+        #endregion constructor
+
+        public Notator Notator = null;
+
+        protected ScoreData ScoreData = null;
+
+        public int PageCount { get { return _pages.Count; } }
+        protected List<SvgPage> _pages = new List<SvgPage>();
+
+        #endregion fields
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetFolder">The complete path to the folder that will contain the output file.</param>
+        /// <param name="targetFilenameWithoutSuffix">The file name for the score, without '.svg' suffix.</param>
+        /// <param name="svgData">Page format, line thicknesses, tempo</param>
+        /// <param name="metadata"></param>
+        public SvgScore(string targetFolder, string targetFilenameWithoutSuffix,
+                        SVGData svgData, Metadata metadata, bool printTitleAndAuthorOnScorePage1)
         {
-            _pageFormat = pageFormat;
-            SetFilePathAndMetadata(folder, scoreFolderName, pageFormat, keywords, comment);
+            this.Metadata = metadata;
+            this.Metadata.Date = M.NowString; // printed in info string at top of score.
+
+            M.CreateDirectoryIfItDoesNotExist(targetFolder);
+            FileName = targetFilenameWithoutSuffix + ".svg";
+            FilePath = targetFolder + @"\" + FileName;
+            PrintTitleAndAuthorOnScorePage1 = printTitleAndAuthorOnScorePage1;
+
+            this.PageFormat = new PageFormat(svgData, printTitleAndAuthorOnScorePage1);
         }
 
-        private void SetFilePathAndMetadata(string folder, string scoreFolderName, PageFormat pageFormat, string keywords, string comment)
-        {
-            if(!String.IsNullOrEmpty(scoreFolderName))
-            {
-                M.CreateDirectoryIfItDoesNotExist(folder);
-                this._filename = scoreFolderName + ".html";
-                FilePath = folder + @"\" + _filename;
-
-				Metadata = new Metadata
-				{
-					Page1Title = String.IsNullOrEmpty(pageFormat.Page1Title) ? scoreFolderName : pageFormat.Page1Title,
-					Page1Author = String.IsNullOrEmpty(pageFormat.Page1Author) ? "James Ingram" : pageFormat.Page1Author,
-					Keywords = keywords,
-					Comment = comment,
-					Date = M.NowString
-				};
-			}
-        }
-
-        protected virtual byte MidiChannel(int staffIndex) { throw new NotImplementedException(); }
+        #region functions
 
         #region save multi-page score
         /// <summary>
         /// Silently overwrites the .html and all current .svg pages.
         /// An SVGScore consists of an .html file which references one .svg file per page of the score.
-		/// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
-		///     a) the metadata element, and all its required namespaces,
-		///     b) the score namespace, and all its enclosed (temporal and alignment) information.
+        /// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
+        ///     a) the metadata element, and all its required namespaces,
+        ///     b) the score namespace, and all its enclosed (temporal and alignment) information.
         /// </summary>
         public void SaveMultiPageScore(bool graphicsOnly)
         {
@@ -82,7 +96,7 @@ namespace Moritz.Symbols
                 w.WriteStartElement("div");
                 w.WriteAttributeString("class", "centredReferenceDiv");
                 string styleString = "position:relative; text-align: left; top: 0px; padding-top: 0px; margin-top: 0px; width: " + 
-                    _pageFormat.ScreenRight.ToString() + "px; margin-left: auto; margin-right: auto;";
+                    SVGData.pageWidth.ToString() + "px; margin-left: auto; margin-right: auto;";
                 w.WriteAttributeString("style", styleString);
 
                 w.WriteStartElement("div");
@@ -95,8 +109,8 @@ namespace Moritz.Symbols
                     w.WriteAttributeString("src", svgPagename);
                     w.WriteAttributeString("content-type", "image/svg+xml");
                     w.WriteAttributeString("class", "svgPage");
-                    w.WriteAttributeString("width", M.FloatToShortString(_pageFormat.ScreenRight));
-                    w.WriteAttributeString("height", M.FloatToShortString(_pageFormat.ScreenBottom));
+                    w.WriteAttributeString("width", M.DoubleToShortString(SVGData.pageWidth));
+                    w.WriteAttributeString("height", M.DoubleToShortString(SVGData.pageHeight));
                     w.WriteEndElement();
                     w.WriteStartElement("br");
                     w.WriteEndElement();
@@ -142,7 +156,7 @@ namespace Moritz.Symbols
 
                 pageFilenames.Add(pageFilename);
 
-                SaveSVGPage(pagePath, page, this.Metadata, false, graphicsOnly);
+                SaveSVGPage(pagePath, page, this.Metadata, false, graphicsOnly, PrintTitleAndAuthorOnScorePage1);
                 pageNumber++;
             }
 
@@ -160,7 +174,7 @@ namespace Moritz.Symbols
 		/// <summary>
 		/// Writes an SVG file containing one page of the score.
 		/// </summary>
-		public void SaveSVGPage(string pagePath, SvgPage page, Metadata metadata, bool isSinglePageScore, bool graphicsOnly)
+		public void SaveSVGPage(string pagePath, SvgPage page, Metadata metadata, bool isSinglePageScore, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
         {
             if(File.Exists(pagePath))
             {
@@ -179,7 +193,7 @@ namespace Moritz.Symbols
 
             using(SvgWriter w = new SvgWriter(pagePath, settings))
             {
-                page.WriteSVG(w, metadata, isSinglePageScore, graphicsOnly);
+                page.WriteSVG(w, isSinglePageScore, graphicsOnly, printTitleAndAuthorOnScorePage1);
             }
         }
 
@@ -188,13 +202,13 @@ namespace Moritz.Symbols
             M.Assert(Notator != null);
 			w.SvgStartDefs(null);
 			WriteStyle(w, pageNumber);
-			Notator.SymbolSet.WriteSymbolDefinitions(w, _pageFormat);
+			Notator.SymbolSet.WriteSymbolDefinitions(w, PageFormat);
 			w.SvgEndDefs(); // end of defs
 		}
 
 		private void WriteStyle(SvgWriter w, int pageNumber)
 		{
-            StringBuilder css = GetStyles(_pageFormat, pageNumber);
+            StringBuilder css = GetStyles(PageFormat, pageNumber);
 
             w.WriteStartElement("style");
 			w.WriteAttributeString("type", "text/css");
@@ -278,18 +292,18 @@ namespace Moritz.Symbols
             if(pageNumber < 2) // pageNumber is 0 for scroll score.
             {
                 string openSans = "\"Open Sans\"";
-                string page1TitleHeight = M.FloatToShortString(pageFormat.Page1TitleHeight);
+                string page1TitleHeight = M.DoubleToShortString(pageFormat.Page1TitleHeight);
 				StringBuilder mainTitleType = TextStyle("." + CSSObjectClass.mainTitle.ToString(), openSans, page1TitleHeight, "middle");
                 fontStyles.Append(mainTitleType);
 
-                string page1AuthorHeight = M.FloatToShortString(pageFormat.Page1AuthorHeight);
+                string page1AuthorHeight = M.DoubleToShortString(pageFormat.Page1AuthorHeight);
 				StringBuilder authorType = TextStyle("." + CSSObjectClass.author.ToString(), openSans, page1AuthorHeight, "end");
                 fontStyles.Append(authorType);
             } // end if(pageNumber < 2)
             #endregion Open Sans (Titles)
 
             #region CLicht
-            string musicFontHeight = M.FloatToShortString(pageFormat.MusicFontHeight);
+            string musicFontHeight = M.DoubleToShortString(pageFormat.MusicFontHeight);
             StringBuilder existingCLichtClasses = GetExistingClichtClasses(usedCSSObjectClasses, usedClefIDs);
             StringBuilder cLichtStyle = TextStyle(existingCLichtClasses.ToString(), "CLicht", "", "");
             fontStyles.Append(cLichtStyle);
@@ -304,7 +318,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSObjectClasses.Contains(CSSObjectClass.dynamic))
             {
-                string dynamicFontHeight = M.FloatToShortString(pageFormat.DynamicFontHeight);
+                string dynamicFontHeight = M.DoubleToShortString(pageFormat.DynamicFontHeight);
                 fontSizeStyle = TextStyle("." + CSSObjectClass.dynamic.ToString(), "", dynamicFontHeight, "");
                 fontStyles.Append(fontSizeStyle);
             }
@@ -313,20 +327,20 @@ namespace Moritz.Symbols
             StringBuilder smallClasses = GetSmallClasses(usedCSSObjectClasses, usedClefIDs);
             if(smallClasses.Length > 0)
             {
-                string smallMusicFontHeight = M.FloatToShortString(pageFormat.MusicFontHeight * pageFormat.SmallSizeFactor);
+                string smallMusicFontHeight = M.DoubleToShortString(pageFormat.MusicFontHeight * pageFormat.SmallSizeFactor);
                 fontSizeStyle = TextStyle(smallClasses.ToString(), "", smallMusicFontHeight, "");
                 fontStyles.Append(fontSizeStyle);
             }
 
             if(OctavedClefExists(usedClefIDs))
             {
-                string clefOctaveNumberFontSize = M.FloatToShortString(pageFormat.ClefOctaveNumberHeight);
+                string clefOctaveNumberFontSize = M.DoubleToShortString(pageFormat.ClefOctaveNumberHeight);
                 fontSizeStyle = TextStyle("." + CSSObjectClass.clefOctaveNumber.ToString(), "", clefOctaveNumberFontSize, "");
                 fontStyles.Append(fontSizeStyle);
             }
             if(OctavedSmallClefExists(usedClefIDs))
             {
-                string smallClefOctaveNumberFontSize = M.FloatToShortString(pageFormat.ClefOctaveNumberHeight * pageFormat.SmallSizeFactor);
+                string smallClefOctaveNumberFontSize = M.DoubleToShortString(pageFormat.ClefOctaveNumberHeight * pageFormat.SmallSizeFactor);
                 fontSizeStyle = TextStyle("." + CSSObjectClass.smallClefOctaveNumber.ToString(), "", smallClefOctaveNumberFontSize, "");
                 fontStyles.Append(fontSizeStyle);
             }
@@ -338,44 +352,44 @@ namespace Moritz.Symbols
             StringBuilder arialStyle = TextStyle(existingArialClasses.ToString(), "Arial", "", "");
             fontStyles.Append(arialStyle);
 
-            string timeStampHeight = M.FloatToShortString(pageFormat.TimeStampFontHeight);
+            string timeStampHeight = M.DoubleToShortString(pageFormat.TimeStampFontHeight);
 			StringBuilder timeStampType = TextStyle("." + CSSObjectClass.timeStamp.ToString(), "", timeStampHeight, "");
             fontStyles.Append(timeStampType);
 
             if(usedCSSObjectClasses.Contains(CSSObjectClass.staffName))
             {
-                string staffNameFontHeight = M.FloatToShortString(pageFormat.StaffNameFontHeight);
+                string staffNameFontHeight = M.DoubleToShortString(pageFormat.StaffNameFontHeight);
 				StringBuilder staffNameHeight = TextStyle("." + CSSObjectClass.staffName.ToString(), "", staffNameFontHeight, "middle");
                 fontStyles.Append(staffNameHeight);
             }
             if(usedCSSObjectClasses.Contains(CSSObjectClass.lyric))
             {
-                string lyricFontHeight = M.FloatToShortString(pageFormat.LyricFontHeight);
+                string lyricFontHeight = M.DoubleToShortString(pageFormat.LyricFontHeight);
 				StringBuilder lyricHeight = TextStyle("." + CSSObjectClass.lyric.ToString(), "", lyricFontHeight, "middle");
                 fontStyles.Append(lyricHeight);
             }
 			if(usedCSSObjectClasses.Contains(CSSObjectClass.barNumber))
 			{
-				string barNumberNumberFontHeight = M.FloatToShortString(pageFormat.BarNumberNumberFontHeight);
+				string barNumberNumberFontHeight = M.DoubleToShortString(pageFormat.BarNumberNumberFontHeight);
 				StringBuilder barNumberNumberHeight = TextStyle("." + CSSObjectClass.barNumberNumber.ToString(), "", barNumberNumberFontHeight, "middle");
 				fontStyles.Append(barNumberNumberHeight);
 			}
 			if(usedCSSObjectClasses.Contains(CSSObjectClass.framedRegionInfo))
 			{
-				string regionInfoStringFontHeight = M.FloatToShortString(pageFormat.RegionInfoStringFontHeight);
+				string regionInfoStringFontHeight = M.DoubleToShortString(pageFormat.RegionInfoStringFontHeight);
 				StringBuilder regionInfoHeight = TextStyle("." + CSSObjectClass.regionInfoString.ToString(), "", regionInfoStringFontHeight, "middle");
 				fontStyles.Append(regionInfoHeight);
 			}
 
 			if(ClefXExists(usedClefIDs))
             {
-                string clefXFontHeight = M.FloatToShortString(pageFormat.ClefXFontHeight);
+                string clefXFontHeight = M.DoubleToShortString(pageFormat.ClefXFontHeight);
 				StringBuilder clefXStyle = TextStyle("." + CSSObjectClass.clefX.ToString(), "", clefXFontHeight, "");
                 fontStyles.Append(clefXStyle);
             }
             if(SmallClefXExists(usedClefIDs))
             {
-                string smallClefXFontHeight = M.FloatToShortString(pageFormat.ClefXFontHeight * pageFormat.SmallSizeFactor);
+                string smallClefXFontHeight = M.DoubleToShortString(pageFormat.ClefXFontHeight * pageFormat.SmallSizeFactor);
 				StringBuilder smallClefXStyle = TextStyle("." + CSSObjectClass.smallClefX.ToString(), "", smallClefXFontHeight, "");
                 fontStyles.Append(smallClefXStyle);
             }
@@ -385,7 +399,7 @@ namespace Moritz.Symbols
 			if(usedCSSObjectClasses.Contains(CSSObjectClass.ornament))
 			{
 				string openSansCondensed = "\"Open Sans Condensed\"";
-				string ornamentFontHeight = M.FloatToShortString(pageFormat.OrnamentFontHeight);
+				string ornamentFontHeight = M.DoubleToShortString(pageFormat.OrnamentFontHeight);
 				StringBuilder ornamentType = TextStyle("." + CSSObjectClass.ornament.ToString(), openSansCondensed, ornamentFontHeight, "middle");
 				fontStyles.Append(ornamentType);
 			}
@@ -593,28 +607,6 @@ namespace Moritz.Symbols
 
             return rval;
         }
-        private bool OctavedInputClefExists(List<ClefID> usedClefIDs)
-        {
-            bool rval = usedClefIDs.Contains(ClefID.inputTrebleClef8)
-            || usedClefIDs.Contains(ClefID.inputBassClef8)
-            || usedClefIDs.Contains(ClefID.inputTrebleClef2x8)
-            || usedClefIDs.Contains(ClefID.inputBassClef2x8)
-            || usedClefIDs.Contains(ClefID.inputTrebleClef3x8)
-            || usedClefIDs.Contains(ClefID.inputBassClef3x8);
-
-            return rval;
-        }
-        private bool OctavedInputSmallClefExists(List<ClefID> usedClefIDs)
-        {
-            bool rval = usedClefIDs.Contains(ClefID.inputSmallTrebleClef8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef8)
-            || usedClefIDs.Contains(ClefID.inputSmallTrebleClef2x8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef2x8)
-            || usedClefIDs.Contains(ClefID.inputSmallTrebleClef3x8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef3x8);
-
-            return rval;
-        }
 
         private bool ClefXExists(List<ClefID> usedClefIDs)
         {
@@ -634,24 +626,6 @@ namespace Moritz.Symbols
 
             return rval;
         }
-        private bool InputClefXExists(List<ClefID> usedClefIDs)
-        {
-            bool rval = usedClefIDs.Contains(ClefID.inputTrebleClef2x8)
-            || usedClefIDs.Contains(ClefID.inputBassClef2x8)
-            || usedClefIDs.Contains(ClefID.inputTrebleClef3x8)
-            || usedClefIDs.Contains(ClefID.inputBassClef3x8);
-
-            return rval;
-        }
-        private bool InputSmallClefXExists(List<ClefID> usedClefIDs)
-        {
-            bool rval = usedClefIDs.Contains(ClefID.inputSmallTrebleClef2x8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef2x8)
-            || usedClefIDs.Contains(ClefID.inputSmallTrebleClef3x8)
-            || usedClefIDs.Contains(ClefID.inputSmallBassClef3x8);
-
-            return rval;
-        }
         #endregion font styles
 
         #region line styles
@@ -659,7 +633,7 @@ namespace Moritz.Symbols
         {
             StringBuilder lineStyles = new StringBuilder();
             
-            string strokeWidth = M.FloatToShortString(pageFormat.StafflineStemStrokeWidth);
+            string strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
             StringBuilder standardLineClasses = GetStandardLineClasses(usedCSSClasses, defineFlagStyle);
 			//".staffline, .ledgerline, .stem, .beam, .flag, regionFrameConnector
 			lineStyles.Append($@"{standardLineClasses.ToString()}
@@ -681,7 +655,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.normalBarline))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.NormalBarlineStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.NormalBarlineStrokeWidth);
 				lineStyles.Append($@".{CSSObjectClass.normalBarline.ToString()}
             {{
                 stroke:black;
@@ -692,7 +666,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.thinBarline))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.ThinBarlineStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.ThinBarlineStrokeWidth);
 				lineStyles.Append($@".{CSSObjectClass.thinBarline.ToString()}
             {{
                 stroke:black;
@@ -703,7 +677,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.thickBarline))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.ThickBarlineStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.ThickBarlineStrokeWidth);
 				lineStyles.Append($@".{CSSObjectClass.thickBarline.ToString()}
             {{
                 stroke:black;
@@ -714,7 +688,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.noteExtender))
             {
-                strokeWidth = M.FloatToShortString(pageFormat.NoteheadExtenderStrokeWidth);
+                strokeWidth = M.DoubleToShortString(pageFormat.NoteheadExtenderStrokeWidth);
                 lineStyles.Append($@".{CSSObjectClass.noteExtender.ToString()}
             {{
                 stroke:black;
@@ -725,7 +699,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.barNumber))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.BarNumberFrameStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.BarNumberFrameStrokeWidth);
 				lineStyles.Append($@".barNumberFrame
             {{
                 stroke:black;
@@ -737,7 +711,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.framedRegionInfo))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.RegionInfoFrameStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.RegionInfoFrameStrokeWidth);
 				lineStyles.Append($@".regionInfoFrame
             {{
                 stroke:black;
@@ -749,7 +723,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBracket))
             {
-                strokeWidth = M.FloatToShortString(pageFormat.StafflineStemStrokeWidth);
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
                 lineStyles.Append($@".cautionaryBracket
             {{
                 stroke:black;
@@ -761,7 +735,7 @@ namespace Moritz.Symbols
 
             if(pageNumber > 0) // pageNumber is 0 for scroll
             {
-                strokeWidth = M.FloatToShortString(pageFormat.StafflineStemStrokeWidth);
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
                 lineStyles.Append($@".frame
             {{
                 stroke:black;
@@ -771,7 +745,7 @@ namespace Moritz.Symbols
             ");
             }
 
-            strokeWidth = M.FloatToShortString(pageFormat.StafflineStemStrokeWidth);
+            strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
             if(usedCSSClasses.Contains(CSSObjectClass.beamBlock))
             {
                 lineStyles.Append($@".opaqueBeam
@@ -819,22 +793,24 @@ namespace Moritz.Symbols
             return rval;
         }
 
-		#endregion line styles
+        #endregion line styles
 
-		#endregion save multi-page score
+        #endregion save multi-page score
 
-		#region save single svg score
-		/// <summary>
-		/// <summary>
-		/// Writes the "scroll" version of the score. This is a standalone SVG file.
-		/// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
-		///     a) the metadata element, and all its required namespaces,
-		///     b) the score namespace, and all its enclosed (temporal and alignment) information.
-		/// </summary>
-		public void SaveSingleSVGScore(bool graphicsOnly)
+        #region save single svg score
+        /// <summary>
+        /// <summary>
+        /// Writes the "scroll" version of the score. This is a standalone SVG file.
+        /// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
+        ///     a) the metadata element, and all its required namespaces,
+        ///     b) all temporal (i.e.MIDI etc.) informaton the score namespace, and all its enclosed (temporal and alignment) information.
+        /// If printTitleAndAuthorOnScorePage1 is false then the main title and author information is omitted on page 1, and page 1
+        /// has the margins otherwise allocated for all the other pages.
+        /// </summary>
+        public void SaveSingleSVGScore(bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
 		{
 			TextInfo infoTextInfo = GetBasicInfoTextAtTopOfPage(0);
-			SvgPage singlePage = new SvgPage(this, _pageFormat, 0, infoTextInfo, this.Systems, true);
+			SvgPage singlePage = new SvgPage(this, PageFormat, 0, infoTextInfo, this.Systems, true);
 
 			string pageFilename = Path.GetFileNameWithoutExtension(FilePath);
 			if(graphicsOnly)
@@ -848,20 +824,16 @@ namespace Moritz.Symbols
 			}
 			string pagePath = Path.GetDirectoryName(FilePath) + @"\" + pageFilename;
 
-			SaveSVGPage(pagePath, singlePage, this.Metadata, true, graphicsOnly);
+			SaveSVGPage(pagePath, singlePage, this.Metadata, true, graphicsOnly, printTitleAndAuthorOnScorePage1);
 		}
 
 
 		#endregion save single svg score
-		#region fields loaded from .capx files
-		public Metadata Metadata = null;
-        public List<SvgSystem> Systems = new List<SvgSystem>();
-        #endregion
-        #region moritz-specific private fields
 
-        protected string _filename = "";
-        public string Filename { get { return _filename; } }
-        #endregion
+        /// <summary>
+        /// The score's systems
+        /// </summary>
+        public List<SvgSystem> Systems = new List<SvgSystem>();
 
         /// <summary>
         /// Adds the staff name to the first barline of each visible staff in the score.
@@ -877,7 +849,7 @@ namespace Moritz.Symbols
                     {
                         if(noteObject is Barline firstBarline)
                         {
-                            float fontHeight = _pageFormat.StaffNameFontHeight;
+                            double fontHeight = PageFormat.StaffNameFontHeight;
 							StaffNameText staffNameText = new StaffNameText(firstBarline, staff.Staffname, fontHeight);
                             firstBarline.DrawObjects.Add(staffNameText);
                             break;
@@ -970,7 +942,7 @@ namespace Moritz.Symbols
                 while(barNumber <= Systems.Count)
                 {
                     barNumbers.Add(barNumber);
-                    barNumber += _pageFormat.DefaultNumberOfBarsPerSystem;
+                    barNumber += PageFormat.DefaultNumberOfBarsPerSystem;
                 }
             }
 
@@ -1221,9 +1193,9 @@ namespace Moritz.Symbols
 
             AddNormalBarlines(); // 1. add a NormalBarline at the end of each system=bar,
 
-			ReplaceConsecutiveRestsInBars(_pageFormat.MinimumCrotchetDuration);
+			ReplaceConsecutiveRestsInBars(PageFormat.MinimumCrotchetDuration);
 
-            SetSystemsToBeginAtBars(_pageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
+            SetSystemsToBeginAtBars(PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
 
 			SetSystemAbsEndMsPositions();
 
@@ -1508,14 +1480,14 @@ namespace Moritz.Symbols
 
             List<SvgSystem> systemsOnPage = new List<SvgSystem>();
             bool lastPage = true;
-            float systemHeight = 0;
-            float frameHeight;
+            double systemHeight = 0;
+            double frameHeight;
             if(pageNumber == 1)
-                frameHeight = _pageFormat.FirstPageFrameHeight;
+                frameHeight = PageFormat.FirstPageFrameHeight;
             else
-                frameHeight = _pageFormat.OtherPagesFrameHeight;
+                frameHeight = PageFormat.OtherPagesFrameHeight;
 
-            float systemHeightsTotal = 0;
+            double systemHeightsTotal = 0;
             while(systemIndex < Systems.Count)
             {
                 M.Assert(Systems[systemIndex].Metrics != null);
@@ -1530,22 +1502,22 @@ namespace Moritz.Symbols
                     break;
                 }
 
-                systemHeightsTotal += _pageFormat.DefaultDistanceBetweenSystems;
+                systemHeightsTotal += PageFormat.DefaultDistanceBetweenSystems;
 
                 systemsOnPage.Add(Systems[systemIndex]);
 
                 systemIndex++;
             }
 
-            return new SvgPage(this, _pageFormat, pageNumber, infoTextInfo, systemsOnPage, lastPage);
+            return new SvgPage(this, PageFormat, pageNumber, infoTextInfo, systemsOnPage, lastPage);
         }
 
         private TextInfo GetBasicInfoTextAtTopOfPage(int pageNumber)
         {
             StringBuilder infoAtTopOfPageSB = new StringBuilder();
 
-            if(!String.IsNullOrEmpty(_filename))
-                infoAtTopOfPageSB.Append(Path.GetFileNameWithoutExtension(_filename));
+            if(!String.IsNullOrEmpty(FileName))
+                infoAtTopOfPageSB.Append(Path.GetFileNameWithoutExtension(FileName));
 
 			if(pageNumber == 0)
 			{
@@ -1559,7 +1531,7 @@ namespace Moritz.Symbols
             if(Metadata != null)
                 infoAtTopOfPageSB.AppendFormat(", " + Metadata.Date);
 
-            return new TextInfo(infoAtTopOfPageSB.ToString(), "Arial", _pageFormat.TimeStampFontHeight, TextHorizAlign.left);
+            return new TextInfo(infoAtTopOfPageSB.ToString(), "Arial", PageFormat.TimeStampFontHeight, TextHorizAlign.left);
         }
 
 
@@ -1613,7 +1585,7 @@ namespace Moritz.Symbols
                     {
                         if(isFirstBarline && system != Systems[0])
                         {
-                            FramedBarNumberText framedBarNumber = new FramedBarNumberText(this, barNumber.ToString(), _pageFormat.Gap, _pageFormat.StafflineStemStrokeWidth);
+                            FramedBarNumberText framedBarNumber = new FramedBarNumberText(this, barNumber.ToString(), PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
 
                             barline.DrawObjects.Add(framedBarNumber);
                             isFirstBarline = false;
@@ -1625,7 +1597,7 @@ namespace Moritz.Symbols
         }
 
 		/// <summary>
-		/// Adds a FramedRegionStartText to each Barline that is the start of one or more regions.
+		/// Adds a FramedRegionStartText to each Barline that is the start of one or more (repeat) regions.
 		/// Such regionStart info is left-aligned to the barline, so is never added to the *final* barline on a system
 		/// </summary>
 		private void AddRegionStartInfo()
@@ -1654,7 +1626,7 @@ namespace Moritz.Symbols
 				{
 					if(regionStartDataBarIndices.Contains(barlineIndex))
 					{
-						FramedRegionStartText frst = new FramedRegionStartText(this, regionStartData[barlineIndex], _pageFormat.Gap, _pageFormat.StafflineStemStrokeWidth);
+						FramedRegionStartText frst = new FramedRegionStartText(this, regionStartData[barlineIndex], PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
 						barline.DrawObjects.Add(frst);
 					}
 					barlineIndex++;
@@ -1702,7 +1674,7 @@ namespace Moritz.Symbols
 				{
 					if(regionEndDataBarIndices.Contains(barlineIndex))
 					{
-						FramedRegionEndText fret = new FramedRegionEndText(this, regionEndData[barlineIndex], _pageFormat.Gap, _pageFormat.StafflineStemStrokeWidth);
+						FramedRegionEndText fret = new FramedRegionEndText(this, regionEndData[barlineIndex], PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
 						barline.DrawObjects.Add(fret);
 					}
 					barlineIndex++;
@@ -1744,58 +1716,8 @@ namespace Moritz.Symbols
             }
         }
 
-		public int PageCount { get { return _pages.Count; }}
-        protected List<SvgPage> _pages = new List<SvgPage>();
+        #endregion functions
 
-        public PageFormat PageFormat { get { return _pageFormat; } } 
-        protected PageFormat _pageFormat = null;
-
-        public Notator Notator = null;
-
-		protected ScoreData ScoreData = null;
-
-        /// <summary>
-        /// Needed while creating the PerformanceOptionsDialog
-        /// </summary>
-        public IEnumerable<string> Staffnames
-        {
-            get
-            {
-                M.Assert(_pages.Count > 0);
-                M.Assert(_pages[0].Systems.Count > 0);
-                M.Assert(_pages[0].Systems[0].Staves.Count > 0);
-                foreach(Staff staff in _pages[0].Systems[0].Staves)
-                {
-                    M.Assert(!String.IsNullOrEmpty(staff.Staffname));
-                    yield return staff.Staffname;
-                }
-            }
-        }
-        public IEnumerable<Voice> Voices
-        {
-            get
-            {
-                foreach(SvgSystem system in Systems)
-                    foreach(Staff staff in system.Staves)
-                        foreach(Voice voice in staff.Voices)
-                            yield return voice;
-            }
-        }
-        public string FilePath;
-    }
-
-    internal class ErrorInScoreException : ApplicationException
-    {
-        public ErrorInScoreException(string message)
-            : base(message)
-        { }
-    }
-
-    internal class PerformanceErrorException : ApplicationException
-    {
-        public PerformanceErrorException(string message)
-            : base(message)
-        { }
     }
 }
 

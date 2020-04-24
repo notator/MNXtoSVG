@@ -13,7 +13,7 @@ namespace Moritz.Symbols
         }
 
         public abstract void WriteSymbolDefinitions(SvgWriter w, PageFormat pageFormat);
-        public abstract Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, float gap, PageFormat pageFormat);
+        public abstract Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, double gap, PageFormat pageFormat);
         public abstract NoteObject GetNoteObject(Voice voice, int absMsPosition, IUniqueDef iud, int iudIndexInVoice,
             ref byte currentVelocity, PageFormat pageformat);
 
@@ -34,7 +34,7 @@ namespace Moritz.Symbols
         /// Feb. 2012: Currently only the StandardSymbolSet supports notehead extender lines. 
         /// </summary>
         public virtual void AddNoteheadExtenderLines(List<Staff> staves,
-            float rightMarginPos, float gap, float extenderStrokeWidth, float hairlinePadding, SvgSystem nextSystem) { }
+            double rightMarginPos, double gap, double extenderStrokeWidth, double hairlinePadding, SvgSystem nextSystem) { }
 
         /// <summary>
         /// This function

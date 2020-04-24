@@ -3,7 +3,7 @@ namespace Moritz.Xml
     public enum FlagID
     {
         none,
-        left1Flag,
+        left1Flag, 
         left2Flags, 
         left3Flags, 
         left4Flags,

@@ -33,10 +33,10 @@ namespace Moritz.Symbols
 
 		public void ResetBoundary()
 		{
-			_top = float.MaxValue;
-			_right = float.MinValue;
-			_bottom = float.MinValue;
-			_left = float.MaxValue;
+			_top = double.MaxValue;
+			_right = double.MinValue;
+			_bottom = double.MinValue;
+			_left = double.MaxValue;
 			foreach(Metrics metrics in MetricsList)
 			{
 				_top = _top < metrics.Top ? _top : metrics.Top;
@@ -46,7 +46,7 @@ namespace Moritz.Symbols
 			}
 		}
 
-		public override void Move(float dx, float dy)
+		public override void Move(double dx, double dy)
 		{
 			base.Move(dx, dy);
 			foreach(Metrics metrics in MetricsList)

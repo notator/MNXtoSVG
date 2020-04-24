@@ -24,7 +24,7 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "value":
-                        Duration = new DurationSymbol(r.Value, B.CurrentTupletLevel);
+                        Duration = new DurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                     case "continue":
                         Continue = r.Value;

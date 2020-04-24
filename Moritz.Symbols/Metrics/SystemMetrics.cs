@@ -10,7 +10,7 @@ namespace Moritz.Symbols
 
         }
 
-        public override void Move(float dx, float dy)
+        public override void Move(double dx, double dy)
         {
             base.Move(dx, dy);
             _stafflinesTop += dy;
@@ -42,15 +42,15 @@ namespace Moritz.Symbols
         }
 
 
-        public float StafflinesTop { get { return _stafflinesTop; } }
-        private float _stafflinesTop = float.MaxValue;
+        public double StafflinesTop { get { return _stafflinesTop; } }
+        private double _stafflinesTop = double.MaxValue;
 
-        public float StafflinesBottom { get { return _stafflinesBottom; } set { _stafflinesBottom = value; } }
-        private float _stafflinesBottom = float.MinValue;
+        public double StafflinesBottom { get { return _stafflinesBottom; } set { _stafflinesBottom = value; } }
+        private double _stafflinesBottom = double.MinValue;
 
-        public float NotesTop { get { return _notesTop; } set { _notesTop = value; } }
-        private float _notesTop = 0F;
-        public float NotesBottom { get { return _notesBottom; } set { _notesBottom = value; } }
-        private float _notesBottom = 0F;
+        public double NotesTop { get { return _notesTop; } set { _notesTop = value; } }
+        private double _notesTop = 0;
+        public double NotesBottom { get { return _notesBottom; } set { _notesBottom = value; } }
+        private double _notesBottom = 0;
     }
 }

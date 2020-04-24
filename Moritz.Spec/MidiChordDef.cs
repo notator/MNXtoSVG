@@ -954,7 +954,7 @@ namespace Moritz.Spec
 		//{
 		//    bool okay = true;
 		//    int numberOfOrnamentChords = 1;
-		//    float factor = 1.0F;
+		//    double factor = 1.0;
 		//    // try each ornament length in turn until okay is true
 		//    for(int numChords = relativeDurations.Count; numChords > 0; --numChords)
 		//    {
@@ -962,11 +962,11 @@ namespace Moritz.Spec
 		//        int sum = 0;
 		//        for(int i = 0; i < numChords; ++i)
 		//            sum += relativeDurations[i];
-		//        factor = ((float)msDuration / (float)sum);
+		//        factor = ((double)msDuration / (double)sum);
 
 		//        for(int i = 0; i < numChords; ++i)
 		//        {
-		//            if((relativeDurations[i] * factor) < (float)minimumOrnamentChordMsDuration)
+		//            if((relativeDurations[i] * factor) < (double)minimumOrnamentChordMsDuration)
 		//                okay = false;
 		//        }
 		//        if(okay)

@@ -8,7 +8,7 @@ namespace Moritz.Symbols
 {
     public class OutputStaff : Staff
     {
-        public OutputStaff(SvgSystem svgSystem, string staffName, int numberOfStafflines, float gap, float stafflineStemStrokeWidth)
+        public OutputStaff(SvgSystem svgSystem, string staffName, int numberOfStafflines, double gap, double stafflineStemStrokeWidth)
             : base(svgSystem, staffName, numberOfStafflines, gap, stafflineStemStrokeWidth)
         {
         }

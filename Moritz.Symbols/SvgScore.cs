@@ -120,8 +120,8 @@ namespace Moritz.Symbols
                     w.WriteAttributeString("src", svgPagename);
                     w.WriteAttributeString("content-type", "image/svg+xml");
                     w.WriteAttributeString("class", "svgPage");
-                    w.WriteAttributeString("width", M.FloatToShortString(SVGData.pageWidth));
-                    w.WriteAttributeString("height", M.FloatToShortString(SVGData.pageHeight));
+                    w.WriteAttributeString("width", M.DoubleToShortString(SVGData.pageWidth));
+                    w.WriteAttributeString("height", M.DoubleToShortString(SVGData.pageHeight));
                     w.WriteEndElement();
                     w.WriteStartElement("br");
                     w.WriteEndElement();
@@ -303,18 +303,18 @@ namespace Moritz.Symbols
             if(pageNumber < 2) // pageNumber is 0 for scroll score.
             {
                 string openSans = "\"Open Sans\"";
-                string page1TitleHeight = M.FloatToShortString(pageFormat.Page1TitleHeight);
+                string page1TitleHeight = M.DoubleToShortString(pageFormat.Page1TitleHeight);
 				StringBuilder mainTitleType = TextStyle("." + CSSObjectClass.mainTitle.ToString(), openSans, page1TitleHeight, "middle");
                 fontStyles.Append(mainTitleType);
 
-                string page1AuthorHeight = M.FloatToShortString(pageFormat.Page1AuthorHeight);
+                string page1AuthorHeight = M.DoubleToShortString(pageFormat.Page1AuthorHeight);
 				StringBuilder authorType = TextStyle("." + CSSObjectClass.author.ToString(), openSans, page1AuthorHeight, "end");
                 fontStyles.Append(authorType);
             } // end if(pageNumber < 2)
             #endregion Open Sans (Titles)
 
             #region CLicht
-            string musicFontHeight = M.FloatToShortString(pageFormat.MusicFontHeight);
+            string musicFontHeight = M.DoubleToShortString(pageFormat.MusicFontHeight);
             StringBuilder existingCLichtClasses = GetExistingClichtClasses(usedCSSObjectClasses, usedClefIDs);
             StringBuilder cLichtStyle = TextStyle(existingCLichtClasses.ToString(), "CLicht", "", "");
             fontStyles.Append(cLichtStyle);
@@ -329,7 +329,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSObjectClasses.Contains(CSSObjectClass.dynamic))
             {
-                string dynamicFontHeight = M.FloatToShortString(pageFormat.DynamicFontHeight);
+                string dynamicFontHeight = M.DoubleToShortString(pageFormat.DynamicFontHeight);
                 fontSizeStyle = TextStyle("." + CSSObjectClass.dynamic.ToString(), "", dynamicFontHeight, "");
                 fontStyles.Append(fontSizeStyle);
             }
@@ -338,20 +338,20 @@ namespace Moritz.Symbols
             StringBuilder smallClasses = GetSmallClasses(usedCSSObjectClasses, usedClefIDs);
             if(smallClasses.Length > 0)
             {
-                string smallMusicFontHeight = M.FloatToShortString(pageFormat.MusicFontHeight * pageFormat.SmallSizeFactor);
+                string smallMusicFontHeight = M.DoubleToShortString(pageFormat.MusicFontHeight * pageFormat.SmallSizeFactor);
                 fontSizeStyle = TextStyle(smallClasses.ToString(), "", smallMusicFontHeight, "");
                 fontStyles.Append(fontSizeStyle);
             }
 
             if(OctavedClefExists(usedClefIDs))
             {
-                string clefOctaveNumberFontSize = M.FloatToShortString(pageFormat.ClefOctaveNumberHeight);
+                string clefOctaveNumberFontSize = M.DoubleToShortString(pageFormat.ClefOctaveNumberHeight);
                 fontSizeStyle = TextStyle("." + CSSObjectClass.clefOctaveNumber.ToString(), "", clefOctaveNumberFontSize, "");
                 fontStyles.Append(fontSizeStyle);
             }
             if(OctavedSmallClefExists(usedClefIDs))
             {
-                string smallClefOctaveNumberFontSize = M.FloatToShortString(pageFormat.ClefOctaveNumberHeight * pageFormat.SmallSizeFactor);
+                string smallClefOctaveNumberFontSize = M.DoubleToShortString(pageFormat.ClefOctaveNumberHeight * pageFormat.SmallSizeFactor);
                 fontSizeStyle = TextStyle("." + CSSObjectClass.smallClefOctaveNumber.ToString(), "", smallClefOctaveNumberFontSize, "");
                 fontStyles.Append(fontSizeStyle);
             }
@@ -363,44 +363,44 @@ namespace Moritz.Symbols
             StringBuilder arialStyle = TextStyle(existingArialClasses.ToString(), "Arial", "", "");
             fontStyles.Append(arialStyle);
 
-            string timeStampHeight = M.FloatToShortString(pageFormat.TimeStampFontHeight);
+            string timeStampHeight = M.DoubleToShortString(pageFormat.TimeStampFontHeight);
 			StringBuilder timeStampType = TextStyle("." + CSSObjectClass.timeStamp.ToString(), "", timeStampHeight, "");
             fontStyles.Append(timeStampType);
 
             if(usedCSSObjectClasses.Contains(CSSObjectClass.staffName))
             {
-                string staffNameFontHeight = M.FloatToShortString(pageFormat.StaffNameFontHeight);
+                string staffNameFontHeight = M.DoubleToShortString(pageFormat.StaffNameFontHeight);
 				StringBuilder staffNameHeight = TextStyle("." + CSSObjectClass.staffName.ToString(), "", staffNameFontHeight, "middle");
                 fontStyles.Append(staffNameHeight);
             }
             if(usedCSSObjectClasses.Contains(CSSObjectClass.lyric))
             {
-                string lyricFontHeight = M.FloatToShortString(pageFormat.LyricFontHeight);
+                string lyricFontHeight = M.DoubleToShortString(pageFormat.LyricFontHeight);
 				StringBuilder lyricHeight = TextStyle("." + CSSObjectClass.lyric.ToString(), "", lyricFontHeight, "middle");
                 fontStyles.Append(lyricHeight);
             }
 			if(usedCSSObjectClasses.Contains(CSSObjectClass.barNumber))
 			{
-				string barNumberNumberFontHeight = M.FloatToShortString(pageFormat.BarNumberNumberFontHeight);
+				string barNumberNumberFontHeight = M.DoubleToShortString(pageFormat.BarNumberNumberFontHeight);
 				StringBuilder barNumberNumberHeight = TextStyle("." + CSSObjectClass.barNumberNumber.ToString(), "", barNumberNumberFontHeight, "middle");
 				fontStyles.Append(barNumberNumberHeight);
 			}
 			if(usedCSSObjectClasses.Contains(CSSObjectClass.framedRegionInfo))
 			{
-				string regionInfoStringFontHeight = M.FloatToShortString(pageFormat.RegionInfoStringFontHeight);
+				string regionInfoStringFontHeight = M.DoubleToShortString(pageFormat.RegionInfoStringFontHeight);
 				StringBuilder regionInfoHeight = TextStyle("." + CSSObjectClass.regionInfoString.ToString(), "", regionInfoStringFontHeight, "middle");
 				fontStyles.Append(regionInfoHeight);
 			}
 
 			if(ClefXExists(usedClefIDs))
             {
-                string clefXFontHeight = M.FloatToShortString(pageFormat.ClefXFontHeight);
+                string clefXFontHeight = M.DoubleToShortString(pageFormat.ClefXFontHeight);
 				StringBuilder clefXStyle = TextStyle("." + CSSObjectClass.clefX.ToString(), "", clefXFontHeight, "");
                 fontStyles.Append(clefXStyle);
             }
             if(SmallClefXExists(usedClefIDs))
             {
-                string smallClefXFontHeight = M.FloatToShortString(pageFormat.ClefXFontHeight * pageFormat.SmallSizeFactor);
+                string smallClefXFontHeight = M.DoubleToShortString(pageFormat.ClefXFontHeight * pageFormat.SmallSizeFactor);
 				StringBuilder smallClefXStyle = TextStyle("." + CSSObjectClass.smallClefX.ToString(), "", smallClefXFontHeight, "");
                 fontStyles.Append(smallClefXStyle);
             }
@@ -410,7 +410,7 @@ namespace Moritz.Symbols
 			if(usedCSSObjectClasses.Contains(CSSObjectClass.ornament))
 			{
 				string openSansCondensed = "\"Open Sans Condensed\"";
-				string ornamentFontHeight = M.FloatToShortString(pageFormat.OrnamentFontHeight);
+				string ornamentFontHeight = M.DoubleToShortString(pageFormat.OrnamentFontHeight);
 				StringBuilder ornamentType = TextStyle("." + CSSObjectClass.ornament.ToString(), openSansCondensed, ornamentFontHeight, "middle");
 				fontStyles.Append(ornamentType);
 			}
@@ -644,7 +644,7 @@ namespace Moritz.Symbols
         {
             StringBuilder lineStyles = new StringBuilder();
             
-            string strokeWidth = M.FloatToShortString(pageFormat.StafflineStemStrokeWidth);
+            string strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
             StringBuilder standardLineClasses = GetStandardLineClasses(usedCSSClasses, defineFlagStyle);
 			//".staffline, .ledgerline, .stem, .beam, .flag, regionFrameConnector
 			lineStyles.Append($@"{standardLineClasses.ToString()}
@@ -666,7 +666,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.normalBarline))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.NormalBarlineStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.NormalBarlineStrokeWidth);
 				lineStyles.Append($@".{CSSObjectClass.normalBarline.ToString()}
             {{
                 stroke:black;
@@ -677,7 +677,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.thinBarline))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.ThinBarlineStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.ThinBarlineStrokeWidth);
 				lineStyles.Append($@".{CSSObjectClass.thinBarline.ToString()}
             {{
                 stroke:black;
@@ -688,7 +688,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.thickBarline))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.ThickBarlineStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.ThickBarlineStrokeWidth);
 				lineStyles.Append($@".{CSSObjectClass.thickBarline.ToString()}
             {{
                 stroke:black;
@@ -699,7 +699,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.noteExtender))
             {
-                strokeWidth = M.FloatToShortString(pageFormat.NoteheadExtenderStrokeWidth);
+                strokeWidth = M.DoubleToShortString(pageFormat.NoteheadExtenderStrokeWidth);
                 lineStyles.Append($@".{CSSObjectClass.noteExtender.ToString()}
             {{
                 stroke:black;
@@ -710,7 +710,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.barNumber))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.BarNumberFrameStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.BarNumberFrameStrokeWidth);
 				lineStyles.Append($@".barNumberFrame
             {{
                 stroke:black;
@@ -722,7 +722,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.framedRegionInfo))
 			{
-				strokeWidth = M.FloatToShortString(pageFormat.RegionInfoFrameStrokeWidth);
+				strokeWidth = M.DoubleToShortString(pageFormat.RegionInfoFrameStrokeWidth);
 				lineStyles.Append($@".regionInfoFrame
             {{
                 stroke:black;
@@ -734,7 +734,7 @@ namespace Moritz.Symbols
 
 			if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBracket))
             {
-                strokeWidth = M.FloatToShortString(pageFormat.StafflineStemStrokeWidth);
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
                 lineStyles.Append($@".cautionaryBracket
             {{
                 stroke:black;
@@ -746,7 +746,7 @@ namespace Moritz.Symbols
 
             if(pageNumber > 0) // pageNumber is 0 for scroll
             {
-                strokeWidth = M.FloatToShortString(pageFormat.StafflineStemStrokeWidth);
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
                 lineStyles.Append($@".frame
             {{
                 stroke:black;
@@ -756,7 +756,7 @@ namespace Moritz.Symbols
             ");
             }
 
-            strokeWidth = M.FloatToShortString(pageFormat.StafflineStemStrokeWidth);
+            strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidth);
             if(usedCSSClasses.Contains(CSSObjectClass.beamBlock))
             {
                 lineStyles.Append($@".opaqueBeam

@@ -713,11 +713,9 @@ namespace MNX.Globals
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string FloatToShortString(double value)
+        public static string DoubleToShortString(double value)
         {
-            return string.Format(En_USNumberFormat, "{0:0.0000}%", value);
-
-            //return value.ToString("0.####", En_USNumberFormat);
+            return ((float)value).ToString("0.####", En_USNumberFormat);
         }
 
         /// <summary>

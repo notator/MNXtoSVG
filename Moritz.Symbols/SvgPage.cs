@@ -249,8 +249,8 @@ namespace Moritz.Symbols
 				w.WriteAttributeString("data-scoreType", null, "https://www.james-ingram-act-two.de/open-source/cmn_core.html");
 			}
 
-            w.WriteAttributeString("width", M.FloatToShortString(_pageFormat.ScreenRight)); // the intended screen display size (100%)
-            w.WriteAttributeString("height", M.FloatToShortString(_pageFormat.ScreenBottom)); // the intended screen display size (100%)
+            w.WriteAttributeString("width", M.DoubleToShortString(_pageFormat.ScreenRight)); // the intended screen display size (100%)
+            w.WriteAttributeString("height", M.DoubleToShortString(_pageFormat.ScreenBottom)); // the intended screen display size (100%)
             string viewBox = "0 0 " + _pageFormat.RightVBPX.ToString() + " " + _pageFormat.BottomVBPX.ToString();
             w.WriteAttributeString("viewBox", viewBox); // the size of SVG's internal drawing surface (10 x the width and height -- see)            
         }

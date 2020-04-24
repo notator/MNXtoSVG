@@ -51,8 +51,8 @@ namespace Moritz.Symbols
         private void WriteLeftToRightElement(SvgWriter w)
         {
             w.WriteStartElement("score", "leftToRight", null);
-            w.WriteAttributeString("systemTop", M.FloatToShortString(this.Metrics.NotesTop));
-            w.WriteAttributeString("systemBottom", M.FloatToShortString(this.Metrics.NotesBottom));
+            w.WriteAttributeString("systemTop", M.DoubleToShortString(this.Metrics.NotesTop));
+            w.WriteAttributeString("systemBottom", M.DoubleToShortString(this.Metrics.NotesBottom));
             w.WriteEndElement(); // leftToRight
         }
 

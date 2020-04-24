@@ -64,10 +64,10 @@ namespace Moritz.Xml
 		{
 			_w.WriteStartElement("line");
 		    _w.WriteAttributeString("class", cssClass.ToString());
-			_w.WriteAttributeString("x1", M.FloatToShortString(x1));
-			_w.WriteAttributeString("y1", M.FloatToShortString(y1));
-			_w.WriteAttributeString("x2", M.FloatToShortString(x2));
-            _w.WriteAttributeString("y2", M.FloatToShortString(y2));
+			_w.WriteAttributeString("x1", M.DoubleToShortString(x1));
+			_w.WriteAttributeString("y1", M.DoubleToShortString(y1));
+			_w.WriteAttributeString("x2", M.DoubleToShortString(x2));
+            _w.WriteAttributeString("y2", M.DoubleToShortString(y2));
             _w.WriteEndElement(); //line
 		}
 
@@ -83,10 +83,10 @@ namespace Moritz.Xml
         {
             _w.WriteStartElement("rect");
 			_w.WriteAttributeString("class", cssClass.ToString());
-			_w.WriteAttributeString("x", M.FloatToShortString(left));
-            _w.WriteAttributeString("y", M.FloatToShortString(top));
-            _w.WriteAttributeString("width", M.FloatToShortString(width));
-            _w.WriteAttributeString("height", M.FloatToShortString(height));
+			_w.WriteAttributeString("x", M.DoubleToShortString(left));
+            _w.WriteAttributeString("y", M.DoubleToShortString(top));
+            _w.WriteAttributeString("width", M.DoubleToShortString(width));
+            _w.WriteAttributeString("height", M.DoubleToShortString(height));
             _w.WriteEndElement(); // rect
         }
 
@@ -101,9 +101,9 @@ namespace Moritz.Xml
 		{
 			WriteStartElement("circle");
 			_w.WriteAttributeString("class", cssClass.ToString());
-			WriteAttributeString("cx", M.FloatToShortString(cx));
-			WriteAttributeString("cy", M.FloatToShortString(cy));
-			WriteAttributeString("r", M.FloatToShortString(r));
+			WriteAttributeString("cx", M.DoubleToShortString(cx));
+			WriteAttributeString("cy", M.DoubleToShortString(cy));
+			WriteAttributeString("r", M.DoubleToShortString(r));
 
 			WriteEndElement(); // circle
 		}
@@ -120,10 +120,10 @@ namespace Moritz.Xml
 		{
 			WriteStartElement("ellipse");
 			WriteAttributeString("class", cssClass.ToString());
-			WriteAttributeString("cx", M.FloatToShortString(cx));
-			WriteAttributeString("cy", M.FloatToShortString(cy));
-			WriteAttributeString("rx", M.FloatToShortString(rx));
-			WriteAttributeString("ry", M.FloatToShortString(ry));
+			WriteAttributeString("cx", M.DoubleToShortString(cx));
+			WriteAttributeString("cy", M.DoubleToShortString(cy));
+			WriteAttributeString("rx", M.DoubleToShortString(rx));
+			WriteAttributeString("ry", M.DoubleToShortString(ry));
 
 			WriteEndElement(); // ellipse
 		}
@@ -194,8 +194,8 @@ namespace Moritz.Xml
 		{
 			_w.WriteStartElement("text");
 			_w.WriteAttributeString("class", cssClass.ToString());
-			_w.WriteAttributeString("x", M.FloatToShortString(x));
-			_w.WriteAttributeString("y", M.FloatToShortString(y));
+			_w.WriteAttributeString("x", M.DoubleToShortString(x));
+			_w.WriteAttributeString("y", M.DoubleToShortString(y));
 			_w.WriteString(text);
 			_w.WriteEndElement(); // text
 		}
@@ -214,8 +214,8 @@ namespace Moritz.Xml
 			{
 				_w.WriteAttributeString("class", classesString);
 			}
-			_w.WriteAttributeString("x", M.FloatToShortString(x));
-			_w.WriteAttributeString("y", M.FloatToShortString(y));
+			_w.WriteAttributeString("x", M.DoubleToShortString(x));
+			_w.WriteAttributeString("y", M.DoubleToShortString(y));
 			_w.WriteString(text);
 			_w.WriteEndElement(); // text
 		}
@@ -232,8 +232,8 @@ namespace Moritz.Xml
             _w.WriteStartElement("use");
             _w.WriteAttributeString("class", cssClass.ToString());
             _w.WriteAttributeString("href", "#" + idOfObjectToUse);
-            _w.WriteAttributeString("x", M.FloatToShortString(x));
-            _w.WriteAttributeString("y", M.FloatToShortString(y));
+            _w.WriteAttributeString("x", M.DoubleToShortString(x));
+            _w.WriteAttributeString("y", M.DoubleToShortString(y));
             _w.WriteEndElement();
         }
         #endregion
@@ -253,9 +253,9 @@ namespace Moritz.Xml
             string id = type.ToString();       
             string x1 = "0";
             string x2 = "0";
-            string x3 = M.FloatToShortString(0.31809F * fontHeight);
-            string x4 = M.FloatToShortString(0.299F * fontHeight);
-            string x5 = M.FloatToShortString(0.31809F * fontHeight);
+            string x3 = M.DoubleToShortString(0.31809F * fontHeight);
+            string x4 = M.DoubleToShortString(0.299F * fontHeight);
+            string x5 = M.DoubleToShortString(0.31809F * fontHeight);
 
             double sign = rightFlag ? 1F : -1F;
             double y1 = 0F;
@@ -274,11 +274,11 @@ namespace Moritz.Xml
                 _w.WriteStartElement("path");
                 StringBuilder dAttributeSB = new StringBuilder();
                 dAttributeSB.Append("M ");
-                dAttributeSB.Append(x1 + "," + M.FloatToShortString(y1 + offset) + " ");
-                dAttributeSB.Append(x2 + "," + M.FloatToShortString(y2 + offset) + " ");
-                dAttributeSB.Append(x3 + "," + M.FloatToShortString(y3 + offset) + " Q ");
-                dAttributeSB.Append(x4 + "," + M.FloatToShortString(y4 + offset) + " ");
-                dAttributeSB.Append(x5 + "," + M.FloatToShortString(y5 + offset));
+                dAttributeSB.Append(x1 + "," + M.DoubleToShortString(y1 + offset) + " ");
+                dAttributeSB.Append(x2 + "," + M.DoubleToShortString(y2 + offset) + " ");
+                dAttributeSB.Append(x3 + "," + M.DoubleToShortString(y3 + offset) + " Q ");
+                dAttributeSB.Append(x4 + "," + M.DoubleToShortString(y4 + offset) + " ");
+                dAttributeSB.Append(x5 + "," + M.DoubleToShortString(y5 + offset));
                 _w.WriteAttributeString("d", dAttributeSB.ToString());
                 _w.WriteEndElement();
             }

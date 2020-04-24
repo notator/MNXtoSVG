@@ -92,8 +92,8 @@ namespace Moritz.Symbols
         {
             w.WriteStartElement("text");
             w.WriteAttributeString("class", className);
-            w.WriteAttributeString("x", M.FloatToShortString(x));
-            w.WriteAttributeString("y", M.FloatToShortString(y));
+            w.WriteAttributeString("x", M.DoubleToShortString(x));
+            w.WriteAttributeString("y", M.DoubleToShortString(y));
             w.WriteString(innerText);
             w.WriteEndElement();
         }

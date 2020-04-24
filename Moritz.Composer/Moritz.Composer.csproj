@@ -53,6 +53,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MNX.Globals\MNX.Globals.csproj">
+      <Project>{9ABE7E06-1560-42CB-86C8-26D64CFB4CFF}</Project>
+      <Name>MNX.Globals</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Moritz.Midi\Moritz.Midi.csproj">
       <Project>{82e776e6-c819-42e6-9986-7ebdc3dffa06}</Project>
       <Name>Moritz.Midi</Name>

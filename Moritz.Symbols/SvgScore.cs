@@ -35,32 +35,31 @@ namespace Moritz.Symbols
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="svgData">Page format, line thicknesses, tempo</param>
-        /// <param name="targetFolder">The complete path to the folder that will contain the output file.</param>
-        /// <param name="scoreNameWithoutSuffix">The file name for the score, without '.svg' suffix.</param>
+        /// 
+        /// 
+        /// 
         /// <param name="scoreTitle">Appears at top of page 1 (can be null or empty)</param>
         /// <param name="scoreAuthor">Appears at top of page 1 (can be null or empty)</param>
         /// <param name="metadataKeywords">Can be null or empty</param>
         /// <param name="metadataComment">Can be null or empty</param>
-        public SvgScore(SVGData svgData,
-                        string targetFolder, string scoreNameWithoutSuffix,
-                        string scoreTitle, string scoreAuthor,
-                        string metadataKeywords, string metadataComment)
+        /*******/
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetFolder">The complete path to the folder that will contain the output file.</param>
+        /// <param name="targetFilenameWithoutSuffix">The file name for the score, without '.svg' suffix.</param>
+        /// <param name="svgData">Page format, line thicknesses, tempo</param>
+        /// <param name="metadata"></param>
+        public SvgScore(string targetFolder, string targetFilenameWithoutSuffix,
+                        SVGData svgData, Metadata metadata)
         {
             this.PageFormat = new PageFormat(svgData);
-
-            ScoreTitle = scoreTitle;
-            ScoreAuthor = scoreAuthor;
+            this.Metadata = metadata;
+            this.Metadata.Date = M.NowString; // printed in info string at top of score.
 
             M.CreateDirectoryIfItDoesNotExist(targetFolder);
-            FileName = scoreNameWithoutSuffix + ".svg";
+            FileName = targetFilenameWithoutSuffix + ".svg";
             FilePath = targetFolder + @"\" + FileName;
-
-            this.Metadata.Date = M.NowString; // printed in info string at top of score.
-            this.Metadata.ScoreTitle = scoreTitle; // can be null or empty
-            this.Metadata.ScoreAuthor = scoreAuthor; // can be null or empty
-            this.Metadata.Keywords = metadataKeywords; // can be null or empty
-            this.Metadata.Comment = metadataComment; // can be null or empty
         }
 
         protected virtual byte MidiChannel(int staffIndex) { throw new NotImplementedException(); }

@@ -45,6 +45,9 @@ namespace MNX.Globals
         //Creates and initializes the CultureInfo which uses the international sort.
         public static CultureInfo ci = new CultureInfo("en-US", false);
         public static NumberFormatInfo En_USNumberFormat = ci.NumberFormat;
+
+        // This value could be raised by any power of 2.
+        public static int TicksPerCrotchet = 1024;
         #endregion
 
         // Set for the score currently being constructed.

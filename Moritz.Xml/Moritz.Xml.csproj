@@ -48,6 +48,7 @@
     <Compile Include="FlagID.cs" />
     <Compile Include="CSSClasses.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Metadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SvgWriter.cs" />
     <Compile Include="TextInfo.cs" />

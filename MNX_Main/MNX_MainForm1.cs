@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.Xml;
 using MNX.Globals;
 using Moritz.Spec;
+using Moritz.Xml;
+using Moritz.Composer;
 
 namespace MNX_Main
 {
@@ -53,7 +55,9 @@ namespace MNX_Main
                     var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
                     var svgData = new SVGData(svgds);
                     List<Bar> Bars = mnx.ToBars();
-                    //CreateSVGScore(Bars);
+                    string scoreTitle = MNXSelect.Items[MNXSelect.SelectedIndex].ToString();
+                    Metadata metadata = new Metadata(scoreTitle, "MNX by Example", "", @"See https://w3c.github.io/mnx/by-example/");
+                    //SVGMIDIScore svgMIDIScore = new SVGMIDIScore(Bars, M.SVG_out_Folder, scoreTitle, svgData, metadata);
                 }
             }
             else
@@ -62,7 +66,9 @@ namespace MNX_Main
                 var svgds = new SVGDataStrings(_mnxSVGDatas[selectedIndex - 1].Item2);
                 var svgData = new SVGData(svgds);
                 List<Bar> Bars = mnx.ToBars();
-                //CreateSVGScore(Bars);
+                string scoreTitle = MNXSelect.Items[MNXSelect.SelectedIndex].ToString();
+                Metadata metadata = new Metadata(scoreTitle, "MNX by Example", "", @"See https://w3c.github.io/mnx/by-example/");
+                //SVGMIDIScore svgMIDIScore = new SVGMIDIScore(Bars, M.SVG_out_Folder, scoreTitle, svgData, metadata);
             }
         }
 

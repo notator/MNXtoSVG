@@ -9,6 +9,12 @@ namespace Moritz.Symbols
     /// </summary>
     public class PageFormat
     {
+        public readonly int ViewBoxMagnification = 10;
+
+        #region Attributes set by SVGData
+
+        #endregion Attributes set by SVGData
+
         public PageFormat()
         {
         }
@@ -23,22 +29,21 @@ namespace Moritz.Symbols
             LeftMarginPos = svgData.marginLeft * ViewBoxMagnification;
             BottomMarginPos = BottomVBPX - (svgData.marginBottom * ViewBoxMagnification);
 
-            StafflineStemStrokeWidth = svgData.stafflineStemStrokeWidth;
-
-
-            Page1Title = page1Title;
-            Page1Author = page1Author;
+            StafflineStemStrokeWidth = svgData.stafflineStemStrokeWidth * ViewBoxMagnification;
+            Gap = svgData.gap * ViewBoxMagnification;
 
             DefaultDistanceBetweenStaves = svgData.gap * svgData.minGapsBetweenStaves * ViewBoxMagnification;
             DefaultDistanceBetweenSystems = svgData.gap * svgData.minGapsBetweenSystems * ViewBoxMagnification;
-
+ 
             SystemStartBars = svgData.systemStartBars;
 
-            CrotchetsPerMinute = svgData.crotchetsPerMinute;
+            MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * svgData.crotchetsPerMinute);
 
+            Page1Title = page1Title;
+            Page1Author = page1Author;
         }
 
-        public readonly int ViewBoxMagnification = 10;
+
 
         #region paper size
         public double Right { get { return RightVBPX; } }
@@ -102,7 +107,7 @@ namespace Moritz.Symbols
         public string ChordSymbolType = "none";
         #region standard chord notation options
         /// <summary>
-        /// This value is used to find the duration class of DurationSymbols
+        /// Moritz uses this value to decide the duration class of a DurationSymbol
         /// </summary>
         public int MinimumCrotchetDuration;
         public bool BeamsCrossBarlines;
@@ -127,11 +132,14 @@ namespace Moritz.Symbols
         public List<int> SystemStartBars = null;
         public int DefaultNumberOfBarsPerSystem { get { return 5; } }
 
-        public double CrotchetsPerMinute = 0;
+        public double MillisecondsPerTick = 0;
 
         #region constants
-        public double SmallSizeFactor { get { return 0.8; } } // The relatve size of cautionary and small objects
-        public double OpaqueBeamOpacity { get { return 0.65; } } // The opacity of opaque beams
+        // The relatve size of cautionary and small objects
+        public double SmallSizeFactor { get { return 0.8; } }
+        // The opacity of opaque beams
+        // (Opaque beams are written between the beam and stafflines to make the stafflines appear grey.)
+        public double OpaqueBeamOpacity { get { return 0.65; } }
         #endregion
 
         public double Gap;

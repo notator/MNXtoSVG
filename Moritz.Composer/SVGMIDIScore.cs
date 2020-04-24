@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using Moritz.Spec;
 using Moritz.Symbols;
 using Moritz.Xml;
+using MNX.Globals;
 
 namespace Moritz.Composer
 {
 	public class SVGMIDIScore : SvgScore
     {
-        public SVGMIDIScore(List<Bar> bars, string folder, string scoreFolderName, PageFormat pageFormat)
-            : base(folder, scoreFolderName, pageFormat)
+        public SVGMIDIScore(List<Bar> bars, 
+            string targetFolder, string targetFilenameWithoutSuffix,
+            SVGData svgData, Metadata metadata)
+            : base(targetFolder, targetFilenameWithoutSuffix, svgData, metadata)
         {	
 
 			CheckBars(bars);

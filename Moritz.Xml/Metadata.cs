@@ -5,24 +5,27 @@ using System.IO;
 using System.Text;
 
 using MNX.Globals;
-using Moritz.Xml;
 
-namespace Moritz.Symbols
+namespace Moritz.Xml
 {
 	public class Metadata
 	{
         public string Date;
-        public string ScoreTitle;
-        public string ScoreAuthor;
-        public string Keywords;
-        public string Comment;
+        public readonly string ScoreTitle;
+        public readonly string ScoreAuthor;
+        public readonly string Keywords;
+        public readonly string Comment;
 
         /// <summary>
         /// Contains default values.
         /// </summary>
         /// <param name="score"></param>
-        public Metadata()
+        public Metadata(string scoreTitle, string scoreAuthor, string keywords, string comment)
         {
+            ScoreTitle = scoreTitle;
+            ScoreAuthor = scoreAuthor;
+            Keywords = keywords;
+            Comment = comment;
         }
 
 		/// <summary>

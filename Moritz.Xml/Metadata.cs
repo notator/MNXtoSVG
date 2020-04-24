@@ -17,27 +17,26 @@ namespace Moritz.Xml
         public readonly string Comment;
 
         /// <summary>
-        /// Contains default values.
+        /// Metadata (compatible with Inkscape's) written into the SVG file
         /// </summary>
-        /// <param name="score"></param>
+        /// <param name="scoreTitle">May not be null or empty.</param>
+        /// <param name="scoreAuthor">May not null or empty</param>
+        /// <param name="keywords">Can be null or empty</param>
+        /// <param name="comment">Can be null or empty</param>
         public Metadata(string scoreTitle, string scoreAuthor, string keywords, string comment)
         {
+            M.Assert(!String.IsNullOrEmpty(scoreTitle));
+            M.Assert(!String.IsNullOrEmpty(scoreAuthor));
+
+            Date = M.NowString;
             ScoreTitle = scoreTitle;
             ScoreAuthor = scoreAuthor;
             Keywords = keywords;
             Comment = comment;
         }
 
-		/// <summary>
-		/// Writes a metadata element compatible with Inkscape's
-		/// </summary>
-		/// <param name="w"></param>
-		/// <param name="pageNumber"></param>
-		/// <param name="nScorePages"></param>
 		public void WriteSVG(SvgWriter w, int pageNumber, int nScorePages, string aboutThePieceLinkURL, int nOutputVoices, int nInputVoices)
         {
-			M.Assert(!String.IsNullOrEmpty(ScoreTitle));
-
 			string pageTitle;
 			if(pageNumber == 0)
 			{

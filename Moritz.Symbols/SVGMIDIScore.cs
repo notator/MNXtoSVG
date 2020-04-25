@@ -26,7 +26,7 @@ namespace Moritz.Symbols
 
             PageFormat = new PageFormat(svgData, midiChannelsPerStaff);
 
-            CreateScore(bars, svgData);
+            CreateSystems(bars, svgData);
 
             if(svgData.optionsWriteScrollScore)
             {
@@ -51,7 +51,7 @@ namespace Moritz.Symbols
             return frameHeight;
         }
 
-        private void CreateScore(List<Bar> bars, SVGData svgData)
+        private void CreateSystems(List<Bar> bars, SVGData svgData)
         {
             // TODO (see SetScoreRegionsData() function already implemented below)
             //if(svgData.RegionStartBarIndices != null)

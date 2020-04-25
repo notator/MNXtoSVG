@@ -32,9 +32,9 @@ namespace Moritz.Symbols
 
         #region other attributes
         #region page 1 titles
-        public double Page1TitleHeight;
-        public double Page1AuthorHeight;
-        public double Page1TitleY;
+        public double Page1TitleHeightVBPX;
+        public double Page1AuthorHeightVBPX;
+        public double Page1TitleYVBPX;
         #endregion
         #endregion other attributes
 
@@ -42,21 +42,21 @@ namespace Moritz.Symbols
         {
             RightVBPX = svgData.pageWidth * ViewBoxMagnification;
             BottomVBPX = svgData.pageHeight * ViewBoxMagnification;
-            TopMarginPage1VBPX = svgData.marginTopPage1 * ViewBoxMagnification;
-            TopMarginOtherPagesVBPX = svgData.marginTopOther * ViewBoxMagnification;
-            RightMarginPosVBPX = RightVBPX - (svgData.marginRight * ViewBoxMagnification);
-            LeftMarginPosVBPX = svgData.marginLeft * ViewBoxMagnification;
-            BottomMarginPosVBPX = BottomVBPX - (svgData.marginBottom * ViewBoxMagnification);
+            TopMarginPage1VBPX = svgData.pageMarginTopPage1 * ViewBoxMagnification;
+            TopMarginOtherPagesVBPX = svgData.pageMarginTopOther * ViewBoxMagnification;
+            RightMarginPosVBPX = RightVBPX - (svgData.pageMarginRight * ViewBoxMagnification);
+            LeftMarginPosVBPX = svgData.pageMarginLeft * ViewBoxMagnification;
+            BottomMarginPosVBPX = BottomVBPX - (svgData.pageMarginBottom * ViewBoxMagnification);
 
-            StafflineStemStrokeWidthVBPX = svgData.stafflineStemStrokeWidth * ViewBoxMagnification;
-            GapVBPX = svgData.gap * ViewBoxMagnification;
+            StafflineStemStrokeWidthVBPX = svgData.notationStafflineStemStrokeWidth * ViewBoxMagnification;
+            GapVBPX = svgData.notationGap * ViewBoxMagnification;
 
-            DefaultDistanceBetweenStavesVBPX = svgData.gap * svgData.minGapsBetweenStaves * ViewBoxMagnification;
-            DefaultDistanceBetweenSystemsVBPX = svgData.gap * svgData.minGapsBetweenSystems * ViewBoxMagnification;
+            DefaultDistanceBetweenStavesVBPX = svgData.notationGap * svgData.notationMinGapsBetweenStaves * ViewBoxMagnification;
+            DefaultDistanceBetweenSystemsVBPX = svgData.notationGap * svgData.notationMinGapsBetweenSystems * ViewBoxMagnification;
  
-            SystemStartBars = svgData.systemStartBars;
+            SystemStartBars = svgData.notationSystemStartBars;
 
-            MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * svgData.crotchetsPerMinute);
+            MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * svgData.notationCrotchetsPerMinute);
         }
 
 

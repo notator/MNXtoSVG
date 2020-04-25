@@ -64,7 +64,7 @@ namespace Moritz.Symbols
             {
                 PageFormat.TopMarginPage1VBPX = PageFormat.TopMarginOtherPagesVBPX;
             }
-            List<string> svgPagenames = SaveSVGPages(graphicsOnly);
+            List<string> svgPagenames = SaveSVGPages(graphicsOnly, printTitleAndAuthorOnPage1);
 
             if(File.Exists(FilePath))
             {
@@ -135,7 +135,7 @@ namespace Moritz.Symbols
             w.WriteEndElement(); // head
         }
 
-        private List<string> SaveSVGPages(bool graphicsOnly)
+        private List<string> SaveSVGPages(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
         {
             List<string> pageFilenames = new List<string>();
 
@@ -155,7 +155,7 @@ namespace Moritz.Symbols
 
                 pageFilenames.Add(pageFilename);
 
-                SaveSVGPage(pagePath, page, this.MetadataWithDate, false, graphicsOnly, PrintTitleAndAuthorOnPage1);
+                SaveSVGPage(pagePath, page, this.MetadataWithDate, false, graphicsOnly, printTitleAndAuthorOnPage1);
                 pageNumber++;
             }
 
@@ -291,11 +291,11 @@ namespace Moritz.Symbols
             if(pageNumber < 2) // pageNumber is 0 for scroll score.
             {
                 string openSans = "\"Open Sans\"";
-                string page1TitleHeight = M.DoubleToShortString(pageFormat.Page1TitleHeight);
+                string page1TitleHeight = M.DoubleToShortString(pageFormat.Page1TitleHeightVBPX);
 				StringBuilder mainTitleType = TextStyle("." + CSSObjectClass.mainTitle.ToString(), openSans, page1TitleHeight, "middle");
                 fontStyles.Append(mainTitleType);
 
-                string page1AuthorHeight = M.DoubleToShortString(pageFormat.Page1AuthorHeight);
+                string page1AuthorHeight = M.DoubleToShortString(pageFormat.Page1AuthorHeightVBPX);
 				StringBuilder authorType = TextStyle("." + CSSObjectClass.author.ToString(), openSans, page1AuthorHeight, "end");
                 fontStyles.Append(authorType);
             } // end if(pageNumber < 2)

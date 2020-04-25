@@ -16,13 +16,9 @@ namespace Moritz.Xml
         /// </summary>
         public MetadataWithDate()
         {
-            M.Assert(!String.IsNullOrEmpty(base.Title));
-            M.Assert(!String.IsNullOrEmpty(base.Author));
-
-            Date = M.NowString;
         }
 
-		public void WriteSVG(SvgWriter w, int pageNumber, int nScorePages, string aboutThePieceLinkURL, int nOutputVoices, int nInputVoices)
+		public void WriteSVG(SvgWriter w, int pageNumber, int nScorePages, int nOutputVoices)
         {
 			string pageTitle;
 			if(pageNumber == 0)
@@ -84,7 +80,7 @@ namespace Moritz.Xml
 				w.WriteEndElement(); // ends the dc:subject element
 			}
 
-			StringBuilder desc = new StringBuilder("About: " + aboutThePieceLinkURL );
+			StringBuilder desc = new StringBuilder();
 			if(pageNumber == 0)
 			{
 				desc.Append("\nNumber of pages in the score: 1"); 
@@ -93,8 +89,7 @@ namespace Moritz.Xml
 			{ 
 				desc.Append("\nNumber of pages in the score: " + nScorePages.ToString());
 			}
-			desc.Append("\nNumber of output voices: " + nOutputVoices.ToString()); 
-			desc.Append("\nNumber of input voices: " + nInputVoices.ToString());	
+			desc.Append("\nNumber of output voices: " + nOutputVoices.ToString()); 	
 			if(!String.IsNullOrEmpty(Comment))
 				desc.Append("\nComments: " + Comment);
 

@@ -67,6 +67,7 @@
     <Compile Include="RegionDef.cs" />
     <Compile Include="ScoreData.cs" />
     <Compile Include="RegionSequence.cs" />
+    <Compile Include="SVGMIDIScore.cs" />
     <Compile Include="SvgPage.cs" />
     <Compile Include="SvgScore.cs" />
     <Compile Include="SvgSystem.cs" />

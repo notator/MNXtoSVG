@@ -192,7 +192,7 @@ namespace Moritz.Symbols
 			AlignStaffnamesInLeftMargin(leftMargin, pageFormat.GapVBPX);
 			ResetStaffMetricsBoundaries();
 
-			JustifyVertically(pageFormat.Right, pageFormat.GapVBPX);
+			JustifyVertically(pageFormat.RightVBPX, pageFormat.GapVBPX);
 
 			return overlapsInfoList;
         }

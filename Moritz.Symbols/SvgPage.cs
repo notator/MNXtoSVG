@@ -102,8 +102,7 @@ namespace Moritz.Symbols
         public void WriteSVG(SvgWriter w, MetadataWithDate metadataWithDate, bool isSinglePageScore, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
         {
 			int nOutputVoices = 0;
-			int nInputVoices = 0;
-			GetNumbersOfVoices(Systems[0], ref nOutputVoices, ref nInputVoices);
+			GetNumberOfVoices(Systems[0], ref nOutputVoices);
 
             w.WriteStartDocument(); // standalone="no"
             //<?xml-stylesheet href="../../fontsStyleSheet.css" type="text/css"?>
@@ -114,7 +113,7 @@ namespace Moritz.Symbols
 
 			if(!graphicsOnly)
 			{
-				metadataWithDate.WriteSVG(w, _pageNumber, _score.PageCount, _pageFormat.AboutLinkURL, nOutputVoices, nInputVoices);
+				metadataWithDate.WriteSVG(w, _pageNumber, _score.PageCount, nOutputVoices);
 			}
 
             _score.WriteDefs(w, _pageNumber);
@@ -141,11 +140,10 @@ namespace Moritz.Symbols
             w.WriteEndDocument();
         }
 
-		private void GetNumbersOfVoices(SvgSystem svgSystem, ref int nOutputVoices, ref int nInputVoices)
+		private void GetNumberOfVoices(SvgSystem svgSystem, ref int nOutputVoices)
 		{
 			nOutputVoices = 0;
-			nInputVoices = 0;
-			foreach(Staff staff in svgSystem.Staves)
+            foreach(Staff staff in svgSystem.Staves)
 			{
 				foreach(Voice voice in staff.Voices)
 				{
@@ -247,15 +245,15 @@ namespace Moritz.Symbols
 			string titlesFontFamily = "Open Sans";
 
 			TextInfo titleInfo =
-				new TextInfo(metadataWithDate.Title, titlesFontFamily, _pageFormat.Page1TitleHeight,
+				new TextInfo(metadataWithDate.Title, titlesFontFamily, _pageFormat.Page1TitleHeightVBPX,
 					null, TextHorizAlign.center);
 			TextInfo authorInfo =
-			  new TextInfo(metadataWithDate.Author, titlesFontFamily, _pageFormat.Page1AuthorHeight,
+			  new TextInfo(metadataWithDate.Author, titlesFontFamily, _pageFormat.Page1AuthorHeightVBPX,
 				  null, TextHorizAlign.right);
 			w.WriteStartElement("g");
 			w.WriteAttributeString("class", CSSObjectClass.titles.ToString());
-			w.SvgText(CSSObjectClass.mainTitle, titleInfo.Text, _pageFormat.Right / 2, _pageFormat.Page1TitleY);
-			w.SvgText(CSSObjectClass.author, authorInfo.Text, _pageFormat.RightMarginPosVBPX, _pageFormat.Page1TitleY);
+			w.SvgText(CSSObjectClass.mainTitle, titleInfo.Text, _pageFormat.RightVBPX / 2, _pageFormat.Page1TitleYVBPX);
+			w.SvgText(CSSObjectClass.author, authorInfo.Text, _pageFormat.RightMarginPosVBPX, _pageFormat.Page1TitleYVBPX);
 			w.WriteEndElement(); // group
 		}
 

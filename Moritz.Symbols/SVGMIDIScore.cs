@@ -1,38 +1,42 @@
 using System;
 using System.Collections.Generic;
 using Moritz.Spec;
-using Moritz.Symbols;
 using Moritz.Xml;
 using MNX.Globals;
 
-namespace Moritz.Composer
+namespace Moritz.Symbols
 {
 	public class SVGMIDIScore : SvgScore
     {
-        public SVGMIDIScore(List<Bar> bars, 
-            string targetFolder, string targetFilenameWithoutSuffix,
-            SVGData svgData, MetadataWithDate MetadataWithDate)
-            : base(targetFolder, targetFilenameWithoutSuffix)
+        public SVGMIDIScore(string targetFolder, List<Bar> bars, SVGData svgData)
+            : base(targetFolder, svgData.metadataTitle)
         {
-
             CheckBars(bars);
 
-            this.MetadataWithDate = MetadataWithDate;
+            this.MetadataWithDate = new MetadataWithDate()
+            {
+                Title = svgData.metadataTitle,
+                Author = svgData.metadataAuthor,
+                Keywords = svgData.metadataKeywords,
+                Comment = svgData.metadataComment,
+                Date = M.NowString
+            };
+
             this.MetadataWithDate.Date = M.NowString; // printed in info string at top of score.
 
             PageFormat = new PageFormat(svgData);
 
-            CreateScore(bars);
+            CreateScore(bars, svgData);
 
-            if(svgData.IsScrollScore)
+            if(svgData.optionsWriteScrollScore)
             {
                 PageFormat.BottomVBPX = GetNewBottomVBPX(Systems);
                 PageFormat.BottomMarginPosVBPX = (int)(PageFormat.BottomVBPX - PageFormat.DefaultDistanceBetweenSystemsVBPX);
-                SaveSingleSVGScore(svgData.omitMIDIData, svgData.printTitleAndAuthorOnPage1);
+                SaveSingleSVGScore(!svgData.optionsIncludeMIDIData, svgData.optionsWritePage1Titles);
             }
             else
             {
-                SaveMultiPageScore(svgData.omitMIDIData, svgData.printTitleAndAuthorOnPage1);
+                SaveMultiPageScore(!svgData.optionsIncludeMIDIData, svgData.optionsWritePage1Titles);
             }
         }
         private int GetNewBottomVBPX(List<SvgSystem> Systems)
@@ -47,9 +51,13 @@ namespace Moritz.Composer
             return frameHeight;
         }
 
-        private void CreateScore(List<Bar> bars)
+        private void CreateScore(List<Bar> bars, SVGData svgData)
         {
-            this.ScoreData = _algorithm.SetScoreRegionsData(bars);
+            // TODO (see SetScoreRegionsData() function already implemented below)
+            //if(svgData.RegionStartBarIndices != null)
+            //{
+            //    ScoreData = SetScoreRegionsData(bars, svgData.RegionStartBarIndices);
+            //}            
 
             InsertInitialClefDefs(bars, PageFormat.InitialClefPerMIDIChannel);
 
@@ -70,6 +78,58 @@ namespace Moritz.Composer
             }
 
             CheckSystems(this.Systems);
+        }
+
+        public ScoreData SetScoreRegionsData(List<Bar> bars, List<int> regionStartBarIndices)
+        {
+            List<(int index, int msPosition)> regionBorderlines = GetRegionBarlineIndexMsPosList(bars, regionStartBarIndices);
+
+            /** start from Tombeau 1 ******************************
+ 
+            // Each regionBorderline consists of a bar's index and its msPositionInScore.
+            // The finalBarline is also included, so regionBorderlines.Count is 1 + RegionStartBarIndices.Count.
+
+            RegionDef rd1 = new RegionDef("A", regionBorderlines[0], regionBorderlines[1]);
+            RegionDef rd2 = new RegionDef("B", regionBorderlines[1], regionBorderlines[3]);
+            RegionDef rd3 = new RegionDef("C", regionBorderlines[1], regionBorderlines[2]);
+            RegionDef rd4 = new RegionDef("D", regionBorderlines[3], regionBorderlines[5]);
+            RegionDef rd5 = new RegionDef("E", regionBorderlines[4], regionBorderlines[5]);
+
+            List<RegionDef> regionDefs = new List<RegionDef>() { rd1, rd2, rd3, rd4, rd5 };
+
+            RegionSequence regionSequence = new RegionSequence(regionDefs, "ABCADEA");
+            
+            ************************ end from tombeau 1 **/
+
+            RegionSequence regionSequence = null;
+            ScoreData scoreData = new ScoreData(regionSequence);
+
+            return scoreData;
+        }
+
+        /// <summary>
+        /// Returns a list of (index, msPosition) KeyValuePairs.
+        /// These are the (index, msPosition) of the barlines at which regions begin, and the (index, msPosition) of the final barline.
+        /// The first KeyValuePair is (0,0), the last is the (index, msPosition) for the final barline in the score.
+        /// The number of entries in the returned list is therefore 1 + bars.Count.
+        /// </summary>
+        private List<(int index, int msPosition)> GetRegionBarlineIndexMsPosList(List<Bar> bars, List<int> regionStartBarIndices)
+        {
+            var rval = new List<(int index, int msPosition)>();
+
+            int barlineMsPos = 0;
+            int barsCount = bars.Count;
+            for(int i = 0; i < barsCount; ++i)
+            {
+                if(regionStartBarIndices.Contains(i))
+                {
+                    rval.Add((index: i, msPosition: barlineMsPos));
+                }
+                barlineMsPos += bars[i].MsDuration;
+            }
+            rval.Add((index: barsCount, msPosition: barlineMsPos));
+
+            return rval;
         }
 
         /// <summary>
@@ -200,17 +260,6 @@ namespace Moritz.Composer
 				}
 				voiceIndex++;
 			}
-			List<List<byte>> inputChPerStaff = PageFormat.InputMIDIChannelsPerStaff;
-			int nStaves = inputChPerStaff.Count + outputChPerStaff.Count;
-			for(int staffIndex = 0; staffIndex < inputChPerStaff.Count; ++staffIndex)
-			{
-				if(inputChPerStaff[staffIndex].Count > 1)
-				{
-					voiceIndex++;
-					lowerVoiceIndices.Add(voiceIndex);
-				}
-				voiceIndex++;
-			}
 
 			return lowerVoiceIndices;
 		}
@@ -228,58 +277,17 @@ namespace Moritz.Composer
 			return nOutputVoices;
 		}
 
-		private int NInputVoices(List<VoiceDef> bar1)
-		{
-			int nInputVoices = 0;
-			foreach(VoiceDef voiceDef in bar1)
-			{
-				if(voiceDef is InputVoiceDef)
-				{
-					nInputVoices++;
-				}
-			}
-			return nInputVoices;
-		}
-
 		/// <summary>
 		/// Synchronous continuous controller settings (ccSettings) are not allowed.
 		/// </summary>
 		private string CheckCCSettings(List<Bar> bars)
 		{
 			string errorString = null;
-			List<InputVoiceDef> ivds = new List<InputVoiceDef>();
 			List<int> ccSettingsMsPositions = new List<int>();
 			foreach(Bar bar in bars)
 			{
 				ccSettingsMsPositions.Clear();
 
-				foreach(VoiceDef voice in bar.VoiceDefs)
-				{
-					if(voice is InputVoiceDef ivd)
-					{
-						foreach(IUniqueDef iud in ivd.UniqueDefs)
-						{
-							if(iud is InputChordDef icd && icd.CCSettings != null)
-							{
-								int msPos = icd.MsPositionReFirstUD;
-								if(ccSettingsMsPositions.Contains(msPos))
-								{
-									errorString = "\nSynchronous continuous controller settings (ccSettings) are not allowed.";
-									break;
-								}
-								else
-								{
-									ccSettingsMsPositions.Add(msPos);
-								}
-
-							}
-						}
-						if(!string.IsNullOrEmpty(errorString))
-						{
-							break;
-						}
-					}
-				}
 				if(!string.IsNullOrEmpty(errorString))
 				{
 					break;
@@ -341,7 +349,6 @@ namespace Moritz.Composer
             }
 
             CreateEmptyOutputStaves(bars);
-            CreateEmptyInputStaves(bars);
 		}
 
         private void CreateEmptyOutputStaves(List<Bar> bars)
@@ -357,7 +364,7 @@ namespace Moritz.Composer
 				for(int staffIndex = 0; staffIndex < nStaves; staffIndex++)
                 {
                     string staffname = StaffName(systemIndex, staffIndex);
-                    OutputStaff outputStaff = new OutputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], PageFormat.Gap, PageFormat.StafflineStemStrokeWidth);
+                    OutputStaff outputStaff = new OutputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
 
                     List<byte> outputVoiceIndices = PageFormat.OutputMIDIChannelsPerStaff[staffIndex];
                     for(int ovIndex = 0; ovIndex < outputVoiceIndices.Count; ++ovIndex)
@@ -376,43 +383,6 @@ namespace Moritz.Composer
 				#endregion
 			}
 		}
-
-        private void CreateEmptyInputStaves(List<Bar> bars)
-        {
-            int nPrintedOutputStaves = PageFormat.OutputMIDIChannelsPerStaff.Count;
-            int nPrintedInputStaves = PageFormat.InputMIDIChannelsPerStaff.Count;
-            int nStaffNames = PageFormat.ShortStaffNames.Count;
-
-            for(int i = 0; i < Systems.Count; i++)
-            {
-                SvgSystem system = Systems[i];
-				IReadOnlyList<VoiceDef> voiceDefs = bars[i].VoiceDefs;
-
-                for(int staffIndex = 0; staffIndex < nPrintedInputStaves; staffIndex++)
-                {
-                    int staffNameIndex = nPrintedOutputStaves + staffIndex;
-                    string staffname = StaffName(i, staffNameIndex);
-
-                    double gap = PageFormat.Gap * PageFormat.InputSizeFactor;
-                    double stafflineStemStrokeWidth = PageFormat.StafflineStemStrokeWidth * PageFormat.InputSizeFactor;
-                    InputStaff inputStaff = new InputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], gap, stafflineStemStrokeWidth);
-
-                    List<byte> inputVoiceIndices = PageFormat.InputMIDIChannelsPerStaff[staffIndex];
-                    for(int ivIndex = 0; ivIndex < inputVoiceIndices.Count; ++ivIndex)
-                    {
-                        InputVoiceDef inputVoiceDef = voiceDefs[inputVoiceIndices[ivIndex] + _algorithm.MidiChannelPerOutputVoice.Count] as InputVoiceDef;
-                        M.Assert(inputVoiceDef != null);
-						InputVoice inputVoice = new InputVoice(inputStaff)
-						{
-							VoiceDef = inputVoiceDef
-						};
-						inputStaff.Voices.Add(inputVoice);
-                    }
-                    SetStemDirections(inputStaff);
-                    system.Staves.Add(inputStaff);
-                }
-            }
-        }
 
 		private string StaffName(int systemIndex, int staffIndex)
         {

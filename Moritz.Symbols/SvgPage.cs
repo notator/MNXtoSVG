@@ -99,7 +99,7 @@ namespace Moritz.Symbols
         /// Writes this page.
         /// </summary>
         /// <param name="w"></param>
-        public void WriteSVG(SvgWriter w, Metadata metadata, bool isSinglePageScore, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
+        public void WriteSVG(SvgWriter w, MetadataWithDate metadataWithDate, bool isSinglePageScore, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
         {
 			int nOutputVoices = 0;
 			int nInputVoices = 0;
@@ -114,7 +114,7 @@ namespace Moritz.Symbols
 
 			if(!graphicsOnly)
 			{
-				metadata.WriteSVG(w, _pageNumber, _score.PageCount, _pageFormat.AboutLinkURL, nOutputVoices, nInputVoices);
+				metadataWithDate.WriteSVG(w, _pageNumber, _score.PageCount, _pageFormat.AboutLinkURL, nOutputVoices, nInputVoices);
 			}
 
             _score.WriteDefs(w, _pageNumber);
@@ -131,7 +131,7 @@ namespace Moritz.Symbols
 				WriteFrameLayer(w, _pageFormat.RightVBPX, _pageFormat.BottomVBPX);
 			}
 
-			WriteSystemsLayer(w, _pageNumber, metadata, graphicsOnly, printTitleAndAuthorOnScorePage1);
+			WriteSystemsLayer(w, _pageNumber, metadataWithDate, graphicsOnly, printTitleAndAuthorOnScorePage1);
 
             w.WriteComment(@" Annotations that are added here will be ignored by the AssistantPerformer. ");
 
@@ -162,7 +162,7 @@ namespace Moritz.Symbols
             w.SvgRect(CSSObjectClass.frame, 0, 0, width, height);
         }
 
-		private void WriteSystemsLayer(SvgWriter w, int pageNumber, Metadata metadata, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
+		private void WriteSystemsLayer(SvgWriter w, int pageNumber, MetadataWithDate metadataWithDate, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
 		{
             w.SvgStartGroup(CSSObjectClass.systems.ToString());
 
@@ -177,7 +177,7 @@ namespace Moritz.Symbols
 
 			if((pageNumber == 1 || pageNumber == 0) && printTitleAndAuthorOnScorePage1)
             {
-				WritePage1TitleAndAuthor(w, metadata);
+				WritePage1TitleAndAuthor(w, metadataWithDate);
 			}
 
             List<CarryMsgs> carryMsgsPerChannel = new List<CarryMsgs>();
@@ -242,15 +242,15 @@ namespace Moritz.Symbols
 		/// <summary>
 		/// Adds the main title and the author to the first page.
 		/// </summary>
-		protected void WritePage1TitleAndAuthor(SvgWriter w, Metadata metadata)
+		protected void WritePage1TitleAndAuthor(SvgWriter w, MetadataWithDate metadataWithDate)
 		{
 			string titlesFontFamily = "Open Sans";
 
 			TextInfo titleInfo =
-				new TextInfo(metadata.ScoreTitle, titlesFontFamily, _pageFormat.Page1TitleHeight,
+				new TextInfo(metadataWithDate.Title, titlesFontFamily, _pageFormat.Page1TitleHeight,
 					null, TextHorizAlign.center);
 			TextInfo authorInfo =
-			  new TextInfo(metadata.ScoreAuthor, titlesFontFamily, _pageFormat.Page1AuthorHeight,
+			  new TextInfo(metadataWithDate.Author, titlesFontFamily, _pageFormat.Page1AuthorHeight,
 				  null, TextHorizAlign.right);
 			w.WriteStartElement("g");
 			w.WriteAttributeString("class", CSSObjectClass.titles.ToString());

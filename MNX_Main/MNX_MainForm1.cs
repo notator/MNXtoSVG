@@ -20,6 +20,11 @@ namespace MNX_Main
         {
             InitializeComponent();
 
+            Options options = new OptionsForWriteAll().Options;
+            OptionPrintPage1TitlesCheckBox.CheckState = (options.PrintPage1Titles == "true") ? CheckState.Checked : CheckState.Unchecked;
+            OptionIncludeMIDIDataCheckBox.CheckState = (options.IncludeMIDIData == "true") ? CheckState.Checked : CheckState.Unchecked;
+            OptionPrintScoreAsScrollCheckBox.CheckState = (options.PrintScoreAsScroll == "true") ? CheckState.Checked : CheckState.Unchecked;
+
             this.MNXSelect.DropDownStyle = ComboBoxStyle.DropDownList;
             this.StafflineStemStrokeWidthComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             this.GapSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -49,14 +54,16 @@ namespace MNX_Main
 
             if(selectedIndex == 0)
             {
+                OptionsForWriteAll optionsForWriteAll = new OptionsForWriteAll();
                 for(var i = 0; i < _mnxSVGDatas.Count; i++)
                 {
                     var mnx = new MNX(_mnxSVGDatas[i].Item1);
                     var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
+                    svgds.Options = optionsForWriteAll.Options; // override 
                     var svgData = new SVGData(svgds);
-                    List<Bar> Bars = mnx.ToBars();
-                    string scoreTitle = MNXSelect.Items[MNXSelect.SelectedIndex].ToString();
-                    Metadata metadata = new Metadata(scoreTitle, "MNX by Example", "", @"See https://w3c.github.io/mnx/by-example/");
+                    //List<Bar> Bars = mnx.ToBars();
+                    //string scoreTitle = MNXSelect.Items[MNXSelect.SelectedIndex].ToString();
+                    //Metadata metadata = new Metadata(scoreTitle, "MNX by Example", "", @"See https://w3c.github.io/mnx/by-example/");
                     //SVGMIDIScore svgMIDIScore = new SVGMIDIScore(Bars, M.SVG_out_Folder, scoreTitle, svgData, metadata);
                 }
             }
@@ -65,10 +72,10 @@ namespace MNX_Main
                 var mnx = new MNX(_mnxSVGDatas[selectedIndex - 1].Item1);
                 var svgds = new SVGDataStrings(_mnxSVGDatas[selectedIndex - 1].Item2);
                 var svgData = new SVGData(svgds);
-                List<Bar> Bars = mnx.ToBars();
-                string scoreTitle = MNXSelect.Items[MNXSelect.SelectedIndex].ToString();
-                Metadata metadata = new Metadata(scoreTitle, "MNX by Example", "", @"See https://w3c.github.io/mnx/by-example/");
-                //SVGMIDIScore svgMIDIScore = new SVGMIDIScore(Bars, M.SVG_out_Folder, scoreTitle, svgData, metadata);
+                //List<Bar> Bars = mnx.ToBars();
+                //string scoreTitle = MNXSelect.Items[MNXSelect.SelectedIndex].ToString();
+                //Metadata metadata = new Metadata(scoreTitle, "MNX by Example", "", @"See https://w3c.github.io/mnx/by-example/");
+                ////SVGMIDIScore svgMIDIScore = new SVGMIDIScore(Bars, M.SVG_out_Folder, scoreTitle, svgData, metadata);
             }
         }
 
@@ -108,13 +115,24 @@ namespace MNX_Main
             this.MarginBottomTextBox.Text = page.marginBottom;
             this.MarginLeftTextBox.Text = page.marginLeft;
 
-            var notes = svgds.MNXCommonData;
+            var notes = svgds.Notation;
             this.StafflineStemStrokeWidthComboBox.SelectedIndex = GetIndex(StafflineStemStrokeWidthComboBox, notes.stafflineStemStrokeWidth);
             this.GapSizeComboBox.SelectedIndex = GetIndex(GapSizeComboBox, notes.gapSize);
             this.MinimumGapsBetweenStavesTextBox.Text = notes.minGapsBetweenStaves;
             this.MinimumGapsBetweenSystemsTextBox.Text = notes.minGapsBetweenSystems;
             this.SystemStartBarsTextBox.Text = notes.systemStartBars;
             this.CrotchetsPerMinuteTextBox.Text = notes.crotchetsPerMinute;
+
+            var metadata = svgds.Metadata;
+            this.MetadataTitleTextBox.Text = metadata.Title;
+            this.MetadataAuthorTextBox.Text = metadata.Author;
+            this.MetadataKeywordsTextBox.Text = metadata.Keywords;
+            this.MetadataCommentTextBox.Text = metadata.Comment;
+
+            var options = svgds.Options;
+            this.OptionPrintPage1TitlesCheckBox.CheckState = (options.PrintPage1Titles == "true") ? CheckState.Checked : CheckState.Unchecked;
+            this.OptionIncludeMIDIDataCheckBox.CheckState = (options.IncludeMIDIData == "true") ? CheckState.Checked : CheckState.Unchecked;
+            this.OptionPrintScoreAsScrollCheckBox.CheckState = (options.PrintScoreAsScroll == "true") ? CheckState.Checked : CheckState.Unchecked;
         }
 
         private int GetIndex(ComboBox comboBox, string value)
@@ -142,6 +160,8 @@ namespace MNX_Main
                 MarginsGroupBox.Enabled = false;
                 NotationGroupBox.Enabled = false;
                 SpeedGroupBox.Enabled = false;
+                MetadataGroupBox.Enabled = false;
+                OptionsGroupBox.Enabled = true;
 
                 WriteButton.Text = "Write all Scores";
             }
@@ -153,6 +173,8 @@ namespace MNX_Main
                 MarginsGroupBox.Enabled = true;
                 NotationGroupBox.Enabled = true;
                 SpeedGroupBox.Enabled = true;
+                MetadataGroupBox.Enabled = true;
+                OptionsGroupBox.Enabled = true;
 
                 WriteButton.Text = "Write Score";
             }
@@ -241,6 +263,18 @@ namespace MNX_Main
             return rval;
         }
 
+        private void CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            _settingsHaveChanged = true;
+            SetButtons(_settingsHaveChanged);
+        }
+
+        private void StringTextBox_Leave(object sender, EventArgs e)
+        {
+            _settingsHaveChanged = true;
+            SetButtons(_settingsHaveChanged);
+        }
+
         private void IntTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -291,25 +325,47 @@ namespace MNX_Main
 
         public void SaveSettings()
         {
-            var svgds = new SVGDataStrings(_mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2);
+            SVGDataStrings svgds = null;
+            if(MNXSelect.SelectedIndex == 0)
+            {
+                svgds = new OptionsForWriteAll();
+                var options = svgds.Options;
+                options.PrintPage1Titles = (this.OptionPrintPage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+                options.IncludeMIDIData = (this.OptionIncludeMIDIDataCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+                options.PrintScoreAsScroll = (this.OptionPrintScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+            }
+            else
+            {
+                svgds = new SVGDataStrings(_mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2);
 
-            var page = svgds.Page;
-            page.width = PageWidthTextBox.Text;
-            page.height = PageHeightTextBox.Text;
-            page.marginTopPage1 = MarginTopPage1TextBox.Text;
-            page.marginTopOther = MarginTopOtherPagesTextBox.Text;
-            page.marginRight = MarginRightTextBox.Text;
-            page.marginLeft = MarginLeftTextBox.Text;
-            page.marginBottom = MarginBottomTextBox.Text;
+                var page = svgds.Page;
+                page.width = PageWidthTextBox.Text;
+                page.height = PageHeightTextBox.Text;
+                page.marginTopPage1 = MarginTopPage1TextBox.Text;
+                page.marginTopOther = MarginTopOtherPagesTextBox.Text;
+                page.marginRight = MarginRightTextBox.Text;
+                page.marginLeft = MarginLeftTextBox.Text;
+                page.marginBottom = MarginBottomTextBox.Text;
 
-            var notes = svgds.MNXCommonData;
-            notes.stafflineStemStrokeWidth = (string) StafflineStemStrokeWidthComboBox.Items[StafflineStemStrokeWidthComboBox.SelectedIndex];
-            notes.gapSize = (string) GapSizeComboBox.Items[GapSizeComboBox.SelectedIndex];
-            notes.minGapsBetweenStaves = MinimumGapsBetweenStavesTextBox.Text;
-            notes.minGapsBetweenSystems = MinimumGapsBetweenSystemsTextBox.Text;
-            notes.systemStartBars = SystemStartBarsTextBox.Text;
-            notes.crotchetsPerMinute = CrotchetsPerMinuteTextBox.Text;
+                var notes = svgds.Notation;
+                notes.stafflineStemStrokeWidth = (string)StafflineStemStrokeWidthComboBox.Items[StafflineStemStrokeWidthComboBox.SelectedIndex];
+                notes.gapSize = (string)GapSizeComboBox.Items[GapSizeComboBox.SelectedIndex];
+                notes.minGapsBetweenStaves = MinimumGapsBetweenStavesTextBox.Text;
+                notes.minGapsBetweenSystems = MinimumGapsBetweenSystemsTextBox.Text;
+                notes.systemStartBars = SystemStartBarsTextBox.Text;
+                notes.crotchetsPerMinute = CrotchetsPerMinuteTextBox.Text;
 
+                var metadata = svgds.Metadata;
+                metadata.Title = this.MetadataTitleTextBox.Text;
+                metadata.Author = this.MetadataAuthorTextBox.Text;
+                metadata.Keywords = this.MetadataKeywordsTextBox.Text;
+                metadata.Comment = this.MetadataCommentTextBox.Text;
+
+                var options = svgds.Options;
+                options.PrintPage1Titles = (this.OptionPrintPage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+                options.IncludeMIDIData = (this.OptionIncludeMIDIDataCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+                options.PrintScoreAsScroll = (this.OptionPrintScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+            }
             svgds.SaveSettings();
         }
 

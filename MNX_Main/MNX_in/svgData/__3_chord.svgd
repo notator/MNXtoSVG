@@ -1,20 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Friday 22.12.2017, 16:07:19-->
+<!--file created: Saturday 25.04.2020, 12:14:54-->
 <svgData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://james-ingram-act-two.de/open-source/XMLSchemas/svgInstantiationSettings.xsd">
-  <page
-    width="500"
-    height="100"
+	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/svgData.xsd">
+	<page
+		width="50"
+		height="100"
 		marginTopPage1="90"
 		marginTopOther="60"
 		marginRight="70"
 		marginBottom="50"
 		marginLeft="70" />
-  <notation
+	<notation
 		stafflineStemStrokeWidth="0.5"
 		gapSize="5"
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="3"
 		systemStartBars="1"
-    crotchetsPerMinute="60" />
+		crotchetsPerMinute="60" />
+	<metadata
+		title="chord"
+		author="MNX by Example (Holovarty)"
+		comment="See https://w3c.github.io/mnx/by-example/" />
+	<options
+		printPage1Titles="false"
+		includeMIDIData="true"
+		printScoreAsScroll="true" />
 </svgData>

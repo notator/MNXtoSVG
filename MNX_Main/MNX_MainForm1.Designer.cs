@@ -65,17 +65,17 @@
             this.WriteButton = new System.Windows.Forms.Button();
             this.RevertFormatButton = new System.Windows.Forms.Button();
             this.MetadataGroupBox = new System.Windows.Forms.GroupBox();
+            this.MetadataAuthorTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataAuthorLabel = new System.Windows.Forms.Label();
+            this.MetadataTitleTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataTitleLabel = new System.Windows.Forms.Label();
             this.MetadataCommentTextBox = new System.Windows.Forms.TextBox();
             this.MetadataCommentLabel = new System.Windows.Forms.Label();
             this.MetadataKeywordsTextBox = new System.Windows.Forms.TextBox();
             this.MetadataKeywordsLabel = new System.Windows.Forms.Label();
-            this.MetadataTitleTextBox = new System.Windows.Forms.TextBox();
-            this.MetadataTitleLabel = new System.Windows.Forms.Label();
-            this.MetadataAuthorTextBox = new System.Windows.Forms.TextBox();
-            this.MetadataAuthorLabel = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.OptionPrintScoreAsScrollCheckBox = new System.Windows.Forms.CheckBox();
+            this.OptionIncludeMIDIDataCheckBox = new System.Windows.Forms.CheckBox();
+            this.OptionPrintPage1TitlesCheckBox = new System.Windows.Forms.CheckBox();
             this.OptionsGroupBox = new System.Windows.Forms.GroupBox();
             this.PaperSizeGroupBox.SuspendLayout();
             this.MarginsGroupBox.SuspendLayout();
@@ -548,6 +548,46 @@
             this.MetadataGroupBox.TabStop = false;
             this.MetadataGroupBox.Text = "metadata";
             // 
+            // MetadataAuthorTextBox
+            // 
+            this.MetadataAuthorTextBox.Location = new System.Drawing.Point(68, 56);
+            this.MetadataAuthorTextBox.Name = "MetadataAuthorTextBox";
+            this.MetadataAuthorTextBox.Size = new System.Drawing.Size(210, 20);
+            this.MetadataAuthorTextBox.TabIndex = 140;
+            this.MetadataAuthorTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MetadataAuthorTextBox.Leave += new System.EventHandler(this.StringTextBox_Leave);
+            // 
+            // MetadataAuthorLabel
+            // 
+            this.MetadataAuthorLabel.AutoSize = true;
+            this.MetadataAuthorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.MetadataAuthorLabel.Location = new System.Drawing.Point(26, 59);
+            this.MetadataAuthorLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.MetadataAuthorLabel.Name = "MetadataAuthorLabel";
+            this.MetadataAuthorLabel.Size = new System.Drawing.Size(37, 13);
+            this.MetadataAuthorLabel.TabIndex = 141;
+            this.MetadataAuthorLabel.Text = "author";
+            // 
+            // MetadataTitleTextBox
+            // 
+            this.MetadataTitleTextBox.Location = new System.Drawing.Point(68, 27);
+            this.MetadataTitleTextBox.Name = "MetadataTitleTextBox";
+            this.MetadataTitleTextBox.Size = new System.Drawing.Size(210, 20);
+            this.MetadataTitleTextBox.TabIndex = 138;
+            this.MetadataTitleTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MetadataTitleTextBox.Leave += new System.EventHandler(this.StringTextBox_Leave);
+            // 
+            // MetadataTitleLabel
+            // 
+            this.MetadataTitleLabel.AutoSize = true;
+            this.MetadataTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.MetadataTitleLabel.Location = new System.Drawing.Point(40, 30);
+            this.MetadataTitleLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.MetadataTitleLabel.Name = "MetadataTitleLabel";
+            this.MetadataTitleLabel.Size = new System.Drawing.Size(23, 13);
+            this.MetadataTitleLabel.TabIndex = 139;
+            this.MetadataTitleLabel.Text = "title";
+            // 
             // MetadataCommentTextBox
             // 
             this.MetadataCommentTextBox.Location = new System.Drawing.Point(16, 127);
@@ -556,6 +596,8 @@
             this.MetadataCommentTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.MetadataCommentTextBox.Size = new System.Drawing.Size(262, 83);
             this.MetadataCommentTextBox.TabIndex = 1;
+            this.MetadataCommentTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MetadataCommentTextBox.Leave += new System.EventHandler(this.StringTextBox_Leave);
             // 
             // MetadataCommentLabel
             // 
@@ -574,6 +616,8 @@
             this.MetadataKeywordsTextBox.Name = "MetadataKeywordsTextBox";
             this.MetadataKeywordsTextBox.Size = new System.Drawing.Size(210, 20);
             this.MetadataKeywordsTextBox.TabIndex = 0;
+            this.MetadataKeywordsTextBox.TextChanged += new System.EventHandler(this.TextBox_Changed);
+            this.MetadataKeywordsTextBox.Leave += new System.EventHandler(this.StringTextBox_Leave);
             // 
             // MetadataKeywordsLabel
             // 
@@ -586,93 +630,58 @@
             this.MetadataKeywordsLabel.TabIndex = 135;
             this.MetadataKeywordsLabel.Text = "keywords";
             // 
-            // MetadataTitleTextBox
+            // OptionPrintScoreAsScrollCheckBox
             // 
-            this.MetadataTitleTextBox.Location = new System.Drawing.Point(68, 27);
-            this.MetadataTitleTextBox.Name = "MetadataTitleTextBox";
-            this.MetadataTitleTextBox.Size = new System.Drawing.Size(210, 20);
-            this.MetadataTitleTextBox.TabIndex = 138;
+            this.OptionPrintScoreAsScrollCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.OptionPrintScoreAsScrollCheckBox.AutoSize = true;
+            this.OptionPrintScoreAsScrollCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.OptionPrintScoreAsScrollCheckBox.Checked = true;
+            this.OptionPrintScoreAsScrollCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.OptionPrintScoreAsScrollCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.OptionPrintScoreAsScrollCheckBox.Location = new System.Drawing.Point(10, 67);
+            this.OptionPrintScoreAsScrollCheckBox.Name = "OptionPrintScoreAsScrollCheckBox";
+            this.OptionPrintScoreAsScrollCheckBox.Size = new System.Drawing.Size(116, 17);
+            this.OptionPrintScoreAsScrollCheckBox.TabIndex = 11;
+            this.OptionPrintScoreAsScrollCheckBox.Text = "print score as scroll";
+            this.OptionPrintScoreAsScrollCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.OptionPrintScoreAsScrollCheckBox.UseVisualStyleBackColor = true;
             // 
-            // MetadataTitleLabel
+            // OptionIncludeMIDIDataCheckBox
             // 
-            this.MetadataTitleLabel.AutoSize = true;
-            this.MetadataTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.MetadataTitleLabel.Location = new System.Drawing.Point(40, 30);
-            this.MetadataTitleLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.MetadataTitleLabel.Name = "MetadataTitleLabel";
-            this.MetadataTitleLabel.Size = new System.Drawing.Size(23, 13);
-            this.MetadataTitleLabel.TabIndex = 139;
-            this.MetadataTitleLabel.Text = "title";
+            this.OptionIncludeMIDIDataCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.OptionIncludeMIDIDataCheckBox.AutoSize = true;
+            this.OptionIncludeMIDIDataCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.OptionIncludeMIDIDataCheckBox.Checked = true;
+            this.OptionIncludeMIDIDataCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.OptionIncludeMIDIDataCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.OptionIncludeMIDIDataCheckBox.Location = new System.Drawing.Point(16, 44);
+            this.OptionIncludeMIDIDataCheckBox.Name = "OptionIncludeMIDIDataCheckBox";
+            this.OptionIncludeMIDIDataCheckBox.Size = new System.Drawing.Size(110, 17);
+            this.OptionIncludeMIDIDataCheckBox.TabIndex = 12;
+            this.OptionIncludeMIDIDataCheckBox.Text = "include MIDI data";
+            this.OptionIncludeMIDIDataCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.OptionIncludeMIDIDataCheckBox.UseVisualStyleBackColor = true;
             // 
-            // MetadataAuthorTextBox
+            // OptionPrintPage1TitlesCheckBox
             // 
-            this.MetadataAuthorTextBox.Location = new System.Drawing.Point(68, 56);
-            this.MetadataAuthorTextBox.Name = "MetadataAuthorTextBox";
-            this.MetadataAuthorTextBox.Size = new System.Drawing.Size(210, 20);
-            this.MetadataAuthorTextBox.TabIndex = 140;
-            // 
-            // MetadataAuthorLabel
-            // 
-            this.MetadataAuthorLabel.AutoSize = true;
-            this.MetadataAuthorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.MetadataAuthorLabel.Location = new System.Drawing.Point(26, 59);
-            this.MetadataAuthorLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.MetadataAuthorLabel.Name = "MetadataAuthorLabel";
-            this.MetadataAuthorLabel.Size = new System.Drawing.Size(37, 13);
-            this.MetadataAuthorLabel.TabIndex = 141;
-            this.MetadataAuthorLabel.Text = "author";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox1.Location = new System.Drawing.Point(10, 67);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(116, 17);
-            this.checkBox1.TabIndex = 11;
-            this.checkBox1.Text = "print score as scroll";
-            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox2.Checked = true;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox2.Location = new System.Drawing.Point(16, 44);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(110, 17);
-            this.checkBox2.TabIndex = 12;
-            this.checkBox2.Text = "include MIDI data";
-            this.checkBox2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox3.Location = new System.Drawing.Point(20, 21);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(106, 17);
-            this.checkBox3.TabIndex = 13;
-            this.checkBox3.Text = "print page 1 titles";
-            this.checkBox3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.OptionPrintPage1TitlesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.OptionPrintPage1TitlesCheckBox.AutoSize = true;
+            this.OptionPrintPage1TitlesCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.OptionPrintPage1TitlesCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.OptionPrintPage1TitlesCheckBox.Location = new System.Drawing.Point(20, 21);
+            this.OptionPrintPage1TitlesCheckBox.Name = "OptionPrintPage1TitlesCheckBox";
+            this.OptionPrintPage1TitlesCheckBox.Size = new System.Drawing.Size(106, 17);
+            this.OptionPrintPage1TitlesCheckBox.TabIndex = 13;
+            this.OptionPrintPage1TitlesCheckBox.Text = "print page 1 titles";
+            this.OptionPrintPage1TitlesCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.OptionPrintPage1TitlesCheckBox.UseVisualStyleBackColor = true;
+            this.OptionPrintPage1TitlesCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // OptionsGroupBox
             // 
-            this.OptionsGroupBox.Controls.Add(this.checkBox3);
-            this.OptionsGroupBox.Controls.Add(this.checkBox1);
-            this.OptionsGroupBox.Controls.Add(this.checkBox2);
+            this.OptionsGroupBox.Controls.Add(this.OptionPrintPage1TitlesCheckBox);
+            this.OptionsGroupBox.Controls.Add(this.OptionPrintScoreAsScrollCheckBox);
+            this.OptionsGroupBox.Controls.Add(this.OptionIncludeMIDIDataCheckBox);
             this.OptionsGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.OptionsGroupBox.Location = new System.Drawing.Point(181, 23);
             this.OptionsGroupBox.Name = "OptionsGroupBox";
@@ -766,9 +775,9 @@
         private System.Windows.Forms.Label MetadataCommentLabel;
         private System.Windows.Forms.TextBox MetadataKeywordsTextBox;
         private System.Windows.Forms.Label MetadataKeywordsLabel;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox OptionPrintScoreAsScrollCheckBox;
+        private System.Windows.Forms.CheckBox OptionIncludeMIDIDataCheckBox;
+        private System.Windows.Forms.CheckBox OptionPrintPage1TitlesCheckBox;
         private System.Windows.Forms.GroupBox OptionsGroupBox;
     }
 }

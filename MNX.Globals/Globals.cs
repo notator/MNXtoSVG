@@ -34,13 +34,15 @@ namespace MNX.Globals
 
             return directory;
         }
-        private static readonly string mnxMainFolder = GetMNX_MainFolder();
+        private static readonly string mnxMain_Folder = GetMNX_MainFolder();
+
+        public static readonly string OptionsForWriteAll_Path = mnxMain_Folder + @"\OptionsForWriteAll.svgd";
         // contains all MNX input files (not just mnx-common)
-        public static readonly string MNX_in_Folder = mnxMainFolder + @"\MNX_in\mnx\";
+        public static readonly string MNX_in_Folder = mnxMain_Folder + @"\MNX_in\mnx\";
         // contains page formatting data parallel to the files in the MNX_in_Folder.
-        public static readonly string SVGData_Folder = mnxMainFolder + @"\MNX_in\svgData\";
+        public static readonly string SVGData_Folder = mnxMain_Folder + @"\MNX_in\svgData\";
         // contains the output SVG.
-        public static readonly string SVG_out_Folder = mnxMainFolder + @"\SVG_out\";
+        public static readonly string SVG_out_Folder = mnxMain_Folder + @"\SVG_out\";
 
         //Creates and initializes the CultureInfo which uses the international sort.
         public static CultureInfo ci = new CultureInfo("en-US", false);

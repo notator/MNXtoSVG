@@ -22,7 +22,7 @@ namespace Moritz.Symbols
 
         #region subclass constructor
         public PageFormat PageFormat = null;
-        public Metadata Metadata = null;
+        public MetadataWithDate MetadataWithDate = null;
         #endregion
 
 
@@ -155,7 +155,7 @@ namespace Moritz.Symbols
 
                 pageFilenames.Add(pageFilename);
 
-                SaveSVGPage(pagePath, page, this.Metadata, false, graphicsOnly, PrintTitleAndAuthorOnPage1);
+                SaveSVGPage(pagePath, page, this.MetadataWithDate, false, graphicsOnly, PrintTitleAndAuthorOnPage1);
                 pageNumber++;
             }
 
@@ -173,7 +173,7 @@ namespace Moritz.Symbols
 		/// <summary>
 		/// Writes an SVG file containing one page of the score.
 		/// </summary>
-		public void SaveSVGPage(string pagePath, SvgPage page, Metadata metadata, bool isSinglePageScore, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
+		public void SaveSVGPage(string pagePath, SvgPage page, MetadataWithDate metadataWithDate, bool isSinglePageScore, bool graphicsOnly, bool printTitleAndAuthorOnScorePage1)
         {
             if(File.Exists(pagePath))
             {
@@ -192,7 +192,7 @@ namespace Moritz.Symbols
 
             using(SvgWriter w = new SvgWriter(pagePath, settings))
             {
-                page.WriteSVG(w, Metadata, isSinglePageScore, graphicsOnly, printTitleAndAuthorOnScorePage1);
+                page.WriteSVG(w, metadataWithDate, isSinglePageScore, graphicsOnly, printTitleAndAuthorOnScorePage1);
             }
         }
 
@@ -829,7 +829,7 @@ namespace Moritz.Symbols
 			}
 			string pagePath = Path.GetDirectoryName(FilePath) + @"\" + pageFilename;
 
-			SaveSVGPage(pagePath, singlePage, this.Metadata, true, graphicsOnly, printTitleAndAuthorOnPage1);
+			SaveSVGPage(pagePath, singlePage, this.MetadataWithDate, true, graphicsOnly, printTitleAndAuthorOnPage1);
 		}
 
 
@@ -1533,8 +1533,8 @@ namespace Moritz.Symbols
 				infoAtTopOfPageSB.Append(" page " + pageNumber.ToString());
 			}				
 
-            if(Metadata != null)
-                infoAtTopOfPageSB.AppendFormat(", " + Metadata.Date);
+            if(MetadataWithDate != null)
+                infoAtTopOfPageSB.AppendFormat(", " + MetadataWithDate.Date);
 
             return new TextInfo(infoAtTopOfPageSB.ToString(), "Arial", PageFormat.TimeStampFontHeight, TextHorizAlign.left);
         }

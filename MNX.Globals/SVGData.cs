@@ -11,34 +11,54 @@ namespace MNX.Globals
     {
         public readonly int pageWidth = 0;
         public readonly int pageHeight = 0;
-        public readonly int marginTopPage1 = 0;
-        public readonly int marginTopOther = 0;
-        public readonly int marginRight = 0;
-        public readonly int marginBottom = 0;
-        public readonly int marginLeft = 0;
-        public readonly double stafflineStemStrokeWidth = 0;
-        public readonly double gap = 0;
-        public readonly int minGapsBetweenStaves = 0;
-        public readonly int minGapsBetweenSystems = 0;
-        public readonly List<int> systemStartBars = null;
-        public readonly double crotchetsPerMinute = 0;
+        public readonly int pageMarginTopPage1 = 0;
+        public readonly int pageMarginTopOther = 0;
+        public readonly int pageMarginRight = 0;
+        public readonly int pageMarginBottom = 0;
+        public readonly int pageMarginLeft = 0;
+
+        public readonly double notationStafflineStemStrokeWidth = 0;
+        public readonly double notationGap = 0;
+        public readonly int notationMinGapsBetweenStaves = 0;
+        public readonly int notationMinGapsBetweenSystems = 0;
+        public readonly List<int> notationSystemStartBars = null;
+        public readonly double notationCrotchetsPerMinute = 0;
+
+        public readonly string metadataTitle = null;
+        public readonly string metadataAuthor = null;
+        public readonly string metadataKeywords = null;
+        public readonly string metadataComment = null;
+
+        public readonly bool optionsPrintPage1Titles = true;
+        public readonly bool optionsIncludeMIDIData = true;
+        public readonly bool optionsPrintScoreAsScroll = true;
 
         public SVGData(SVGDataStrings svgds)
         {
             pageWidth = int.Parse(svgds.Page.width);
             pageHeight = int.Parse(svgds.Page.height);
-            marginTopPage1 = int.Parse(svgds.Page.marginTopPage1);
-            marginTopOther = int.Parse(svgds.Page.marginTopOther);
-            marginRight = int.Parse(svgds.Page.marginRight);
-            marginBottom = int.Parse(svgds.Page.marginBottom);
-            marginLeft = int.Parse(svgds.Page.marginLeft);
-            stafflineStemStrokeWidth = double.Parse(svgds.MNXCommonData.stafflineStemStrokeWidth, M.En_USNumberFormat);
-            gap = double.Parse(svgds.MNXCommonData.gapSize, M.En_USNumberFormat);
-            minGapsBetweenStaves = int.Parse(svgds.MNXCommonData.minGapsBetweenStaves);
-            minGapsBetweenSystems = int.Parse(svgds.MNXCommonData.minGapsBetweenSystems);
+            pageMarginTopPage1 = int.Parse(svgds.Page.marginTopPage1);
+            pageMarginTopOther = int.Parse(svgds.Page.marginTopOther);
+            pageMarginRight = int.Parse(svgds.Page.marginRight);
+            pageMarginBottom = int.Parse(svgds.Page.marginBottom);
+            pageMarginLeft = int.Parse(svgds.Page.marginLeft);
+
+            notationStafflineStemStrokeWidth = double.Parse(svgds.Notation.stafflineStemStrokeWidth, M.En_USNumberFormat);
+            notationGap = double.Parse(svgds.Notation.gapSize, M.En_USNumberFormat);
+            notationMinGapsBetweenStaves = int.Parse(svgds.Notation.minGapsBetweenStaves);
+            notationMinGapsBetweenSystems = int.Parse(svgds.Notation.minGapsBetweenSystems);
             char[] delimiters = { ',', ' ' };
-            systemStartBars = M.StringToIntList(svgds.MNXCommonData.systemStartBars, delimiters);
-            crotchetsPerMinute = double.Parse(svgds.MNXCommonData.crotchetsPerMinute, M.En_USNumberFormat);
+            notationSystemStartBars = M.StringToIntList(svgds.Notation.systemStartBars, delimiters);
+            notationCrotchetsPerMinute = double.Parse(svgds.Notation.crotchetsPerMinute, M.En_USNumberFormat);
+
+            metadataTitle = svgds.Metadata.Title;
+            metadataAuthor = svgds.Metadata.Author;
+            metadataKeywords = svgds.Metadata.Keywords;
+            metadataComment = svgds.Metadata.Comment;
+
+            optionsPrintPage1Titles = (svgds.Options.PrintPage1Titles == "true");
+            optionsIncludeMIDIData = (svgds.Options.IncludeMIDIData == "true");
+            optionsPrintScoreAsScroll = (svgds.Options.PrintScoreAsScroll == "true");
         }
     }
 

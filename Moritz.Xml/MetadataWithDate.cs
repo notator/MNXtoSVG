@@ -8,31 +8,18 @@ using MNX.Globals;
 
 namespace Moritz.Xml
 {
-	public class Metadata
+	public class MetadataWithDate : Metadata
 	{
         public string Date;
-        public readonly string ScoreTitle;
-        public readonly string ScoreAuthor;
-        public readonly string Keywords;
-        public readonly string Comment;
-
         /// <summary>
         /// Metadata (compatible with Inkscape's) written into the SVG file
         /// </summary>
-        /// <param name="scoreTitle">May not be null or empty.</param>
-        /// <param name="scoreAuthor">May not null or empty</param>
-        /// <param name="keywords">Can be null or empty</param>
-        /// <param name="comment">Can be null or empty</param>
-        public Metadata(string scoreTitle, string scoreAuthor, string keywords, string comment)
+        public MetadataWithDate()
         {
-            M.Assert(!String.IsNullOrEmpty(scoreTitle));
-            M.Assert(!String.IsNullOrEmpty(scoreAuthor));
+            M.Assert(!String.IsNullOrEmpty(base.Title));
+            M.Assert(!String.IsNullOrEmpty(base.Author));
 
             Date = M.NowString;
-            ScoreTitle = scoreTitle;
-            ScoreAuthor = scoreAuthor;
-            Keywords = keywords;
-            Comment = comment;
         }
 
 		public void WriteSVG(SvgWriter w, int pageNumber, int nScorePages, string aboutThePieceLinkURL, int nOutputVoices, int nInputVoices)
@@ -40,11 +27,11 @@ namespace Moritz.Xml
 			string pageTitle;
 			if(pageNumber == 0)
 			{
-				pageTitle = ScoreTitle + " (scroll)";
+				pageTitle = base.Title + " (scroll)";
 			}
 			else
 			{
-				pageTitle = ScoreTitle + ", page " + pageNumber.ToString() + " of " + nScorePages.ToString();
+				pageTitle = base.Title + ", page " + pageNumber.ToString() + " of " + nScorePages.ToString();
 			}
 
             w.WriteStartElement("title");

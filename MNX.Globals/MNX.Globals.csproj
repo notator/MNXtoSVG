@@ -41,6 +41,10 @@
   <ItemGroup>
     <Compile Include="Enum.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Metadata.cs" />
+    <Compile Include="NotationAndSpeedSettings.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="PageSettings.cs" />
     <Compile Include="SVGDataStrings.cs" />
     <Compile Include="SVGData.cs" />
     <Compile Include="SVGDataTypes.cs" />

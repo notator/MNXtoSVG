@@ -11,14 +11,14 @@ namespace Moritz.Composer
     {
         public SVGMIDIScore(List<Bar> bars, 
             string targetFolder, string targetFilenameWithoutSuffix,
-            SVGData svgData, Metadata metadata)
+            SVGData svgData, MetadataWithDate MetadataWithDate)
             : base(targetFolder, targetFilenameWithoutSuffix)
         {
 
             CheckBars(bars);
 
-            this.Metadata = metadata;
-            this.Metadata.Date = M.NowString; // printed in info string at top of score.
+            this.MetadataWithDate = MetadataWithDate;
+            this.MetadataWithDate.Date = M.NowString; // printed in info string at top of score.
 
             PageFormat = new PageFormat(svgData);
 

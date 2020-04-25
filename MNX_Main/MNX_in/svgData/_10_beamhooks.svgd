@@ -17,4 +17,14 @@
 		minGapsBetweenSystems="3"
 		systemStartBars="1"
     crotchetsPerMinute="60" />
+  <metadata
+  title="beamhooks"
+  author="MNX by Example"
+  keywords=""
+  comment="See https://w3c.github.io/mnx/by-example/"/>
+  <options
+    printPage1Titles="false"
+    includeMIDIData="true"
+    printScoreAsScroll="true"/>
+
 </svgData>

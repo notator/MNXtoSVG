@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Saturday 25.04.2020, 14:20:47-->
+<!--file created: Saturday 25.04.2020, 14:24:53-->
 <svgData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/svgData.xsd">
 	<options
-		writePage1Titles="true"
+		writePage1Titles="false"
 		writeScrollScore="false"
 		includeMIDIData="false" />
 </svgData>

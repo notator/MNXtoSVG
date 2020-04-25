@@ -638,7 +638,7 @@
             this.OptionWriteScoreAsScrollCheckBox.Checked = true;
             this.OptionWriteScoreAsScrollCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.OptionWriteScoreAsScrollCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.OptionWriteScoreAsScrollCheckBox.Location = new System.Drawing.Point(22, 67);
+            this.OptionWriteScoreAsScrollCheckBox.Location = new System.Drawing.Point(22, 44);
             this.OptionWriteScoreAsScrollCheckBox.Name = "OptionWriteScoreAsScrollCheckBox";
             this.OptionWriteScoreAsScrollCheckBox.Size = new System.Drawing.Size(104, 17);
             this.OptionWriteScoreAsScrollCheckBox.TabIndex = 11;
@@ -655,7 +655,7 @@
             this.OptionIncludeMIDIDataCheckBox.Checked = true;
             this.OptionIncludeMIDIDataCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.OptionIncludeMIDIDataCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.OptionIncludeMIDIDataCheckBox.Location = new System.Drawing.Point(16, 44);
+            this.OptionIncludeMIDIDataCheckBox.Location = new System.Drawing.Point(16, 67);
             this.OptionIncludeMIDIDataCheckBox.Name = "OptionIncludeMIDIDataCheckBox";
             this.OptionIncludeMIDIDataCheckBox.Size = new System.Drawing.Size(110, 17);
             this.OptionIncludeMIDIDataCheckBox.TabIndex = 12;

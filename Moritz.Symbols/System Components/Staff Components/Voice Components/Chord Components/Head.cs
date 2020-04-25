@@ -14,7 +14,7 @@ namespace Moritz.Symbols
         /// </summary>
         /// <param name="chord">The containing ChordSymbol</param>
         /// <param name="midiPitch">The midiPitch. Must be in range [0..127]</param>
-        /// <param name="midiVelocity">The midiVelocity. Must be in range [0..127] for output Heads. Is -1 for input Heads</param>
+        /// <param name="midiVelocity">The midiVelocity. Must be in range [0..127] for output Heads.</param>
         /// <param name="useSharp">true means use #, false means use flat(if there is a choice).</param>
         public Head(ChordSymbol chord, int midiPitch, int midiVelocity, bool useSharp)
         {

@@ -8,7 +8,7 @@ using MNX.Globals;
 namespace Moritz.Spec
 {
 	/// <summary>
-	/// The base class for Trk and InputVoiceDef.
+	/// The base class for Trk.
 	/// <para>VoiceDef classes are IEnumerable (foreach loops can be used).</para>
 	/// <para>They are also indexable (IUniqueDef iu = this[index])</para>
 	/// </summary>
@@ -312,7 +312,7 @@ namespace Moritz.Spec
 		/// <summary>
 		/// Transpose all the IUniqueChordDefs from beginIndex to (excluding) endIndex
 		/// up by the number of semitones given in the interval argument.
-		/// IUniqueChordDefs are MidiChordDef, InputChordDef and CautionaryChordDef.
+		/// IUniqueChordDefs are MidiChordDef and CautionaryChordDef.
 		/// Negative interval values transpose down.
 		/// It is not an error if Midi pitch values would exceed the range 0..127.
 		/// In this case, they are silently coerced to 0 or 127 respectively.
@@ -392,7 +392,7 @@ namespace Moritz.Spec
 
         /// <summary>
         /// Transposes the UniqueDefs from the beginIndex upto (excluding) endIndex
-        /// by an equally increasing amount, so that the final MidiChordDef or InputChordDef is transposed by glissInterval.
+        /// by an equally increasing amount, so that the final MidiChordDef is transposed by glissInterval.
         /// glissInterval can be negative.
         /// </summary>
         public void StepwiseGliss(int beginIndex, int endIndex, int glissInterval)

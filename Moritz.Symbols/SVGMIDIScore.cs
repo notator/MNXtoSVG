@@ -143,7 +143,7 @@ namespace Moritz.Symbols
 			List<string> currentClefs = new List<string>(initialClefPerMIDIChannel);
 			int nBars = bars.Count;
 			int nVoiceDefs = bars[0].VoiceDefs.Count;
-			M.Assert(nVoiceDefs == initialClefPerMIDIChannel.Count); // VoiceDefs are both Trks and InputVoiceDefs
+			M.Assert(nVoiceDefs == initialClefPerMIDIChannel.Count); // VoiceDefs are Trks
 			foreach (Bar bar in bars)
 			{
 				for (int i = 0; i < nVoiceDefs; ++i)
@@ -224,7 +224,7 @@ namespace Moritz.Symbols
 		{
 			string errorString = "";
 
-			List<int> lowerVoiceIndices = GetOutputAndInputLowerVoiceIndices();
+			List<int> lowerVoiceIndices = GetLowerVoiceIndices();
 
 			foreach(int lowerVoiceIndex in lowerVoiceIndices)
 			{
@@ -244,7 +244,7 @@ namespace Moritz.Symbols
 			return errorString;
 		}
 
-		private List<int> GetOutputAndInputLowerVoiceIndices()
+		private List<int> GetLowerVoiceIndices()
 		{
 			List<int> lowerVoiceIndices = new List<int>();
 			int voiceIndex = 0;
@@ -332,12 +332,10 @@ namespace Moritz.Symbols
 		/// <summary>
 		/// Creates one System per bar (=list of VoiceDefs) in the argument.
 		/// The Systems are complete with staves and voices of the correct type:
-		/// Each InputStaff is allocated parallel (empty) InputVoice fields.
 		/// Each OutputStaff is allocated parallel (empty) OutputVoice fields.
 		/// Each Voice has a VoiceDef field that is allocated to the corresponding
 		/// VoiceDef from the argument.
 		/// The OutputVoices have MIDIChannels arranged according to PageFormat.OutputMIDIChannelsPerStaff.
-		/// The InputVoices have MIDIChannels arranged according to PageFormat.InputMIDIChannelsPerStaff.
 		/// OutputVoices are given a midi channel allocated from top to bottom in the printed score.
 		/// </summary>
 		public void CreateEmptySystems(List<Bar> bars)

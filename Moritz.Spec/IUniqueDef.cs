@@ -9,8 +9,6 @@ namespace Moritz.Spec
     /// Currently (11.9.2014) these are:
     ///     MidiChordDef
     ///     MidiRestDef
-    ///     InputChordDef
-    ///     InputRestDef
     ///     CautionaryChordDef
     ///     ClefDef
     /// These objects must implement DeepClone() so that VoiceDefs.DeepClone() can be implemented.

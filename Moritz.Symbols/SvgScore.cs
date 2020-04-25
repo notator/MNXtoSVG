@@ -447,11 +447,10 @@ namespace Moritz.Symbols
 
 		private StringBuilder GetExistingClichtClasses(List<CSSObjectClass> usedCSSClasses, List<ClefID> usedClefIDs)
         {
-            //.rest, .inputRest, .notehead, .accidental,
+            //.rest, .notehead, .accidental,
             //.cautionaryNotehead, .cautionaryAccidental,
-            //.inputNotehead, .inputAccidental,
-            //.clef, .smallClef, .inputClef, .inputSmallClef,
-            //.dynamic, .inputDynamic
+            //.clef, .smallClef,
+            //.dynamic,
             //.clefOctaveNumber, .smallClefOctaveNumber
 
             StringBuilder rval = new StringBuilder();
@@ -502,10 +501,10 @@ namespace Moritz.Symbols
         private StringBuilder GetExistingArialClasses(List<CSSObjectClass> usedCSSClasses, List<ClefID> usedClefIDs)
         {
 			//.timeStamp,
-			//.staffName, .inputStaffName,
-			//.lyric, .inputLyric,
+			//.staffName,
+			//.lyric,
 			//.barNumberNumber, 
-			//.clefX, .smallClefX, .inputClefX, .inputSmallClefX
+			//.clefX, .smallClefX
 
 			// timestamp is not recorded, but exists on every page
 			StringBuilder rval = new StringBuilder("." + CSSObjectClass.timeStamp.ToString());

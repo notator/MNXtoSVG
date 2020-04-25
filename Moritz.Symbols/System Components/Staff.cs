@@ -19,9 +19,6 @@ namespace Moritz.Symbols
             StafflineStemStrokeWidth = stafflineStemStrokeWidth;
         }
 
-		/// <summary>
-		/// carryMsgsPerChannel is null for InputStaves.
-		/// </summary>
 		public virtual void WriteSVG(SvgWriter w, int systemNumber, int staffNumber, List<CarryMsgs> carryMsgsPerChannel, bool graphicsOnly)
         {            
             w.WriteAttributeString("score", "staffName", null, this.Staffname);

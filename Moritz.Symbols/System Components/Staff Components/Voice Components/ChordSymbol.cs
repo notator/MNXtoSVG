@@ -94,13 +94,14 @@ namespace Moritz.Symbols
                     // index is now both the index of the "most preferred" interval 
                     // and the index of the lower midiPitch of the "most preferred" interval.
                     Head head = null;
+                    M.Assert(midiVelocities != null); // April 2020 (InputChordSymbols no longer exist)
                     if(midiVelocities != null)
                     {
                         head = new Head(null, midiPitches[index], midiVelocities[index], true);
                     }
                     else
                     {
-                        head = new Head(null, midiPitches[index], -1, true);  // a Head in an InputChordSymbol
+                        //head = new Head(null, midiPitches[index], -1, true);  // a Head in an InputChordSymbol
                     }
                     // head is either natural or sharp.
                     int preferredInterval = collapsedIntervals[index];

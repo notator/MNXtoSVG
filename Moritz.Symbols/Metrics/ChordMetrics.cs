@@ -541,11 +541,11 @@ namespace Moritz.Symbols
             {
                 deltaY = minDist - (innerNoteheadAlignmentY - flagsMetrics.Bottom);
                 
-                if(flagIDString.Contains("ight1Flag")) // could be input staff
+                if(flagIDString.Contains("ight1Flag"))
                     deltaY += _gap;
                 deltaY *= -1;
 
-                if(flagIDString.Contains("ight1Flag")) // could be input staff
+                if(flagIDString.Contains("ight1Flag"))
                 {
                     if((flagsMetrics.Bottom + deltaY) > (_gap * 2.5F))
                     {
@@ -563,10 +563,10 @@ namespace Moritz.Symbols
             else // stem is down
             {
                 deltaY = minDist - (flagsMetrics.Top - innerNoteheadAlignmentY);
-                if(flagIDString.Contains("eft1Flag")) // could be input staff
+                if(flagIDString.Contains("eft1Flag"))
                     deltaY += _gap;
 
-                if(flagIDString.Contains("eft1Flag")) // could be input staff
+                if(flagIDString.Contains("eft1Flag"))
                 {
                     if((flagsMetrics.Top + deltaY) < (_gap * 1.5F))
                     {
@@ -986,7 +986,7 @@ namespace Moritz.Symbols
             }
             if(_ornamentMetrics != null)
             {
-                _ornamentMetrics.WriteSVG(w); // there are no cautionary or input ornaments 
+                _ornamentMetrics.WriteSVG(w); // there are no cautionary ornaments 
             }
             if(_lyricMetrics != null)
             {

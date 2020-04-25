@@ -14,16 +14,15 @@ namespace Moritz.Spec
 
 		/// <summary>
 		/// All constructors in this class are protected, so Bars can only be created by subclasses.
-		/// <para>A Bar contains a list of voiceDefs, that are all Trk (InputVoiceDef does not exist in MNX). A Seq only contains Trks.
+		/// <para>A Bar contains a list of voiceDefs that are all Trks. A Seq only contains Trks.
 		/// Bars do not contain barlines. They are implicit, at the beginning and end of the Bar. 
 		/// This constructor uses its arguments' voiceDefs directly, so, if the arguments need to be used again, pass a clone.</para>
-		/// <para>Seq.AssertConsistency and all inputVoiceDef.AssertConsistency functions must succeed (see their definitions).</para>
+		/// <para>Seq.AssertConsistency must succeed.</para>
 		/// <para>The Bar's AbsMsPosition is set to the seq's AbsMsPosition. If initialClefPerChannel is not null, the initial ClefDef is
 		/// inserted at the beginning of each voice.</para>
 		/// <para>When complete, this constructor calls the bar.AssertConsistency() function (see that its documentation).</para>
 		/// </summary>
 		/// <param name="seq">Cannot be null, and must have Trks</param>
-		/// <param name="inputVoiceDefs">This list can be null or empty</param>
 		protected Bar(Seq seq )
         {
 			#region conditions
@@ -67,8 +66,7 @@ namespace Moritz.Spec
 
 
 		/// <summary>
-		/// Trk.AssertConsistency() is called on each VoiceDef that is a Trk.
-		/// InputVoiceDef.AssertConsistency() is called on each VoiceDef that is an InputVoiceDef.
+		/// Trk.AssertConsistency() is called on each VoiceDef (each VoiceDef is a Trk).
 		/// Then the following checks ae also made:
 		/// <para>1. The first VoiceDef in a Bar must be a Trk.</para>
 		/// <para>2. All voiceDefs have the same MsDuration.</para>
@@ -76,7 +74,7 @@ namespace Moritz.Spec
 		/// </summary> 
 		public virtual void AssertConsistency()
         {
-			#region trk and inputVoiceDef consistent in bar
+			#region trk consistent in bar
 			foreach(VoiceDef voiceDef in _voiceDefs)
 			{
 				if(voiceDef is Trk trk)

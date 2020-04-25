@@ -36,9 +36,8 @@ namespace Moritz.Symbols
 
         /// <summary>
         /// There is still one system per bar.
-        /// In each system, the staff list contains OutputStaff objects followed by InputStaff objects.
 		/// Each VoiceDef contains ClefDefs. The first is converted to a Clef, later ones to SmallClefs.
-		/// An Exception will be thrown if a SmallClefDef is found on the lower voiceDef in a staf in the systems input.
+		/// An Exception will be thrown if a SmallClefDef is found on the lower voiceDef in a staff in the systems input.
 		/// Small clefs (if there are any) are copied from the top to the bottom voice (if there is one) on each staff.
         /// </summary>
         /// <param name="systems"></param>

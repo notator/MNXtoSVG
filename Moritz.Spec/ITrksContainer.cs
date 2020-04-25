@@ -5,7 +5,7 @@ namespace Moritz.Spec
 	///<summary>
 	/// ITrksContainer is implemented by Seq and Bar.
 	/// A Seq only contains a list of Trk.
-	/// A Bar contains a list of VoiceDef (i.e. both Trk and InputVoiceDef), and implements Trks by traversing that list.
+	/// A Bar contains a list of VoiceDef (i.e. Trk), and implements Trks by traversing that list.
 	///</summary>
 	public interface ITrksContainer
     {

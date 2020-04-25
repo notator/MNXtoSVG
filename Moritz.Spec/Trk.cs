@@ -132,7 +132,7 @@ namespace Moritz.Spec
 			{
 				int msDuration = (msPositionReThisTrk - MsDuration);
 				IUniqueDef lastIud = _uniqueDefs[_uniqueDefs.Count - 1];
-				if(lastIud is MidiRestDef finalRestDef) // Trks are "OutputVoiceDefs" so cannot contain InputRestDefs.
+				if(lastIud is MidiRestDef finalRestDef)
 				{
 					lastIud.MsDuration += msDuration;
 				}

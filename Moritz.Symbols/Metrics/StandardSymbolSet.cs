@@ -38,45 +38,45 @@ namespace Moritz.Symbols
 
             // treble clefs
             if(uc.Contains(ClefID.trebleClef))
-                WriteClefSymbolDef(w, true, false, false); // treble, normal, output
+                WriteClefSymbolDef(w, true, false); // treble, normal
             if(uc.Contains(ClefID.smallTrebleClef))
-                WriteClefSymbolDef(w, true, true, false); // treble, small, output
+                WriteClefSymbolDef(w, true, true); // treble, small
 
             if(uc.Contains(ClefID.trebleClef8))
-                WriteClef8SymbolDef(w, true, false, false, normalHeight); // treble, normal, output
+                WriteClef8SymbolDef(w, true, false, normalHeight); // treble, normal
             if(uc.Contains(ClefID.smallTrebleClef8))
-                WriteClef8SymbolDef(w, true, true, false, smallHeight); // treble, small, output
+                WriteClef8SymbolDef(w, true, true, smallHeight); // treble, small
 
             if(uc.Contains(ClefID.trebleClef2x8))
-                WriteClefMulti8SymbolDef(w, true, false, false, 2, normalHeight); // treble, normal, output, 2
+                WriteClefMulti8SymbolDef(w, true, false, 2, normalHeight); // treble, normal, 2
             if(uc.Contains(ClefID.smallTrebleClef2x8))
-                WriteClefMulti8SymbolDef(w, true, true, false, 2, smallHeight); // treble, small, output, 2
+                WriteClefMulti8SymbolDef(w, true, true, 2, smallHeight); // treble, small, 2
 
             if(uc.Contains(ClefID.trebleClef3x8))
-                WriteClefMulti8SymbolDef(w, true, false, false, 3, normalHeight); // treble, normal, output, 3
+                WriteClefMulti8SymbolDef(w, true, false, 3, normalHeight); // treble, normal, 3
             if(uc.Contains(ClefID.smallTrebleClef3x8))
-                WriteClefMulti8SymbolDef(w, true, true, false, 3, smallHeight); // treble, small, output, 3
+                WriteClefMulti8SymbolDef(w, true, true, 3, smallHeight); // treble, small, 3
 
             // bass clefs
             if(uc.Contains(ClefID.bassClef))
-                WriteClefSymbolDef(w, false, false, false); // bass, normal, output
+                WriteClefSymbolDef(w, false, false); // bass, normal
             if(uc.Contains(ClefID.smallBassClef))
-                WriteClefSymbolDef(w, false, true, false); // bass, small, output
+                WriteClefSymbolDef(w, false, true); // bass, small
 
             if(uc.Contains(ClefID.bassClef8))
-                WriteClef8SymbolDef(w, false, false, false, normalHeight); // bass, normal, output
+                WriteClef8SymbolDef(w, false, false, normalHeight); // bass, normal
             if(uc.Contains(ClefID.smallBassClef8))
-                WriteClef8SymbolDef(w, false, true, false, smallHeight); // bass, small, output
+                WriteClef8SymbolDef(w, false, true, smallHeight); // bass, small
 
             if(uc.Contains(ClefID.bassClef2x8))
-                WriteClefMulti8SymbolDef(w, false, false, false, 2, normalHeight); // bass, normal, output, 2
+                WriteClefMulti8SymbolDef(w, false, false, 2, normalHeight); // bass, normal, 2
             if(uc.Contains(ClefID.smallBassClef2x8))
-                WriteClefMulti8SymbolDef(w, false, true, false, 2, smallHeight); // bass, small, output, 2
+                WriteClefMulti8SymbolDef(w, false, true, 2, smallHeight); // bass, small, 2
 
             if(uc.Contains(ClefID.bassClef3x8))
-                WriteClefMulti8SymbolDef(w, false, false, false, 3, normalHeight); // bass, normal, output, 3
+                WriteClefMulti8SymbolDef(w, false, false, 3, normalHeight); // bass, normal, 3
             if(uc.Contains(ClefID.smallBassClef3x8))
-                WriteClefMulti8SymbolDef(w, false, true, false, 3, smallHeight); // bass, small, output, 3
+                WriteClefMulti8SymbolDef(w, false, true, 3, smallHeight); // bass, small, 3
         }
         #region symbol definitions
 
@@ -97,70 +97,38 @@ namespace Moritz.Symbols
             w.WriteString(innerText);
             w.WriteEndElement();
         }
-        private void WriteClefSymbolDef(SvgWriter w, bool isTreble, bool isSmall, bool isInput)
+        private void WriteClefSymbolDef(SvgWriter w, bool isTreble, bool isSmall)
         {
             w.WriteStartElement("g");
             if(isSmall)
             {
                 if(isTreble)
                 {
-                    if(isInput)
-                    {
-                        w.WriteAttributeString("id", "inputSmallTrebleClef");
-                        WriteTextElement(w, "inputSmallClef", "&");
-                    }
-                    else
-                    {
-                        w.WriteAttributeString("id", "smallTrebleClef");
-                        WriteTextElement(w, "smallClef", "&");
-                    }
+                    w.WriteAttributeString("id", "smallTrebleClef");
+                    WriteTextElement(w, "smallClef", "&");
                 }
                 else
                 {
-                    if(isInput)
-                    {
-                        w.WriteAttributeString("id", "inputSmallBassClef");
-                        WriteTextElement(w, "inputSmallClef", "?");
-                    }
-                    else
-                    {
-                        w.WriteAttributeString("id", "smallBassClef");
-                        WriteTextElement(w, "smallClef", "?");
-                    }
+                    w.WriteAttributeString("id", "smallBassClef");
+                    WriteTextElement(w, "smallClef", "?");
                 }
             }
             else
             {
                 if(isTreble)
                 {
-                    if(isInput)
-                    {
-                        w.WriteAttributeString("id", "inputTrebleClef");
-                        WriteTextElement(w, "inputClef", "&");
-                    }
-                    else
-                    {
-                        w.WriteAttributeString("id", "trebleClef");
-                        WriteTextElement(w, "clef", "&");
-                    }
+                    w.WriteAttributeString("id", "trebleClef");
+                    WriteTextElement(w, "clef", "&");
                 }
                 else
                 {
-                    if(isInput)
-                    {
-                        w.WriteAttributeString("id", "inputBassClef");
-                        WriteTextElement(w, "inputClef", "?");
-                    }
-                    else
-                    { 
-                        w.WriteAttributeString("id", "bassClef");
-                        WriteTextElement(w, "clef", "?");
-                    }
+                    w.WriteAttributeString("id", "bassClef");
+                    WriteTextElement(w, "clef", "?");
                 }
             }
             w.WriteEndElement(); // g
         }
-        private void WriteClef8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, bool isInput, double fontHeight)
+        private void WriteClef8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, double fontHeight)
         {
             double x = isTreble ? (0.28F * fontHeight) : (0.16F * fontHeight);
             double y = isTreble ? (-1.17F * fontHeight) : (1.1F * fontHeight);
@@ -173,37 +141,22 @@ namespace Moritz.Symbols
 
             if(isSmall)
             {
-                if(isInput)
-                {
-                    prefix = "inputSmall";     
-                }
-                else
-                {
-                    prefix = "small";
-                }
+                prefix = "small";
             }
             else
             {
-                if(isInput)
+                clefClass = "clef";
+                numberClass = "clefOctaveNumber";
+                if(isTreble)
                 {
-                    prefix = "input";
+                    mainID = "trebleClef8";
+                    clefChar = "&";
                 }
                 else
                 {
-                    clefClass = "clef";
-                    numberClass = "clefOctaveNumber";
-                    if(isTreble)
-                    {
-                        mainID = "trebleClef8";
-                        clefChar = "&";
-                    }
-                    else
-                    {
-                        mainID = "bassClef8";
-                        clefChar = "?";
-                    }
-                }
-                
+                    mainID = "bassClef8";
+                    clefChar = "?";
+                }                
             }
             if(!String.IsNullOrEmpty(prefix))
             {
@@ -221,7 +174,7 @@ namespace Moritz.Symbols
                 }
             }
 
-            if(String.Compare(mainID, "smallBassClef8") == 0 || String.Compare(mainID, "inputSmallBassClef8") == 0)
+            if(String.Compare(mainID, "smallBassClef8") == 0)
             {
                 y *= 1.2; // lower the number
             }
@@ -233,7 +186,7 @@ namespace Moritz.Symbols
             w.WriteEndElement(); // g
         }
 
-        private void WriteClefMulti8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, bool isInput, int octaveShift, double fontHeight)
+        private void WriteClefMulti8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, int octaveShift, double fontHeight)
         {
             double x1 = isTreble ? (0.036F * fontHeight) : 0;
             double x2 = isTreble ? (0.252F * fontHeight) : (0.215F * fontHeight);
@@ -251,66 +204,31 @@ namespace Moritz.Symbols
             StringBuilder idSB = new StringBuilder();
             if(isSmall)
             {
-                if(isInput)
+                clefStr = "smallClef";
+                clefOctaveNumberStr = "smallClefOctaveNumber";
+                clefXStr = "smallClefX";
+                if(isTreble)
                 {
-                    clefStr = "inputSmallClef";
-                    clefOctaveNumberStr = "inputSmallClefOctaveNumber";
-                    clefXStr = "inputSmallClefX";
-                    if(isTreble)
-                    {
-                        idSB.Append("inputSmallTrebleClef");
-                    }
-                    else
-                    {
-                        y *= 1.2;
-                        idSB.Append("inputSmallBassClef");
-                    }
+                    idSB.Append("smallTrebleClef");
                 }
                 else
                 {
-                    clefStr = "smallClef";
-                    clefOctaveNumberStr = "smallClefOctaveNumber";
-                    clefXStr = "smallClefX";
-                    if(isTreble)
-                    {
-                        idSB.Append("smallTrebleClef");
-                    }
-                    else
-                    {
-                        y *= 1.2;
-                        idSB.Append("smallBassClef");
-                    }
+                    y *= 1.2;
+                    idSB.Append("smallBassClef");
                 }
             }
             else
             {
-                if(isInput)
+                clefStr = "clef";
+                clefOctaveNumberStr = "clefOctaveNumber";
+                clefXStr = "clefX";
+                if(isTreble)
                 {
-                    clefStr = "inputClef";
-                    clefOctaveNumberStr = "inputClefOctaveNumber";
-                    clefXStr = "inputClefX";
-                    if(isTreble)
-                    {
-                        idSB.Append("inputTrebleClef");
-                    }
-                    else
-                    {
-                        idSB.Append("inputBassClef");
-                    }
+                    idSB.Append("trebleClef");
                 }
                 else
                 {
-                    clefStr = "clef";
-                    clefOctaveNumberStr = "clefOctaveNumber";
-                    clefXStr = "clefX";
-                    if(isTreble)
-                    {
-                        idSB.Append("trebleClef");
-                    }
-                    else
-                    {
-                        idSB.Append("bassClef");
-                    }
+                    idSB.Append("bassClef");
                 }
             }
             idSB.Append(octaveShift);

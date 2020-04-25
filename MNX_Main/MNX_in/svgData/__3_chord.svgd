@@ -22,7 +22,7 @@
 		author="MNX by Example (Holovarty)"
 		comment="See https://w3c.github.io/mnx/by-example/" />
 	<options
-		printPage1Titles="false"
+		writePage1Titles="false"
 		includeMIDIData="true"
-		printScoreAsScroll="true" />
+		writeScrollScore="true" />
 </svgData>

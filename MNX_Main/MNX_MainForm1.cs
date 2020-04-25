@@ -21,9 +21,9 @@ namespace MNX_Main
             InitializeComponent();
 
             Options options = new OptionsForWriteAll().Options;
-            OptionPrintPage1TitlesCheckBox.CheckState = (options.PrintPage1Titles == "true") ? CheckState.Checked : CheckState.Unchecked;
+            OptionWritePage1TitlesCheckBox.CheckState = (options.WritePage1Titles == "true") ? CheckState.Checked : CheckState.Unchecked;
             OptionIncludeMIDIDataCheckBox.CheckState = (options.IncludeMIDIData == "true") ? CheckState.Checked : CheckState.Unchecked;
-            OptionPrintScoreAsScrollCheckBox.CheckState = (options.PrintScoreAsScroll == "true") ? CheckState.Checked : CheckState.Unchecked;
+            OptionWriteScoreAsScrollCheckBox.CheckState = (options.WriteScrollScore == "true") ? CheckState.Checked : CheckState.Unchecked;
 
             this.MNXSelect.DropDownStyle = ComboBoxStyle.DropDownList;
             this.StafflineStemStrokeWidthComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -46,6 +46,9 @@ namespace MNX_Main
                 MNXSelect.Items.Add(svgDataFilename);
             }
             MNXSelect.SelectedIndex = 0;
+
+            _settingsHaveChanged = false;
+            SetButtons(_settingsHaveChanged);
         }
 
         private void WriteButton_Click(object sender, EventArgs e)
@@ -130,9 +133,9 @@ namespace MNX_Main
             this.MetadataCommentTextBox.Text = metadata.Comment;
 
             var options = svgds.Options;
-            this.OptionPrintPage1TitlesCheckBox.CheckState = (options.PrintPage1Titles == "true") ? CheckState.Checked : CheckState.Unchecked;
+            this.OptionWritePage1TitlesCheckBox.CheckState = (options.WritePage1Titles == "true") ? CheckState.Checked : CheckState.Unchecked;
             this.OptionIncludeMIDIDataCheckBox.CheckState = (options.IncludeMIDIData == "true") ? CheckState.Checked : CheckState.Unchecked;
-            this.OptionPrintScoreAsScrollCheckBox.CheckState = (options.PrintScoreAsScroll == "true") ? CheckState.Checked : CheckState.Unchecked;
+            this.OptionWriteScoreAsScrollCheckBox.CheckState = (options.WriteScrollScore == "true") ? CheckState.Checked : CheckState.Unchecked;
         }
 
         private int GetIndex(ComboBox comboBox, string value)
@@ -330,9 +333,9 @@ namespace MNX_Main
             {
                 svgds = new OptionsForWriteAll();
                 var options = svgds.Options;
-                options.PrintPage1Titles = (this.OptionPrintPage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+                options.WritePage1Titles = (this.OptionWritePage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
                 options.IncludeMIDIData = (this.OptionIncludeMIDIDataCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
-                options.PrintScoreAsScroll = (this.OptionPrintScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+                options.WriteScrollScore = (this.OptionWriteScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
             }
             else
             {
@@ -362,9 +365,9 @@ namespace MNX_Main
                 metadata.Comment = this.MetadataCommentTextBox.Text;
 
                 var options = svgds.Options;
-                options.PrintPage1Titles = (this.OptionPrintPage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+                options.WritePage1Titles = (this.OptionWritePage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
                 options.IncludeMIDIData = (this.OptionIncludeMIDIDataCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
-                options.PrintScoreAsScroll = (this.OptionPrintScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+                options.WriteScrollScore = (this.OptionWriteScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
             }
             svgds.SaveSettings();
         }

@@ -29,9 +29,9 @@ namespace MNX.Globals
         public readonly string metadataKeywords = null;
         public readonly string metadataComment = null;
 
-        public readonly bool optionsPrintPage1Titles = true;
+        public readonly bool optionsWritePage1Titles = true;
         public readonly bool optionsIncludeMIDIData = true;
-        public readonly bool optionsPrintScoreAsScroll = true;
+        public readonly bool optionsWriteScrollScore = true;
 
         public SVGData(SVGDataStrings svgds)
         {
@@ -56,9 +56,10 @@ namespace MNX.Globals
             metadataKeywords = svgds.Metadata.Keywords;
             metadataComment = svgds.Metadata.Comment;
 
-            optionsPrintPage1Titles = (svgds.Options.PrintPage1Titles == "true");
+            optionsWritePage1Titles = (svgds.Options.WritePage1Titles == "true");
+            optionsWriteScrollScore = (svgds.Options.WriteScrollScore == "true");
             optionsIncludeMIDIData = (svgds.Options.IncludeMIDIData == "true");
-            optionsPrintScoreAsScroll = (svgds.Options.PrintScoreAsScroll == "true");
+
         }
     }
 

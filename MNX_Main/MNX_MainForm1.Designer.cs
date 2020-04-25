@@ -73,9 +73,9 @@
             this.MetadataCommentLabel = new System.Windows.Forms.Label();
             this.MetadataKeywordsTextBox = new System.Windows.Forms.TextBox();
             this.MetadataKeywordsLabel = new System.Windows.Forms.Label();
-            this.OptionPrintScoreAsScrollCheckBox = new System.Windows.Forms.CheckBox();
+            this.OptionWriteScoreAsScrollCheckBox = new System.Windows.Forms.CheckBox();
             this.OptionIncludeMIDIDataCheckBox = new System.Windows.Forms.CheckBox();
-            this.OptionPrintPage1TitlesCheckBox = new System.Windows.Forms.CheckBox();
+            this.OptionWritePage1TitlesCheckBox = new System.Windows.Forms.CheckBox();
             this.OptionsGroupBox = new System.Windows.Forms.GroupBox();
             this.PaperSizeGroupBox.SuspendLayout();
             this.MarginsGroupBox.SuspendLayout();
@@ -630,21 +630,22 @@
             this.MetadataKeywordsLabel.TabIndex = 135;
             this.MetadataKeywordsLabel.Text = "keywords";
             // 
-            // OptionPrintScoreAsScrollCheckBox
+            // OptionWriteScoreAsScrollCheckBox
             // 
-            this.OptionPrintScoreAsScrollCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.OptionPrintScoreAsScrollCheckBox.AutoSize = true;
-            this.OptionPrintScoreAsScrollCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.OptionPrintScoreAsScrollCheckBox.Checked = true;
-            this.OptionPrintScoreAsScrollCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.OptionPrintScoreAsScrollCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.OptionPrintScoreAsScrollCheckBox.Location = new System.Drawing.Point(10, 67);
-            this.OptionPrintScoreAsScrollCheckBox.Name = "OptionPrintScoreAsScrollCheckBox";
-            this.OptionPrintScoreAsScrollCheckBox.Size = new System.Drawing.Size(116, 17);
-            this.OptionPrintScoreAsScrollCheckBox.TabIndex = 11;
-            this.OptionPrintScoreAsScrollCheckBox.Text = "print score as scroll";
-            this.OptionPrintScoreAsScrollCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.OptionPrintScoreAsScrollCheckBox.UseVisualStyleBackColor = true;
+            this.OptionWriteScoreAsScrollCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.OptionWriteScoreAsScrollCheckBox.AutoSize = true;
+            this.OptionWriteScoreAsScrollCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.OptionWriteScoreAsScrollCheckBox.Checked = true;
+            this.OptionWriteScoreAsScrollCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.OptionWriteScoreAsScrollCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.OptionWriteScoreAsScrollCheckBox.Location = new System.Drawing.Point(22, 67);
+            this.OptionWriteScoreAsScrollCheckBox.Name = "OptionWriteScoreAsScrollCheckBox";
+            this.OptionWriteScoreAsScrollCheckBox.Size = new System.Drawing.Size(104, 17);
+            this.OptionWriteScoreAsScrollCheckBox.TabIndex = 11;
+            this.OptionWriteScoreAsScrollCheckBox.Text = "write scroll score";
+            this.OptionWriteScoreAsScrollCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.OptionWriteScoreAsScrollCheckBox.UseVisualStyleBackColor = true;
+            this.OptionWriteScoreAsScrollCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // OptionIncludeMIDIDataCheckBox
             // 
@@ -661,26 +662,27 @@
             this.OptionIncludeMIDIDataCheckBox.Text = "include MIDI data";
             this.OptionIncludeMIDIDataCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.OptionIncludeMIDIDataCheckBox.UseVisualStyleBackColor = true;
+            this.OptionIncludeMIDIDataCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
-            // OptionPrintPage1TitlesCheckBox
+            // OptionWritePage1TitlesCheckBox
             // 
-            this.OptionPrintPage1TitlesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.OptionPrintPage1TitlesCheckBox.AutoSize = true;
-            this.OptionPrintPage1TitlesCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.OptionPrintPage1TitlesCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.OptionPrintPage1TitlesCheckBox.Location = new System.Drawing.Point(20, 21);
-            this.OptionPrintPage1TitlesCheckBox.Name = "OptionPrintPage1TitlesCheckBox";
-            this.OptionPrintPage1TitlesCheckBox.Size = new System.Drawing.Size(106, 17);
-            this.OptionPrintPage1TitlesCheckBox.TabIndex = 13;
-            this.OptionPrintPage1TitlesCheckBox.Text = "print page 1 titles";
-            this.OptionPrintPage1TitlesCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.OptionPrintPage1TitlesCheckBox.UseVisualStyleBackColor = true;
-            this.OptionPrintPage1TitlesCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
+            this.OptionWritePage1TitlesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.OptionWritePage1TitlesCheckBox.AutoSize = true;
+            this.OptionWritePage1TitlesCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.OptionWritePage1TitlesCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.OptionWritePage1TitlesCheckBox.Location = new System.Drawing.Point(18, 21);
+            this.OptionWritePage1TitlesCheckBox.Name = "OptionWritePage1TitlesCheckBox";
+            this.OptionWritePage1TitlesCheckBox.Size = new System.Drawing.Size(108, 17);
+            this.OptionWritePage1TitlesCheckBox.TabIndex = 13;
+            this.OptionWritePage1TitlesCheckBox.Text = "write page 1 titles";
+            this.OptionWritePage1TitlesCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.OptionWritePage1TitlesCheckBox.UseVisualStyleBackColor = true;
+            this.OptionWritePage1TitlesCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // OptionsGroupBox
             // 
-            this.OptionsGroupBox.Controls.Add(this.OptionPrintPage1TitlesCheckBox);
-            this.OptionsGroupBox.Controls.Add(this.OptionPrintScoreAsScrollCheckBox);
+            this.OptionsGroupBox.Controls.Add(this.OptionWritePage1TitlesCheckBox);
+            this.OptionsGroupBox.Controls.Add(this.OptionWriteScoreAsScrollCheckBox);
             this.OptionsGroupBox.Controls.Add(this.OptionIncludeMIDIDataCheckBox);
             this.OptionsGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.OptionsGroupBox.Location = new System.Drawing.Point(181, 23);
@@ -775,9 +777,9 @@
         private System.Windows.Forms.Label MetadataCommentLabel;
         private System.Windows.Forms.TextBox MetadataKeywordsTextBox;
         private System.Windows.Forms.Label MetadataKeywordsLabel;
-        private System.Windows.Forms.CheckBox OptionPrintScoreAsScrollCheckBox;
+        private System.Windows.Forms.CheckBox OptionWriteScoreAsScrollCheckBox;
         private System.Windows.Forms.CheckBox OptionIncludeMIDIDataCheckBox;
-        private System.Windows.Forms.CheckBox OptionPrintPage1TitlesCheckBox;
+        private System.Windows.Forms.CheckBox OptionWritePage1TitlesCheckBox;
         private System.Windows.Forms.GroupBox OptionsGroupBox;
     }
 }

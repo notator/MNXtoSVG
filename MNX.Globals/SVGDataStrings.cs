@@ -161,14 +161,14 @@ namespace MNX.Globals
                 r.MoveToAttribute(i);
                 switch(r.Name)
                 {
-                    case "printPage1Titles":
-                        op.PrintPage1Titles = r.Value;
+                    case "writePage1Titles":
+                        op.WritePage1Titles = r.Value;
+                        break;
+                    case "writeScrollScore":
+                        op.WriteScrollScore = r.Value;
                         break;
                     case "includeMIDIData":
                         op.IncludeMIDIData = r.Value;
-                        break;
-                    case "printScoreAsScroll":
-                        op.PrintScoreAsScroll = r.Value;
                         break;
                 }
             }
@@ -274,9 +274,9 @@ namespace MNX.Globals
 
             w.WriteStartElement("options");
 
-            w.WriteAttributeString("printPage1Titles", op.PrintPage1Titles);
+            w.WriteAttributeString("writePage1Titles", op.WritePage1Titles);
+            w.WriteAttributeString("writeScrollScore", op.WriteScrollScore);
             w.WriteAttributeString("includeMIDIData", op.IncludeMIDIData);
-            w.WriteAttributeString("printScoreAsScroll", op.PrintScoreAsScroll);
 
             w.WriteEndElement(); // options
         }

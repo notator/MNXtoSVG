@@ -2,8 +2,8 @@
 {
     public class Options
     {
-        public string PrintPage1Titles { get; set; }
+        public string WritePage1Titles { get; set; }
         public string IncludeMIDIData { get; set; }
-        public string PrintScoreAsScroll { get; set; }
+        public string WriteScrollScore { get; set; }
     }
 }

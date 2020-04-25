@@ -64,6 +64,13 @@ namespace MNX_Main
             return rval;
         }
 
+        internal List<List<int>> GetMIDIChannelsPerStaff()
+        {
+            var rval = new List<List<int>>();
+            //TODO
+            return rval;
+        }
+
         public override string ToString()
         {
             return FileName;

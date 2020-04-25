@@ -60,21 +60,23 @@ namespace MNX_Main
                 for(var i = 0; i < _mnxSVGDatas.Count; i++)
                 {
                     var mnx = new MNX(_mnxSVGDatas[i].Item1);
-                    var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
-                    svgds.Options = optionsForWriteAll.Options; // override 
-                    var svgData = new SVGData(svgds);
                     List<Bar> bars = mnx.ToBars();
-                    SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, bars, svgData);
+                    List<List<int>> midiChannelsPerStaff = mnx.GetMIDIChannelsPerStaff();
+                    var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
+                    svgds.Options = optionsForWriteAll.Options; // override when writing all scores
+                    var svgData = new SVGData(svgds);
+                    SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, bars, midiChannelsPerStaff, svgData);
                     break; // temp
                 }
             }
             else
             {
                 var mnx = new MNX(_mnxSVGDatas[selectedIndex - 1].Item1);
+                List<Bar> bars = mnx.ToBars();
+                List<List<int>> midiChannelsPerStaff = mnx.GetMIDIChannelsPerStaff();
                 var svgds = new SVGDataStrings(_mnxSVGDatas[selectedIndex - 1].Item2);
                 var svgData = new SVGData(svgds);
-                List<Bar> bars = mnx.ToBars();
-                SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, bars, svgData);
+                SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, bars, midiChannelsPerStaff, svgData);
             }
         }
 

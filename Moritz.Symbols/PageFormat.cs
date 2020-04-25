@@ -25,7 +25,10 @@ namespace Moritz.Symbols
         public double DefaultDistanceBetweenSystemsVBPX; // The view box pixel distance between systems when they are not vertically justified.
         public List<int> SystemStartBars = null;
         public double MillisecondsPerTick = 0;
-        #endregion Attributes set by SVGData
+
+        public List<List<int>> MIDIChannelsPerStaff = null;
+
+        #endregion Attributes set by contructor
 
         #region derived attributes
         #endregion
@@ -38,7 +41,7 @@ namespace Moritz.Symbols
         #endregion
         #endregion other attributes
 
-        public PageFormat(SVGData svgData)
+        public PageFormat(SVGData svgData, List<List<int>> midiChannelsPerStaff)
         {
             RightVBPX = svgData.pageWidth * ViewBoxMagnification;
             BottomVBPX = svgData.pageHeight * ViewBoxMagnification;
@@ -57,6 +60,8 @@ namespace Moritz.Symbols
             SystemStartBars = svgData.notationSystemStartBars;
 
             MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * svgData.notationCrotchetsPerMinute);
+
+            MIDIChannelsPerStaff = midiChannelsPerStaff;
         }
 
 
@@ -85,7 +90,7 @@ namespace Moritz.Symbols
         #endregion
 
 
-        public List<List<byte>> OutputMIDIChannelsPerStaff = null;
+        
 		public List<string> ClefPerStaff = null;
 		public List<string> InitialClefPerMIDIChannel = null;
 		public List<int> StafflinesPerStaff = null;

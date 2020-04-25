@@ -8,7 +8,7 @@ namespace Moritz.Symbols
 {
 	public class SVGMIDIScore : SvgScore
     {
-        public SVGMIDIScore(string targetFolder, List<Bar> bars, SVGData svgData)
+        public SVGMIDIScore(string targetFolder, List<Bar> bars, List<List<int>> midiChannelsPerStaff, SVGData svgData)
             : base(targetFolder, svgData.metadataTitle)
         {
             CheckBars(bars);
@@ -24,7 +24,7 @@ namespace Moritz.Symbols
 
             this.MetadataWithDate.Date = M.NowString; // printed in info string at top of score.
 
-            PageFormat = new PageFormat(svgData);
+            PageFormat = new PageFormat(svgData, midiChannelsPerStaff);
 
             CreateScore(bars, svgData);
 
@@ -249,7 +249,7 @@ namespace Moritz.Symbols
 			List<int> lowerVoiceIndices = new List<int>();
 			int voiceIndex = 0;
 			
-			List<List<byte>> outputChPerStaff = PageFormat.OutputMIDIChannelsPerStaff;
+			List<List<int>> outputChPerStaff = PageFormat.MIDIChannelsPerStaff;
 
 			for(int staffIndex = 0; staffIndex < outputChPerStaff.Count; ++staffIndex)
 			{
@@ -351,7 +351,7 @@ namespace Moritz.Symbols
 
         private void CreateEmptyOutputStaves(List<Bar> bars)
         {
-            int nStaves = PageFormat.OutputMIDIChannelsPerStaff.Count;
+            int nStaves = PageFormat.MIDIChannelsPerStaff.Count;
 
 			for(int systemIndex = 0; systemIndex < Systems.Count; systemIndex++)
             {
@@ -364,7 +364,7 @@ namespace Moritz.Symbols
                     string staffname = StaffName(systemIndex, staffIndex);
                     OutputStaff outputStaff = new OutputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
 
-                    List<byte> outputVoiceIndices = PageFormat.OutputMIDIChannelsPerStaff[staffIndex];
+                    List<int> outputVoiceIndices = PageFormat.MIDIChannelsPerStaff[staffIndex];
                     for(int ovIndex = 0; ovIndex < outputVoiceIndices.Count; ++ovIndex)
                     {
                         Trk trkDef = voiceDefs[outputVoiceIndices[ovIndex]] as Trk;

@@ -52,7 +52,7 @@
     <Compile Include="KeySignature.cs" />
     <Compile Include="Measure.cs" />
     <Compile Include="MNXCommon.cs" />
-    <Compile Include="DurationSymbol.cs" />
+    <Compile Include="MNXDurationSymbol.cs" />
     <Compile Include="PositionInMeasure.cs" />
     <Compile Include="Note.cs" />
     <Compile Include="OctaveShift.cs" />
@@ -83,6 +83,10 @@
     <ProjectReference Include="..\Moritz.Symbols\Moritz.Symbols.csproj">
       <Project>{DF59888C-F935-4E4F-BA31-664DAF79F7D6}</Project>
       <Name>Moritz.Symbols</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Moritz.Xml\Moritz.Xml.csproj">
+      <Project>{b239c302-a15d-4397-9f3c-ee6cc85440f3}</Project>
+      <Name>Moritz.Xml</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -36,11 +36,11 @@ namespace MNX.Globals
         }
         private static readonly string mnxMain_Folder = GetMNX_MainFolder();
 
-        public static readonly string OptionsForWriteAll_Path = mnxMain_Folder + @"\OptionsForWriteAll.svgd";
+        public static readonly string OptionsForWriteAll_Path = mnxMain_Folder + @"\OptionsForWriteAll.f1d";
         // contains all MNX input files (not just mnx-common)
         public static readonly string MNX_in_Folder = mnxMain_Folder + @"\MNX_in\mnx\";
         // contains page formatting data parallel to the files in the MNX_in_Folder.
-        public static readonly string SVGData_Folder = mnxMain_Folder + @"\MNX_in\svgData\";
+        public static readonly string Form1Data_Folder = mnxMain_Folder + @"\MNX_in\form1Data\";
         // contains the output SVG.
         public static readonly string SVG_out_Folder = mnxMain_Folder + @"\SVG_out\";
 

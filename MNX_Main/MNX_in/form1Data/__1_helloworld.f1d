@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--file created: Wednesday 22.04.2020, 10:35:23-->
-<svgData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/svgData.xsd">
+<form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
 		width="500"
 		height="100"
@@ -26,4 +26,4 @@
     writePage1Titles="false"
     includeMIDIData="true"
     writeScrollScore="true"/>
-</svgData>
+</form1Data>

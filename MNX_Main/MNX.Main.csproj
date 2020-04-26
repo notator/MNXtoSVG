@@ -69,6 +69,24 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="MNX_in\form1Data\_10_beamhooks.f1d" />
+    <None Include="MNX_in\form1Data\_11a_nestedtuplets.f1d" />
+    <None Include="MNX_in\form1Data\_11_tuplets.f1d" />
+    <None Include="MNX_in\form1Data\_12_voices.f1d" />
+    <None Include="MNX_in\form1Data\_13_octaves.f1d" />
+    <None Include="MNX_in\form1Data\_14_slurs.f1d" />
+    <None Include="MNX_in\form1Data\_15_slurchords.f1d" />
+    <None Include="MNX_in\form1Data\_16_slurnotes.f1d" />
+    <None Include="MNX_in\form1Data\_17_slurincomplete.f1d" />
+    <None Include="MNX_in\form1Data\__1_helloworld.f1d" />
+    <None Include="MNX_in\form1Data\__2_cscale.f1d" />
+    <None Include="MNX_in\form1Data\__3_chord.f1d" />
+    <None Include="MNX_in\form1Data\__4_timesigs.f1d" />
+    <None Include="MNX_in\form1Data\__5_keysigs.f1d" />
+    <None Include="MNX_in\form1Data\__6_accidentals.f1d" />
+    <None Include="MNX_in\form1Data\__7_dots.f1d" />
+    <None Include="MNX_in\form1Data\__8_ties.f1d" />
+    <None Include="MNX_in\form1Data\__9_beams.f1d" />
     <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
     <None Include="MNX_in\mnx\_11a_nestedtuplets.mnx" />
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
@@ -87,24 +105,6 @@
     <None Include="MNX_in\mnx\__7_dots.mnx" />
     <None Include="MNX_in\mnx\__8_ties.mnx" />
     <None Include="MNX_in\mnx\__9_beams.mnx" />
-    <None Include="MNX_in\svgData\_10_beamhooks.svgd" />
-    <None Include="MNX_in\svgData\_11a_nestedtuplets.svgd" />
-    <None Include="MNX_in\svgData\_11_tuplets.svgd" />
-    <None Include="MNX_in\svgData\_12_voices.svgd" />
-    <None Include="MNX_in\svgData\_13_octaves.svgd" />
-    <None Include="MNX_in\svgData\_14_slurs.svgd" />
-    <None Include="MNX_in\svgData\_15_slurchords.svgd" />
-    <None Include="MNX_in\svgData\_16_slurnotes.svgd" />
-    <None Include="MNX_in\svgData\_17_slurincomplete.svgd" />
-    <None Include="MNX_in\svgData\__1_helloworld.svgd" />
-    <None Include="MNX_in\svgData\__2_cscale.svgd" />
-    <None Include="MNX_in\svgData\__3_chord.svgd" />
-    <None Include="MNX_in\svgData\__4_timesigs.svgd" />
-    <None Include="MNX_in\svgData\__5_keysigs.svgd" />
-    <None Include="MNX_in\svgData\__6_accidentals.svgd" />
-    <None Include="MNX_in\svgData\__7_dots.svgd" />
-    <None Include="MNX_in\svgData\__8_ties.svgd" />
-    <None Include="MNX_in\svgData\__9_beams.svgd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -114,7 +114,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="OptionsForWriteAll.svgd" />
+    <None Include="OptionsForWriteAll.f1d" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

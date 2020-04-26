@@ -8,37 +8,43 @@ namespace Moritz.Symbols
 {
 	public class SVGMIDIScore : SvgScore
     {
-        public SVGMIDIScore(string targetFolder, List<Bar> bars, List<List<int>> midiChannelsPerStaff, SVGData svgData)
-            : base(targetFolder, svgData.metadataTitle)
+        public SVGMIDIScore(string targetFolder, MNXCommonData mnxCommonData, Form1Data form1Data)
+            : base(targetFolder, form1Data.Metadata.Title)
         {
-            CheckBars(bars);
-
             this.MetadataWithDate = new MetadataWithDate()
             {
-                Title = svgData.metadataTitle,
-                Author = svgData.metadataAuthor,
-                Keywords = svgData.metadataKeywords,
-                Comment = svgData.metadataComment,
+                Title = form1Data.Metadata.Title,
+                Author = form1Data.Metadata.Author,
+                Keywords = form1Data.Metadata.Keywords,
+                Comment = form1Data.Metadata.Comment,
                 Date = M.NowString
             };
 
-            this.MetadataWithDate.Date = M.NowString; // printed in info string at top of score.
+            List<Bar> bars = GetBars(mnxCommonData.VoiceDefs, mnxCommonData.MsPositionPerBar);
 
-            PageFormat = new PageFormat(svgData, midiChannelsPerStaff);
+            CheckBars(bars);
 
-            CreateSystems(bars, svgData);
+            PageFormat = new PageFormat(form1Data, mnxCommonData.MidiChannelsPerStaff);
 
-            if(svgData.optionsWriteScrollScore)
+            CreateSystems(bars, form1Data);
+
+            if(form1Data.Options.WriteScrollScore)
             {
                 PageFormat.BottomVBPX = GetNewBottomVBPX(Systems);
                 PageFormat.BottomMarginPosVBPX = (int)(PageFormat.BottomVBPX - PageFormat.DefaultDistanceBetweenSystemsVBPX);
-                SaveSingleSVGScore(!svgData.optionsIncludeMIDIData, svgData.optionsWritePage1Titles);
+                SaveSingleSVGScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
             }
             else
             {
-                SaveMultiPageScore(!svgData.optionsIncludeMIDIData, svgData.optionsWritePage1Titles);
+                SaveMultiPageScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
             }
         }
+
+        private List<Bar> GetBars(IReadOnlyList<VoiceDef> voiceDefs, IReadOnlyList<int> msPositionPerBar)
+        {
+            throw new NotImplementedException();
+        }
+
         private int GetNewBottomVBPX(List<SvgSystem> Systems)
         {
             int frameHeight = PageFormat.TopMarginPage1VBPX + 20;
@@ -51,12 +57,12 @@ namespace Moritz.Symbols
             return frameHeight;
         }
 
-        private void CreateSystems(List<Bar> bars, SVGData svgData)
+        private void CreateSystems(List<Bar> bars, Form1Data form1Data)
         {
             // TODO (see SetScoreRegionsData() function already implemented below)
-            //if(svgData.RegionStartBarIndices != null)
+            //if(form1Data.RegionStartBarIndices != null)
             //{
-            //    ScoreData = SetScoreRegionsData(bars, svgData.RegionStartBarIndices);
+            //    ScoreData = SetScoreRegionsData(bars, form1Data.RegionStartBarIndices);
             //}            
 
             InsertInitialClefDefs(bars, PageFormat.InitialClefPerMIDIChannel);
@@ -249,7 +255,7 @@ namespace Moritz.Symbols
 			List<int> lowerVoiceIndices = new List<int>();
 			int voiceIndex = 0;
 			
-			List<List<int>> outputChPerStaff = PageFormat.MIDIChannelsPerStaff;
+			IReadOnlyList<IReadOnlyList<int>> outputChPerStaff = PageFormat.MIDIChannelsPerStaff;
 
 			for(int staffIndex = 0; staffIndex < outputChPerStaff.Count; ++staffIndex)
 			{
@@ -364,7 +370,7 @@ namespace Moritz.Symbols
                     string staffname = StaffName(systemIndex, staffIndex);
                     OutputStaff outputStaff = new OutputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
 
-                    List<int> outputVoiceIndices = PageFormat.MIDIChannelsPerStaff[staffIndex];
+                    IReadOnlyList<int> outputVoiceIndices = PageFormat.MIDIChannelsPerStaff[staffIndex];
                     for(int ovIndex = 0; ovIndex < outputVoiceIndices.Count; ++ovIndex)
                     {
                         Trk trkDef = voiceDefs[outputVoiceIndices[ovIndex]] as Trk;

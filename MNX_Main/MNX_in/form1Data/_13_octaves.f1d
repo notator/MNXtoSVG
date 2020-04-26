@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--file created: Friday 22.12.2017, 16:07:19-->
-<svgData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://james-ingram-act-two.de/open-source/XMLSchemas/svgInstantiationSettings.xsd">
+<form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
   <page
     width="500"
     height="100"
@@ -18,7 +18,7 @@
 		systemStartBars="1"
     crotchetsPerMinute="60" />
   <metadata
-  title="beams"
+  title="octaves"
   author="MNX by Example"
   keywords=""
   comment="See https://w3c.github.io/mnx/by-example/"/>
@@ -27,4 +27,4 @@
     includeMIDIData="true"
     writeScrollScore="true"/>
 
-</svgData>
+</form1Data>

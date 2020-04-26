@@ -4,8 +4,9 @@ using System.IO;
 using System.Xml;
 using Moritz.Spec;
 using System.Collections.Generic;
+using Moritz.Symbols;
 
-namespace MNX_Main
+namespace MNX.Main
 {
     // https://w3c.github.io/mnx/specification/common/#the-mnx-element
     internal class MNX
@@ -58,17 +59,20 @@ namespace MNX_Main
             }
         }
 
-        internal List<Bar> ToBars()
+        internal MNXCommonData MNXCommonData
         {
-            List<Bar> rval = new List<Bar>();
-            return rval;
-        }
+            get
+            {
+                MNXCommonData mnxCommonData = new MNXCommonData
+                {
+                    VoiceDefs = Score.MNXCommon.VoiceDefs,
+                    MidiChannelsPerStaff = Score.MNXCommon.MidiChannelsPerStaff,
+                    MsPositionPerBar = Score.MNXCommon.MsPositionPerBar
+                };
 
-        internal List<List<int>> GetMIDIChannelsPerStaff()
-        {
-            var rval = new List<List<int>>();
-            //TODO
-            return rval;
+                return mnxCommonData;
+            }
+
         }
 
         public override string ToString()

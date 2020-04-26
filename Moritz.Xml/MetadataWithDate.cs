@@ -8,7 +8,7 @@ using MNX.Globals;
 
 namespace Moritz.Xml
 {
-	public class MetadataWithDate : Metadata
+	public class MetadataWithDate : Form1MetadataData
 	{
         public string Date;
         /// <summary>

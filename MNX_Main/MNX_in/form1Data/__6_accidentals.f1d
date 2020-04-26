@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Saturday 25.04.2020, 12:14:54-->
-<svgData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/svgData.xsd">
+<!--file created: Saturday 25.04.2020, 14:22:14-->
+<form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
-		width="50"
+		width="500"
 		height="100"
 		marginTopPage1="90"
 		marginTopOther="60"
@@ -18,11 +18,11 @@
 		systemStartBars="1"
 		crotchetsPerMinute="60" />
 	<metadata
-		title="chord"
-		author="MNX by Example (Holovarty)"
+		title="accidentals"
+		author="MNX by Example"
 		comment="See https://w3c.github.io/mnx/by-example/" />
 	<options
 		writePage1Titles="false"
-		includeMIDIData="true"
-		writeScrollScore="true" />
-</svgData>
+		writeScrollScore="true"
+		includeMIDIData="false" />
+</form1Data>

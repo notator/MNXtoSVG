@@ -76,6 +76,10 @@
       <Project>{9abe7e06-1560-42cb-86c8-26d64cfb4cff}</Project>
       <Name>MNX.Globals</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Moritz.Spec\Moritz.Spec.csproj">
+      <Project>{c84026d4-800e-4590-8127-97e78b471921}</Project>
+      <Name>Moritz.Spec</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

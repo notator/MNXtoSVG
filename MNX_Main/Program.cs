@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MNX_Main
+namespace MNX.Main
 {
     static class Program
     {

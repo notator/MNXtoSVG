@@ -2,7 +2,7 @@
 using System;
 using System.Xml;
 
-namespace MNX_Main
+namespace MNX.Main
 {
     internal class Head
     {        

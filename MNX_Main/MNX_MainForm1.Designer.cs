@@ -1,4 +1,4 @@
-﻿namespace MNX_Main
+﻿namespace MNX.Main
 {
     partial class MNX_MainForm1
     {

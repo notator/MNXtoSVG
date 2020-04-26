@@ -2,7 +2,7 @@
 using System.Xml;
 using MNX.Globals;
 
-namespace MNX_Main
+namespace MNX.Main
 {
     // https://w3c.github.io/mnx/specification/common/#elementdef-collection
     internal class Collection

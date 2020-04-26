@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MNX_Main.Properties
+namespace MNX.Main.Properties
 {
 
 

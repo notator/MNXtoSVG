@@ -8,24 +8,24 @@ using System.Xml;
 
 namespace MNX.Globals
 {
-    public class SVGDataStrings
+    public class Form1StringData
     {
-        public PageSettings Page = null;
-        public NotationAndSpeedSettings Notation = null;
-        public Metadata Metadata = null;
-        public Options Options = null; 
+        public Form1PageStrings Page = null;
+        public Form1NotationStrings Notation = null;
+        public Form1MetadataStrings Metadata = null;
+        public Form1OptionsStrings Options = null; 
 
-        private readonly string _svgDataPath;
+        private readonly string _form1DataPath;
         public readonly string _fileName;
 
-        public SVGDataStrings(string svgDataPath)
+        public Form1StringData(string form1DataPath)
         {
-            _svgDataPath = svgDataPath;
-            _fileName = Path.GetFileNameWithoutExtension(svgDataPath);
+            _form1DataPath = form1DataPath;
+            _fileName = Path.GetFileNameWithoutExtension(form1DataPath);
 
-            using(XmlReader r = XmlReader.Create(svgDataPath))
+            using(XmlReader r = XmlReader.Create(form1DataPath))
             {
-                M.ReadToXmlElementTag(r, "svgData"); // check that this is an svgData file
+                M.ReadToXmlElementTag(r, "form1Data"); // check that this is a form1Data file
 
                 M.ReadToXmlElementTag(r, "page", "notation", "metadata", "options");
 
@@ -48,17 +48,17 @@ namespace MNX.Globals
                                 Options = GetOptions(r);
                                 break;
                         }
-                        M.ReadToXmlElementTag(r, "page", "notation", "metadata", "options", "svgData");
+                        M.ReadToXmlElementTag(r, "page", "notation", "metadata", "options", "form1Data");
                     }
                     
                 }
-                M.Assert(r.Name == "svgData"); // end of svgData
+                M.Assert(r.Name == "form1Data"); // end of form1Data
             }
         }
 
-        private PageSettings GetPage(XmlReader r)
+        private Form1PageStrings GetPage(XmlReader r)
         {
-            PageSettings ps = new PageSettings();
+            Form1PageStrings ps = new Form1PageStrings();
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -67,34 +67,34 @@ namespace MNX.Globals
                 switch(r.Name)
                 {
                     case "width":
-                        ps.width = r.Value;
+                        ps.Width = r.Value;
                         break;
                     case "height":
-                        ps.height = r.Value;
+                        ps.Height = r.Value;
                         break;
                     case "marginTopPage1":
-                        ps.marginTopPage1 = r.Value;
+                        ps.MarginTopPage1 = r.Value;
                         break;
                     case "marginTopOther":
-                        ps.marginTopOther = r.Value;
+                        ps.MarginTopOther = r.Value;
                         break;
                     case "marginRight":
-                        ps.marginRight = r.Value;
+                        ps.MarginRight = r.Value;
                         break;
                     case "marginBottom":
-                        ps.marginBottom = r.Value;
+                        ps.MarginBottom = r.Value;
                         break;
                     case "marginLeft":
-                        ps.marginLeft = r.Value;
+                        ps.MarginLeft = r.Value;
                         break;
                 }
             }
 
             return ps;
         }
-        private NotationAndSpeedSettings GetMNXCommonData(XmlReader r)
+        private Form1NotationStrings GetMNXCommonData(XmlReader r)
         {
-            NotationAndSpeedSettings nss = new NotationAndSpeedSettings();
+            Form1NotationStrings nss = new Form1NotationStrings();
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -125,9 +125,9 @@ namespace MNX.Globals
 
             return nss;
         }
-        private Metadata GetMetadata(XmlReader r)
+        private Form1MetadataStrings GetMetadata(XmlReader r)
         {
-            Metadata m = new Metadata(); // sets all values to "" by default
+            Form1MetadataStrings m = new Form1MetadataStrings(); // sets all values to "" by default
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
             {
@@ -152,9 +152,9 @@ namespace MNX.Globals
             return m;
 
         }
-        private Options GetOptions(XmlReader r)
+        private Form1OptionsStrings GetOptions(XmlReader r)
         {
-            Options op = new Options();
+            Form1OptionsStrings op = new Form1OptionsStrings();
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
             {
@@ -186,14 +186,14 @@ namespace MNX.Globals
                 NewLineOnAttributes = true,
                 CloseOutput = false
             };
-            using(XmlWriter w = XmlWriter.Create(_svgDataPath, settings))
+            using(XmlWriter w = XmlWriter.Create(_form1DataPath, settings))
             {
                 w.WriteStartDocument();
                 w.WriteComment("file created: " + M.NowString);
 
-                w.WriteStartElement("svgData");
+                w.WriteStartElement("form1Data");
                 w.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
-                w.WriteAttributeString("xsi", "noNamespaceSchemaLocation", null, "SchemasBaseFolder" + "/svgData.xsd");
+                w.WriteAttributeString("xsi", "noNamespaceSchemaLocation", null, "SchemasBaseFolder" + "/form1Data.xsd");
 
                 WritePage(w);
                 WriteNotation(w);
@@ -211,13 +211,13 @@ namespace MNX.Globals
             {
                 w.WriteStartElement("page");
 
-                w.WriteAttributeString("width", page.width);
-                w.WriteAttributeString("height", page.height);
-                w.WriteAttributeString("marginTopPage1", page.marginTopPage1);
-                w.WriteAttributeString("marginTopOther", page.marginTopOther);
-                w.WriteAttributeString("marginRight", page.marginRight);
-                w.WriteAttributeString("marginBottom", page.marginBottom);
-                w.WriteAttributeString("marginLeft", page.marginLeft);
+                w.WriteAttributeString("width", page.Width);
+                w.WriteAttributeString("height", page.Height);
+                w.WriteAttributeString("marginTopPage1", page.MarginTopPage1);
+                w.WriteAttributeString("marginTopOther", page.MarginTopOther);
+                w.WriteAttributeString("marginRight", page.MarginRight);
+                w.WriteAttributeString("marginBottom", page.MarginBottom);
+                w.WriteAttributeString("marginLeft", page.MarginLeft);
 
                 w.WriteEndElement(); // page
             }
@@ -288,7 +288,7 @@ namespace MNX.Globals
         }
     }
 
-    public class OptionsForWriteAll : SVGDataStrings
+    public class OptionsForWriteAll : Form1StringData
     {
         public OptionsForWriteAll()
                 :base(M.OptionsForWriteAll_Path)

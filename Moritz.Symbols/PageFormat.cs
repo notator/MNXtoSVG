@@ -26,7 +26,7 @@ namespace Moritz.Symbols
         public List<int> SystemStartBars = null;
         public double MillisecondsPerTick = 0;
 
-        public List<List<int>> MIDIChannelsPerStaff = null;
+        public IReadOnlyList<IReadOnlyList<int>> MIDIChannelsPerStaff = null;
 
         #endregion Attributes set by contructor
 
@@ -41,30 +41,28 @@ namespace Moritz.Symbols
         #endregion
         #endregion other attributes
 
-        public PageFormat(SVGData svgData, List<List<int>> midiChannelsPerStaff)
+        public PageFormat(Form1Data form1Data, IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff)
         {
-            RightVBPX = svgData.pageWidth * ViewBoxMagnification;
-            BottomVBPX = svgData.pageHeight * ViewBoxMagnification;
-            TopMarginPage1VBPX = svgData.pageMarginTopPage1 * ViewBoxMagnification;
-            TopMarginOtherPagesVBPX = svgData.pageMarginTopOther * ViewBoxMagnification;
-            RightMarginPosVBPX = RightVBPX - (svgData.pageMarginRight * ViewBoxMagnification);
-            LeftMarginPosVBPX = svgData.pageMarginLeft * ViewBoxMagnification;
-            BottomMarginPosVBPX = BottomVBPX - (svgData.pageMarginBottom * ViewBoxMagnification);
+            RightVBPX = form1Data.Page.Width * ViewBoxMagnification;
+            BottomVBPX = form1Data.Page.Height * ViewBoxMagnification;
+            TopMarginPage1VBPX = form1Data.Page.MarginTopPage1 * ViewBoxMagnification;
+            TopMarginOtherPagesVBPX = form1Data.Page.MarginTopOther * ViewBoxMagnification;
+            RightMarginPosVBPX = RightVBPX - (form1Data.Page.MarginRight * ViewBoxMagnification);
+            LeftMarginPosVBPX = form1Data.Page.MarginLeft * ViewBoxMagnification;
+            BottomMarginPosVBPX = BottomVBPX - (form1Data.Page.MarginBottom * ViewBoxMagnification);
 
-            StafflineStemStrokeWidthVBPX = svgData.notationStafflineStemStrokeWidth * ViewBoxMagnification;
-            GapVBPX = svgData.notationGap * ViewBoxMagnification;
+            StafflineStemStrokeWidthVBPX = form1Data.Notation.StafflineStemStrokeWidth * ViewBoxMagnification;
+            GapVBPX = form1Data.Notation.Gap * ViewBoxMagnification;
 
-            DefaultDistanceBetweenStavesVBPX = svgData.notationGap * svgData.notationMinGapsBetweenStaves * ViewBoxMagnification;
-            DefaultDistanceBetweenSystemsVBPX = svgData.notationGap * svgData.notationMinGapsBetweenSystems * ViewBoxMagnification;
+            DefaultDistanceBetweenStavesVBPX = form1Data.Notation.Gap * form1Data.Notation.MinGapsBetweenStaves * ViewBoxMagnification;
+            DefaultDistanceBetweenSystemsVBPX = form1Data.Notation.Gap * form1Data.Notation.MinGapsBetweenSystems * ViewBoxMagnification;
  
-            SystemStartBars = svgData.notationSystemStartBars;
+            SystemStartBars = form1Data.Notation.SystemStartBars;
 
-            MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * svgData.notationCrotchetsPerMinute);
+            MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
 
             MIDIChannelsPerStaff = midiChannelsPerStaff;
         }
-
-
 
         #region frame
         public double LeftScreenMarginPos { get { return LeftMarginPosVBPX / ViewBoxMagnification; } }
@@ -97,7 +95,8 @@ namespace Moritz.Symbols
         public List<int> StaffGroups = null;
         public List<string> LongStaffNames = null;
         public List<string> ShortStaffNames = null;
-
+        private Form1Data form1Data;
+        private IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff;
 
         public int DefaultNumberOfBarsPerSystem { get { return 5; } }
 

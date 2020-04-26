@@ -7,19 +7,20 @@ using System.Xml;
 using MNX.Globals;
 using Moritz.Spec;
 using Moritz.Symbols;
+using MNX.Common;
 
-namespace MNX_Main
+namespace MNX.Main
 {
     public partial class MNX_MainForm1 : Form
     {
-        private readonly List<Tuple<string, string>> _mnxSVGDatas = new List<Tuple<string, string>>();
+        private readonly List<Tuple<string, string>> _MNX_Form1Data_Paths = new List<Tuple<string, string>>();
         private bool _settingsHaveChanged = false;
 
         public MNX_MainForm1()
         {
             InitializeComponent();
 
-            Options options = new OptionsForWriteAll().Options;
+            Form1OptionsStrings options = new OptionsForWriteAll().Options;
             OptionWritePage1TitlesCheckBox.CheckState = (options.WritePage1Titles == "true") ? CheckState.Checked : CheckState.Unchecked;
             OptionIncludeMIDIDataCheckBox.CheckState = (options.IncludeMIDIData == "true") ? CheckState.Checked : CheckState.Unchecked;
             OptionWriteScoreAsScrollCheckBox.CheckState = (options.WriteScrollScore == "true") ? CheckState.Checked : CheckState.Unchecked;
@@ -29,20 +30,20 @@ namespace MNX_Main
             this.GapSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
 
             string[] mnxPathsArray = Directory.GetFiles(M.MNX_in_Folder, "*.mnx");
-            string[] svgDataArray = Directory.GetFiles(M.SVGData_Folder, "*.svgd");
+            string[] form1DataArray = Directory.GetFiles(M.Form1Data_Folder, "*.f1d");
 
             var mnxPaths = new List<string>(mnxPathsArray);
             mnxPaths.Sort();
-            var svgDataPaths = new List<string>(svgDataArray);
-            svgDataPaths.Sort();
+            var form1DataPaths = new List<string>(form1DataArray);
+            form1DataPaths.Sort();
 
             MNXSelect.Items.Clear();
             MNXSelect.Items.Add("All Scores");
-            for(var i = 0; i < svgDataPaths.Count; i++)
+            for(var i = 0; i < form1DataPaths.Count; i++)
             {
-                string svgDataFilename = Path.GetFileNameWithoutExtension(svgDataPaths[i]);
-                _mnxSVGDatas.Add(new Tuple<string, string>(mnxPaths[i], svgDataPaths[i]));
-                MNXSelect.Items.Add(svgDataFilename);
+                string mnxFilename = Path.GetFileName(mnxPaths[i]);
+                _MNX_Form1Data_Paths.Add(new Tuple<string, string>(mnxPaths[i], form1DataPaths[i]));
+                MNXSelect.Items.Add(mnxFilename);
             }
             MNXSelect.SelectedIndex = 0;
 
@@ -57,26 +58,26 @@ namespace MNX_Main
             if(selectedIndex == 0)
             {
                 OptionsForWriteAll optionsForWriteAll = new OptionsForWriteAll();
-                for(var i = 0; i < _mnxSVGDatas.Count; i++)
+                for(var i = 0; i < _MNX_Form1Data_Paths.Count; i++)
                 {
-                    var mnx = new MNX(_mnxSVGDatas[i].Item1);
-                    List<Bar> bars = mnx.ToBars();
-                    List<List<int>> midiChannelsPerStaff = mnx.GetMIDIChannelsPerStaff();
-                    var svgds = new SVGDataStrings(_mnxSVGDatas[i].Item2);
-                    svgds.Options = optionsForWriteAll.Options; // override when writing all scores
-                    var svgData = new SVGData(svgds);
-                    SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, bars, midiChannelsPerStaff, svgData);
+                    var mnx = new MNX(_MNX_Form1Data_Paths[i].Item1);
+                    MNXCommonData mnxCommonData = mnx.MNXCommonData;
+
+                    var form1StringData = new Form1StringData(_MNX_Form1Data_Paths[i].Item2);
+                    form1StringData.Options = optionsForWriteAll.Options; // override when writing all scores
+                    var form1Data = new Form1Data(form1StringData);
+
+                    SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
                     break; // temp
                 }
             }
             else
             {
-                var mnx = new MNX(_mnxSVGDatas[selectedIndex - 1].Item1);
-                List<Bar> bars = mnx.ToBars();
-                List<List<int>> midiChannelsPerStaff = mnx.GetMIDIChannelsPerStaff();
-                var svgds = new SVGDataStrings(_mnxSVGDatas[selectedIndex - 1].Item2);
-                var svgData = new SVGData(svgds);
-                SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, bars, midiChannelsPerStaff, svgData);
+                var mnx = new MNX(_MNX_Form1Data_Paths[selectedIndex - 1].Item1);
+                MNXCommonData mnxCommonData = mnx.MNXCommonData;
+                var form1StringData = new Form1StringData(_MNX_Form1Data_Paths[selectedIndex - 1].Item2);
+                var form1Data = new Form1Data(form1StringData);
+                SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
             }
         }
 
@@ -95,9 +96,9 @@ namespace MNX_Main
 
         private void LoadOneScore()
         {
-            // Load a score (edit svgDataStrings)
-            var svgDataPath = _mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2;
-            var svgds = new SVGDataStrings(svgDataPath);
+            // Load a score (edit form1DataStrings)
+            var form1DataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item2;
+            var svgds = new Form1StringData(form1DataPath);
 
             LoadControls(svgds);
 
@@ -105,16 +106,16 @@ namespace MNX_Main
             SetButtons(_settingsHaveChanged);
         }
 
-        private void LoadControls(SVGDataStrings svgds)
+        private void LoadControls(Form1StringData svgds)
         {
             var page = svgds.Page;
-            this.PageWidthTextBox.Text = page.width;
-            this.PageHeightTextBox.Text = page.height;
-            this.MarginTopPage1TextBox.Text = page.marginTopPage1;
-            this.MarginTopOtherPagesTextBox.Text = page.marginTopOther;
-            this.MarginRightTextBox.Text = page.marginRight;
-            this.MarginBottomTextBox.Text = page.marginBottom;
-            this.MarginLeftTextBox.Text = page.marginLeft;
+            this.PageWidthTextBox.Text = page.Width;
+            this.PageHeightTextBox.Text = page.Height;
+            this.MarginTopPage1TextBox.Text = page.MarginTopPage1;
+            this.MarginTopOtherPagesTextBox.Text = page.MarginTopOther;
+            this.MarginRightTextBox.Text = page.MarginRight;
+            this.MarginBottomTextBox.Text = page.MarginBottom;
+            this.MarginLeftTextBox.Text = page.MarginLeft;
 
             var notes = svgds.Notation;
             this.StafflineStemStrokeWidthComboBox.SelectedIndex = GetIndex(StafflineStemStrokeWidthComboBox, notes.stafflineStemStrokeWidth);
@@ -326,7 +327,7 @@ namespace MNX_Main
 
         public void SaveSettings()
         {
-            SVGDataStrings svgds = null;
+            Form1StringData svgds = null;
             if(MNXSelect.SelectedIndex == 0)
             {
                 svgds = new OptionsForWriteAll();
@@ -337,16 +338,16 @@ namespace MNX_Main
             }
             else
             {
-                svgds = new SVGDataStrings(_mnxSVGDatas[MNXSelect.SelectedIndex - 1].Item2);
+                svgds = new Form1StringData(_MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item2);
 
                 var page = svgds.Page;
-                page.width = PageWidthTextBox.Text;
-                page.height = PageHeightTextBox.Text;
-                page.marginTopPage1 = MarginTopPage1TextBox.Text;
-                page.marginTopOther = MarginTopOtherPagesTextBox.Text;
-                page.marginRight = MarginRightTextBox.Text;
-                page.marginLeft = MarginLeftTextBox.Text;
-                page.marginBottom = MarginBottomTextBox.Text;
+                page.Width = PageWidthTextBox.Text;
+                page.Height = PageHeightTextBox.Text;
+                page.MarginTopPage1 = MarginTopPage1TextBox.Text;
+                page.MarginTopOther = MarginTopOtherPagesTextBox.Text;
+                page.MarginRight = MarginRightTextBox.Text;
+                page.MarginLeft = MarginLeftTextBox.Text;
+                page.MarginBottom = MarginBottomTextBox.Text;
 
                 var notes = svgds.Notation;
                 notes.stafflineStemStrokeWidth = (string)StafflineStemStrokeWidthComboBox.Items[StafflineStemStrokeWidthComboBox.SelectedIndex];

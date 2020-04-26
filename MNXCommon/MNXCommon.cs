@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using MNX.Globals;
+using Moritz.Spec;
 
 namespace MNX.Common
 {
@@ -73,6 +74,10 @@ namespace MNX.Common
             M.Assert(Parts.Count > 0);
             M.Assert(ScoreAudios.Count >= 0);
         }
+
+        public IReadOnlyList<VoiceDef> VoiceDefs { get; set; }
+        public IReadOnlyList<IReadOnlyList<int>> MidiChannelsPerStaff { get; set; }
+        public IReadOnlyList<int> MsPositionPerBar { get; set; }
 
         private void AdjustForGraceNotes()
         {

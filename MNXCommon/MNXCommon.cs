@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using MNX.Globals;
 using Moritz.Spec;
+using Moritz.Symbols;
 
 namespace MNX.Common
 {
@@ -75,9 +76,79 @@ namespace MNX.Common
             M.Assert(ScoreAudios.Count >= 0);
         }
 
-        public IReadOnlyList<VoiceDef> VoiceDefs { get; set; }
-        public IReadOnlyList<IReadOnlyList<int>> MidiChannelsPerStaff { get; set; }
-        public IReadOnlyList<int> MsPositionPerBar { get; set; }
+        public MNXCommonData GetMNXCommonData()
+        {
+            List<VoiceDef> voiceDefs = new List<VoiceDef>();
+            List<List<int>> midiChannelsPerStaff = new List<List<int>>();
+            List<int> msPositionPerBar = new List<int>();
+
+            int currentMIDIChannel = 0;
+
+            List<List<Trk>> Tracks = new List<List<Trk>>();
+            foreach(var part in Parts)
+            {
+                int nTracks = part.Measures[0].Sequences.Count;
+                List<int> midiChannelsPerPart = new List<int>();
+                for(var i = 0; i < nTracks; i++)
+                {
+                    midiChannelsPerPart.Add(currentMIDIChannel);
+                    List<Trk> track = new List<Trk>();
+                    foreach(var measure in part.Measures)
+                    {
+                        List<IUniqueDef> iuds = measure.Sequences[i].GetIUDs();
+                        Trk newTrk = new Trk(currentMIDIChannel, 0, iuds);
+                        track.Add(newTrk);
+                    }
+                    currentMIDIChannel++;
+                }
+                midiChannelsPerStaff.Add(midiChannelsPerPart);
+            }
+
+            msPositionPerBar = GetMsPositionPerBar(Tracks[0]);
+            voiceDefs = GetVoiceDefs(Tracks);
+
+            MNXCommonData mnxCommonData = new MNXCommonData()
+            {
+                VoiceDefs = voiceDefs,
+                MidiChannelsPerStaff = midiChannelsPerStaff,
+                MsPositionPerBar = msPositionPerBar
+            };
+
+            return mnxCommonData;
+        }
+
+        private List<int> GetMsPositionPerBar(List<Trk> trks)
+        {
+            List<int> rval = new List<int>();
+            int currentPosition = 0;
+            foreach(var trk in trks)
+            {
+                rval.Add(currentPosition);
+                currentPosition += trk.MsDuration;
+            }
+            return rval;
+        }
+
+        /// <summary>
+        /// This function consumes its argumant.
+        /// </summary>
+        /// <param name="tracks"></param>
+        /// <returns></returns>
+        private List<VoiceDef> GetVoiceDefs(List<List<Trk>> tracks)
+        {
+            var rval = new List<VoiceDef>();
+
+            foreach(var trkList in tracks)
+            {
+                Trk trk = trkList[0];
+                for(var i = 1; i < trkList.Count; i++)
+                {
+                    trk.AddRange(trkList[i]);
+                }
+                rval.Add(trk);
+            }
+            return rval;
+        }
 
         private void AdjustForGraceNotes()
         {

@@ -7,14 +7,14 @@ namespace MNX.Common
 {
     internal abstract class EventGroup : IHasTicks
     {
-        public List<ISeqComponent> Seq = null;
+        public List<ISeqComponent> SequenceComponents = null;
 
         public List<IHasTicks> EventsAndEventGroups
         {
             get
             {
                 List<IHasTicks> eventsAndEventGroups = new List<IHasTicks>();
-                foreach(var item in Seq)
+                foreach(var item in SequenceComponents)
                 {
                     if(item is IHasTicks iht)
                     {
@@ -34,7 +34,7 @@ namespace MNX.Common
             get
             {
                 List<Event> rval = new List<Event>();
-                foreach(var item in Seq)
+                foreach(var item in SequenceComponents)
                 {
                     if(item is EventGroup eg)
                     {
@@ -83,7 +83,7 @@ namespace MNX.Common
         /// "directions occurring within sequence content must omit this ("location") attribute as their
         /// location is determined during the procedure of sequencing the content."
         /// </summary>
-        protected static List<ISeqComponent> GetSequenceContent(XmlReader r, string caller, bool isGlobal)
+        protected static List<ISeqComponent> GetSequenceComponents(XmlReader r, string caller, bool isGlobal)
         {
             /// local function, called below.
             /// The spec says:

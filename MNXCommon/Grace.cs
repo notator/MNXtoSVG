@@ -62,9 +62,9 @@ namespace MNX.Common
                 }
             }
 
-            Seq = GetSequenceContent(r, "grace", false);
+            SequenceComponents = GetSequenceComponents(r, "grace", false);
 
-            SetDefaultTicks(Seq);
+            SetDefaultTicks(SequenceComponents);
 
             M.Assert(r.Name == "grace"); // end of grace
 

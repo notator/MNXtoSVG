@@ -63,13 +63,7 @@ namespace MNX.Main
         {
             get
             {
-                MNXCommonData mnxCommonData = new MNXCommonData
-                {
-                    VoiceDefs = Score.MNXCommon.VoiceDefs,
-                    MidiChannelsPerStaff = Score.MNXCommon.MidiChannelsPerStaff,
-                    MsPositionPerBar = Score.MNXCommon.MsPositionPerBar
-                };
-
+                MNXCommonData mnxCommonData = Score.MNXCommon.GetMNXCommonData();
                 return mnxCommonData;
             }
 

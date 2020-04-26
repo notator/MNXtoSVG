@@ -37,7 +37,7 @@ namespace MNX.Common
                 }
             }
 
-            Seq = GetSequenceContent(r, "beamed", false);
+            SequenceComponents = GetSequenceComponents(r, "beamed", false);
 
             M.Assert(r.Name == "beamed"); // end of (nested) beamed
         }

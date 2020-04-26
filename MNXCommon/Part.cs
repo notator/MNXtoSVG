@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using MNX.Globals;
+using Moritz.Spec;
 
 namespace MNX.Common
 {

@@ -90,7 +90,7 @@ namespace MNX.Common
                 }
             }
 
-            Seq = GetSequenceContent(r, "tuplet", false);
+            SequenceComponents = GetSequenceComponents(r, "tuplet", false);
 
             if(C.CurrentTupletLevel == 1)
             {
@@ -153,13 +153,13 @@ namespace MNX.Common
 
             // Get 1. the outer ticks of Events and Tuplets at this tuplet level (which may be inside a "beamed")
             // and 2. a list of nested tuplets
-            foreach(var s in Seq)
+            foreach(var s in SequenceComponents)
             {
                 if(s is Beamed beamed)
                 {
-                    for(var i = 0; i < beamed.Seq.Count; i++)
+                    for(var i = 0; i < beamed.SequenceComponents.Count; i++)
                     {
-                        if(beamed.Seq[i] is ISeqComponent component)
+                        if(beamed.SequenceComponents[i] is ISeqComponent component)
                         {
                             GetObject(component);
                         }

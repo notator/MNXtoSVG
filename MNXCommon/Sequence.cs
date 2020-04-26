@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using MNX.Globals;
+using Moritz.Spec;
 
 namespace MNX.Common
 {
@@ -39,7 +40,7 @@ namespace MNX.Common
                 }
             }
 
-            Seq = GetSequenceContent(r, "sequence", isGlobal);
+            SequenceComponents = GetSequenceComponents(r, "sequence", isGlobal);
 
             M.Assert(r.Name == "sequence");
         }
@@ -51,7 +52,7 @@ namespace MNX.Common
         internal int TickPositionInSeq(IHasTicks ticksObject)
         {
             int rval = 0;
-            foreach(var seqObj in Seq)
+            foreach(var seqObj in SequenceComponents)
             {
                 if(seqObj is IHasTicks tObj)
                 {
@@ -64,6 +65,11 @@ namespace MNX.Common
             }
 
             return rval;
+        }
+
+        internal List<IUniqueDef> GetIUDs()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Moritz.Spec
 		/// <para>When complete, this constructor calls the bar.AssertConsistency() function (see that its documentation).</para>
 		/// </summary>
 		/// <param name="seq">Cannot be null, and must have Trks</param>
-		protected Bar(Seq seq )
+		public Bar(Seq seq )
         {
 			#region conditions
             seq.AssertConsistency();

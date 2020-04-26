@@ -8,7 +8,7 @@ namespace MNX.Common
 {
     internal class Beamed : EventGroup, ISeqComponent
     {
-        public readonly DurationSymbol Duration = null;
+        public readonly MNXDurationSymbol Duration = null;
         public readonly string Continue = null;
         public readonly string ID = null;
 
@@ -24,7 +24,7 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "value":
-                        Duration = new DurationSymbol(r.Value, C.CurrentTupletLevel);
+                        Duration = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                     case "continue":
                         Continue = r.Value;

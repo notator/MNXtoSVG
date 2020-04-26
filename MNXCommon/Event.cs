@@ -12,7 +12,7 @@ namespace MNX.Common
         #region MNX file attributes
         // Compulsory Attribute         
         //   value - the notated metrical duration of this event  ( /2, /4, /8 etc)
-        public readonly DurationSymbol DSymbol = null;
+        public readonly MNXDurationSymbol MNXDurationSymbol = null;
 
         // Optional Attributes 
         //   optional flag indicating that the event occupies the entire measure.    
@@ -25,7 +25,7 @@ namespace MNX.Common
         // are identified with successively increasing indices."
         public readonly int Staff = 1; // app-specific default
         //   duration - optional performed metrical duration, if different from value
-        public readonly DurationSymbol TicksOverride = null;
+        public readonly MNXDurationSymbol TicksOverride = null;
         #endregion  MNX file attributes
 
         #region runtime properties
@@ -47,7 +47,7 @@ namespace MNX.Common
             {
                 if( _ticks == 0)
                 {
-                    _ticks = DSymbol.DefaultTicks;
+                    _ticks = MNXDurationSymbol.DefaultTicks;
                 }
                 return _ticks;
             }
@@ -75,7 +75,7 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "value":
-                        DSymbol = new DurationSymbol(r.Value, C.CurrentTupletLevel);
+                        MNXDurationSymbol = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                     case "measure":
                         M.ThrowError("Not Implemented");
@@ -87,7 +87,7 @@ namespace MNX.Common
                         M.ThrowError("Not Implemented");
                         break;
                     case "duration":
-                        TicksOverride = new DurationSymbol(r.Value, C.CurrentTupletLevel);
+                        TicksOverride = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                 }
             }

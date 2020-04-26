@@ -12,7 +12,7 @@ namespace MNX.Common
         #region MNX file attributes
         // Compulsory Attribute         
         //   the notated metrical duration of this event  ( /2, /4, /8 etc)
-        public readonly DurationSymbol DSymbol = null;
+        public readonly MNXDurationSymbol DSymbol = null;
         #endregion  MNX file attributes
 
         #region runtime properties
@@ -33,7 +33,7 @@ namespace MNX.Common
             M.Assert(r.Name == "forward");
 
             r.MoveToAttribute("duration");
-            DSymbol = new DurationSymbol(r.Value, C.CurrentTupletLevel);
+            DSymbol = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
 
             M.ReadToXmlElementTag(r, "forward");
 

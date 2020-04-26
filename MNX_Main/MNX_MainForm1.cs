@@ -60,12 +60,14 @@ namespace MNX.Main
                 OptionsForWriteAll optionsForWriteAll = new OptionsForWriteAll();
                 for(var i = 0; i < _MNX_Form1Data_Paths.Count; i++)
                 {
-                    var mnx = new MNX(_MNX_Form1Data_Paths[i].Item1);
-                    MNXCommonData mnxCommonData = mnx.MNXCommonData;
-
                     var form1StringData = new Form1StringData(_MNX_Form1Data_Paths[i].Item2);
                     form1StringData.Options = optionsForWriteAll.Options; // override when writing all scores
                     var form1Data = new Form1Data(form1StringData);
+
+                    M.MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
+
+                    var mnx = new MNX(_MNX_Form1Data_Paths[i].Item1);
+                    MNXCommonData mnxCommonData = mnx.MNXCommonData;
 
                     SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
                     break; // temp
@@ -73,10 +75,13 @@ namespace MNX.Main
             }
             else
             {
-                var mnx = new MNX(_MNX_Form1Data_Paths[selectedIndex - 1].Item1);
-                MNXCommonData mnxCommonData = mnx.MNXCommonData;
                 var form1StringData = new Form1StringData(_MNX_Form1Data_Paths[selectedIndex - 1].Item2);
                 var form1Data = new Form1Data(form1StringData);
+
+                M.MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
+
+                var mnx = new MNX(_MNX_Form1Data_Paths[selectedIndex - 1].Item1);
+                MNXCommonData mnxCommonData = mnx.MNXCommonData;
                 SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
             }
         }

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Saturday 25.04.2020, 14:24:53-->
+<!--file created: Sunday 26.04.2020, 17:09:55-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<options
 		writePage1Titles="false"
-		writeScrollScore="false"
-		includeMIDIData="false" />
+		writeScrollScore="true"
+		includeMIDIData="true" />
 </form1Data>

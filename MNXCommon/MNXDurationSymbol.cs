@@ -6,7 +6,7 @@ namespace MNX.Common
 {
     /// <summary>
     /// The duration of DurationSymbols is measured in ticks.
-    /// The default number of ticks per DurationSymbol are:
+    /// The default number of ticks per MNXDurationSymbol are:
     ///          noteDoubleWhole_breve: 8192 ticks
     ///            noteWhole_semibreve: 4096 ticks
     ///                 noteHalf_minim: 2048 ticks
@@ -23,7 +23,7 @@ namespace MNX.Common
     /// dependng on whether the symbol is part of a Tuplet or Grace.
     /// Ticks can be converted to milliseconds when a tempo is provided.
     /// </summary>
-    internal class DurationSymbol // N.B. This is not an ITicks. (See Ticks below)
+    internal class MNXDurationSymbol // N.B. This is not an ITicks. (See Ticks below)
     {
         public readonly int? Multiple = null;
         public readonly DurationSymbolType? DurationSymbolTyp = null;
@@ -31,7 +31,7 @@ namespace MNX.Common
         public readonly int Tupletlevel = -1;
         public readonly int DefaultTicks = 0;
 
-        // DurationSymbol is not an ITicks object, its an implementation detail of ITicks objects.
+        // MNXDurationSymbol is not an ITicks object, its an implementation detail of ITicks objects.
         // ITicks objects, except Event and Grace, do not implement Ticks.set.
         public int Ticks
         {
@@ -56,7 +56,7 @@ namespace MNX.Common
         /// It can also be a floating point number (the fraction of a wholeNote).
         /// I assume that this string can have an arbitrary number of 'd's corresponding to the number of dots.
         /// </summary>
-        public DurationSymbol(string value, int currentTupletLevel)
+        public MNXDurationSymbol(string value, int currentTupletLevel)
         {
             // https://w3c.github.io/mnx/specification/common/#note-value
             // https://w3c.github.io/mnx/specification/common/#base-note-values

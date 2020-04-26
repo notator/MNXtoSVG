@@ -22,7 +22,7 @@ namespace MNX.Common
          * the same metrical position as the event whose element ID is event235
          */
 
-        public readonly DurationSymbol Position = null;
+        public readonly MNXDurationSymbol Position = null;
         public readonly int? MeasureNumber = null;
         public readonly string ID = null; // currently without the leading '#' (okay?)
         public readonly ShortTieOrSlur? Short = null;
@@ -69,7 +69,7 @@ namespace MNX.Common
                     default:
                         if(value.IndexOf('.') >= 0)
                         {
-                            Position = new DurationSymbol(value, C.CurrentTupletLevel);
+                            Position = new MNXDurationSymbol(value, C.CurrentTupletLevel);
                         }
                         break;
                 }
@@ -80,7 +80,7 @@ namespace MNX.Common
                 string[] mStrs = value.Split(separator, System.StringSplitOptions.None);
                 int.TryParse(mStrs[0], out int measureNumber);
                 MeasureNumber = measureNumber;
-                Position = new DurationSymbol(mStrs[1], C.CurrentTupletLevel);
+                Position = new MNXDurationSymbol(mStrs[1], C.CurrentTupletLevel);
             }
         }
     }

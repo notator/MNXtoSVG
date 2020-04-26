@@ -19,9 +19,9 @@ namespace MNX.Common
         /// from the first or last event.
         /// </para>
         /// </summary>
-        public readonly DurationSymbol OuterDuration = null;
+        public readonly MNXDurationSymbol OuterDuration = null;
         // duration of the enclosed sequence content (from MNX inner)
-        public readonly DurationSymbol InnerDuration = null;
+        public readonly MNXDurationSymbol InnerDuration = null;
 
         // Optional attributes:
         // Orientation of this tuplet. (The spec says default is app-specific.) 
@@ -60,10 +60,10 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "outer":
-                        OuterDuration = new DurationSymbol(r.Value, C.CurrentTupletLevel);
+                        OuterDuration = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                     case "inner":
-                        InnerDuration = new DurationSymbol(r.Value, C.CurrentTupletLevel);
+                        InnerDuration = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
                         break;
                     case "orient":
                         Orient = GetMNXOrientation(r.Value);
@@ -119,8 +119,8 @@ namespace MNX.Common
                 {
                     M.Assert(e.TupletLevel == localTupletLevel);
 
-                    DurationSymbol defaultDuration = e.DSymbol;
-                    DurationSymbol ticksOverride = e.TicksOverride;
+                    MNXDurationSymbol defaultDuration = e.MNXDurationSymbol;
+                    MNXDurationSymbol ticksOverride = e.TicksOverride;
                     int basicTicks = 0;
                     if(ticksOverride != null)
                     {
@@ -140,7 +140,7 @@ namespace MNX.Common
                     // a nested tuplet
                     M.Assert(t.TupletLevel == localTupletLevel);
                    
-                    DurationSymbol d = t.OuterDuration;
+                    MNXDurationSymbol d = t.OuterDuration;
                     int basicTicks = d.GetDefaultTicks();
                     components.Add(t);
                     ticksInside.Add(basicTicks);
@@ -185,7 +185,7 @@ namespace MNX.Common
                 else
                 {
                     Event evnt = component as Event;
-                    evnt.DSymbol.Ticks = ticks;
+                    evnt.MNXDurationSymbol.Ticks = ticks;
                 }
             }
         }

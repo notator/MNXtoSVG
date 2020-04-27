@@ -67,9 +67,65 @@ namespace MNX.Common
             return rval;
         }
 
-        internal List<IUniqueDef> GetIUDs()
+        internal List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(double millisecondsPerTick)
         {
-            throw new NotImplementedException();
+            List<Event> events = this.Events;
+            SetMsDurationPerEvent(events, millisecondsPerTick);
+
+            var rval = new List<IUniqueDef>();
+            foreach(var seqObj in SequenceComponents)
+            {
+                if(seqObj is Directions d)
+                {
+                    if(d.Clef != null)
+                    {
+                        rval.Add(d.Clef as IUniqueDef);
+                    }
+                    if(d.KeySignature != null)
+                    {
+                        rval.Add(d.KeySignature as IUniqueDef);
+                    }
+                    // TimeSignatures are IUniqueDefs but not SequenceComponents.
+                    // They only occur in the Global element.
+                    //if(d.TimeSignature != null)
+                    //{
+                    //    rval.Add(d.TimeSignature as IUniqueDef);
+                    //}
+                    if(d.OctaveShift != null)
+                    {
+                        rval.Add(d.OctaveShift as IUniqueDef);
+                    }
+                }
+                else
+                {
+                    rval.Add(seqObj as IUniqueDef);
+                }
+            }
+            return rval;
+        }
+
+        private void SetMsDurationPerEvent(List<Event> events, double millisecondsPerTick)
+        {
+            var tickPositions = new List<int>();
+            int currentTickPosition = 0;
+            foreach(var evt in Events)
+            {
+                tickPositions.Add(currentTickPosition);
+                currentTickPosition += evt.Ticks;
+            }
+            tickPositions.Add(currentTickPosition);
+
+            var msPositions = new List<int>();
+            foreach(var tickPosition in tickPositions)
+            {
+                msPositions.Add((int)Math.Round(tickPosition * millisecondsPerTick));
+            }
+
+            for(var i = 1; i < msPositions.Count; i++)
+            {
+                int msDuration = msPositions[i] - msPositions[i - 1];
+                events[i - 1].MsDuration = msDuration;
+            }
         }
     }
 }

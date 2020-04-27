@@ -16,6 +16,10 @@ namespace MNX.Common
 
         public readonly OctaveShiftType? Type = null;
 
+        #region IUniqueDef
+        public override string ToString() => $"OctaveShift: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        #endregion IUniqueDef
+
         public OctaveShift(XmlReader r)
             : base()
         {            

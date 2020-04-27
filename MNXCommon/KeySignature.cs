@@ -4,46 +4,25 @@ using System.Xml;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-key-element
-    internal class KeySignature : IDirectionsComponent
+    internal class KeySignature : Instruction, IDirectionsComponent
     {
+        // Instruction attributes
+        public override PositionInMeasure Location => new PositionInMeasure("0");
+        public override int StaffIndex
+        {
+            get
+            {
+                // KeySignature.StaffIndex should never be retrieved.
+                M.Assert(false, "Application Error.");
+                return -1; 
+            }
+        }
+        public override Orientation? Orient { get { return null; } }
+        // other attributes
         public readonly int Fifths = 0; // default
 
         #region IUniqueDef
         public override string ToString() => $"KeySignature: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
-
-        /// <summary>
-        /// (?) See IUniqueDef Interface definition. (?)
-        /// </summary>
-        public object Clone()
-        {
-            return this;
-        }
-        /// <summary>
-        /// Multiplies the MsDuration by the given factor.
-        /// </summary>
-        /// <param name="factor"></param>
-        public void AdjustMsDuration(double factor)
-        {
-            MsDuration = 0;
-        }
-
-        public int MsDuration { get { return 0; } set { M.Assert(false, "Application Error."); } }
-
-        public int MsPositionReFirstUD
-        {
-            get
-            {
-                M.Assert(_msPositionReFirstIUD >= 0);
-                return _msPositionReFirstIUD;
-            }
-            set
-            {
-                M.Assert(value >= 0);
-                _msPositionReFirstIUD = value;
-            }
-        }
-        private int _msPositionReFirstIUD = 0;
-
         #endregion IUniqueDef
 
         public KeySignature(XmlReader r)

@@ -95,14 +95,16 @@ namespace MNX.Common
                     List<Trk> track = new List<Trk>();
                     foreach(var measure in part.Measures)
                     {
-                        List<IUniqueDef> iuds = measure.Sequences[i].GetIUDs();
+                        List<IUniqueDef> iuds = measure.Sequences[i].SetMsDurationsAndGetIUniqueDefs(M.MillisecondsPerTick);
                         Trk newTrk = new Trk(currentMIDIChannel, 0, iuds);
                         track.Add(newTrk);
                     }
+                    Tracks.Add(track);
                     currentMIDIChannel++;
                 }
                 midiChannelsPerStaff.Add(midiChannelsPerPart);
             }
+
 
             msPositionPerBar = GetMsPositionPerBar(Tracks[0]);
             voiceDefs = GetVoiceDefs(Tracks);

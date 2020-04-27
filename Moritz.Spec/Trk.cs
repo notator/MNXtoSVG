@@ -79,20 +79,20 @@ namespace Moritz.Spec
 
 			M.Assert(Container == null || Container is Seq || Container is Bar);
 
-			if(Container == null || Container is Seq)
-			{
-				foreach(IUniqueDef iud in UniqueDefs)
-				{
-					M.Assert(iud is MidiChordDef || iud is MidiRestDef);
-				}
-			}
-			else if(Container is Bar)
-			{
-				foreach(IUniqueDef iud in UniqueDefs)
-				{
-					M.Assert(iud is MidiChordDef || iud is MidiRestDef || iud is ClefDef || iud is CautionaryChordDef);
-				}
-			}
+			//if(Container == null || Container is Seq)
+			//{
+			//	foreach(IUniqueDef iud in UniqueDefs)
+			//	{
+			//		M.Assert(iud is MidiChordDef || iud is MidiRestDef);
+			//	}
+			//}
+			//else if(Container is Bar)
+			//{
+			//	foreach(IUniqueDef iud in UniqueDefs)
+			//	{
+			//		M.Assert(iud is MidiChordDef || iud is MidiRestDef || iud is ClefDef || iud is CautionaryChordDef);
+			//	}
+			//}
 		}
 
 

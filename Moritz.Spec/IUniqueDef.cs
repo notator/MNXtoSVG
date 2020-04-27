@@ -22,9 +22,7 @@ namespace Moritz.Spec
     ///     Grace,
     ///     Event,
     ///     Forward
-    ///   Directions
-    ///     Directions
-    ///   IDirectionsComponents:
+    ///   DirectionsComponents:
     ///     Clef,
     ///     KeySignature
     ///</summary>

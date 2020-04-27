@@ -62,7 +62,6 @@
     <Compile Include="Metrics\SymbolSet.cs" />
     <Compile Include="Metrics\StaffMetrics.cs" />
     <Compile Include="Metrics\SystemMetrics.cs" />
-    <Compile Include="MNXCommonData.cs" />
     <Compile Include="PageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionDef.cs" />
@@ -96,6 +95,10 @@
     <ProjectReference Include="..\MNX.Globals\MNX.Globals.csproj">
       <Project>{9abe7e06-1560-42cb-86c8-26d64cfb4cff}</Project>
       <Name>MNX.Globals</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MNXCommon\MNX.Common.csproj">
+      <Project>{6872babe-c7a2-496d-b97a-b7997cd9bfcd}</Project>
+      <Name>MNX.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Moritz.Midi\Moritz.Midi.csproj">
       <Project>{82e776e6-c819-42e6-9986-7ebdc3dffa06}</Project>

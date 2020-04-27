@@ -102,19 +102,19 @@ namespace Moritz.Spec
 			#endregion
 
 			#region 3. At least one Trk must start with a MidiChordDef, possibly preceded by a ClefDef.
-			IReadOnlyList<Trk> trks = Trks;
-			bool startFound = false;
-			foreach(Trk trk in trks)
-			{
-				List<IUniqueDef> iuds = trk.UniqueDefs;
-				IUniqueDef firstIud = iuds[0];
-				if(firstIud is MidiChordDef || (iuds.Count > 1 && firstIud is ClefDef && iuds[1] is MidiChordDef))
-				{
-					startFound = true;
-					break;
-				} 				
-			}
-			M.Assert(startFound, "MidiChordDef not found at start.");
+			//IReadOnlyList<Trk> trks = Trks;
+			//bool startFound = false;
+			//foreach(Trk trk in trks)
+			//{
+			//	List<IUniqueDef> iuds = trk.UniqueDefs;
+			//	IUniqueDef firstIud = iuds[0];
+			//	if(firstIud is MidiChordDef || (iuds.Count > 1 && firstIud is ClefDef && iuds[1] is MidiChordDef))
+			//	{
+			//		startFound = true;
+			//		break;
+			//	} 				
+			//}
+			//M.Assert(startFound, "MidiChordDef not found at start.");
 			#endregion
 		}
 

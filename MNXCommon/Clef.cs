@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    internal class Clef : Instruction, IDirectionsComponent
+    public class Clef : Instruction, IDirectionsComponent
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }

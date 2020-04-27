@@ -5,6 +5,7 @@ using System.Xml;
 using Moritz.Spec;
 using System.Collections.Generic;
 using Moritz.Symbols;
+using MNX.Common;
 
 namespace MNX.Main
 {

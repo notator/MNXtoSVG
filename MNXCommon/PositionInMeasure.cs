@@ -2,7 +2,7 @@
 
 namespace MNX.Common
 {
-    internal class PositionInMeasure
+    public class PositionInMeasure
     {
         /*
          * Here are some instances of the measure location syntax:

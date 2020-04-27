@@ -39,6 +39,18 @@ namespace Moritz.Symbols
         public double Page1AuthorHeightVBPX;
         public double Page1TitleYVBPX;
         #endregion
+        public List<string> LongStaffNames = new List<string>();
+        public List<string> ShortStaffNames = new List<string>();
+        public List<int> StafflinesPerStaff = new List<int>();
+
+        /// <summary>
+        /// All written scores set the ChordSymbolType to one of the values in M.ChordTypes.
+        /// M.ChordTypes does not include "none", because it is used to populate ComboBoxes.
+        /// The value "none" is used to signal that there is no written score. It is used by
+        /// AudioButtonsControl inside palettes, just to play a sound.
+        /// </summary>
+        public string ChordSymbolType = "standard"; // see Notator constructor
+
         #endregion other attributes
 
         public PageFormat(Form1Data form1Data, IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff)
@@ -62,6 +74,14 @@ namespace Moritz.Symbols
             MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
 
             MIDIChannelsPerStaff = midiChannelsPerStaff;
+
+            int nStaves = MIDIChannelsPerStaff.Count;
+            for(var i = 0; i < nStaves; i++)
+            {
+                LongStaffNames.Add("");
+                ShortStaffNames.Add("");
+                StafflinesPerStaff.Add(5);
+            }
         }
 
         #region frame
@@ -72,13 +92,7 @@ namespace Moritz.Symbols
         #endregion
 
         #region notation
-        /// <summary>
-        /// All written scores set the ChordSymbolType to one of the values in M.ChordTypes.
-        /// M.ChordTypes does not include "none", because it is used to populate ComboBoxes.
-        /// The value "none" is used to signal that there is no written score. It is used by
-        /// AudioButtonsControl inside palettes, just to play a sound.
-        /// </summary>
-        public string ChordSymbolType = "none";
+
         #region standard chord notation options
         /// <summary>
         /// Moritz uses this value to decide the duration class of a DurationSymbol
@@ -90,13 +104,10 @@ namespace Moritz.Symbols
 
         
 		public List<string> ClefPerStaff = null;
-		public List<string> InitialClefPerMIDIChannel = null;
-		public List<int> StafflinesPerStaff = null;
+
         public List<int> StaffGroups = null;
-        public List<string> LongStaffNames = null;
-        public List<string> ShortStaffNames = null;
-        private Form1Data form1Data;
-        private IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff;
+
+
 
         public int DefaultNumberOfBarsPerSystem { get { return 5; } }
 

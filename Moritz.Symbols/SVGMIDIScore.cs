@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Moritz.Spec;
 using Moritz.Xml;
 using MNX.Globals;
+using MNX.Common;
 
 namespace Moritz.Symbols
 {
@@ -20,11 +21,13 @@ namespace Moritz.Symbols
                 Date = M.NowString
             };
 
-            List<Bar> bars = GetBars(mnxCommonData.VoiceDefs, mnxCommonData.MsPositionPerBar);
+            PageFormat = new PageFormat(form1Data, mnxCommonData.MidiChannelsPerStaff);
+
+            Notator = new Notator(PageFormat);
+
+            List<Bar> bars = GetBars(mnxCommonData.VoiceDefs, mnxCommonData.EndBarlineMsPositionPerBar);
 
             CheckBars(bars);
-
-            PageFormat = new PageFormat(form1Data, mnxCommonData.MidiChannelsPerStaff);
 
             CreateSystems(bars, form1Data);
 
@@ -263,27 +266,6 @@ namespace Moritz.Symbols
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private int GetNewBottomVBPX(List<SvgSystem> Systems)
         {
             int frameHeight = PageFormat.TopMarginPage1VBPX + 20;
@@ -303,8 +285,6 @@ namespace Moritz.Symbols
             //{
             //    ScoreData = SetScoreRegionsData(bars, form1Data.RegionStartBarIndices);
             //}            
-
-            InsertInitialClefDefs(bars, PageFormat.InitialClefPerMIDIChannel);
 
             CreateEmptySystems(bars); // one system per bar
 

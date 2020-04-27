@@ -25,8 +25,6 @@ namespace Moritz.Symbols
         public MetadataWithDate MetadataWithDate = null;
         #endregion
 
-
-
         public Notator Notator = null;
 
         protected ScoreData ScoreData = null;

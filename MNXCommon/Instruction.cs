@@ -12,7 +12,7 @@ namespace MNX.Common
     /// An Instruction is an object like a Clef or KeySignature.
     /// A Span is an object like a Slur, Tie or OctaveShift.
     /// </summary>
-    internal abstract class Instruction : IUniqueDef
+    public abstract class Instruction : IUniqueDef
     {
         /// <summary>
         /// https://w3c.github.io/mnx/specification/common/#measure-location

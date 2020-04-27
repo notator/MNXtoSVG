@@ -23,7 +23,7 @@ namespace MNX.Common
     /// dependng on whether the symbol is part of a Tuplet or Grace.
     /// Ticks can be converted to milliseconds when a tempo is provided.
     /// </summary>
-    internal class MNXDurationSymbol // N.B. This is not an ITicks. (See Ticks below)
+    public class MNXDurationSymbol // N.B. This is not an ITicks. (See Ticks below)
     {
         public readonly int? Multiple = null;
         public readonly DurationSymbolType? DurationSymbolTyp = null;

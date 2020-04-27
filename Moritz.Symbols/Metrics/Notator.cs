@@ -1,4 +1,5 @@
 ﻿using MNX.Globals;
+using MNX.Common;
 using Moritz.Spec;
 using Moritz.Xml;
 using System;
@@ -64,7 +65,7 @@ namespace Moritz.Symbols
 
                         msPositionReVoiceDef = 0;
 						List<IUniqueDef> iuds = voice.VoiceDef.UniqueDefs;
-						M.Assert(iuds[0] is ClefDef);
+						M.Assert(iuds[0] is ClefDef || iuds[0] is MNX.Common.Clef);
 
 						for (int iudIndex = 0; iudIndex < iuds.Count; ++ iudIndex)
                         {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Xml;
 using MNX.Globals;
 using Moritz.Spec;
-using Moritz.Symbols;
 
 namespace MNX.Common
 {
@@ -107,14 +106,14 @@ namespace MNX.Common
                 midiChannelsPerStaff.Add(midiChannelsPerPart);
             }
 
-            List<int> msPositionPerBar = GetMsPositionPerBar(Tracks[0]);
+            List<int> endBarlineMsPositionPerBar = GetEndBarlineMsPositionPerBar(Tracks[0]);
             List<VoiceDef> voiceDefs = GetVoiceDefs(Tracks);
 
             MNXCommonData mnxCommonData = new MNXCommonData()
             {
                 VoiceDefs = voiceDefs,
                 MidiChannelsPerStaff = midiChannelsPerStaff,
-                MsPositionPerBar = msPositionPerBar
+                EndBarlineMsPositionPerBar = endBarlineMsPositionPerBar
             };
 
             return mnxCommonData;
@@ -129,14 +128,14 @@ namespace MNX.Common
             }
         }
 
-        private List<int> GetMsPositionPerBar(List<Trk> trks)
+        private List<int> GetEndBarlineMsPositionPerBar(List<Trk> trks)
         {
             List<int> rval = new List<int>();
             int currentPosition = 0;
             foreach(var trk in trks)
             {
-                rval.Add(currentPosition);
                 currentPosition += trk.MsDuration;
+                rval.Add(currentPosition);
             }
             return rval;
         }

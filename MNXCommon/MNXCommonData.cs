@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace Moritz.Symbols
+namespace MNX.Common
 {
     /// <summary>
     /// Information returned from a parsed MNXCommon file.
@@ -15,6 +15,6 @@ namespace Moritz.Symbols
     {
         public IReadOnlyList<VoiceDef> VoiceDefs;
         public IReadOnlyList<IReadOnlyList<int>> MidiChannelsPerStaff;
-        public IReadOnlyList<int> MsPositionPerBar;
+        public IReadOnlyList<int> EndBarlineMsPositionPerBar;
     }
 }

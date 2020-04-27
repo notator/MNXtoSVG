@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -7,7 +8,7 @@ namespace MNX.Common
     /// Contrary to the spec (which I find very confusing), I am calling this
     /// object type an Instruction, rather than a "Direction".
     /// The spec (and I) use "Directions" for the high level container class.
-    /// An Instruction is an object like a Clef.
+    /// An Instruction is an object like a Clef or KeySignature.
     /// A Span is an object like a Slur, Tie or OctaveShift.
     /// </summary>
     internal abstract class Instruction

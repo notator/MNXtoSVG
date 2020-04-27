@@ -26,6 +26,59 @@ namespace MNX.Common
 
         #endregion runtime properties
 
+        #region IUniqueDef
+        public override string ToString() => $"Event: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+
+        /// <summary>
+        /// (?) ISeqComponent objects are already unique, so no Clone is required. (?)
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            return this;
+        }
+        /// <summary>
+        /// Multiplies the MsDuration by the given factor.
+        /// </summary>
+        /// <param name="factor"></param>
+        public void AdjustMsDuration(double factor)
+        {
+            MsDuration = (int)(MsDuration * factor);
+            M.Assert(MsDuration > 0, "A Forward's MsDuration may not be set to zero!");
+        }
+
+        public int MsDuration
+        {
+            get
+            {
+                return _msDuration;
+            }
+            set
+            {
+                M.Assert(value > 0);
+                _msDuration = value;
+            }
+        }
+        private int _msDuration;
+
+        public int MsPositionReFirstUD
+        {
+            get
+            {
+                M.Assert(_msPositionReFirstIUD >= 0);
+                return _msPositionReFirstIUD;
+            }
+            set
+            {
+                M.Assert(value >= 0);
+                _msPositionReFirstIUD = value;
+            }
+        }
+        private int _msPositionReFirstIUD = 0;
+
+
+        #endregion IUniqueDef
+
         public Forward(XmlReader r)
         {
             TupletLevel = C.CurrentTupletLevel;

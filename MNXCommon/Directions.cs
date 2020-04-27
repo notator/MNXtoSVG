@@ -16,6 +16,44 @@ namespace MNX.Common
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
 
+        #region IUniqueDef
+        public override string ToString() => $"Directions: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+
+        /// <summary>
+        /// (?) See IUniqueDef Interface definition. (?)
+        /// </summary>
+        public object Clone()
+        {
+            return this;
+        }
+        /// <summary>
+        /// Multiplies the MsDuration by the given factor.
+        /// </summary>
+        /// <param name="factor"></param>
+        public void AdjustMsDuration(double factor)
+        {
+            MsDuration = 0;
+        }
+
+        public int MsDuration { get { return 0; } set { M.Assert(false, "Application Error."); } }
+
+        public int MsPositionReFirstUD
+        {
+            get
+            {
+                M.Assert(_msPositionReFirstIUD >= 0);
+                return _msPositionReFirstIUD;
+            }
+            set
+            {
+                M.Assert(value >= 0);
+                _msPositionReFirstIUD = value;
+            }
+        }
+        private int _msPositionReFirstIUD = 0;
+
+        #endregion IUniqueDef
+
         public Directions(XmlReader r, bool isGlobal)
         {
             M.Assert(r.Name == "directions");

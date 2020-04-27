@@ -13,6 +13,11 @@ namespace MNX.Common
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
 
+        #region IUniqueDef
+        public override string ToString() => $"Grace: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+
+        #endregion IUniqueDef
+
         /// <summary>
         /// Grace and Event implement Ticks.set so that grace can steal.
         /// </summary>

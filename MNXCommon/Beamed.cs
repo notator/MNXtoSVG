@@ -8,9 +8,14 @@ namespace MNX.Common
 {
     internal class Beamed : EventGroup, ISeqComponent
     {
+
         public readonly MNXDurationSymbol Duration = null;
         public readonly string Continue = null;
         public readonly string ID = null;
+
+        #region IUniqueDef
+        public override string ToString() => $"Beamed: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        #endregion IUniqueDef
 
         public Beamed(XmlReader r)
         {

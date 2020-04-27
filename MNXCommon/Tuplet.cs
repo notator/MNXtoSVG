@@ -45,6 +45,11 @@ namespace MNX.Common
         public readonly int TupletLevel;
         #endregion Runtime property
 
+        #region IUniqueDef
+        public override string ToString() => $"Tuplet: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+
+        #endregion IUniqueDef
+
         public Tuplet(XmlReader r)
         {
             TupletLevel = C.CurrentTupletLevel; // top level tuplet has tuplet level 0

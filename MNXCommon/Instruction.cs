@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using MNX.Globals;
+using Moritz.Spec;
 
 namespace MNX.Common
 {
@@ -11,7 +12,7 @@ namespace MNX.Common
     /// An Instruction is an object like a Clef or KeySignature.
     /// A Span is an object like a Slur, Tie or OctaveShift.
     /// </summary>
-    internal abstract class Instruction
+    internal abstract class Instruction : IUniqueDef
     {
         /// <summary>
         /// https://w3c.github.io/mnx/specification/common/#measure-location
@@ -65,6 +66,10 @@ namespace MNX.Common
 
     internal abstract class Span : Instruction
     {
+        #region IUniqueDef
+        public override string ToString() => $"Span: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        #endregion IUniqueDef
+
         public abstract string Target { get; }
         public abstract PositionInMeasure End { get; }
     }

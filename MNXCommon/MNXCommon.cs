@@ -9,7 +9,7 @@ namespace MNX.Common
 {
     public class MNXCommon
     {
-        internal readonly List<Global> Globals = new List<Global>();
+        internal readonly Global Global = null;
         internal readonly List<Part> Parts = new List<Part>();
         internal readonly List<ScoreAudio> ScoreAudios = new List<ScoreAudio>();
 
@@ -54,7 +54,7 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "global":
-                            Globals.Add(new Global(r));
+                            Global = new Global(r);
                             break;
                         case "part":
                             Parts.Add(new Part(r));
@@ -71,18 +71,17 @@ namespace MNX.Common
 
             M.Assert(r.Name == "mnx-common"); // end of "mnx-common"
 
-            M.Assert(Globals.Count > 0);
+            M.Assert(Global != null);
             M.Assert(Parts.Count > 0);
             M.Assert(ScoreAudios.Count >= 0);
         }
 
         public MNXCommonData GetMNXCommonData()
         {
-            List<VoiceDef> voiceDefs = new List<VoiceDef>();
             List<List<int>> midiChannelsPerStaff = new List<List<int>>();
-            List<int> msPositionPerBar = new List<int>();
-
             int currentMIDIChannel = 0;
+
+            List<List<IUniqueDef>> globalIUDsPerMeasure = Global.GetGlobalIUDsPerMeasure();
 
             List<List<Trk>> Tracks = new List<List<Trk>>();
             foreach(var part in Parts)
@@ -93,10 +92,13 @@ namespace MNX.Common
                 {
                     midiChannelsPerPart.Add(currentMIDIChannel);
                     List<Trk> track = new List<Trk>();
-                    foreach(var measure in part.Measures)
+                    for(int measureIndex = 0; measureIndex < part.Measures.Count; measureIndex++)
                     {
-                        List<IUniqueDef> iuds = measure.Sequences[i].SetMsDurationsAndGetIUniqueDefs(M.MillisecondsPerTick);
-                        Trk newTrk = new Trk(currentMIDIChannel, 0, iuds);
+                        List<IUniqueDef> globalIUDs = globalIUDsPerMeasure[measureIndex];
+                        var measure = part.Measures[measureIndex];
+                        List<IUniqueDef> seqIUDs = measure.Sequences[i].SetMsDurationsAndGetIUniqueDefs(M.MillisecondsPerTick);
+                        MeasureInsertGlobalIUDsInIUDs(globalIUDs, seqIUDs);
+                        Trk newTrk = new Trk(currentMIDIChannel, 0, seqIUDs);
                         track.Add(newTrk);
                     }
                     Tracks.Add(track);
@@ -105,9 +107,8 @@ namespace MNX.Common
                 midiChannelsPerStaff.Add(midiChannelsPerPart);
             }
 
-
-            msPositionPerBar = GetMsPositionPerBar(Tracks[0]);
-            voiceDefs = GetVoiceDefs(Tracks);
+            List<int> msPositionPerBar = GetMsPositionPerBar(Tracks[0]);
+            List<VoiceDef> voiceDefs = GetVoiceDefs(Tracks);
 
             MNXCommonData mnxCommonData = new MNXCommonData()
             {
@@ -117,6 +118,15 @@ namespace MNX.Common
             };
 
             return mnxCommonData;
+        }
+
+        private void MeasureInsertGlobalIUDsInIUDs(List<IUniqueDef> globalIUDs, List<IUniqueDef> seqIUDs)
+        {
+            if(globalIUDs.Find(obj => obj is TimeSignature) is TimeSignature timeSignature)
+            {
+                int insertIndex = (seqIUDs[0] is Clef) ? 1 : 0;
+                seqIUDs.Insert(insertIndex, timeSignature as IUniqueDef);
+            }
         }
 
         private List<int> GetMsPositionPerBar(List<Trk> trks)

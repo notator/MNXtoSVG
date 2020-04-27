@@ -1,4 +1,6 @@
 ﻿using MNX.Globals;
+using Moritz.Spec;
+using System;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -41,6 +43,31 @@ namespace MNX.Common
             M.Assert(r.Name == "global"); // end of global
 
             M.Assert(Measures.Count > 0);
+        }
+
+        internal List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
+        {
+            var rval = new List<List<IUniqueDef>>();
+            for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)
+            {
+                List<IUniqueDef> measureList = new List<IUniqueDef>();
+                Directions directions = Measures[measureIndex].Directions;
+
+                if(directions.KeySignature != null)
+                {
+                    measureList.Add(directions.KeySignature);
+                }
+                if(directions.TimeSignature != null)
+                {
+                    measureList.Add(directions.TimeSignature);
+                }
+                if(directions.OctaveShift != null)
+                {
+                    measureList.Add(directions.OctaveShift);
+                }
+                rval.Add(measureList);
+            }
+            return rval;
         }
     }
 }

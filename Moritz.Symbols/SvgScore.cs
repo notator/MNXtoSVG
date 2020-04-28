@@ -849,7 +849,7 @@ namespace Moritz.Symbols
                     Staff staff = system.Staves[staffIndex];
                     foreach(NoteObject noteObject in staff.Voices[0].NoteObjects)
                     {
-                        if(noteObject is Barline firstBarline)
+                        if(noteObject is Barline firstBarline && !String.IsNullOrEmpty(staff.Staffname))
                         {
                             double fontHeight = PageFormat.StaffNameFontHeight;
 							StaffNameText staffNameText = new StaffNameText(firstBarline, staff.Staffname, fontHeight);
@@ -1298,7 +1298,12 @@ namespace Moritz.Symbols
 			}
 			else
 			{
-				DurationSymbol ds = noteObjects[i + 1] as DurationSymbol;
+                int index = i + 1;
+                if(noteObjects[index] is TimeSignature)
+                {
+                    index++;
+                }
+				DurationSymbol ds = noteObjects[index] as DurationSymbol;
 				barlineMsPos = ds.AbsMsPosition;
 			}
 			return barlineMsPos;

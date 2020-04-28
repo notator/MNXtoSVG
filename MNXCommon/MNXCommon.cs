@@ -11,6 +11,7 @@ namespace MNX.Common
         internal readonly Global Global = null;
         internal readonly List<Part> Parts = new List<Part>();
         internal readonly List<ScoreAudio> ScoreAudios = new List<ScoreAudio>();
+        public readonly int NumberOfMeasures;
 
         public MNXCommon(XmlReader r)
         {
@@ -66,6 +67,8 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "global", "part", "score-audio", "mnx-common");
             }
 
+            NumberOfMeasures = Global.Measures.Count;
+
             AdjustForGraceNotes();
 
             M.Assert(r.Name == "mnx-common"); // end of "mnx-common"
@@ -111,6 +114,7 @@ namespace MNX.Common
 
             MNXCommonData mnxCommonData = new MNXCommonData()
             {
+                NumberOfMeasures = Global.Measures.Count,
                 VoiceDefs = voiceDefs,
                 MidiChannelsPerStaff = midiChannelsPerStaff,
                 EndBarlineMsPositionPerBar = endBarlineMsPositionPerBar

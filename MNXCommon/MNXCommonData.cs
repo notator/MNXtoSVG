@@ -13,6 +13,7 @@ namespace MNX.Common
     /// </summary>
     public class MNXCommonData
     {
+        public int NumberOfMeasures;
         public IReadOnlyList<VoiceDef> VoiceDefs;
         public IReadOnlyList<IReadOnlyList<int>> MidiChannelsPerStaff;
         public IReadOnlyList<int> EndBarlineMsPositionPerBar;

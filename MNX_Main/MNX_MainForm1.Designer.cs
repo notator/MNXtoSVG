@@ -53,7 +53,7 @@
             this.SpeedGroupBox = new System.Windows.Forms.GroupBox();
             this.CrotchetsPerMinuteTextBox = new System.Windows.Forms.TextBox();
             this.CrotchetsPerMinuteLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.SystemStartBarsLabel = new System.Windows.Forms.Label();
             this.MinimumGapsBetweenSystemsTextBox = new System.Windows.Forms.TextBox();
             this.MinimumGapsBetweenStavesTextBox = new System.Windows.Forms.TextBox();
             this.GapSizeComboBox = new System.Windows.Forms.ComboBox();
@@ -318,7 +318,7 @@
             // 
             this.NotationGroupBox.Controls.Add(this.SystemStartBarsTextBox);
             this.NotationGroupBox.Controls.Add(this.SpeedGroupBox);
-            this.NotationGroupBox.Controls.Add(this.label1);
+            this.NotationGroupBox.Controls.Add(this.SystemStartBarsLabel);
             this.NotationGroupBox.Controls.Add(this.MinimumGapsBetweenSystemsTextBox);
             this.NotationGroupBox.Controls.Add(this.MinimumGapsBetweenStavesTextBox);
             this.NotationGroupBox.Controls.Add(this.GapSizeComboBox);
@@ -382,16 +382,16 @@
             this.CrotchetsPerMinuteLabel.TabIndex = 3;
             this.CrotchetsPerMinuteLabel.Text = "crotchets per minute ( float )";
             // 
-            // label1
+            // SystemStartBarsLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(12, 156);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 13);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "system start bars ( must start at 1 )";
+            this.SystemStartBarsLabel.AutoSize = true;
+            this.SystemStartBarsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SystemStartBarsLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.SystemStartBarsLabel.Location = new System.Drawing.Point(12, 156);
+            this.SystemStartBarsLabel.Name = "SystemStartBarsLabel";
+            this.SystemStartBarsLabel.Size = new System.Drawing.Size(166, 13);
+            this.SystemStartBarsLabel.TabIndex = 12;
+            this.SystemStartBarsLabel.Text = "system start bars ( must start at 1 )";
             // 
             // MinimumGapsBetweenSystemsTextBox
             // 
@@ -767,7 +767,7 @@
         private System.Windows.Forms.Button WriteButton;
         private System.Windows.Forms.Button RevertFormatButton;
         private System.Windows.Forms.TextBox SystemStartBarsTextBox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label SystemStartBarsLabel;
         private System.Windows.Forms.GroupBox MetadataGroupBox;
         private System.Windows.Forms.TextBox MetadataAuthorTextBox;
         private System.Windows.Forms.Label MetadataAuthorLabel;

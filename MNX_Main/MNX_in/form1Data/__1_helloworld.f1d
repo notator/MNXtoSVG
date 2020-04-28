@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Wednesday 22.04.2020, 10:35:23-->
+<!--file created: Tuesday 28.04.2020, 13:05:53-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
@@ -15,15 +15,14 @@
 		gapSize="2.5"
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="4"
-		systemStartBars="1,  4,  5,  6,  7,  8"
+		systemStartBars="1"
 		crotchetsPerMinute="60.5" />
-  <metadata
-    title="helloworld"
-    author="MNX by Example"
-    keywords=""
-    comment="See https://w3c.github.io/mnx/by-example/"/>
-  <options
-    writePage1Titles="false"
-    includeMIDIData="true"
-    writeScrollScore="true"/>
+	<metadata
+		title="helloworld"
+		author="MNX by Example"
+		comment="See https://w3c.github.io/mnx/by-example/" />
+	<options
+		writePage1Titles="false"
+		writeScrollScore="true"
+		includeMIDIData="true" />
 </form1Data>

@@ -167,13 +167,13 @@ namespace MNX.Globals
             SetTextBoxErrorColorIfNotOkay(textBox, okay);
         }
 
-        public static void CheckSystemStartBarsUnsignedIntList(TextBox textBox)
+        public static void CheckSystemStartBars(TextBox textBox, int numberOfMeasures)
         {
             List<int> checkedUnsignedInts = null;
             bool okay = false;
             if(textBox.Text.Length > 0)
             {
-                checkedUnsignedInts = GetCheckedUnsignedInts(textBox, int.MaxValue, 0, int.MaxValue);
+                checkedUnsignedInts = GetCheckedUnsignedInts(textBox, (uint)numberOfMeasures, 0, numberOfMeasures);
                 if(checkedUnsignedInts != null)
                 {
                     if(CheckStartBarConditions(checkedUnsignedInts))

@@ -12,6 +12,7 @@ namespace MNX.Main
     {
         private readonly List<Tuple<string, string>> _MNX_Form1Data_Paths = new List<Tuple<string, string>>();
         private bool _settingsHaveChanged = false;
+        private int _numberOfMeasures; // the number of measures in the currently loaded MNX file
 
         public MNX_MainForm1()
         {
@@ -102,13 +103,18 @@ namespace MNX.Main
             var form1DataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item2;
             var svgds = new Form1StringData(form1DataPath);
 
-            LoadControls(svgds);
+            //var mnxPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item1;
+            //var mnx = new MNX(mnxPath);
+            //_numberOfMeasures = mnx.MNXCommonData.NumberOfMeasures;
+            _numberOfMeasures = 99;
+
+            LoadControls(svgds, _numberOfMeasures);
 
             _settingsHaveChanged = false;
             SetButtons(_settingsHaveChanged);
         }
 
-        private void LoadControls(Form1StringData svgds)
+        private void LoadControls(Form1StringData svgds, int numberOfMeasures)
         {
             var page = svgds.Page;
             this.PageWidthTextBox.Text = page.Width;
@@ -124,6 +130,7 @@ namespace MNX.Main
             this.GapSizeComboBox.SelectedIndex = GetIndex(GapSizeComboBox, notes.gapSize);
             this.MinimumGapsBetweenStavesTextBox.Text = notes.minGapsBetweenStaves;
             this.MinimumGapsBetweenSystemsTextBox.Text = notes.minGapsBetweenSystems;
+            this.SystemStartBarsLabel.Text = "system start bars [1.." + _numberOfMeasures.ToString() + "] ( must start at 1 )";
             this.SystemStartBarsTextBox.Text = notes.systemStartBars;
             this.CrotchetsPerMinuteTextBox.Text = notes.crotchetsPerMinute;
 
@@ -197,7 +204,7 @@ namespace MNX.Main
             GapSizeComboBox.SelectedIndexChanged += ComboBox_SelectedIndexChanged;
             MinimumGapsBetweenStavesTextBox.Leave += IntTextBox_Leave;
             MinimumGapsBetweenSystemsTextBox.Leave += IntTextBox_Leave;
-            SystemStartBarsTextBox.Leave += IntTextBox_Leave;
+            SystemStartBarsTextBox.Leave += SystemStartBarsTextBox_Leave;
             CrotchetsPerMinuteTextBox.Leave += IntTextBox_Leave;
         }
 
@@ -214,7 +221,7 @@ namespace MNX.Main
             GapSizeComboBox.SelectedIndexChanged -= ComboBox_SelectedIndexChanged;
             MinimumGapsBetweenStavesTextBox.Leave -= IntTextBox_Leave;
             MinimumGapsBetweenSystemsTextBox.Leave -= IntTextBox_Leave;
-            SystemStartBarsTextBox.Leave -= IntTextBox_Leave;
+            SystemStartBarsTextBox.Leave -= SystemStartBarsTextBox_Leave;
             CrotchetsPerMinuteTextBox.Leave -= IntTextBox_Leave;
         }
 
@@ -304,7 +311,7 @@ namespace MNX.Main
         private void SystemStartBarsTextBox_Leave(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            M.CheckSystemStartBarsUnsignedIntList(textBox);
+            M.CheckSystemStartBars(textBox, _numberOfMeasures);
             _settingsHaveChanged = true;
             SetButtons(_settingsHaveChanged);
         }

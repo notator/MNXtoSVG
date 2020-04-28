@@ -1,13 +1,10 @@
-﻿using System;
+﻿using MNX.Common;
+using MNX.Globals;
+using Moritz.Symbols;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using System.Xml;
-using MNX.Globals;
-using Moritz.Spec;
-using Moritz.Symbols;
-using MNX.Common;
 
 namespace MNX.Main
 {

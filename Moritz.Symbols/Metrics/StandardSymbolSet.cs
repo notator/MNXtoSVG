@@ -1,13 +1,10 @@
-﻿using System.Drawing;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Text;
-
-using Moritz.Midi;
-using Moritz.Xml;
+﻿using MNX.Globals;
 using Moritz.Spec;
-using MNX.Globals;
+using Moritz.Xml;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Text;
 
 namespace Moritz.Symbols
 {

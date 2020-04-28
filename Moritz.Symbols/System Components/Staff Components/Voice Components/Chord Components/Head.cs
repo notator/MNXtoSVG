@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 using MNX.Globals;
 using Moritz.Xml;
+using MNX.Common;
 
 namespace Moritz.Symbols
 {
@@ -54,6 +55,13 @@ namespace Moritz.Symbols
                 FontSize = chord.FontHeight;
 
             _midiVelocity = midiVelocity;
+        }
+
+        public Head(OutputChordSymbol outputChordSymbol, Note note)
+        {
+            Chord = outputChordSymbol;
+            Pitch = note.Pitch;
+            MNXNote = note;
         }
 
         /// <summary>
@@ -150,6 +158,8 @@ namespace Moritz.Symbols
 
 
         public readonly ChordSymbol Chord;
+
+        public MNX.Common.Note MNXNote { get; }
 
         /// <summary>
         /// absolute diatonic pitch

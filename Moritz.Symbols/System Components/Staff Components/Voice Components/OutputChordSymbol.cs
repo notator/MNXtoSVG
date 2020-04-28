@@ -14,8 +14,17 @@ namespace Moritz.Symbols
         public OutputChordSymbol(Voice voice, MNX.Common.Event mnxEventDef, int absMsPosition, PageFormat pageFormat)
             : base(voice, mnxEventDef.MsDuration, absMsPosition, (DurationSymbolType) mnxEventDef.MNXDurationSymbol.DurationSymbolTyp, pageFormat.MusicFontHeight, true)
         {
-            Voice = voice;
-            AbsMsPosition = absMsPosition;
+            SetHeads(mnxEventDef);
+        }
+
+        private void SetHeads(Event mnxEventDef)
+        {
+            foreach(var note in mnxEventDef.Notes)
+            {
+                Head head = new Head(this, note);
+                HeadsTopDown.Add(head);
+            }
+            HeadsTopDown.Sort((a, b) => (M.MidiPitchDict[b.Pitch] - M.MidiPitchDict[a.Pitch]));
         }
 
         public OutputChordSymbol(Voice voice, MidiChordDef umcd, int absMsPosition, PageFormat pageFormat)

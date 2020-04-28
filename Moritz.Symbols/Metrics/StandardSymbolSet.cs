@@ -312,6 +312,7 @@ namespace Moritz.Symbols
 			CautionaryChordSymbol cautionaryChordSymbol = noteObject as CautionaryChordSymbol;
             ChordSymbol chordSymbol = noteObject as ChordSymbol;
             RestSymbol rest = noteObject as RestSymbol;
+            TimeSignature timeSignature = noteObject as TimeSignature;
 			if(barline != null)
 			{
 				barline.CreateMetrics(graphics);
@@ -357,6 +358,12 @@ namespace Moritz.Symbols
 				// They are moved vertically later, if they are on a 2-Voice staff.
 				returnMetrics = new RestMetrics(graphics, rest, gap, noteObject.Voice.Staff.NumberOfStafflines, strokeWidth, restClass);
 			}
+            else if(timeSignature != null)
+            {
+                CSSObjectClass timeSignatureClass = GetTimeSignatureClass(timeSignature);
+                returnMetrics = new TimeSignatureMetrics(graphics, timeSignature, gap, noteObject.Voice.Staff.NumberOfStafflines, strokeWidth, timeSignatureClass);
+
+            }
 
 			return returnMetrics;
         }
@@ -441,6 +448,12 @@ namespace Moritz.Symbols
         {
             CSSObjectClass restClass = CSSObjectClass.rest; // OutputChordSymbol
             return restClass;
+        }
+
+        private CSSObjectClass GetTimeSignatureClass(TimeSignature timeSignature)
+        {
+            CSSObjectClass timeSignatureClass = CSSObjectClass.timeSignature; // OutputChordSymbol
+            return timeSignatureClass;
         }
 
         public override NoteObject GetNoteObject(Voice voice, int absMsPosition, IUniqueDef iud, int iudIndex,

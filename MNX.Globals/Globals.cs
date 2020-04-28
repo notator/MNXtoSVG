@@ -19,6 +19,11 @@ namespace MNX.Globals
     /// </summary>
     public static class M
     {
+        static M()
+        {
+            SetMidiPitchDict();
+        }
+
         #region MNX application constants
         private static string GetMNX_MainFolder()
         {
@@ -674,7 +679,6 @@ namespace MNX.Globals
                 }
             }
         }
-
         /// <summary>
         /// capella pitch strings and their equivalent midi pitch numbers.
         /// the strings are absolute diatonic pitch. middle C (c'): "C5"

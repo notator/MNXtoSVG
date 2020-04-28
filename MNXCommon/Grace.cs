@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-grace-element
     /// </summary>
-    internal class Grace : EventGroup, IHasTicks, ISeqComponent
+    public class Grace : EventGroup, IHasTicks, ISeqComponent
     {
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;

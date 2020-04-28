@@ -7,7 +7,7 @@ using MNX.Globals;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#elementdef-directions
-    internal class Directions : IGlobalMeasureComponent, IPartMeasureComponent, ISeqComponent
+    public class Directions : IGlobalMeasureComponent, IPartMeasureComponent, ISeqComponent
     {
         // These are just the elements used in the first set of examples.
         // Other elements need to be added later.

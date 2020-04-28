@@ -64,7 +64,7 @@ namespace MNX.Common
         #endregion IUniqueDef
     }
 
-    internal abstract class Span : Instruction
+    public abstract class Span : Instruction
     {
         #region IUniqueDef
         public override string ToString() => $"Span: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";

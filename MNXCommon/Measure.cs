@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    internal class Measure : IHasTicks
+    public class Measure : IHasTicks
     {
         /// <summary>
         /// If null, this value should be set when the whole score has been read

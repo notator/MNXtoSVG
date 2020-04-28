@@ -47,8 +47,10 @@ namespace Moritz.Xml
 		smallClefX, // The 'x' above or below a small clef. (Arial) Container:clef.
 		#endregion
 
-		#region drawObjects
-		drawObjects,
+        timeSignature, // Used, recorded. (A normal time signature at the beginning of a bar) Container:voice.
+
+        #region drawObjects
+        drawObjects,
 		#region barNumbers
 		// recorded and used but never defined. If it exists, both barNumberNumber and barNumberFrame must be defined.
 		barNumber, // Container: The first voice in a system, but not in the first system in the score.

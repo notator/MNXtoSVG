@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    internal abstract class EventGroup : IHasTicks
+    public abstract class EventGroup : IHasTicks
     {
         #region IUniqueDef
         /// <summary>

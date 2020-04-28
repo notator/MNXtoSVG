@@ -454,6 +454,9 @@ namespace Moritz.Symbols
             MidiChordDef midiChordDef = iud as MidiChordDef;
             MidiRestDef midiRestDef = iud as MidiRestDef;
             ClefDef clefDef = iud as ClefDef;
+            var mnxClefDef = iud as MNX.Common.Clef;
+            var mnxTimeSigDef = iud as MNX.Common.TimeSignature;
+            var mnxEventDef = iud as MNX.Common.Event;
 
 			if(cautionaryChordDef != null && iudIndex == 1)
             {
@@ -480,11 +483,43 @@ namespace Moritz.Symbols
                 OutputRestSymbol outputRestSymbol = new OutputRestSymbol(voice, iud, absMsPosition, pageFormat);
                 noteObject = outputRestSymbol;
             }
-            else if(clefDef != null)
+            else if(mnxEventDef != null)
+            {
+                if(mnxEventDef.Rest != null || mnxEventDef.Notes.Count == 0)
+                {
+                    OutputRestSymbol outputRestSymbol = new OutputRestSymbol(voice, iud, absMsPosition, pageFormat);
+                    noteObject = outputRestSymbol;
+                }
+                else
+                {
+                    OutputChordSymbol outputChordSymbol = new OutputChordSymbol(voice, mnxEventDef, absMsPosition, pageFormat);
+
+                    //if(this._coloredVelocities == true)
+                    //{
+                    //    outputChordSymbol.SetNoteheadColorClasses();
+                    //}
+                    //else if(midiChordDef.NotatedMidiVelocities[0] != currentVelocity)
+                    //{
+                    //    outputChordSymbol.AddDynamic(midiChordDef.NotatedMidiVelocities[0], currentVelocity);
+                    //    currentVelocity = midiChordDef.NotatedMidiVelocities[0];
+                    //}
+                    noteObject = outputChordSymbol;
+
+                }
+            }
+            else if(clefDef != null || mnxClefDef != null)
             {
 				if (iudIndex == 0)
 				{
-					Clef clef = new Clef(voice, clefDef.ClefType, pageFormat.MusicFontHeight);
+                    Clef clef = null;
+                    if(clefDef != null)
+                    {
+                        clef = new Clef(voice, clefDef.ClefType, pageFormat.MusicFontHeight);
+                    }
+                    else
+                    {
+                        clef = new Clef(voice, mnxClefDef, pageFormat.MusicFontHeight);
+                    }
 					noteObject = clef;
 				}
 				else
@@ -492,6 +527,10 @@ namespace Moritz.Symbols
 					SmallClef smallClef = new SmallClef(voice, clefDef.ClefType, absMsPosition, pageFormat);
 					noteObject = smallClef;
 				}
+            }
+            else if(mnxTimeSigDef != null)
+            {
+                noteObject = new TimeSignature(voice, mnxTimeSigDef, pageFormat.MusicFontHeight);
             }
 
             return noteObject;

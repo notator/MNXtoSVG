@@ -5,11 +5,19 @@ using MNX.Globals;
 using Moritz.Spec;
 using Moritz.Xml;
 using System;
+using MNX.Common;
 
 namespace Moritz.Symbols
 {
     public class OutputChordSymbol : ChordSymbol
     {
+        public OutputChordSymbol(Voice voice, MNX.Common.Event mnxEventDef, int absMsPosition, PageFormat pageFormat)
+            : base(voice, mnxEventDef.MsDuration, absMsPosition, (DurationSymbolType) mnxEventDef.MNXDurationSymbol.DurationSymbolTyp, pageFormat.MusicFontHeight, true)
+        {
+            Voice = voice;
+            AbsMsPosition = absMsPosition;
+        }
+
         public OutputChordSymbol(Voice voice, MidiChordDef umcd, int absMsPosition, PageFormat pageFormat)
             : base(voice, umcd.MsDuration, absMsPosition, pageFormat.MinimumCrotchetDuration, pageFormat.MusicFontHeight, umcd.BeamContinues)
         {

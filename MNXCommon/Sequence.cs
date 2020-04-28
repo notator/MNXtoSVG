@@ -7,7 +7,7 @@ using Moritz.Spec;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-sequence-element
-    internal class Sequence : EventGroup, IHasTicks, IPartMeasureComponent
+    public class Sequence : EventGroup, IHasTicks, IPartMeasureComponent
     {
         public readonly Orientation? Orient = null; // default
         public readonly uint? StaffIndex = null; // default

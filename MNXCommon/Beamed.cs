@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    internal class Beamed : EventGroup, ISeqComponent
+    public class Beamed : EventGroup, ISeqComponent
     {
 
         public readonly MNXDurationSymbol Duration = null;

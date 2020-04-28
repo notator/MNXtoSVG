@@ -1,5 +1,7 @@
+using MNX.Common;
 using MNX.Globals;
 using Moritz.Xml;
+using System;
 using System.Text;
 
 namespace Moritz.Symbols
@@ -10,7 +12,65 @@ namespace Moritz.Symbols
 	public abstract class DurationSymbol : AnchorageSymbol 
     {
         /// <summary>
-        /// Used by the Assistant Composer
+        /// Used by MNX.Common
+        /// </summary>
+        public DurationSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.DurationSymbolType durationSymbolType, double fontHeight)
+            : base(voice, fontHeight)
+        {
+            _msDuration = msDuration;
+            _absMsPosition = absMsPosition;
+            this.SetDurationClass(durationSymbolType);
+        }
+
+        /// <summary>
+        /// note that Moritz' DurationClass.cautionary type is never set here
+        /// </summary>
+        /// <param name="durationSymbolType"></param>
+        private void SetDurationClass(MNX.Common.DurationSymbolType durationSymbolType)
+        {
+            switch (durationSymbolType)
+            {
+                case DurationSymbolType.noteDoubleWhole_breve:
+                    _durationClass = DurationClass.breve;
+                    break;
+                case DurationSymbolType.noteWhole_semibreve:
+                    _durationClass = DurationClass.semibreve;
+                    break;
+                case DurationSymbolType.noteHalf_minim:
+                    _durationClass = DurationClass.minim;
+                    break;
+                case DurationSymbolType.noteQuarter_crotchet:
+                    _durationClass = DurationClass.crotchet;
+                    break;
+                case DurationSymbolType.note8th_1flag_quaver:
+                    _durationClass = DurationClass.quaver;
+                    break;
+                case DurationSymbolType.note16th_2flags_semiquaver:
+                    _durationClass = DurationClass.semiquaver;
+                    break;
+                case DurationSymbolType.note32nd_3flags_demisemiquaver:
+                    _durationClass = DurationClass.threeFlags;
+                    break;
+                case DurationSymbolType.note64th_4flags:
+                    _durationClass = DurationClass.fourFlags;
+                    break;
+                case DurationSymbolType.note128th_5flags:
+                    _durationClass = DurationClass.fiveFlags;
+                    break;
+                case DurationSymbolType.note256th_6flags:
+                    _durationClass = DurationClass.sixFlags;
+                    break;
+                case DurationSymbolType.note512th_7flags:
+                    _durationClass = DurationClass.sevenFlags;
+                    break;
+                case DurationSymbolType.note1024th_8flags:
+                    _durationClass = DurationClass.eightFlags;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Used by Moritz' Assistant Composer
         /// </summary>
         public DurationSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDuration, double fontHeight)
             : base(voice, fontHeight)

@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    internal class Note : IEventComponent
+    public class Note : IEventComponent
     {
         // Compulsory Attribute
         public readonly string Pitch = null; // the musical pitch of this note

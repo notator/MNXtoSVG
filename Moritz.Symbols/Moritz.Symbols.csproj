@@ -101,10 +101,6 @@
       <Project>{6872babe-c7a2-496d-b97a-b7997cd9bfcd}</Project>
       <Name>MNX.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Moritz.Midi\Moritz.Midi.csproj">
-      <Project>{82e776e6-c819-42e6-9986-7ebdc3dffa06}</Project>
-      <Name>Moritz.Midi</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Moritz.Spec\Moritz.Spec.csproj">
       <Project>{c84026d4-800e-4590-8127-97e78b471921}</Project>
       <Name>Moritz.Spec</Name>

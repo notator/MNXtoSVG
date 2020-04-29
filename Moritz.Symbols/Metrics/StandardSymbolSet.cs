@@ -313,6 +313,8 @@ namespace Moritz.Symbols
             ChordSymbol chordSymbol = noteObject as ChordSymbol;
             RestSymbol rest = noteObject as RestSymbol;
             TimeSignature timeSignature = noteObject as TimeSignature;
+            KeySignature keySignature = noteObject as KeySignature;
+
 			if(barline != null)
 			{
 				barline.CreateMetrics(graphics);
@@ -353,19 +355,49 @@ namespace Moritz.Symbols
 			}
 			else if(rest != null)
 			{
-				CSSObjectClass restClass = GetRestClass(rest);
-				// All rests are originally created on the centre line.
-				// They are moved vertically later, if they are on a 2-Voice staff.
-				returnMetrics = new RestMetrics(graphics, rest, gap, noteObject.Voice.Staff.NumberOfStafflines, strokeWidth, restClass);
+                // All rests are originally created on the centre line.
+                // They are moved vertically later, if they are on a 2-Voice staff.
+                returnMetrics = new RestMetrics(graphics, rest, gap, noteObject.Voice.Staff.NumberOfStafflines, strokeWidth);
 			}
             else if(timeSignature != null)
             {
-                CSSObjectClass timeSignatureClass = GetTimeSignatureClass(timeSignature);
-                returnMetrics = new TimeSignatureMetrics(graphics, timeSignature, gap, noteObject.Voice.Staff.NumberOfStafflines, strokeWidth, timeSignatureClass);
-
+                // Like rests, all timeSignatures are originally created with their OriginY on the centre line.
+                string[] strs = timeSignature.Signature.Split(new char[] { '/' }); // e.g. "4/4"
+                string numerator = strs[0];
+                string denominator = strs[1];
+                TextInfo numeratorTextInfo = new TextInfo(numerator, "Arial", timeSignature.FontHeight, new ColorString("000000"), TextHorizAlign.center);
+                TextInfo denominatorTextInfo = new TextInfo(denominator, "Arial", timeSignature.FontHeight, new ColorString("000000"), TextHorizAlign.center);
+                returnMetrics = new TimeSignatureMetrics(graphics, gap, noteObject.Voice.Staff.NumberOfStafflines, numeratorTextInfo, denominatorTextInfo);
+            }
+            else if(keySignature != null)
+            {
+                // Like rests, all keySignatures are originally created with their OriginY on the centre line.
+                List<TextInfo> accidentalTextInfos = GetAccidentalTextInfos(keySignature.Fifths, pageFormat.MusicFontHeight);
+                returnMetrics = new KeySignatureMetrics(graphics, gap, noteObject.Voice.Staff.NumberOfStafflines, accidentalTextInfos);
             }
 
-			return returnMetrics;
+
+            return returnMetrics;
+        }
+
+        private List<TextInfo> GetAccidentalTextInfos(int fifths, double fontHeight)
+        {
+            List<TextInfo> rval = new List<TextInfo>();
+            if(fifths > 0)
+            {
+                for(var i = 0; i < fifths; i++)
+                {
+                    rval.Add(new TextInfo("#", "Clicht", fontHeight, new ColorString("000000"), TextHorizAlign.center));
+                }
+            }
+            else if(fifths < 0)
+            {
+                for(var i = 0; i > fifths; i--)
+                {
+                    rval.Add(new TextInfo("b", "Clicht", fontHeight, new ColorString("000000"), TextHorizAlign.center));
+                }
+            }
+            return rval;
         }
 
         private ClefID GetSmallClefID(Clef clef)
@@ -442,18 +474,6 @@ namespace Moritz.Symbols
             }
 
             return clefID;
-        }
-
-        private CSSObjectClass GetRestClass(RestSymbol rest)
-        {
-            CSSObjectClass restClass = CSSObjectClass.rest; // OutputChordSymbol
-            return restClass;
-        }
-
-        private CSSObjectClass GetTimeSignatureClass(TimeSignature timeSignature)
-        {
-            CSSObjectClass timeSignatureClass = CSSObjectClass.timeSignature; // OutputChordSymbol
-            return timeSignatureClass;
         }
 
         public override NoteObject GetNoteObject(Voice voice, int absMsPosition, IUniqueDef iud, int iudIndex,
@@ -540,7 +560,7 @@ namespace Moritz.Symbols
             }
             else if(mnxTimeSigDef != null)
             {
-                noteObject = new TimeSignature(voice, mnxTimeSigDef, pageFormat.MusicFontHeight);
+                noteObject = new TimeSignature(voice, mnxTimeSigDef, pageFormat.GapVBPX * 3);
             }
 
             return noteObject;

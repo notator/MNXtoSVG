@@ -10,7 +10,10 @@ using Moritz.Xml;
 namespace Moritz.Symbols
 {
     /// <summary>
-    /// The base class for just SystemMetrics and StaffMetrics
+    /// The base class for
+    /// SystemMetrics, StaffMetrics, 
+    /// BarnumberMetrics, FramedRegionInfoMetrics,
+    /// TimeSignatureMetrics, KeySignaturemetrics
     /// </summary>
 	public class GroupMetrics : Metrics
 	{

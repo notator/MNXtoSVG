@@ -264,8 +264,8 @@ namespace Moritz.Symbols
     }
     internal class RestMetrics : CLichtCharacterMetrics
 	{
-		public RestMetrics(Graphics graphics, RestSymbol rest, double gap, int numberOfStafflines, double ledgerlineStrokeWidth, CSSObjectClass restClass)
-			: base(rest.DurationClass, rest.FontHeight, restClass)
+		public RestMetrics(Graphics graphics, RestSymbol rest, double gap, int numberOfStafflines, double ledgerlineStrokeWidth)
+			: base(rest.DurationClass, rest.FontHeight, CSSObjectClass.rest)
 		{
 			double dy = 0;
 			if(numberOfStafflines > 1)

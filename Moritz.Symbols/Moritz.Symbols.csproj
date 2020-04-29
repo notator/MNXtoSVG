@@ -62,6 +62,7 @@
     <Compile Include="Metrics\SymbolSet.cs" />
     <Compile Include="Metrics\StaffMetrics.cs" />
     <Compile Include="Metrics\SystemMetrics.cs" />
+    <Compile Include="Metrics\KeySignatureMetrics.cs" />
     <Compile Include="Metrics\TimeSignatureMetrics.cs" />
     <Compile Include="PageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="System Components\Staff Components\Voice Components\Chord Components\Head.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\Chord Components\Stem.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\ChordSymbol.cs" />
+    <Compile Include="System Components\Staff Components\Voice Components\KeySignature.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\TimeSignature.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\Clef.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\DurationSymbol.cs" />

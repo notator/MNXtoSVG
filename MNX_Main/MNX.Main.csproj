@@ -146,24 +146,24 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Issues.txt" />
-    <Content Include="MNX_in\png\__10_example-beamhooks.png" />
-    <Content Include="MNX_in\png\__11a_example-tuplets.png" />
-    <Content Include="MNX_in\png\__11_example-tuplets.png" />
-    <Content Include="MNX_in\png\__12_example04.png" />
-    <Content Include="MNX_in\png\__13_example-octave.png" />
+    <Content Include="MNX_in\png\__10_beamhooks.png" />
+    <Content Include="MNX_in\png\__11a_nestedtuplets.png" />
+    <Content Include="MNX_in\png\__11_tuplets.png" />
+    <Content Include="MNX_in\png\__12_voices.png" />
+    <Content Include="MNX_in\png\__13_octaves.png" />
     <Content Include="MNX_in\png\__14_slurs.png" />
     <Content Include="MNX_in\png\__15_slurchords.png" />
     <Content Include="MNX_in\png\__16_slurnotes.png" />
     <Content Include="MNX_in\png\__17_slurincomplete.png" />
-    <Content Include="MNX_in\png\___1_example01.png" />
-    <Content Include="MNX_in\png\___2_example02.png" />
-    <Content Include="MNX_in\png\___3_example03.png" />
-    <Content Include="MNX_in\png\___4_example05.png" />
-    <Content Include="MNX_in\png\___5_example-keysigs.png" />
-    <Content Include="MNX_in\png\___6_example-accidentals.png" />
-    <Content Include="MNX_in\png\___7_example-dots.png" />
-    <Content Include="MNX_in\png\___8_example-ties.png" />
-    <Content Include="MNX_in\png\___9_example-beams.png" />
+    <Content Include="MNX_in\png\___1_helloworld.png" />
+    <Content Include="MNX_in\png\___2_cscale.png" />
+    <Content Include="MNX_in\png\___3_chord.png" />
+    <Content Include="MNX_in\png\___4_timesigs.png" />
+    <Content Include="MNX_in\png\___5_keysigs.png" />
+    <Content Include="MNX_in\png\___6_accidentals.png" />
+    <Content Include="MNX_in\png\___7_dots.png" />
+    <Content Include="MNX_in\png\___8_ties.png" />
+    <Content Include="MNX_in\png\___9_beams.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

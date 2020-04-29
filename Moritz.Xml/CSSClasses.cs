@@ -48,6 +48,11 @@ namespace Moritz.Xml
 		#endregion
 
         timeSignature, // Used, recorded. (A normal time signature at the beginning of a bar) Container:voice.
+        timeSignatureNumerator,
+        timeSignatureDenominator,
+
+        keySignature, // Used, recorded. (A normal time signature at the beginning of a bar) Container:voice.
+        keySignatureComponent,
 
         #region drawObjects
         drawObjects,
@@ -110,8 +115,8 @@ namespace Moritz.Xml
 		endAndStartRegionBarline,
 		endOfScoreBarline,
 		regionFrameConnector,
-		#endregion barlines
-	};
+        #endregion barlines
+    };
 
 	/// <summary>
 	/// This enum contains _all_ the colour classes that Moritz can write to SVG scores.

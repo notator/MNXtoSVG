@@ -120,7 +120,7 @@ namespace Moritz.Symbols
             {
                 M.Assert(false, "Error in octave string");
             }
-            double octaveShift = octave - 5;
+            double octaveShift = octave - 4;
             shiftFactor -= (octaveShift * 3.5F); // 3.5 spaces is one octave
             // shiftFactor is currently correct for all octaves on a normal treble clef
             switch(clef.ClefType)
@@ -163,7 +163,7 @@ namespace Moritz.Symbols
 
         /// <summary>
         /// absolute diatonic pitch
-        /// middle C (c'): "C5"
+        /// middle C (c'): "C4"
         /// </summary>
         public string Pitch
         {

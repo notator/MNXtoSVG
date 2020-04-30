@@ -83,9 +83,7 @@ namespace Moritz.Symbols
             LeftMarginPosVBPX = form1Data.Page.MarginLeft * ViewBoxMagnification;
             BottomMarginPosVBPX = BottomVBPX - (form1Data.Page.MarginBottom * ViewBoxMagnification);
 
-            //StafflineStemStrokeWidthVBPX = form1Data.Notation.StafflineStemStrokeWidth * ViewBoxMagnification;
             StafflineStemStrokeWidthVBPX = form1Data.Notation.StafflineStemStrokeWidth * ViewBoxMagnification;
-            //GapVBPX = form1Data.Notation.Gap * ViewBoxMagnification;
             GapVBPX = form1Data.Notation.Gap * ViewBoxMagnification;
 
             DefaultDistanceBetweenStavesVBPX = form1Data.Notation.Gap * form1Data.Notation.MinGapsBetweenStaves * ViewBoxMagnification;
@@ -151,7 +149,7 @@ namespace Moritz.Symbols
         /// </summary>
         public double MusicFontHeight { get { return (GapVBPX * 4) * 0.98; } }
         /// Arial (new 26.06.2017)
-        public double TimeStampFontHeight { get { return GapVBPX * 2.25; } }
+        public double TimeStampFontHeight { get { return 150; } } // was GapVBPX * 2.5
         public double StaffNameFontHeight { get { return GapVBPX * 2.2; } }
 		public double BarNumberNumberFontHeight { get { return GapVBPX * 1.9992; } }
 		public double RegionInfoStringFontHeight { get { return GapVBPX * 3; } }

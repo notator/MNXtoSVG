@@ -2,9 +2,9 @@
 <?xml-stylesheet href="../../fontsStyleSheet.css" type="text/css"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:score="https://www.james-ingram-act-two.de/open-source/svgScoreExtensions.html"
 	data-scoreType="https://www.james-ingram-act-two.de/open-source/cmn_core.html"
-	width="1000"
-	height="240"
-	viewBox="0 0 10000 2409">
+	width="400"
+	height="168"
+	viewBox="0 0 4000 1685">
 	<title
 		class="pageTitle">helloworld (scroll)</title>
 	<metadata
@@ -16,7 +16,7 @@
 				<dc:type
 					rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
 				<dc:title>helloworld (scroll)</dc:title>
-				<dc:date>Thursday 30.04.2020, 11:35:46</dc:date>
+				<dc:date>Thursday 30.04.2020, 12:53:42</dc:date>
 				<dc:creator>
 					<cc:Agent>
 						<dc:title>James Ingram</dc:title>
@@ -98,7 +98,7 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
             }
             .timeStamp
             {
-                font-size:225px
+                font-size:150px
             }
             .staffline, .ledgerline
             {
@@ -128,12 +128,12 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 		<text
 			class="timeStamp"
 			x="32"
-			y="225">helloworld (scroll), Thursday 30.04.2020, 11:35:46</text>
+			y="150">helloworld (scroll), Thursday 30.04.2020, 12:53:29</text>
 		<g
 			class="system">
 			<score:leftToRight
-				systemTop="804.1827"
-				systemBottom="1993.312" />
+				systemTop="404.1827"
+				systemBottom="1270" />
 			<g
 				class="staff"
 				score:staffName="">
@@ -141,92 +141,74 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 					class="stafflines">
 					<line
 						class="staffline"
-						x1="700"
+						x1="500"
+						y1="700"
+						x2="3500"
+						y2="700" />
+					<line
+						class="staffline"
+						x1="500"
+						y1="800"
+						x2="3500"
+						y2="800" />
+					<line
+						class="staffline"
+						x1="500"
+						y1="900"
+						x2="3500"
+						y2="900" />
+					<line
+						class="staffline"
+						x1="500"
+						y1="1000"
+						x2="3500"
+						y2="1000" />
+					<line
+						class="staffline"
+						x1="500"
 						y1="1100"
-						x2="9300"
+						x2="3500"
 						y2="1100" />
-					<line
-						class="staffline"
-						x1="700"
-						y1="1200"
-						x2="9300"
-						y2="1200" />
-					<line
-						class="staffline"
-						x1="700"
-						y1="1300"
-						x2="9300"
-						y2="1300" />
-					<line
-						class="staffline"
-						x1="700"
-						y1="1400"
-						x2="9300"
-						y2="1400" />
-					<line
-						class="staffline"
-						x1="700"
-						y1="1500"
-						x2="9300"
-						y2="1500" />
 				</g>
 				<g
 					class="voice">
 					<use
 						class="clef"
 						href="#trebleClef"
-						x="700"
-						y="1400" />
+						x="500"
+						y="1000" />
 					<use
 						class="keySignature"
 						href="#-2"
 						x="-591.9999"
-						y="1100" />
+						y="700" />
 					<line
 						class="normalBarline"
-						x1="1190.117"
-						y1="1100"
-						x2="1190.117"
-						y2="1500" />
+						x1="990.1169"
+						y1="700"
+						x2="990.1169"
+						y2="1100" />
 					<use
 						class="timeSignature"
 						href="#4/4"
 						x="-401.883"
-						y="1300" />
+						y="900" />
 					<g
 						class="chord">
 						<g
 							class="graphics">
 							<text
 								class="notehead"
-								x="1527.358"
-								y="1950">w</text>
+								x="1327.358"
+								y="1200">w</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="1452.717"
-									y1="1600"
-									x2="1771.283"
-									y2="1600" />
-								<line
-									class="ledgerline"
-									x1="1452.717"
-									y1="1700"
-									x2="1771.283"
-									y2="1700" />
-								<line
-									class="ledgerline"
-									x1="1452.717"
-									y1="1800"
-									x2="1771.283"
-									y2="1800" />
-								<line
-									class="ledgerline"
-									x1="1452.717"
-									y1="1900"
-									x2="1771.283"
-									y2="1900" />
+									x1="1252.717"
+									y1="1200"
+									x2="1571.283"
+									y2="1200" />
 							</g>
 						</g>
 					</g>
@@ -234,16 +216,16 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="9240"
-							y1="1095"
-							x2="9240"
-							y2="1505" />
+							x1="3440"
+							y1="695"
+							x2="3440"
+							y2="1105" />
 						<line
 							class="thickBarline"
-							x1="9300"
-							y1="1095"
-							x2="9300"
-							y2="1505" />
+							x1="3500"
+							y1="695"
+							x2="3500"
+							y2="1105" />
 					</g>
 				</g>
 			</g>

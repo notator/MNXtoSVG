@@ -636,7 +636,7 @@ namespace MNX.Globals
         {
             string[] alphabet = { "C", "D", "E", "F", "G", "A", "B" };
             int midiPitch = 0;
-            for(int octave = 0; octave < 11; octave++)
+            for(int octave = 1; octave < 11; octave++)
             {
                 foreach(string letter in alphabet)
                 {
@@ -665,10 +665,10 @@ namespace MNX.Globals
                             break;
                     }
 
-                    midiPitch += (octave * 12); // C5 (middle letter) is 60
+                    midiPitch += (octave * 12); // C4 (middle letter) is 60
                     if(midiPitch >= 0 && midiPitch <= 119)
                     {
-                        string pitchString = letter + octave.ToString();
+                        string pitchString = letter + (octave - 1).ToString();
                         MidiPitchDict.Add(pitchString, midiPitch);
                     }
                     else if(midiPitch > 119 && midiPitch < 128)
@@ -681,7 +681,7 @@ namespace MNX.Globals
         }
         /// <summary>
         /// capella pitch strings and their equivalent midi pitch numbers.
-        /// the strings are absolute diatonic pitch. middle C (c'): "C5"
+        /// the strings are absolute diatonic pitch. middle C (c'): "C4"
         /// Chromatic pitches are found using the head.alteration field (-2..+2)
         /// </summary>
         static public Dictionary<string, int> MidiPitchDict = new Dictionary<string, int>();

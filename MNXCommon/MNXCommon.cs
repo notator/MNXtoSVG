@@ -86,10 +86,12 @@ namespace MNX.Common
             List<List<IUniqueDef>> globalIUDsPerMeasure = Global.GetGlobalIUDsPerMeasure();
 
             List<List<Trk>> Tracks = new List<List<Trk>>();
+            List<int> numberOfStavesPerPart = new List<int>();
             foreach(var part in Parts)
             {
                 int nTracks = part.Measures[0].Sequences.Count;
                 List<int> midiChannelsPerPart = new List<int>();
+                int numberOfStaves = 1;
                 for(var i = 0; i < nTracks; i++)
                 {
                     midiChannelsPerPart.Add(currentMIDIChannel);
@@ -98,7 +100,13 @@ namespace MNX.Common
                     {
                         List<IUniqueDef> globalIUDs = globalIUDsPerMeasure[measureIndex];
                         var measure = part.Measures[measureIndex];
-                        List<IUniqueDef> seqIUDs = measure.Sequences[i].SetMsDurationsAndGetIUniqueDefs(M.MillisecondsPerTick);
+                        Sequence sequence = measure.Sequences[i];
+                        if(sequence.StaffIndex != null)
+                        {
+                            int newNStaves = (int)sequence.StaffIndex; // StaffIndex starts at 1 !
+                            numberOfStaves = (newNStaves > numberOfStaves) ? newNStaves : numberOfStaves;
+                        }
+                        List <IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(M.MillisecondsPerTick);
                         MeasureInsertGlobalIUDsInIUDs(globalIUDs, seqIUDs);
                         Trk newTrk = new Trk(currentMIDIChannel, 0, seqIUDs);
                         track.Add(newTrk);
@@ -106,6 +114,7 @@ namespace MNX.Common
                     Tracks.Add(track);
                     currentMIDIChannel++;
                 }
+                numberOfStavesPerPart.Add(numberOfStaves);
                 midiChannelsPerStaff.Add(midiChannelsPerPart);
             }
 
@@ -117,6 +126,7 @@ namespace MNX.Common
                 NumberOfMeasures = Global.Measures.Count,
                 VoiceDefs = voiceDefs,
                 MidiChannelsPerStaff = midiChannelsPerStaff,
+                NumberOfStavesPerPart = numberOfStavesPerPart,
                 EndBarlineMsPositionPerBar = endBarlineMsPositionPerBar
             };
 
@@ -129,6 +139,11 @@ namespace MNX.Common
             {
                 int insertIndex = (seqIUDs[0] is Clef) ? 1 : 0;
                 seqIUDs.Insert(insertIndex, timeSignature as IUniqueDef);
+            }
+            if(globalIUDs.Find(obj => obj is KeySignature) is KeySignature keySignature)
+            {
+                int insertIndex = (seqIUDs[0] is Clef) ? 1 : 0;
+                seqIUDs.Insert(insertIndex, keySignature as IUniqueDef);
             }
         }
 

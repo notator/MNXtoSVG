@@ -211,7 +211,8 @@ namespace Moritz.Symbols
                 if(head.DisplayAccidental == DisplayAccidental.force)
                 {
                     CSSObjectClass accidentalClass = GetAccidentalClass(chordClass);
-                    AccidentalMetrics accidentalMetrics = new AccidentalMetrics(head, fontHeight, _gap, accidentalClass);
+                    string accCharstring = GetClichtAccidentalCharacterString(head);
+                    AccidentalMetrics accidentalMetrics = new AccidentalMetrics(accCharstring, fontHeight, _gap, accidentalClass);
                     accidentalMetrics.Move(headMetrics.OriginX, headMetrics.OriginY);
                     MoveAccidentalLeft(accidentalMetrics, topDownHeadsMetrics, _stemMetrics,
                         _upperLedgerlineBlockMetrics, _lowerLedgerlineBlockMetrics,
@@ -222,6 +223,32 @@ namespace Moritz.Symbols
                     this._topDownAccidentalsMetrics.Add(accidentalMetrics);
                 }
             }
+        }
+
+        /// <summary>
+		/// Accidentals
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		private string GetClichtAccidentalCharacterString(Head head)
+        {
+            string cLichtCharacterString = null;
+            switch(head.Alteration)
+            {
+                case -1:
+                    cLichtCharacterString = "b";
+                    break;
+                case 0:
+                    cLichtCharacterString = "n";
+                    break;
+                case 1:
+                    cLichtCharacterString = "#";
+                    break;
+                default:
+                    M.Assert(false, "unknown accidental type");
+                    break;
+            }
+            return cLichtCharacterString;
         }
 
         private CSSObjectClass GetLedgerlinesClass(CSSObjectClass chordClass)

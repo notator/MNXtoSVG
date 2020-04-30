@@ -154,7 +154,7 @@ namespace Moritz.Symbols
 			// are moved to their correct X- and Y- positions after all the DurationObjects and
 			// Barlines have been moved to their final positions on the staff.
 
-            MoveClefsBarlinesAndTimeSignatures(pageFormat.StafflineStemStrokeWidthVBPX);
+            MoveClefsKeySignaturesBarlinesAndTimeSignatures(pageFormat.StafflineStemStrokeWidthVBPX);
 
             List<NoteObjectMoment> moments = MomentSymbols(pageFormat.GapVBPX);
 
@@ -213,10 +213,11 @@ namespace Moritz.Symbols
 
                     voice.SetChordStemDirectionsAndCreateBeamBlocks(pageFormat);
 
+                    string currentClefType = null;
                     for(int nIndex = 0; nIndex < staff.Voices[voiceIndex].NoteObjects.Count; nIndex++)
                     {
                         NoteObject noteObject = staff.Voices[voiceIndex].NoteObjects[nIndex];
-                        noteObject.Metrics = Score.Notator.SymbolSet.NoteObjectMetrics(graphics, noteObject, voice.StemDirection, staff.Gap, pageFormat);
+                        noteObject.Metrics = Score.Notator.SymbolSet.NoteObjectMetrics(graphics, noteObject, voice.StemDirection, staff.Gap, pageFormat, currentClefType);
 
 						M.Assert(noteObject.Metrics != null);
 						staff.Metrics.Add(noteObject.Metrics);
@@ -224,6 +225,10 @@ namespace Moritz.Symbols
 						{
 							barline.AddAncilliaryMetricsTo(staff.Metrics);
 						}
+                        if(noteObject is Clef clef)
+                        {
+                            currentClefType = clef.ClefType;
+                        }
                     }
                 }
 
@@ -550,9 +555,10 @@ namespace Moritz.Symbols
         /// <summary>
         /// Moves clefs, barlines and timeSignatures to the left of the following duration symbols.
         /// </summary>
-        private void MoveClefsBarlinesAndTimeSignatures(double hairline)
+        private void MoveClefsKeySignaturesBarlinesAndTimeSignatures(double hairline)
         {
             Clef clef = null;
+            KeySignature keySignature = null;
             Barline barline = null;
             TimeSignature timeSignature = null;
 
@@ -566,6 +572,8 @@ namespace Moritz.Symbols
                         {
                             if(noteObject is Clef)
                                 clef = noteObject as Clef;
+                            if(noteObject is KeySignature)
+                                keySignature = noteObject as KeySignature;
                             if(noteObject is Barline)
                                 barline = noteObject as Barline;
                             if(noteObject is TimeSignature)
@@ -602,6 +610,11 @@ namespace Moritz.Symbols
                                 {
 									barline.Metrics.Move(rightSide - barline.Metrics.Right, 0F);
                                     rightSide = barline.Metrics.Left - hairline;
+                                }
+                                if(keySignature != null)
+                                {
+                                    keySignature.Metrics.Move(rightSide - keySignature.Metrics.Right, 0F);
+                                    rightSide = keySignature.Metrics.Left - hairline;
                                 }
                                 if(clef != null)
                                 {

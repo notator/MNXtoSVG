@@ -13,7 +13,7 @@ namespace Moritz.Symbols
         }
 
         public abstract void WriteSymbolDefinitions(SvgWriter w, PageFormat pageFormat);
-        public abstract Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, double gap, PageFormat pageFormat);
+        public abstract Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, double gap, PageFormat pageFormat, string currentClefType);
         public abstract NoteObject GetNoteObject(Voice voice, int absMsPosition, IUniqueDef iud, int iudIndexInVoice,
             ref byte currentVelocity, PageFormat pageformat);
 

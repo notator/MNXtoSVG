@@ -26,10 +26,10 @@ namespace Moritz.Symbols
         /// Writes a time signature to the SVG file.
         /// The metrics have been set in SvgSystem.Justify()
         /// </summary>
-        public void WriteSVG(SvgWriter w, string timeSigType, double originX, double originY)
+        public void WriteSVG(SvgWriter w, string timeSigSignature, double originX, double originY)
         {
             CSSObjectClass timeSignatureClass = CSSObjectClass.timeSignature;                    
-            w.SvgUseXY(timeSignatureClass, timeSigType, originX, originY);
+            w.SvgUseXY(timeSignatureClass, timeSigSignature, originX, originY);
         }
 
         public override string ToString()

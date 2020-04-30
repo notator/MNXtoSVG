@@ -52,18 +52,20 @@ namespace MNX.Common
             {
                 List<IUniqueDef> measureList = new List<IUniqueDef>();
                 Directions directions = Measures[measureIndex].Directions;
-
-                if(directions.KeySignature != null)
+                if(directions != null)
                 {
-                    measureList.Add(directions.KeySignature);
-                }
-                if(directions.TimeSignature != null)
-                {
-                    measureList.Add(directions.TimeSignature);
-                }
-                if(directions.OctaveShift != null)
-                {
-                    measureList.Add(directions.OctaveShift);
+                    if(directions.KeySignature != null)
+                    {
+                        measureList.Add(directions.KeySignature);
+                    }
+                    if(directions.TimeSignature != null)
+                    {
+                        measureList.Add(directions.TimeSignature);
+                    }
+                    if(directions.OctaveShift != null)
+                    {
+                        measureList.Add(directions.OctaveShift);
+                    }
                 }
                 rval.Add(measureList);
             }

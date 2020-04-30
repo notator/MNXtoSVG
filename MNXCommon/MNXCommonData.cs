@@ -16,6 +16,7 @@ namespace MNX.Common
         public int NumberOfMeasures;
         public IReadOnlyList<VoiceDef> VoiceDefs;
         public IReadOnlyList<IReadOnlyList<int>> MidiChannelsPerStaff;
+        public IReadOnlyList<int> NumberOfStavesPerPart;
         public IReadOnlyList<int> EndBarlineMsPositionPerBar;
     }
 }

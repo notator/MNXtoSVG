@@ -85,7 +85,15 @@ namespace Moritz.Symbols
 						smallClef.WriteSVG(w, scm.ClefID, scm.OriginX, scm.OriginY);
 					}
 				}
-				else
+                else if(noteObject is KeySignature keySignature)
+                {
+                    keySignature.WriteSVG(w, keySignature.Fifths.ToString(), keySignature.Metrics.OriginX, keySignature.Metrics.OriginY);
+                }
+                else if(noteObject is TimeSignature timeSignature)
+                {
+                    timeSignature.WriteSVG(w, timeSignature.Signature, timeSignature.Metrics.OriginX, timeSignature.Metrics.OriginY);
+                }
+                else
 				{
 					throw new ApplicationException("Unknown noteObject type.");
 				}

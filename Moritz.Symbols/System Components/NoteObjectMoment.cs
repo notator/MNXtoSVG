@@ -126,21 +126,6 @@ namespace Moritz.Symbols
 			}
         }
 
-
-        private void AddNoteObject(NoteObject noteObject)
-        {
-			if(noteObject is DurationSymbol durationSymbol && _noteObjects.Count > 0)
-			{
-				M.Assert(durationSymbol.AbsMsPosition == _absMsPosition);
-				M.Assert(durationSymbol.Voice.Staff == _noteObjects[0].Voice.Staff);
-			}
-			if(noteObject is Clef)
-            {
-
-            }
-            _noteObjects.Add(noteObject);
-        }
-
         public void ShowWarning_ControlsMustBeInTopVoice(DurationSymbol durationSymbol)
         {
             ShowVoiceWarning(durationSymbol, "control symbol");
@@ -177,9 +162,11 @@ namespace Moritz.Symbols
 
         public void Add(NoteObject noteObject)
         {
-			if(noteObject is DurationSymbol durationSymbol && _absMsPosition != durationSymbol.AbsMsPosition)
-				throw new InvalidOperationException("Attempt to add a non-synchronous DurationSymbol to a MomentSymbol.");
-			_noteObjects.Add(noteObject);
+            if(noteObject is DurationSymbol durationSymbol)
+            {
+                M.Assert(_absMsPosition == durationSymbol.AbsMsPosition);
+            }
+            _noteObjects.Add(noteObject);
         }
 
         public IEnumerable AnchorageSymbols

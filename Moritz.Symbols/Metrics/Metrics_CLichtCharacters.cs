@@ -114,10 +114,11 @@ namespace Moritz.Symbols
         /// <summary>
         /// Used by AccidentalMetrics
         /// </summary>
-		public CLichtCharacterMetrics(Head head, double fontHeight, CSSObjectClass cssClass)
+		public CLichtCharacterMetrics(string characterString, double fontHeight, CSSObjectClass cssClass)
 			: base(cssClass, "CLicht", fontHeight)
 		{
-			_characterString = GetClichtCharacterString(head);
+            _characterString = characterString;
+            //GetClichtCharacterString(head);
 
 			M.Assert(_characterString != null);
 			Metrics m = CLichtFontMetrics.CLichtGlyphBoundingBoxesDictPX[_characterString];
@@ -228,31 +229,6 @@ namespace Moritz.Symbols
 						cLichtCharacterString = "œ";
 						break;
 				}
-			}
-			return cLichtCharacterString;
-		}
-		/// <summary>
-		/// Accidentals
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		private string GetClichtCharacterString(Head head)
-		{
-			string cLichtCharacterString = null;
-			switch(head.Alteration)
-			{
-				case -1:
-					cLichtCharacterString = "b";
-					break;
-				case 0:
-					cLichtCharacterString = "n";
-					break;
-				case 1:
-					cLichtCharacterString = "#";
-					break;
-				default:
-					M.Assert(false, "unknown accidental type");
-					break;
 			}
 			return cLichtCharacterString;
 		}
@@ -466,9 +442,9 @@ namespace Moritz.Symbols
     }
 	internal class AccidentalMetrics : CLichtCharacterMetrics
 	{
-		public AccidentalMetrics(Head head, double fontHeight, double gap, CSSObjectClass cssClass)
-			: base(head, fontHeight, cssClass)
-		{
+        public AccidentalMetrics(string accChar, double fontHeight, double gap, CSSObjectClass cssClass)
+            : base(accChar, fontHeight, cssClass)
+        {
 			double verticalPadding = gap / 5;
 			_top -= verticalPadding;
 			_bottom += verticalPadding;
@@ -488,10 +464,6 @@ namespace Moritz.Symbols
 					_right += gap * 0.1;
 					break;
 			}
-            if(head != null)
-            {
-				CSSColorClass = head.ColorClass;    
-            }
         }
 
 		public object Clone()

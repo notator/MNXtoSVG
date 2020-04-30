@@ -27,10 +27,30 @@ namespace Moritz.Symbols
         public double MillisecondsPerTick = 0;
 
         public IReadOnlyList<IReadOnlyList<int>> MIDIChannelsPerStaff = null;
+        public IReadOnlyList<int> NumberOfStavesPerPart = null;
 
         #endregion Attributes set by contructor
 
         #region derived attributes
+        /// <summary>
+        /// A list having one value per staff in the system
+        /// </summary>
+        public List<bool> BarlineContinuesDownList
+        {
+            get
+            {
+                List<bool> barlineContinuesDownPerStaff = new List<bool>();
+                foreach(var nStaves in NumberOfStavesPerPart)
+                {
+                    for(var i = 0; i < nStaves; i++)
+                    {
+                        bool barlineContinuesDown = ((i + 1) < nStaves) ? true : false;
+                        barlineContinuesDownPerStaff.Add(barlineContinuesDown);
+                    }
+                }
+                return barlineContinuesDownPerStaff;
+            }
+        }
         #endregion
 
         #region other attributes
@@ -53,7 +73,7 @@ namespace Moritz.Symbols
 
         #endregion other attributes
 
-        public PageFormat(Form1Data form1Data, IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff)
+        public PageFormat(Form1Data form1Data, IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff, IReadOnlyList<int> numberOfStavesPerPart)
         {
             RightVBPX = form1Data.Page.Width * ViewBoxMagnification;
             BottomVBPX = form1Data.Page.Height * ViewBoxMagnification;
@@ -63,17 +83,20 @@ namespace Moritz.Symbols
             LeftMarginPosVBPX = form1Data.Page.MarginLeft * ViewBoxMagnification;
             BottomMarginPosVBPX = BottomVBPX - (form1Data.Page.MarginBottom * ViewBoxMagnification);
 
+            //StafflineStemStrokeWidthVBPX = form1Data.Notation.StafflineStemStrokeWidth * ViewBoxMagnification;
             StafflineStemStrokeWidthVBPX = form1Data.Notation.StafflineStemStrokeWidth * ViewBoxMagnification;
+            //GapVBPX = form1Data.Notation.Gap * ViewBoxMagnification;
             GapVBPX = form1Data.Notation.Gap * ViewBoxMagnification;
 
             DefaultDistanceBetweenStavesVBPX = form1Data.Notation.Gap * form1Data.Notation.MinGapsBetweenStaves * ViewBoxMagnification;
             DefaultDistanceBetweenSystemsVBPX = form1Data.Notation.Gap * form1Data.Notation.MinGapsBetweenSystems * ViewBoxMagnification;
- 
+
             SystemStartBars = form1Data.Notation.SystemStartBars;
 
             MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
 
             MIDIChannelsPerStaff = midiChannelsPerStaff;
+            NumberOfStavesPerPart = numberOfStavesPerPart;
 
             int nStaves = MIDIChannelsPerStaff.Count;
             for(var i = 0; i < nStaves; i++)
@@ -154,30 +177,5 @@ namespace Moritz.Symbols
         public double BeamThickness { get { return GapVBPX * 0.42; } }
 
         #endregion
-
-        #region derived properties
-        /// <summary>
-        /// A list having one value per staff in the system
-        /// </summary>
-        public List<bool> BarlineContinuesDownList
-        {
-            get
-            {
-                List<bool> barlineContinuesDownPerStaff = new List<bool>();
-                foreach(int nStaves in StaffGroups)
-                {
-                    int remainingStavesInGroup = nStaves - 1;
-                    while(remainingStavesInGroup > 0)
-                    {
-                        barlineContinuesDownPerStaff.Add(true);
-                        --remainingStavesInGroup;
-                    }
-                    barlineContinuesDownPerStaff.Add(false);
-                }
-                return barlineContinuesDownPerStaff;
-            }
-        }
-        #endregion derived properties
-
     }
 }

@@ -21,7 +21,7 @@ namespace Moritz.Symbols
                 Date = M.NowString
             };
 
-            PageFormat = new PageFormat(form1Data, mnxCommonData.MidiChannelsPerStaff);
+            PageFormat = new PageFormat(form1Data, mnxCommonData.MidiChannelsPerStaff, mnxCommonData.NumberOfStavesPerPart);
 
             Notator = new Notator(PageFormat);
 

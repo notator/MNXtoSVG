@@ -301,7 +301,7 @@ namespace Moritz.Symbols
         }
         #endregion symbol definitions
 
-        public override Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, double gap, PageFormat pageFormat)
+        public override Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, double gap, PageFormat pageFormat, string currentClefType)
         {
             double strokeWidth = pageFormat.StafflineStemStrokeWidthVBPX;
 
@@ -372,32 +372,11 @@ namespace Moritz.Symbols
             else if(keySignature != null)
             {
                 // Like rests, all keySignatures are originally created with their OriginY on the centre line.
-                List<TextInfo> accidentalTextInfos = GetAccidentalTextInfos(keySignature.Fifths, pageFormat.MusicFontHeight);
-                returnMetrics = new KeySignatureMetrics(graphics, gap, noteObject.Voice.Staff.NumberOfStafflines, accidentalTextInfos);
+                returnMetrics = new KeySignatureMetrics(graphics, gap, pageFormat.MusicFontHeight, currentClefType, keySignature.Fifths);
             }
 
 
             return returnMetrics;
-        }
-
-        private List<TextInfo> GetAccidentalTextInfos(int fifths, double fontHeight)
-        {
-            List<TextInfo> rval = new List<TextInfo>();
-            if(fifths > 0)
-            {
-                for(var i = 0; i < fifths; i++)
-                {
-                    rval.Add(new TextInfo("#", "Clicht", fontHeight, new ColorString("000000"), TextHorizAlign.center));
-                }
-            }
-            else if(fifths < 0)
-            {
-                for(var i = 0; i > fifths; i--)
-                {
-                    rval.Add(new TextInfo("b", "Clicht", fontHeight, new ColorString("000000"), TextHorizAlign.center));
-                }
-            }
-            return rval;
         }
 
         private ClefID GetSmallClefID(Clef clef)
@@ -486,6 +465,7 @@ namespace Moritz.Symbols
             ClefDef clefDef = iud as ClefDef;
             var mnxClefDef = iud as MNX.Common.Clef;
             var mnxTimeSigDef = iud as MNX.Common.TimeSignature;
+            var mnxKeySigDef = iud as MNX.Common.KeySignature;
             var mnxEventDef = iud as MNX.Common.Event;
 
 			if(cautionaryChordDef != null && iudIndex == 1)
@@ -561,6 +541,10 @@ namespace Moritz.Symbols
             else if(mnxTimeSigDef != null)
             {
                 noteObject = new TimeSignature(voice, mnxTimeSigDef, pageFormat.GapVBPX * 3);
+            }
+            else if(mnxKeySigDef != null)
+            {
+                noteObject = new KeySignature(voice, mnxKeySigDef, pageFormat.GapVBPX * 3);
             }
 
             return noteObject;

@@ -1204,7 +1204,7 @@ namespace Moritz.Symbols
             NormalizeSmallClefs();
 
             FinalizeAccidentals();
-            AddNormalBarlineAtStartOfEachSystem(); // 4. adds a NormalBarline at the start of each system, after the clef.
+            AddNormalBarlineAtStartOfEachSystem(); // 4. adds a NormalBarline at the start of each system, after the clef (and keySignature, if any).
 
 			AddBarNumbers(); // 5.add a barnumber to the first (Normal)Barline on each system.
 			AddStaffNames(); // 6. adds the staff's name to the first (Normal)Barline on each staff.
@@ -1299,11 +1299,15 @@ namespace Moritz.Symbols
 			else
 			{
                 int index = i + 1;
+                if(noteObjects[index] is KeySignature)
+                {
+                    index++;
+                }
                 if(noteObjects[index] is TimeSignature)
                 {
                     index++;
                 }
-				DurationSymbol ds = noteObjects[index] as DurationSymbol;
+                DurationSymbol ds = noteObjects[index] as DurationSymbol;
 				barlineMsPos = ds.AbsMsPosition;
 			}
 			return barlineMsPos;
@@ -1710,14 +1714,12 @@ namespace Moritz.Symbols
                 {
                     foreach(Voice voice in staff.Voices)
                     {
-                        if(voice.NoteObjects[0] is Clef)
-                        {
-                            voice.NoteObjects.Insert(1, new NormalBarline(voice));
-                        }
-                        else
-                        {
-                            voice.NoteObjects.Insert(0, new NormalBarline(voice));
-                        }
+                        int clefIndex = voice.NoteObjects.FindIndex(obj => obj is Clef);
+                        int keySigIndex = voice.NoteObjects.FindIndex(obj => obj is KeySignature);
+                        int insertIndex = 0;
+                        insertIndex = (clefIndex >= 0) ? clefIndex + 1 : insertIndex;
+                        insertIndex = (keySigIndex >= 0) ? keySigIndex + 1 : insertIndex;
+                        voice.NoteObjects.Insert(insertIndex, new NormalBarline(voice));
                     }
                 }
             }

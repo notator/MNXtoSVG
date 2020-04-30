@@ -183,9 +183,9 @@ namespace Moritz.Symbols
 			w.SvgStartGroup(CSSObjectClass.chord.ToString()); // "chord"
 			if(!graphicsOnly)
 			{
-				w.WriteAttributeString("score", "alignment", null, ChordMetrics.OriginX.ToString(M.En_USNumberFormat));
+				//w.WriteAttributeString("score", "alignment", null, ChordMetrics.OriginX.ToString(M.En_USNumberFormat));
 
-				_midiChordDef.WriteSVG(w, channel, carryMsgs);
+				//_midiChordDef.WriteSVG(w, channel, carryMsgs);
 			}
 
             w.SvgStartGroup(CSSObjectClass.graphics.ToString());

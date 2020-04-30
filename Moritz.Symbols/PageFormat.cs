@@ -32,6 +32,37 @@ namespace Moritz.Symbols
         #endregion Attributes set by contructor
 
         #region derived attributes
+        #region font heights
+        /// <summary>
+        /// the normal font size on staves having Gap sized spaces (after experimenting with cLicht). 
+        /// </summary>
+        public double MusicFontHeight { get { return (GapVBPX * 4) * 0.98; } }
+        /// Arial (new 26.06.2017)
+        public double TimeStampFontHeight { get { return 15 * ViewBoxMagnification; } } // was GapVBPX * 2.5
+        public double StaffNameFontHeight { get { return GapVBPX * 2.2; } }
+        public double BarNumberNumberFontHeight { get { return GapVBPX * 1.9992; } }
+        public double RegionInfoStringFontHeight { get { return GapVBPX * 3; } }
+        public double LyricFontHeight { get { return GapVBPX * 1.96; } }
+        public double ClefOctaveNumberHeight { get { return GapVBPX * 2.6264; } }
+        public double ClefXFontHeight { get { return GapVBPX * 1.568; } }
+        /// Open Sans, Open Sans Condensed (new 26.06.2017)
+        public double OrnamentFontHeight { get { return GapVBPX * 2.156; } }
+        /// CLicht (new 26.06.2017)
+        public double DynamicFontHeight { get { return MusicFontHeight * 0.75; } }
+        #endregion
+
+        #region stroke widths
+
+        public double NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 2; } }
+        public double ThinBarlineStrokeWidth { get { return NormalBarlineStrokeWidth / 2; } } // a component of double barlines.
+        public double ThickBarlineStrokeWidth { get { return NormalBarlineStrokeWidth * 2; } } // a component of double barlines.
+        public double NoteheadExtenderStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 3.4; } }
+        public double BarNumberFrameStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 1.2; } }
+        public double RegionInfoFrameStrokeWidth { get { return BarNumberFrameStrokeWidth * 1.5; } }
+        #endregion
+
+        public double BeamThickness { get { return GapVBPX * 0.42; } }
+
         /// <summary>
         /// A list having one value per staff in the system
         /// </summary>
@@ -143,36 +174,7 @@ namespace Moritz.Symbols
         #endregion
 
   
-        #region font heights
-        /// <summary>
-        /// the normal font size on staves having Gap sized spaces (after experimenting with cLicht). 
-        /// </summary>
-        public double MusicFontHeight { get { return (GapVBPX * 4) * 0.98; } }
-        /// Arial (new 26.06.2017)
-        public double TimeStampFontHeight { get { return 150; } } // was GapVBPX * 2.5
-        public double StaffNameFontHeight { get { return GapVBPX * 2.2; } }
-		public double BarNumberNumberFontHeight { get { return GapVBPX * 1.9992; } }
-		public double RegionInfoStringFontHeight { get { return GapVBPX * 3; } }
-		public double LyricFontHeight { get { return GapVBPX * 1.96; } }
-        public double ClefOctaveNumberHeight { get { return GapVBPX * 2.6264; } }
-        public double ClefXFontHeight { get { return GapVBPX * 1.568; } }
-		/// Open Sans, Open Sans Condensed (new 26.06.2017)
-		public double OrnamentFontHeight { get { return GapVBPX * 2.156; } }
-		/// CLicht (new 26.06.2017)
-		public double DynamicFontHeight { get { return MusicFontHeight * 0.75; } }
-        #endregion
 
-        #region stroke widths
-
-        public double NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 2; } }
-		public double ThinBarlineStrokeWidth { get { return NormalBarlineStrokeWidth / 2; } } // a component of double barlines.
-		public double ThickBarlineStrokeWidth { get { return NormalBarlineStrokeWidth * 2; } } // a component of double barlines.
-		public double NoteheadExtenderStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 3.4; } }
-		public double BarNumberFrameStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 1.2; } }
-		public double RegionInfoFrameStrokeWidth { get { return BarNumberFrameStrokeWidth * 1.5; } }
-		#endregion
-
-        public double BeamThickness { get { return GapVBPX * 0.42; } }
 
         #endregion
     }

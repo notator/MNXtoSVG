@@ -16,7 +16,7 @@
 				<dc:type
 					rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
 				<dc:title>helloworld (scroll)</dc:title>
-				<dc:date>Thursday 30.04.2020, 12:53:42</dc:date>
+				<dc:date>Thursday 30.04.2020, 12:59:52</dc:date>
 				<dc:creator>
 					<cc:Agent>
 						<dc:title>James Ingram</dc:title>
@@ -128,7 +128,7 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">helloworld (scroll), Thursday 30.04.2020, 12:53:29</text>
+			y="150">helloworld (scroll), Thursday 30.04.2020, 12:59:16</text>
 		<g
 			class="system">
 			<score:leftToRight

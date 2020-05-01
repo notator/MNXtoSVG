@@ -82,8 +82,6 @@ namespace Moritz.Symbols
                     this.Move(0, gap);
                 }
             }
-
-
         }
 
         private List<CLichtCharacterMetrics> GetAccidentalMetrics(int fifths, double gap, double musicFontHeight)

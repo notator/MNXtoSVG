@@ -68,7 +68,10 @@ namespace MNX.Main
                     MNXCommonData mnxCommonData = mnx.MNXCommonData;
 
                     SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
-                    break; // temp
+                    if(i == 0) // temp
+                    {
+                        break;
+                    }
                 }
             }
             else

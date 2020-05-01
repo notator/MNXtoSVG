@@ -16,7 +16,7 @@
 				<dc:type
 					rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
 				<dc:title>helloworld (scroll)</dc:title>
-				<dc:date>Friday 01.05.2020, 17:31:54</dc:date>
+				<dc:date>Friday 01.05.2020, 20:57:47</dc:date>
 				<dc:creator>
 					<cc:Agent>
 						<dc:title>James Ingram</dc:title>
@@ -84,11 +84,11 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
                 font-size:0px;
                 text-anchor:end
             }
-            .notehead, .clef
+            .notehead, .accidental, .clef
             {
                 font-family:CLicht
             }
-            .notehead, .clef
+            .notehead, .accidental, .clef
             {
                 font-size:392px
             }
@@ -143,7 +143,7 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">helloworld (scroll), Friday 01.05.2020, 17:31:54</text>
+			y="150">helloworld (scroll), Friday 01.05.2020, 20:57:43</text>
 		<g
 			class="system">
 			<score:leftToRight
@@ -190,18 +190,37 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 					<use
 						class="clef"
 						href="#trebleClef"
-						x="500"
+						x="536.9326"
 						y="900" />
+					<g
+						class="keySignature">
+						<text
+							class="keySignatureComponent"
+							x="-10"
+							y="88.8323">#</text>
+						<text
+							class="keySignatureComponent"
+							x="76.7332"
+							y="238.8323">#</text>
+						<text
+							class="keySignatureComponent"
+							x="163.4663"
+							y="38.8323">#</text>
+						<text
+							class="keySignatureComponent"
+							x="250.1995"
+							y="188.8323">#</text>
+					</g>
 					<line
 						class="normalBarline"
-						x1="840"
+						x1="846.9326"
 						y1="600"
-						x2="840"
+						x2="846.9326"
 						y2="1000" />
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="870"
+						x="876.9326"
 						y="800" />
 					<g
 						class="chord">
@@ -209,15 +228,15 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 							class="graphics">
 							<text
 								class="notehead"
-								x="1197.241"
+								x="1204.174"
 								y="1100">w</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="1122.6"
+									x1="1129.533"
 									y1="1100"
-									x2="1441.166"
+									x2="1448.099"
 									y2="1100" />
 							</g>
 						</g>

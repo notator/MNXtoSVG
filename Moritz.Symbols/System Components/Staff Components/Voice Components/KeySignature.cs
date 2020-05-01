@@ -29,8 +29,7 @@ namespace Moritz.Symbols
         /// </summary>
         public void WriteSVG(SvgWriter w, string fifths, double originX, double originY)
         {
-            CSSObjectClass keySignatureClass = CSSObjectClass.keySignature;                    
-            w.SvgUseXY(keySignatureClass, fifths, originX, originY);
+            Metrics.WriteSVG(w);
         }
 
         public override string ToString()

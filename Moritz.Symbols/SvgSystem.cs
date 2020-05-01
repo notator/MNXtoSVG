@@ -465,6 +465,7 @@ namespace Moritz.Symbols
             Barline barline = null;
             Clef clef = null;
             TimeSignature timeSignature = null;
+            KeySignature keySignature = null;
             foreach(Staff staff in Staves)
             {
                 foreach(Voice voice in staff.Voices)
@@ -481,6 +482,8 @@ namespace Moritz.Symbols
                                 barline = noteObject as Barline;
                             if(noteObject is TimeSignature)
                                 timeSignature = noteObject as TimeSignature;
+                            if(noteObject is KeySignature)
+                                keySignature = noteObject as KeySignature;
                         }
 						else
 						{
@@ -496,6 +499,11 @@ namespace Moritz.Symbols
 								dict[key].Add(clef);
 								clef = null;
 							}
+                            if(keySignature != null)
+                            {
+                                dict[key].Add(keySignature);
+                                keySignature = null;
+                            }
                             if(barline != null)
                             {
                                 dict[key].Add(barline);
@@ -549,7 +557,7 @@ namespace Moritz.Symbols
 
             foreach(NoteObjectMoment momentSymbol in momentSymbols)
             {
-                momentSymbol.AlignBarlineAndClefGlyphs(gap);
+                momentSymbol.AlignClefKeySigAndBarlineGlyphs(gap);
             }
 
             #region debug

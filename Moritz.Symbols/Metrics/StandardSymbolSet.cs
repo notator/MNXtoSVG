@@ -420,11 +420,11 @@ namespace Moritz.Symbols
                 TextInfo denominatorTextInfo = new TextInfo(denominator, "Arial", timeSignature.FontHeight, new ColorString("000000"), TextHorizAlign.center);
                 returnMetrics = new TimeSignatureMetrics(graphics, gap, noteObject.Voice.Staff.NumberOfStafflines, numeratorTextInfo, denominatorTextInfo);
             }
-            //else if(keySignature != null)
-            //{
-            //    // Like rests, all keySignatures are originally created with their OriginY on the centre line.
-            //    returnMetrics = new KeySignatureMetrics(graphics, gap, pageFormat.MusicFontHeight, currentClefType, keySignature.Fifths);
-            //}
+            else if(keySignature != null)
+            {
+                // Like rests, all keySignatures are originally created with their OriginY on the centre line.
+                returnMetrics = new KeySignatureMetrics(graphics, gap, pageFormat.MusicFontHeight, currentClefType, keySignature.Fifths);
+            }
 
 
             return returnMetrics;
@@ -593,10 +593,10 @@ namespace Moritz.Symbols
             {
                 noteObject = new TimeSignature(voice, mnxTimeSigDef, pageFormat.GapVBPX * 3);
             }
-            //else if(mnxKeySigDef != null)
-            //{
-            //    noteObject = new KeySignature(voice, mnxKeySigDef, pageFormat.GapVBPX * 3);
-            //}
+            else if(mnxKeySigDef != null)
+            {
+                noteObject = new KeySignature(voice, mnxKeySigDef, pageFormat.MusicFontHeight);
+            }
 
             return noteObject;
         }

@@ -56,7 +56,8 @@ namespace Moritz.Symbols
         ///     a) the metadata element, and all its required namespaces,
         ///     b) the score namespace, and all its enclosed (temporal and alignment) information.
         /// </summary>
-        public void SaveMultiPageScore(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
+        /// <returns>The path to an HTML file containing the SVGs</returns>
+        public string SaveMultiPageScore(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
         {
             if(printTitleAndAuthorOnPage1)
             {
@@ -122,6 +123,8 @@ namespace Moritz.Symbols
 
                 w.Close(); // close actually unnecessary because of the using statement.
             }
+
+            return FilePath; // html
         }
 
         private void WriteHTMLScoreHead(XmlWriter w, string title)
@@ -808,7 +811,6 @@ namespace Moritz.Symbols
 
         #region save single svg score
         /// <summary>
-        /// <summary>
         /// Writes the "scroll" version of the score. This is a standalone SVG file.
         /// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
         ///     a) the metadata element, and all its required namespaces,
@@ -816,7 +818,8 @@ namespace Moritz.Symbols
         /// If printTitleAndAuthorOnScorePage1 is false then the main title and author information is omitted on page 1, and page 1
         /// has the margins otherwise allocated for all the other pages.
         /// </summary>
-        public void SaveSingleSVGScore(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
+        /// <returns>The path to the written file.</returns>
+        public string SaveSingleSVGScore(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
 		{
             if(printTitleAndAuthorOnPage1)
             {
@@ -840,6 +843,8 @@ namespace Moritz.Symbols
 			string pagePath = Path.GetDirectoryName(FilePath) + @"\" + pageFilename;
 
 			SaveSVGPage(pagePath, singlePage, this.MetadataWithDate, true, graphicsOnly, printTitleAndAuthorOnPage1);
+
+            return pagePath;
 		}
 
 

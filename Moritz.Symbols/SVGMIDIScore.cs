@@ -31,16 +31,21 @@ namespace Moritz.Symbols
 
             CreateSystems(bars, form1Data);
 
+            string filePath = null;
             if(form1Data.Options.WriteScrollScore)
             {
                 PageFormat.BottomVBPX = GetNewBottomVBPX(Systems);
                 PageFormat.BottomMarginPosVBPX = (int)(PageFormat.BottomVBPX - PageFormat.DefaultDistanceBetweenSystemsVBPX);
-                SaveSingleSVGScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
+                filePath = SaveSingleSVGScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
             }
             else
             {
-                SaveMultiPageScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
+                filePath = SaveMultiPageScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
             }
+
+            // Opens the score in the program which is set by the system to open .svg or .html files.
+            global::System.Diagnostics.Process.Start(filePath);
+
         }
 
         /// <summary>

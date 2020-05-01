@@ -22,6 +22,7 @@ namespace Moritz.Symbols
         {
             throw new NotImplementedException();
         }
+
         /// <summary>
         /// Writes a time signature to the SVG file.
         /// The metrics have been set in SvgSystem.Justify()

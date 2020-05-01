@@ -464,6 +464,7 @@ namespace Moritz.Symbols
             SortedDictionary<int, NoteObjectMoment> dict = new SortedDictionary<int, NoteObjectMoment>();
             Barline barline = null;
             Clef clef = null;
+            TimeSignature timeSignature = null;
             foreach(Staff staff in Staves)
             {
                 foreach(Voice voice in staff.Voices)
@@ -476,9 +477,11 @@ namespace Moritz.Symbols
 						{
 							if(noteObject is Clef)
 								clef = noteObject as Clef;
-							if(noteObject is Barline)
-								barline = noteObject as Barline;
-						}
+                            if(noteObject is Barline)
+                                barline = noteObject as Barline;
+                            if(noteObject is TimeSignature)
+                                timeSignature = noteObject as TimeSignature;
+                        }
 						else
 						{
 							key = durationSymbol.AbsMsPosition;
@@ -493,13 +496,18 @@ namespace Moritz.Symbols
 								dict[key].Add(clef);
 								clef = null;
 							}
-							if(barline != null)
-							{
-								dict[key].Add(barline);
-								barline = null;
-							}
+                            if(barline != null)
+                            {
+                                dict[key].Add(barline);
+                                barline = null;
+                            }
+                            if(timeSignature != null)
+                            {
+                                dict[key].Add(timeSignature);
+                                timeSignature = null;
+                            }
 
-							dict[key].Add(durationSymbol);
+                            dict[key].Add(durationSymbol);
 						}
 					}
                     #endregion
@@ -525,6 +533,11 @@ namespace Moritz.Symbols
                             nom.Add(barline);
                             dict.Add(this.AbsEndMsPosition, nom);
                         }
+                    }
+                    if(timeSignature != null) // timeSig after final barline
+                    {
+                        if(dict.ContainsKey(this.AbsEndMsPosition))
+                            dict[this.AbsEndMsPosition].Add(timeSignature);
                     }
                 }
             }
@@ -561,6 +574,7 @@ namespace Moritz.Symbols
             KeySignature keySignature = null;
             Barline barline = null;
             TimeSignature timeSignature = null;
+            hairline *= 2;
 
             foreach(Staff staff in Staves)
             {
@@ -621,13 +635,21 @@ namespace Moritz.Symbols
                                     clef.Metrics.Move(rightSide - clef.Metrics.Right, 0F);
                                 }
                                 clef = null;
+                                keySignature = null;
                                 barline = null;
                                 timeSignature = null;
                                 durationSymbol = null;
                             }
-                            else if(barline != null && clef != null)
+                            else if(barline != null)
                             {
-                                clef.Metrics.Move(barline.Metrics.Left - clef.Metrics.Right - hairline, 0F); // clefs have a space on the right
+                                if(timeSignature != null)
+                                {
+                                    barline.Metrics.Move(timeSignature.Metrics.Left - barline.Metrics.Right, 0); // final timeSigs are right of the barline
+                                }
+                                if(clef != null)
+                                {
+                                    clef.Metrics.Move(barline.Metrics.Left - clef.Metrics.Right - hairline, 0); // clefs have a space on the right
+                                }
                             }
                         }
                     }

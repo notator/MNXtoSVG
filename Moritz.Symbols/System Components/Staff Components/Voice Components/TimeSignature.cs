@@ -28,8 +28,7 @@ namespace Moritz.Symbols
         /// </summary>
         public void WriteSVG(SvgWriter w, string timeSigSignature, double originX, double originY)
         {
-            CSSObjectClass timeSignatureClass = CSSObjectClass.timeSignature;                    
-            w.SvgUseXY(timeSignatureClass, timeSigSignature, originX, originY);
+            Metrics.WriteSVG(w);
         }
 
         public override string ToString()

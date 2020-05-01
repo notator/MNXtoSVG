@@ -353,6 +353,14 @@ namespace Moritz.Symbols
 			StringBuilder timeStampType = TextStyle("." + CSSObjectClass.timeStamp.ToString(), "", timeStampHeight, "");
             fontStyles.Append(timeStampType);
 
+            if(usedCSSObjectClasses.Contains(CSSObjectClass.timeSig))
+            {
+                string timeSigComponentFontHeight = M.DoubleToShortString(pageFormat.TimeSignatureComponentFontHeight);
+                string typenames = "." + CSSObjectClass.timeSigNumerator.ToString() + ", " + "." + CSSObjectClass.timeSigDenominator.ToString();
+                StringBuilder timeSigType = TextStyle(typenames, "", timeSigComponentFontHeight, "");
+                fontStyles.Append(timeSigType);
+            }
+
             if(usedCSSObjectClasses.Contains(CSSObjectClass.staffName))
             {
                 string staffNameFontHeight = M.DoubleToShortString(pageFormat.StaffNameFontHeight);
@@ -524,6 +532,11 @@ namespace Moritz.Symbols
             if(SmallClefXExists(usedClefIDs))
             {
 				ExtendRval(rval, "." + CSSObjectClass.smallClefX.ToString());
+            }
+            if(usedCSSClasses.Contains(CSSObjectClass.timeSig))
+            {
+                ExtendRval(rval, "." + CSSObjectClass.timeSigNumerator.ToString());
+                ExtendRval(rval, "." + CSSObjectClass.timeSigDenominator.ToString());
             }
 
             return rval;

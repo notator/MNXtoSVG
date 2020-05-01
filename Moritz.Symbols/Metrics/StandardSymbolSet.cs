@@ -24,6 +24,58 @@ namespace Moritz.Symbols
         {
             WriteClefDefinitions(w, pageFormat);
             WriteFlagDefinitions(w, pageFormat);
+            //WriteKeySignatureDefinitions(w, pageFormat);
+            WriteTimeSignatureDefinitions(w, pageFormat);
+        }
+
+        private void WriteTimeSignatureDefinitions(SvgWriter w, PageFormat pageFormat)
+        {
+            List<string> usedTimeSigIDs = new List<string>(TimeSignatureMetrics.UsedTimeSigIDs);
+            double componentHeight = pageFormat.TimeSignatureComponentFontHeight;
+            double gap = pageFormat.GapVBPX;
+            foreach(var timeSigID in usedTimeSigIDs)
+            {
+                GetTimeSigComponents(timeSigID, out string numerator, out string denominator);
+                WriteTimeSignatureDefinition(w, timeSigID, numerator, denominator, componentHeight, gap);
+            }
+        }
+
+        private void GetTimeSigComponents(string timeSigID, out string numerator, out string denominator)
+        {
+            string[] comps = timeSigID.Split(new char[] { '_' });
+            string[] components = comps[1].Split(new char[] { '/' });
+            numerator = components[0];
+            denominator = components[1];
+        }
+
+        public void WriteTimeSignatureDefinition(SvgWriter w, string timeSigID,
+            string numerator, string denominator, double componentHeight, double gap)
+        {
+            double numX = 0, denX = 0;
+            if(numerator.Length < denominator.Length)
+            {
+                numX += componentHeight / 3; // centred by experiment :-)
+            }
+            if(numerator.Length > denominator.Length)
+            {
+                denX += componentHeight / 3; // centred by experiment :-)
+            }
+            double paddingY = gap * 0.35;
+            double numY = -paddingY;
+            double denY = componentHeight - gap;
+
+            w.WriteStartElement("g");
+            w.WriteAttributeString("id", timeSigID);
+
+            WriteTextElement(w, CSSObjectClass.timeSigNumerator.ToString(), numX, numY, numerator);
+            WriteTextElement(w, CSSObjectClass.timeSigDenominator.ToString(), denX, denY, denominator);
+
+            w.WriteEndElement(); // g
+        }
+
+        private void WriteKeySignatureDefinitions(SvgWriter w, PageFormat pageFormat)
+        {
+
         }
 
         private void WriteClefDefinitions(SvgWriter w, PageFormat pageFormat)
@@ -182,7 +234,6 @@ namespace Moritz.Symbols
             WriteTextElement(w, numberClass, x, y, "•");
             w.WriteEndElement(); // g
         }
-
         private void WriteClefMulti8SymbolDef(SvgWriter w, bool isTreble, bool isSmall, int octaveShift, double fontHeight)
         {
             double x1 = isTreble ? (0.036F * fontHeight) : 0;
@@ -369,11 +420,11 @@ namespace Moritz.Symbols
                 TextInfo denominatorTextInfo = new TextInfo(denominator, "Arial", timeSignature.FontHeight, new ColorString("000000"), TextHorizAlign.center);
                 returnMetrics = new TimeSignatureMetrics(graphics, gap, noteObject.Voice.Staff.NumberOfStafflines, numeratorTextInfo, denominatorTextInfo);
             }
-            else if(keySignature != null)
-            {
-                // Like rests, all keySignatures are originally created with their OriginY on the centre line.
-                returnMetrics = new KeySignatureMetrics(graphics, gap, pageFormat.MusicFontHeight, currentClefType, keySignature.Fifths);
-            }
+            //else if(keySignature != null)
+            //{
+            //    // Like rests, all keySignatures are originally created with their OriginY on the centre line.
+            //    returnMetrics = new KeySignatureMetrics(graphics, gap, pageFormat.MusicFontHeight, currentClefType, keySignature.Fifths);
+            //}
 
 
             return returnMetrics;
@@ -542,10 +593,10 @@ namespace Moritz.Symbols
             {
                 noteObject = new TimeSignature(voice, mnxTimeSigDef, pageFormat.GapVBPX * 3);
             }
-            else if(mnxKeySigDef != null)
-            {
-                noteObject = new KeySignature(voice, mnxKeySigDef, pageFormat.GapVBPX * 3);
-            }
+            //else if(mnxKeySigDef != null)
+            //{
+            //    noteObject = new KeySignature(voice, mnxKeySigDef, pageFormat.GapVBPX * 3);
+            //}
 
             return noteObject;
         }

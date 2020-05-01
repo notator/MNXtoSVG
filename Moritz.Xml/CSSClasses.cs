@@ -47,9 +47,9 @@ namespace Moritz.Xml
 		smallClefX, // The 'x' above or below a small clef. (Arial) Container:clef.
 		#endregion
 
-        timeSignature, // Used, recorded. (A normal time signature at the beginning of a bar) Container:voice.
-        timeSignatureNumerator,
-        timeSignatureDenominator,
+        timeSig, // Used, recorded. (A normal time signature at the beginning of a bar) Container:voice.
+        timeSigNumerator,
+        timeSigDenominator,
 
         keySignature, // Used, recorded. (A normal time signature at the beginning of a bar) Container:voice.
         keySignatureComponent,

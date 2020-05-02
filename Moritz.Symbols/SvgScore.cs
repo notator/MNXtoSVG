@@ -833,7 +833,7 @@ namespace Moritz.Symbols
 			string pageFilename = Path.GetFileNameWithoutExtension(FilePath);
 			if(graphicsOnly)
 			{
-				pageFilename += " graphics (scroll).svg";
+				pageFilename += " (scroll, graphics only).svg";
 			}
 			else
 			{

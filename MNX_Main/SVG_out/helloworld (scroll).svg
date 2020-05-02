@@ -16,7 +16,7 @@
 				<dc:type
 					rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
 				<dc:title>helloworld (scroll)</dc:title>
-				<dc:date>Saturday 02.05.2020, 10:42:04</dc:date>
+				<dc:date>Saturday 02.05.2020, 11:14:05</dc:date>
 				<dc:creator>
 					<cc:Agent>
 						<dc:title>James Ingram</dc:title>
@@ -162,7 +162,7 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">helloworld (scroll), Saturday 02.05.2020, 10:42:04</text>
+			y="150">helloworld (scroll), Saturday 02.05.2020, 11:14:05</text>
 		<g
 			class="system">
 			<score:leftToRight
@@ -209,23 +209,23 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 					<use
 						class="clef"
 						href="#trebleClef"
-						x="530.2339"
+						x="500"
 						y="900" />
 					<use
 						class="keySig"
 						href="#keySig_4f"
-						x="500"
+						x="810"
 						y="600" />
 					<line
 						class="normalBarline"
-						x1="840.2339"
+						x1="1209.057"
 						y1="600"
-						x2="840.2339"
+						x2="1209.057"
 						y2="1000" />
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="870.2339"
+						x="1239.057"
 						y="800" />
 					<g
 						class="chord">
@@ -233,15 +233,15 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 							class="graphics">
 							<text
 								class="notehead"
-								x="1197.475"
+								x="1566.299"
 								y="1100">w</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="1122.834"
+									x1="1491.657"
 									y1="1100"
-									x2="1441.4"
+									x2="1810.223"
 									y2="1100" />
 							</g>
 						</g>

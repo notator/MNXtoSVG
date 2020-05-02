@@ -115,7 +115,7 @@ namespace Moritz.Symbols
                             keySignature.Metrics.Move(minBarlineOriginX - keySignature.Metrics.Right, 0);
                             if(_noteObjects[index - 2] is Clef kClef)
                             {
-                                kClef.Metrics.Move(keySignature.Metrics.Right - kClef.Metrics.Right, 0);
+                                kClef.Metrics.Move(keySignature.Metrics.Left - kClef.Metrics.Right, 0);
                             }
                         }
                         else if(_noteObjects[index - 1] is Clef clef)

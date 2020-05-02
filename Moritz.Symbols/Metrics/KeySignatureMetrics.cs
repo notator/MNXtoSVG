@@ -44,7 +44,7 @@ namespace Moritz.Symbols
                     appCharMetric.Move(right - appCharMetric.Left, 0);
                     right = appCharMetric.Right;
                 }
-                _right = right;
+                _right = right + (gap / 1.7); // padding on right
 
                 // now move to correct y-positions
                 if(fifths < 0) // flats

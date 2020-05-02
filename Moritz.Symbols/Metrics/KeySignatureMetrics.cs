@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using MNX.Globals;
@@ -11,75 +12,95 @@ namespace Moritz.Symbols
 {
     internal class KeySignatureMetrics : GroupMetrics
     {
-        readonly List<CLichtCharacterMetrics> AccidentalMetrics = null;
+        public static Dictionary<string, List<CLichtCharacterMetrics>> KeySigDefs = new Dictionary<string, List<CLichtCharacterMetrics>>();
+
+        private readonly List<CLichtCharacterMetrics> AccidentalMetrics = new List<CLichtCharacterMetrics>();
+        private readonly string _keySigID = null;
 
         public KeySignatureMetrics(Graphics graphics, double gap, double musicFontHeight, string clefType, int fifths)
-            :base(CSSObjectClass.keySignature)
+            :base(CSSObjectClass.keySig)
         {
             M.Assert(fifths > 0 || fifths < 0);
-            List<CLichtCharacterMetrics> accMetrics = GetAccidentalMetrics(fifths, gap, musicFontHeight);
-            AccidentalMetrics = accMetrics;
+            string suffix = (fifths > 0) ? fifths.ToString() + "s" : (fifths * -1).ToString() + "f";
+            _keySigID = CSSObjectClass.keySig.ToString() + "_" + suffix;
 
-            _top = 0; _left = 0; _bottom = 0; _right = 0;
-            // move into left->right positions
-            double right = 0;
-            for(var i = 0; i < accMetrics.Count; i++)
+            if(KeySigDefs.Keys.Contains(_keySigID))
             {
-                var appCharMetric = accMetrics[i];
-                appCharMetric.Move(right - appCharMetric.Left - (gap * 0.1), 0);
-                right = appCharMetric.Right;
-            }
-            _right = right;
-
-            // now move to correct y-positions
-            if(fifths < 0) // flats
-            {
-                // first, as if treble clef:
-                double originY = 0;
-                for(var i = 0; i < accMetrics.Count; i++)
+                var def = KeySigDefs[_keySigID];
+                foreach(var acc in def)
                 {
-                    CLichtCharacterMetrics accMetric = accMetrics[i];
-                    accMetric.Move(0, originY - accMetric.OriginY);
-                    _top = (accMetric.Top < _top) ? accMetric.Top : _top;
-                    _bottom = (accMetric.Bottom > _bottom) ? accMetric.Bottom : _bottom;
-                    if(i % 2 == 0)
-                    {
-                        originY -= (gap * 1.5);
-                    }
-                    else
-                    {
-                        originY += (gap * 2);
-                    }
-                }
-                if(clefType[0] == 'b') // bass clef
-                {
-                    this.Move(0, gap);
+                    AccidentalMetrics.Add(new CLichtCharacterMetrics(acc.CharacterString, acc.FontHeight, CSSObjectClass.accidental));
                 }
             }
-            else if(fifths > 0) // sharps
+            else
             {
-                // first, as if treble clef:
-                double originY = gap * 2;
-                List<int> fourthDownIndices = new List<int>() { 0, 2, 3, 5 };
+                List<CLichtCharacterMetrics> accMetrics = GetAccidentalMetrics(fifths, gap, musicFontHeight);
+                _top = 0; _left = 0; _bottom = 0; _right = 0;
+                // move into left->right positions
+                double right = 0;
                 for(var i = 0; i < accMetrics.Count; i++)
                 {
-                    CLichtCharacterMetrics accMetric = accMetrics[i];
-                    accMetric.Move(0, originY - ((accMetric.Bottom - accMetric.Top) / 2));
-                    _top = (accMetric.Top < _top) ? accMetric.Top : _top;
-                    _bottom = (accMetric.Bottom > _bottom) ? accMetric.Bottom : _bottom;
-                    if(fourthDownIndices.Contains(i))
+                    var appCharMetric = accMetrics[i];
+                    appCharMetric.Move(right - appCharMetric.Left, 0);
+                    right = appCharMetric.Right;
+                }
+                _right = right;
+
+                // now move to correct y-positions
+                if(fifths < 0) // flats
+                {
+                    // the originY of the first "b" is two gaps below the top line of treble staff.
+                    double accOriginY = gap * 2;
+                    for(var i = 0; i < accMetrics.Count; i++)
                     {
-                        // down a fourth
-                        originY += (gap * 1.5);
+                        CLichtCharacterMetrics accMetric = accMetrics[i];
+                        accMetric.Move(0, accOriginY - accMetric.OriginY);
+                        _top = (accMetric.Top < _top) ? accMetric.Top : _top;
+                        _bottom = (accMetric.Bottom > _bottom) ? accMetric.Bottom : _bottom;
+                        if(i % 2 == 0)
+                        {
+                            accOriginY -= (gap * 1.5);
+                        }
+                        else
+                        {
+                            accOriginY += (gap * 2);
+                        }
                     }
-                    else
-                    {   // up a fifth
-                        originY -= (gap * 2);
+                    if(clefType[0] == 'b') // bass clef
+                    {
+                        this.Move(0, gap);
                     }
                 }
-                if(clefType[0] == 'b') // bass clef
+                else if(fifths > 0) // sharps
                 {
-                    this.Move(0, gap);
+                    // the originY of the first "#" is on the top line of a treble staff.
+                    double originY = 0;
+                    List<int> fourthDownIndices = new List<int>() { 0, 2, 3, 5 };
+                    for(var i = 0; i < accMetrics.Count; i++)
+                    {
+                        CLichtCharacterMetrics accMetric = accMetrics[i];
+                        accMetric.Move(0, originY - accMetric.OriginY);
+                        _top = (accMetric.Top < _top) ? accMetric.Top : _top;
+                        _bottom = (accMetric.Bottom > _bottom) ? accMetric.Bottom : _bottom;
+                        if(fourthDownIndices.Contains(i))
+                        {
+                            // down a fourth
+                            originY += (gap * 1.5);
+                        }
+                        else
+                        {   // up a fifth
+                            originY -= (gap * 2);
+                        }
+                    }
+                    if(clefType[0] == 'b') // bass clef
+                    {
+                        this.Move(0, gap);
+                    }
+                }
+                KeySigDefs.Add(_keySigID, accMetrics);
+                foreach(var acc in accMetrics)
+                {
+                    AccidentalMetrics.Add(new CLichtCharacterMetrics(acc.CharacterString, acc.FontHeight, CSSObjectClass.accidental));
                 }
             }
         }
@@ -107,16 +128,15 @@ namespace Moritz.Symbols
         public override void Move(double dx, double dy)
         {
             base.Move(dx, dy);
+            foreach(var c in AccidentalMetrics)
+            {
+                c.Move(dx, dy);
+            }
         }
 
         public override void WriteSVG(SvgWriter w)
         {
-            w.SvgStartGroup(CSSObjectClass.ToString());
-            foreach(var metric in AccidentalMetrics)
-            {
-                w.SvgText(CSSObjectClass.keySignatureComponent, metric.CharacterString, metric.OriginX, metric.OriginY);
-            }
-            w.SvgEndGroup();
+            w.SvgUseXY(CSSObjectClass.keySig, _keySigID, _originX, _originY);
         }
     }
 }

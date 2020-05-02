@@ -24,7 +24,7 @@ namespace Moritz.Symbols
         {
             WriteClefDefinitions(w, pageFormat);
             WriteFlagDefinitions(w, pageFormat);
-            //WriteKeySignatureDefinitions(w, pageFormat);
+            WriteKeySignatureDefinitions(w, pageFormat);
             WriteTimeSignatureDefinitions(w, pageFormat);
         }
 
@@ -75,6 +75,22 @@ namespace Moritz.Symbols
 
         private void WriteKeySignatureDefinitions(SvgWriter w, PageFormat pageFormat)
         {
+            var keySigDefs = KeySignatureMetrics.KeySigDefs;
+            foreach(var keySigID in keySigDefs.Keys)
+            {
+                w.WriteStartElement("g");
+                w.WriteAttributeString("id", keySigID);
+
+                string innerText = null;
+                var accidentals = keySigDefs[keySigID];
+                foreach(var acc in accidentals)
+                {
+                    innerText = (keySigID.EndsWith("s")) ? "#" : "b";
+                    WriteTextElement(w, CSSObjectClass.accidental.ToString(), acc.OriginX, acc.OriginY, innerText);
+                }
+
+                w.WriteEndElement(); // g
+            }
 
         }
 

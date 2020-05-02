@@ -16,7 +16,7 @@
 				<dc:type
 					rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
 				<dc:title>helloworld (scroll)</dc:title>
-				<dc:date>Friday 01.05.2020, 20:57:47</dc:date>
+				<dc:date>Saturday 02.05.2020, 10:42:04</dc:date>
 				<dc:creator>
 					<cc:Agent>
 						<dc:title>James Ingram</dc:title>
@@ -127,6 +127,25 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 				class="clef">&amp;</text>
 		</g>
 		<g
+			id="keySig_4f">
+			<text
+				class="accidental"
+				x="0"
+				y="200">b</text>
+			<text
+				class="accidental"
+				x="85.0585"
+				y="50">b</text>
+			<text
+				class="accidental"
+				x="170.1169"
+				y="250">b</text>
+			<text
+				class="accidental"
+				x="255.1754"
+				y="100">b</text>
+		</g>
+		<g
 			id="timeSig_4/4">
 			<text
 				class="timeSigNumerator"
@@ -143,7 +162,7 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">helloworld (scroll), Friday 01.05.2020, 20:57:43</text>
+			y="150">helloworld (scroll), Saturday 02.05.2020, 10:42:04</text>
 		<g
 			class="system">
 			<score:leftToRight
@@ -190,37 +209,23 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 					<use
 						class="clef"
 						href="#trebleClef"
-						x="536.9326"
+						x="530.2339"
 						y="900" />
-					<g
-						class="keySignature">
-						<text
-							class="keySignatureComponent"
-							x="-10"
-							y="88.8323">#</text>
-						<text
-							class="keySignatureComponent"
-							x="76.7332"
-							y="238.8323">#</text>
-						<text
-							class="keySignatureComponent"
-							x="163.4663"
-							y="38.8323">#</text>
-						<text
-							class="keySignatureComponent"
-							x="250.1995"
-							y="188.8323">#</text>
-					</g>
+					<use
+						class="keySig"
+						href="#keySig_4f"
+						x="500"
+						y="600" />
 					<line
 						class="normalBarline"
-						x1="846.9326"
+						x1="840.2339"
 						y1="600"
-						x2="846.9326"
+						x2="840.2339"
 						y2="1000" />
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="876.9326"
+						x="870.2339"
 						y="800" />
 					<g
 						class="chord">
@@ -228,15 +233,15 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 							class="graphics">
 							<text
 								class="notehead"
-								x="1204.174"
+								x="1197.475"
 								y="1100">w</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="1129.533"
+									x1="1122.834"
 									y1="1100"
-									x2="1448.099"
+									x2="1441.4"
 									y2="1100" />
 							</g>
 						</g>

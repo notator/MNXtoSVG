@@ -51,8 +51,8 @@ namespace Moritz.Xml
         timeSigNumerator,
         timeSigDenominator,
 
-        keySignature, // Used, recorded. (A normal time signature at the beginning of a bar) Container:voice.
-        keySignatureComponent,
+        keySig, // Used, recorded. (A normal time signature at the beginning of a bar) Container:voice.
+        // keySignatureComponent,
 
         #region drawObjects
         drawObjects,

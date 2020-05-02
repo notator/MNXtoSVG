@@ -144,6 +144,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Issues.txt" />
+    <Content Include="MNX_in\pngExamples.html" />
     <Content Include="MNX_in\png\__10_beamhooks.png" />
     <Content Include="MNX_in\png\__11a_nestedtuplets.png" />
     <Content Include="MNX_in\png\__11_tuplets.png" />
@@ -162,7 +163,6 @@
     <Content Include="MNX_in\png\___7_dots.png" />
     <Content Include="MNX_in\png\___8_ties.png" />
     <Content Include="MNX_in\png\___9_beams.png" />
-    <Content Include="SVG_out\helloworld %28scroll%29 - Copy.svg" />
     <Content Include="SVG_out\helloworld %28scroll%29.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

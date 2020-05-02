@@ -24,5 +24,5 @@
 	<options
 		writePage1Titles="false"
 		writeScrollScore="true"
-		includeMIDIData="true" />
+		includeMIDIData="false" />
 </form1Data>

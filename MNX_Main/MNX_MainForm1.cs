@@ -56,7 +56,7 @@ namespace MNX.Main
             if(selectedIndex == 0)
             {
                 OptionsForWriteAll optionsForWriteAll = new OptionsForWriteAll();
-                for(var i = 2; i < _MNX_Form1Data_Paths.Count; i++)
+                for(var i = 0; i < _MNX_Form1Data_Paths.Count; i++)
                 {
                     var form1StringData = new Form1StringData(_MNX_Form1Data_Paths[i].Item2);
                     form1StringData.Options = optionsForWriteAll.Options; // override when writing all scores
@@ -68,7 +68,7 @@ namespace MNX.Main
                     MNXCommonData mnxCommonData = mnx.MNXCommonData;
 
                     SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
-                    if(i == 2) // temp
+                    if(i == 0) // temp
                     {
                         break;
                     }

@@ -166,8 +166,8 @@ namespace Moritz.Symbols
 
 			if(graphicsOnly)
 			{
-				var commaIndex = _infoTextInfo.Text.IndexOf(',');
-				var text = _infoTextInfo.Text.Insert(commaIndex, " graphics");
+				var bracketIndex = _infoTextInfo.Text.IndexOf(')');
+				var text = _infoTextInfo.Text.Insert(bracketIndex, ", graphics only");
 				_infoTextInfo = new TextInfo(text, _infoTextInfo.FontFamily, _infoTextInfo.FontHeight, _infoTextInfo.TextHorizAlign);
 			}
 

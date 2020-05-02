@@ -1,42 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet href="../../fontsStyleSheet.css" type="text/css"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:score="https://www.james-ingram-act-two.de/open-source/svgScoreExtensions.html"
-	data-scoreType="https://www.james-ingram-act-two.de/open-source/cmn_core.html"
-	width="400"
+<svg xmlns="http://www.w3.org/2000/svg"
+	width="450"
 	height="168"
-	viewBox="0 0 4000 1688">
-	<title
-		class="pageTitle">helloworld (scroll)</title>
-	<metadata
-		class="metadata">
-		<rdf:RDF>
-			<cc:Work
-				rdf:about="">
-				<dc:format>image/svg+xml</dc:format>
-				<dc:type
-					rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-				<dc:title>helloworld (scroll)</dc:title>
-				<dc:date>Saturday 02.05.2020, 14:55:35</dc:date>
-				<dc:creator>
-					<cc:Agent>
-						<dc:title>James Ingram</dc:title>
-					</cc:Agent>
-				</dc:creator>
-				<dc:source>Website: https://www.james-ingram-act-two.de</dc:source>
-				<dc:description>
-Number of pages in the score: 1
-Number of output voices: 1
-Comments: See https://w3c.github.io/mnx/by-example/</dc:description>
-				<dc:contributor>
-					<cc:Agent>
-						<dc:title>Originally created using Assistant Composer software:
-https://james-ingram-act-two.de/moritz3/assistantComposer/assistantComposer.html
-Annotations, if there are any, have been made using Inkscape.</dc:title>
-					</cc:Agent>
-				</dc:contributor>
-			</cc:Work>
-		</rdf:RDF>
-	</metadata>
+	viewBox="0 0 4500 1688">
 	<defs>
 		<style
 			type="text/css"><![CDATA[
@@ -84,11 +51,11 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
                 font-size:0px;
                 text-anchor:end
             }
-            .notehead, .accidental, .clef
+            .notehead, .clef
             {
                 font-family:CLicht
             }
-            .notehead, .accidental, .clef
+            .notehead, .clef
             {
                 font-size:392px
             }
@@ -127,37 +94,6 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 				class="clef">&amp;</text>
 		</g>
 		<g
-			id="keySig_7f">
-			<text
-				class="accidental"
-				x="0"
-				y="200">b</text>
-			<text
-				class="accidental"
-				x="85.0585"
-				y="50">b</text>
-			<text
-				class="accidental"
-				x="170.1169"
-				y="250">b</text>
-			<text
-				class="accidental"
-				x="255.1754"
-				y="100">b</text>
-			<text
-				class="accidental"
-				x="340.2339"
-				y="300">b</text>
-			<text
-				class="accidental"
-				x="425.2923"
-				y="150">b</text>
-			<text
-				class="accidental"
-				x="510.3508"
-				y="350">b</text>
-		</g>
-		<g
 			id="timeSig_4/4">
 			<text
 				class="timeSigNumerator"
@@ -174,46 +110,43 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">helloworld (scroll), Saturday 02.05.2020, 14:55:35</text>
+			y="150">helloworld (scroll, graphics only), Saturday 02.05.2020, 21:30:31</text>
 		<g
 			class="system">
-			<score:leftToRight
-				systemTop="401.8"
-				systemBottom="1270" />
 			<g
 				class="staff"
-				score:staffName="">
+				staffName="">
 				<g
 					class="stafflines">
 					<line
 						class="staffline"
 						x1="500"
 						y1="700"
-						x2="3500"
+						x2="3300"
 						y2="700" />
 					<line
 						class="staffline"
 						x1="500"
 						y1="800"
-						x2="3500"
+						x2="3300"
 						y2="800" />
 					<line
 						class="staffline"
 						x1="500"
 						y1="900"
-						x2="3500"
+						x2="3300"
 						y2="900" />
 					<line
 						class="staffline"
 						x1="500"
 						y1="1000"
-						x2="3500"
+						x2="3300"
 						y2="1000" />
 					<line
 						class="staffline"
 						x1="500"
 						y1="1100"
-						x2="3500"
+						x2="3300"
 						y2="1100" />
 				</g>
 				<g
@@ -257,15 +190,15 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="3440"
+							x1="3240"
 							y1="695"
-							x2="3440"
+							x2="3240"
 							y2="1105" />
 						<line
 							class="thickBarline"
-							x1="3500"
+							x1="3300"
 							y1="695"
-							x2="3500"
+							x2="3300"
 							y2="1105" />
 					</g>
 				</g>

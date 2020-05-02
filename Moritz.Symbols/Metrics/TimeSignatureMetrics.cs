@@ -12,51 +12,78 @@ namespace Moritz.Symbols
 {
     internal class TimeSignatureMetrics : Metrics
     {
-        TextMetrics _numeratorMetrics = null;
-        TextMetrics _denominatorMetrics = null;
-        
-        readonly string _numerator = null;
-        readonly string _denominator = null;
-        readonly string _timeSigID = null;
-        public static IReadOnlyList<string> UsedTimeSigIDs => _usedTimeSigIDs as IReadOnlyList<string>;
-        private static List<string> _usedTimeSigIDs = new List<string>();
+        public static Dictionary<string, List<TextMetrics>> TimeSigDefs = new Dictionary<string, List<TextMetrics>>();
+
+        private readonly List<TextMetrics> _textMetricsList = new List<TextMetrics>();
+        private readonly string _timeSigID;
 
         public TimeSignatureMetrics(Graphics graphics, double gap, int numberOfStafflines, TextInfo numeratorTextInfo, TextInfo denominatorTextInfo)
             :base(CSSObjectClass.timeSig)
         {
-            TextMetrics numerMetrics = new TextMetrics(CSSObjectClass.timeSigNumerator, graphics, numeratorTextInfo);
-            TextMetrics denomMetrics = new TextMetrics(CSSObjectClass.timeSigDenominator, graphics, denominatorTextInfo);
+            string suffix = "_" + numeratorTextInfo.Text + "/" + denominatorTextInfo.Text;
+            _timeSigID = CSSObjectClass.timeSig.ToString() + suffix;
 
-            _originY = gap * 2;
-            numerMetrics.Move(0, (gap * 1.95) - numerMetrics.Bottom);
-            denomMetrics.Move(0, (gap * 2.05) - denomMetrics.Top);
+            if( ! TimeSigDefs.ContainsKey(_timeSigID))
+            {
+                List<TextMetrics> textMetricss = new List<TextMetrics>
+                {
+                    new TextMetrics(CSSObjectClass.timeSigNumerator, graphics, numeratorTextInfo),
+                    new TextMetrics(CSSObjectClass.timeSigDenominator, graphics, denominatorTextInfo)
+                };
+
+                var numerMetrics = textMetricss[0];
+                var denomMetrics = textMetricss[1];
+
+                SetThisMetrics(numerMetrics, denomMetrics, gap);
+
+                TimeSigDefs.Add(_timeSigID, textMetricss);
+            }
+
+            var textMetricsList = TimeSigDefs[_timeSigID];
+            TextMetrics numerTM = TimeSigDefs[_timeSigID][0];
+            TextMetrics denomTM = TimeSigDefs[_timeSigID][1];
+            TextMetrics numerCloneTM = numerTM.Clone(CSSObjectClass.timeSigNumerator);
+            TextMetrics denomCloneTM = denomTM.Clone(CSSObjectClass.timeSigDenominator);
+
+            _textMetricsList.Add(numerCloneTM);
+            _textMetricsList.Add(denomCloneTM);
+
+            SetThisMetrics(numerCloneTM, denomCloneTM, gap);
+        }
+
+        private void SetThisMetrics(TextMetrics numerMetrics, TextMetrics denomMetrics, double gap)
+        {
+            numerMetrics.Move(0, 0 - numerMetrics.Bottom);
+            denomMetrics.Move(0, (gap * 0.05) - denomMetrics.Top);
+
+            _originY = gap * 2; // middle line of staff
             _top = numerMetrics.Top;
             _bottom = denomMetrics.Bottom;
 
             double nWidth = numerMetrics.Right - numerMetrics.Left;
             double dWidth = denomMetrics.Right - denomMetrics.Left;
             double width = (nWidth > dWidth) ? nWidth : dWidth;
-            numerMetrics.Move(width / 2, 0);
-            denomMetrics.Move(width / 2, 0);
-            _right = width;
-            _left = 0;
-            _originX = 0;
 
-            _numeratorMetrics = numerMetrics;
-            _denominatorMetrics = denomMetrics;
+            _originX = 0; // left aligned
+            if(nWidth < width)
+            {
+                numerMetrics.Move((width - nWidth) / 2, 0);
+            }
+            if(dWidth < width)
+            {
+                denomMetrics.Move((width - dWidth) / 2, 0);
+            }
+            _right = (numerMetrics.Right > denomMetrics.Right) ? numerMetrics.Right : denomMetrics.Right;
+            _left = (numerMetrics.Left < denomMetrics.Left) ? numerMetrics.Left : denomMetrics.Left;
 
-            _numerator = numeratorTextInfo.Text;
-            _denominator = denominatorTextInfo.Text;
-
-            _timeSigID = CSSObjectClass.timeSig.ToString() + "_" + _numerator + "/" + _denominator;
-            _usedTimeSigIDs.Add(_timeSigID);
+            _left -= (gap / 2.6); // left padding
         }
 
         public override void Move(double dx, double dy)
         {
             base.Move(dx, dy);
-            _numeratorMetrics.Move(dx, dy);
-            _denominatorMetrics.Move(dx, dy);
+            _textMetricsList[0].Move(dx, dy);
+            _textMetricsList[1].Move(dx, dy);
         }
 
         public override void WriteSVG(SvgWriter w)

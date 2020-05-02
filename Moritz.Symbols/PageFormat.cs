@@ -45,7 +45,7 @@ namespace Moritz.Symbols
         public double LyricFontHeight { get { return GapVBPX * 1.96; } }
         public double ClefOctaveNumberHeight { get { return GapVBPX * 2.6264; } }
         public double ClefXFontHeight { get { return GapVBPX * 1.568; } }
-        public double TimeSignatureComponentFontHeight { get { return GapVBPX * 4; } }
+        public double TimeSignatureComponentFontHeight { get { return GapVBPX * 4.2; } }
         /// Open Sans, Open Sans Condensed (new 26.06.2017)
         public double OrnamentFontHeight { get { return GapVBPX * 2.156; } }
         /// CLicht (new 26.06.2017)

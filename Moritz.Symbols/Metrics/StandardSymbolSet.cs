@@ -30,13 +30,22 @@ namespace Moritz.Symbols
 
         private void WriteTimeSignatureDefinitions(SvgWriter w, PageFormat pageFormat)
         {
-            List<string> usedTimeSigIDs = new List<string>(TimeSignatureMetrics.UsedTimeSigIDs);
-            double componentHeight = pageFormat.TimeSignatureComponentFontHeight;
-            double gap = pageFormat.GapVBPX;
-            foreach(var timeSigID in usedTimeSigIDs)
+            var timeSigDefs = TimeSignatureMetrics.TimeSigDefs;
+            foreach(var timeSigID in timeSigDefs.Keys)
             {
                 GetTimeSigComponents(timeSigID, out string numerator, out string denominator);
-                WriteTimeSignatureDefinition(w, timeSigID, numerator, denominator, componentHeight, gap);
+
+                w.WriteStartElement("g");
+                w.WriteAttributeString("id", timeSigID);
+
+                var numerMetrics = timeSigDefs[timeSigID][0];
+                var denomMetrics = timeSigDefs[timeSigID][1];
+
+                WriteTextElement(w, CSSObjectClass.timeSigNumerator.ToString(), numerMetrics.OriginX, numerMetrics.OriginY, numerator);
+                WriteTextElement(w, CSSObjectClass.timeSigDenominator.ToString(), denomMetrics.OriginX, denomMetrics.OriginY, denominator);
+
+                w.WriteEndElement(); // g
+
             }
         }
 
@@ -46,31 +55,6 @@ namespace Moritz.Symbols
             string[] components = comps[1].Split(new char[] { '/' });
             numerator = components[0];
             denominator = components[1];
-        }
-
-        public void WriteTimeSignatureDefinition(SvgWriter w, string timeSigID,
-            string numerator, string denominator, double componentHeight, double gap)
-        {
-            double numX = 0, denX = 0;
-            if(numerator.Length < denominator.Length)
-            {
-                numX += componentHeight / 3; // centred by experiment :-)
-            }
-            if(numerator.Length > denominator.Length)
-            {
-                denX += componentHeight / 3; // centred by experiment :-)
-            }
-            double paddingY = gap * 0.35;
-            double numY = -paddingY;
-            double denY = componentHeight - gap;
-
-            w.WriteStartElement("g");
-            w.WriteAttributeString("id", timeSigID);
-
-            WriteTextElement(w, CSSObjectClass.timeSigNumerator.ToString(), numX, numY, numerator);
-            WriteTextElement(w, CSSObjectClass.timeSigDenominator.ToString(), denX, denY, denominator);
-
-            w.WriteEndElement(); // g
         }
 
         private void WriteKeySignatureDefinitions(SvgWriter w, PageFormat pageFormat)
@@ -432,8 +416,8 @@ namespace Moritz.Symbols
                 string[] strs = timeSignature.Signature.Split(new char[] { '/' }); // e.g. "4/4"
                 string numerator = strs[0];
                 string denominator = strs[1];
-                TextInfo numeratorTextInfo = new TextInfo(numerator, "Arial", timeSignature.FontHeight, new ColorString("000000"), TextHorizAlign.center);
-                TextInfo denominatorTextInfo = new TextInfo(denominator, "Arial", timeSignature.FontHeight, new ColorString("000000"), TextHorizAlign.center);
+                TextInfo numeratorTextInfo = new TextInfo(numerator, "Arial", timeSignature.FontHeight, new ColorString("000000"), TextHorizAlign.left);
+                TextInfo denominatorTextInfo = new TextInfo(denominator, "Arial", timeSignature.FontHeight, new ColorString("000000"), TextHorizAlign.left);
                 returnMetrics = new TimeSignatureMetrics(graphics, gap, noteObject.Voice.Staff.NumberOfStafflines, numeratorTextInfo, denominatorTextInfo);
             }
             else if(keySignature != null)
@@ -607,7 +591,7 @@ namespace Moritz.Symbols
             }
             else if(mnxTimeSigDef != null)
             {
-                noteObject = new TimeSignature(voice, mnxTimeSigDef, pageFormat.GapVBPX * 3);
+                noteObject = new TimeSignature(voice, mnxTimeSigDef, pageFormat.TimeSignatureComponentFontHeight);
             }
             else if(mnxKeySigDef != null)
             {

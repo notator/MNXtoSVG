@@ -3,8 +3,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:score="https://www.james-ingram-act-two.de/open-source/svgScoreExtensions.html"
 	data-scoreType="https://www.james-ingram-act-two.de/open-source/cmn_core.html"
 	width="400"
-	height="152"
-	viewBox="0 0 4000 1524">
+	height="168"
+	viewBox="0 0 4000 1688">
 	<title
 		class="pageTitle">helloworld (scroll)</title>
 	<metadata
@@ -16,7 +16,7 @@
 				<dc:type
 					rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
 				<dc:title>helloworld (scroll)</dc:title>
-				<dc:date>Saturday 02.05.2020, 11:14:05</dc:date>
+				<dc:date>Saturday 02.05.2020, 14:55:35</dc:date>
 				<dc:creator>
 					<cc:Agent>
 						<dc:title>James Ingram</dc:title>
@@ -102,7 +102,7 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
             }
             .timeSigNumerator, .timeSigDenominator
             {
-                font-size:400px
+                font-size:420px
             }
             .staffline, .ledgerline
             {
@@ -127,7 +127,7 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 				class="clef">&amp;</text>
 		</g>
 		<g
-			id="keySig_4f">
+			id="keySig_7f">
 			<text
 				class="accidental"
 				x="0"
@@ -144,17 +144,29 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 				class="accidental"
 				x="255.1754"
 				y="100">b</text>
+			<text
+				class="accidental"
+				x="340.2339"
+				y="300">b</text>
+			<text
+				class="accidental"
+				x="425.2923"
+				y="150">b</text>
+			<text
+				class="accidental"
+				x="510.3508"
+				y="350">b</text>
 		</g>
 		<g
 			id="timeSig_4/4">
 			<text
 				class="timeSigNumerator"
 				x="0"
-				y="-35">4</text>
+				y="0">4</text>
 			<text
 				class="timeSigDenominator"
 				x="0"
-				y="300">4</text>
+				y="303.2">4</text>
 		</g>
 	</defs>
 	<g
@@ -162,23 +174,17 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">helloworld (scroll), Saturday 02.05.2020, 11:14:05</text>
+			y="150">helloworld (scroll), Saturday 02.05.2020, 14:55:35</text>
 		<g
 			class="system">
 			<score:leftToRight
-				systemTop="465"
-				systemBottom="1170" />
+				systemTop="401.8"
+				systemBottom="1270" />
 			<g
 				class="staff"
 				score:staffName="">
 				<g
 					class="stafflines">
-					<line
-						class="staffline"
-						x1="500"
-						y1="600"
-						x2="3500"
-						y2="600" />
 					<line
 						class="staffline"
 						x1="500"
@@ -203,6 +209,12 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 						y1="1000"
 						x2="3500"
 						y2="1000" />
+					<line
+						class="staffline"
+						x1="500"
+						y1="1100"
+						x2="3500"
+						y2="1100" />
 				</g>
 				<g
 					class="voice">
@@ -210,39 +222,34 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 						class="clef"
 						href="#trebleClef"
 						x="500"
-						y="900" />
-					<use
-						class="keySig"
-						href="#keySig_4f"
-						x="810"
-						y="600" />
+						y="1000" />
 					<line
 						class="normalBarline"
-						x1="1209.057"
-						y1="600"
-						x2="1209.057"
-						y2="1000" />
+						x1="810"
+						y1="700"
+						x2="810"
+						y2="1100" />
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="1239.057"
-						y="800" />
+						x="868.4615"
+						y="900" />
 					<g
 						class="chord">
 						<g
 							class="graphics">
 							<text
 								class="notehead"
-								x="1566.299"
-								y="1100">w</text>
+								x="1274.743"
+								y="1200">w</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="1491.657"
-									y1="1100"
-									x2="1810.223"
-									y2="1100" />
+									x1="1200.102"
+									y1="1200"
+									x2="1518.668"
+									y2="1200" />
 							</g>
 						</g>
 					</g>
@@ -251,15 +258,15 @@ Annotations, if there are any, have been made using Inkscape.</dc:title>
 						<line
 							class="normalBarline"
 							x1="3440"
-							y1="595"
+							y1="695"
 							x2="3440"
-							y2="1005" />
+							y2="1105" />
 						<line
 							class="thickBarline"
 							x1="3500"
-							y1="595"
+							y1="695"
 							x2="3500"
-							y2="1005" />
+							y2="1105" />
 					</g>
 				</g>
 			</g>

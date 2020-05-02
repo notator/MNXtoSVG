@@ -18,7 +18,27 @@ namespace Moritz.Symbols
 			_textInfo = textInfo;
 		}
 
-		public override void WriteSVG(SvgWriter w)
+        /// <summary>
+        /// Used by Clone(cssClass)
+        /// </summary>
+        private TextMetrics(CSSObjectClass cssClass, double top, double right, double bottom, double left, double originX, double originY, TextInfo textInfo)
+            : base(cssClass, textInfo.FontFamily, textInfo.FontHeight, textInfo.TextHorizAlign, textInfo.ColorString.String)
+        {
+            _top = top;
+            _right = right;
+            _bottom = bottom;
+            _left = left;
+            _originX = originX;
+            _originY = originY;
+            _textInfo = textInfo;
+        }
+
+        internal TextMetrics Clone(CSSObjectClass cssClass)
+        {
+            return new TextMetrics(cssClass, Top, Right, Bottom, Left, OriginX, OriginY, _textInfo);
+        }
+
+        public override void WriteSVG(SvgWriter w)
 		{
 			w.SvgText(CSSObjectClass, _textInfo.Text, _originX, _originY);
 		}
@@ -86,7 +106,7 @@ namespace Moritz.Symbols
 			_originY = 0; // SVG originY is the baseline of the text
 		}
 
-		private Size MeasureText(Graphics g, string text, string fontFace, double fontHeight)
+        private Size MeasureText(Graphics g, string text, string fontFace, double fontHeight)
 		{
 			Size maxSize = new Size(int.MaxValue, int.MaxValue);
 			TextFormatFlags flags = TextFormatFlags.NoPadding;

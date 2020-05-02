@@ -582,7 +582,6 @@ namespace Moritz.Symbols
             KeySignature keySignature = null;
             Barline barline = null;
             TimeSignature timeSignature = null;
-            hairline *= 2;
 
             foreach(Staff staff in Staves)
             {

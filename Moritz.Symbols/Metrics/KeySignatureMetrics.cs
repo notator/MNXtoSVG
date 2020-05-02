@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-
-using MNX.Globals;
+﻿using MNX.Globals;
 using Moritz.Xml;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace Moritz.Symbols
 {
@@ -20,19 +15,11 @@ namespace Moritz.Symbols
         public KeySignatureMetrics(Graphics graphics, double gap, double musicFontHeight, string clefType, int fifths)
             :base(CSSObjectClass.keySig)
         {
-            M.Assert(fifths > 0 || fifths < 0);
+            M.Assert(fifths != 0 && fifths >= -7 && fifths <= 7);
             string suffix = (fifths > 0) ? fifths.ToString() + "s" : (fifths * -1).ToString() + "f";
             _keySigID = CSSObjectClass.keySig.ToString() + "_" + suffix;
 
-            if(KeySigDefs.Keys.Contains(_keySigID))
-            {
-                var def = KeySigDefs[_keySigID];
-                foreach(var acc in def)
-                {
-                    AccidentalMetrics.Add(new CLichtCharacterMetrics(acc.CharacterString, acc.FontHeight, CSSObjectClass.accidental));
-                }
-            }
-            else
+            if( ! KeySigDefs.ContainsKey(_keySigID))
             {
                 List<CLichtCharacterMetrics> accMetrics = GetAccidentalMetrics(fifths, gap, musicFontHeight);
                 _top = 0; _left = 0; _bottom = 0; _right = 0;
@@ -98,10 +85,12 @@ namespace Moritz.Symbols
                     }
                 }
                 KeySigDefs.Add(_keySigID, accMetrics);
-                foreach(var acc in accMetrics)
-                {
-                    AccidentalMetrics.Add(new CLichtCharacterMetrics(acc.CharacterString, acc.FontHeight, CSSObjectClass.accidental));
-                }
+            }
+
+            var def = KeySigDefs[_keySigID];
+            foreach(var acc in def)
+            {
+                AccidentalMetrics.Add(new CLichtCharacterMetrics(acc.CharacterString, acc.FontHeight, CSSObjectClass.accidental));
             }
         }
 

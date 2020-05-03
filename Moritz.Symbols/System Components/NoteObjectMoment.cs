@@ -98,62 +98,72 @@ namespace Moritz.Symbols
         {
             M.Assert(AlignmentX == 0F);
 
-            double minBarlineOriginX = double.MaxValue;
-            for(var i = 0; i < _noteObjects.Count; i++)
-            {
-                if(_noteObjects[i] is Barline b && b.Metrics != null)
-                {
-                    if(b.Metrics.OriginX < minBarlineOriginX)
-                    {
-                        minBarlineOriginX = b.Metrics.OriginX;
-                    }
-                }
-			}
-            for(int index = 0; index < _noteObjects.Count; index++)
-            {
-                if(_noteObjects[index] is Barline barline && barline.Metrics != null)
-                {
-                    if(index > 0)
-                    {
-                        if(_noteObjects[index - 1] is KeySignature keySignature)
-                        {
-                            keySignature.Metrics.Move(minBarlineOriginX - keySignature.Metrics.Right, 0);
-                            if(_noteObjects[index - 2] is Clef kClef)
-                            {
-                                kClef.Metrics.Move(keySignature.Metrics.Left - kClef.Metrics.Right, 0);
-                            }
-                        }
-                        else if(_noteObjects[index - 1] is Clef clef)
-                        {
-                            clef.Metrics.Move(minBarlineOriginX - clef.Metrics.Right, 0);
-                        }
-                    }
-                    barline.Metrics.Move(minBarlineOriginX - barline.Metrics.OriginX, 0);
-                }
+            DurationSymbol ds = (DurationSymbol)_noteObjects.Find(obj => obj is DurationSymbol);
+            TimeSignature ts = (TimeSignature)_noteObjects.Find(obj => obj is TimeSignature);
+            KeySignature ks = (KeySignature)_noteObjects.Find(obj => obj is KeySignature);
+            Barline b = (Barline)_noteObjects.Find(obj => obj is Barline);
+            Clef c = (Clef)_noteObjects.Find(obj => obj is Clef);
+            SmallClef sc = (SmallClef)_noteObjects.Find(obj => obj is SmallClef);
 
-                if(_noteObjects[index] is DurationSymbol durationSymbol && durationSymbol.Metrics != null)
+            double leftEdge = 0;
+            if(ds != null)
+            {
+                leftEdge = ds.Metrics.Left;
+                if(ts != null)
                 {
-                    if(index > 0)
+                    ts.Metrics.Move(leftEdge - ts.Metrics.Right, 0);
+                    leftEdge = ts.Metrics.Left;
+                }
+                if(ks != null)
+                {
+                    ks.Metrics.Move(leftEdge - ks.Metrics.Right, 0);
+                    leftEdge = ks.Metrics.Left - (gap * 0.4);
+                }
+                if(b != null)
+                {
+                    if(ts != null && ks == null)
                     {
-                        double dx = 0;
-                        var prevNoteObject = _noteObjects[index - 1];
-
-                        if(prevNoteObject is SmallClef smallClef)
-                        {
-                            smallClef.Metrics.Move(durationSymbol.Metrics.Left - smallClef.Metrics.Right + gap, 0);
-                        }
-                        if(prevNoteObject is Barline)
-                        {
-                            dx = (durationSymbol is OutputChordSymbol) ? -(gap / 2) : -(gap / 4); // OutputRests are different...
-                            foreach(var noteObj in _noteObjects)
-                            {
-                                if(!(noteObj is DurationSymbol))
-                                {
-                                    noteObj.Metrics.Move(dx, 0);
-                                }
-                            }
-                        }
+                        leftEdge -= (gap * 0.5);
                     }
+                    else if(ts == null && ks == null)
+                    {
+                        leftEdge = (ds is OutputRestSymbol) ? leftEdge -= (gap * 0.4) : leftEdge -= (gap * 0.8);
+                    }
+                    b.Metrics.Move(leftEdge - b.Metrics.Right, 0);
+                    leftEdge = b.Metrics.Left;
+                }
+                if(c != null)
+                {
+                    c.Metrics.Move(leftEdge - c.Metrics.Right, 0);
+                    leftEdge = c.Metrics.Left;
+                }
+                if(sc != null)
+                {
+                    sc.Metrics.Move(leftEdge - sc.Metrics.Right, 0);
+                    leftEdge = sc.Metrics.Left;
+                }
+            }
+            else // final barline
+            {
+                if(ts != null)
+                {
+                    ts.Metrics.Move(0 - ts.Metrics.Right, 0);
+                    leftEdge = ts.Metrics.Left - (gap * 0.5);
+                }
+                if(b != null)
+                {
+                    b.Metrics.Move(leftEdge - b.Metrics.OriginX, 0);
+                    leftEdge = b.Metrics.Left - (gap * 0.5);
+                }
+                if(ks != null)
+                {
+                    ks.Metrics.Move(leftEdge - ks.Metrics.Right, 0);
+                    leftEdge = ks.Metrics.Left;
+                }
+                if(sc != null)
+                {
+                    sc.Metrics.Move(leftEdge - sc.Metrics.Right, 0);
+                    leftEdge = sc.Metrics.Left;
                 }
             }
         }

@@ -154,7 +154,7 @@ namespace Moritz.Symbols
 			// are moved to their correct X- and Y- positions after all the DurationObjects and
 			// Barlines have been moved to their final positions on the staff.
 
-            MoveClefsKeySignaturesBarlinesAndTimeSignatures(pageFormat.StafflineStemStrokeWidthVBPX);
+            //MoveClefsKeySignaturesBarlinesAndTimeSignatures(pageFormat.StafflineStemStrokeWidthVBPX);
 
             List<NoteObjectMoment> moments = MomentSymbols(pageFormat.GapVBPX);
 
@@ -573,96 +573,6 @@ namespace Moritz.Symbols
             return momentSymbols;
         }
 
-        /// <summary>
-        /// Moves clefs, barlines and timeSignatures to the left of the following duration symbols.
-        /// </summary>
-        private void MoveClefsKeySignaturesBarlinesAndTimeSignatures(double hairline)
-        {
-            Clef clef = null;
-            KeySignature keySignature = null;
-            Barline barline = null;
-            TimeSignature timeSignature = null;
-
-            foreach(Staff staff in Staves)
-            {
-                if(staff.Metrics != null)
-                {
-                    foreach(Voice voice in staff.Voices)
-                    {
-                        foreach(NoteObject noteObject in voice.NoteObjects)
-                        {
-                            if(noteObject is Clef)
-                                clef = noteObject as Clef;
-                            if(noteObject is KeySignature)
-                                keySignature = noteObject as KeySignature;
-                            if(noteObject is Barline)
-                                barline = noteObject as Barline;
-                            if(noteObject is TimeSignature)
-                                timeSignature = noteObject as TimeSignature;
-
-                            if(noteObject is DurationSymbol durationSymbol)
-                            {
-								double durationSymbolPadding = hairline; // 4
-								if(durationSymbol is RestSymbol restSymbol)
-								{
-									durationSymbolPadding = hairline * 8; // 32									
-								}
-								else if(durationSymbol is ChordSymbol chordSymbol)
-								{
-									ChordMetrics chordMetrics = chordSymbol.ChordMetrics;
-									if(chordMetrics.AccidentalsMetrics == null)
-										durationSymbolPadding = hairline * 8; // 32
-									if(chordMetrics.CautionaryBracketsMetrics.Count > 0)
-										durationSymbolPadding = hairline * 4; // 16
-								}
-
-								double rightSide = 0;
-								if(!(durationSymbol is CautionaryChordSymbol ccs && ccs.Visible == false))
-								{
-									rightSide = durationSymbol.Metrics.Left - durationSymbolPadding;
-								}
-
-                                if(timeSignature != null)
-                                {
-                                    timeSignature.Metrics.Move(rightSide - timeSignature.Metrics.Right, 0F);
-                                    rightSide = timeSignature.Metrics.Left - hairline;
-                                }
-								if(barline != null)
-                                {
-									barline.Metrics.Move(rightSide - barline.Metrics.Right, 0F);
-                                    rightSide = barline.Metrics.Left - hairline;
-                                }
-                                if(keySignature != null)
-                                {
-                                    keySignature.Metrics.Move(rightSide - keySignature.Metrics.Right, 0F);
-                                    rightSide = keySignature.Metrics.Left - hairline;
-                                }
-                                if(clef != null)
-                                {
-                                    clef.Metrics.Move(rightSide - clef.Metrics.Right, 0F);
-                                }
-                                clef = null;
-                                keySignature = null;
-                                barline = null;
-                                timeSignature = null;
-                                durationSymbol = null;
-                            }
-                            else if(barline != null)
-                            {
-                                if(timeSignature != null)
-                                {
-                                    barline.Metrics.Move(timeSignature.Metrics.Left - barline.Metrics.Right, 0); // final timeSigs are right of the barline
-                                }
-                                if(clef != null)
-                                {
-                                    clef.Metrics.Move(barline.Metrics.Left - clef.Metrics.Right - hairline, 0); // clefs have a space on the right
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
         /// <summary>
         /// When this function returns, the moments have been distributed proportionally within each bar.
         /// Symbols are at their correct positions, except that no checking has been done for overlapping noteObject Metrics.

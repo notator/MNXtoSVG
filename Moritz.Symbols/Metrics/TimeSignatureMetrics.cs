@@ -75,8 +75,6 @@ namespace Moritz.Symbols
             }
             _right = (numerMetrics.Right > denomMetrics.Right) ? numerMetrics.Right : denomMetrics.Right;
             _left = (numerMetrics.Left < denomMetrics.Left) ? numerMetrics.Left : denomMetrics.Left;
-
-            _left -= (gap / 2.6); // left padding
         }
 
         public override void Move(double dx, double dy)

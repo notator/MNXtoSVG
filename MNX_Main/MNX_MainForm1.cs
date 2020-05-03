@@ -235,7 +235,7 @@ namespace MNX.Main
 
         public void SaveSettings()
         {
-            Form1StringData svgds = new Form1StringData(_MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item2);
+            Form1StringData svgds = new Form1StringData(_MNX_Form1Data_Paths[MNXSelect.SelectedIndex].Item2);
 
             var page = svgds.Page;
             page.Width = PageWidthTextBox.Text;

@@ -287,12 +287,4 @@ namespace MNX.Globals
             return _fileName;
         }
     }
-
-    public class OptionsForWriteAll : Form1StringData
-    {
-        public OptionsForWriteAll()
-                :base(M.OptionsForWriteAll_Path)
-        {
-        }
-    }
 }

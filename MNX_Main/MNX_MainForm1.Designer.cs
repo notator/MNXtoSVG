@@ -684,6 +684,7 @@
             this.OptionsGroupBox.Controls.Add(this.OptionWritePage1TitlesCheckBox);
             this.OptionsGroupBox.Controls.Add(this.OptionWriteScoreAsScrollCheckBox);
             this.OptionsGroupBox.Controls.Add(this.OptionIncludeMIDIDataCheckBox);
+            this.OptionsGroupBox.Enabled = false;
             this.OptionsGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.OptionsGroupBox.Location = new System.Drawing.Point(181, 23);
             this.OptionsGroupBox.Name = "OptionsGroupBox";

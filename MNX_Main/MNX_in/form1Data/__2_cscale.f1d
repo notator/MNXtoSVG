@@ -1,30 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Friday 22.12.2017, 16:07:19-->
+<!--file created: Sunday 03.05.2020, 10:59:23-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
-  <page
-    width="500"
-    height="100"
+	<page
+		width="500"
+		height="100"
 		marginTopPage1="90"
 		marginTopOther="60"
 		marginRight="70"
 		marginBottom="50"
 		marginLeft="70" />
-  <notation
-		stafflineStemStrokeWidth="0.5"
-		gapSize="5"
+	<notation
+		stafflineStemStrokeWidth="1.0"
+		gapSize="10"
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="3"
 		systemStartBars="1"
-    crotchetsPerMinute="60" />
-  <metadata
-  title="cscale"
-  author="MNX by Example"
-  keywords=""
-  comment="See https://w3c.github.io/mnx/by-example/"/>
-  <options
-    writePage1Titles="false"
-    includeMIDIData="true"
-    writeScrollScore="true"/>
-
+		crotchetsPerMinute="60" />
+	<metadata
+		title="cscale"
+		author="MNX by Example"
+		comment="See https://w3c.github.io/mnx/by-example/" />
+	<options
+		writePage1Titles="false"
+		writeScrollScore="true"
+		includeMIDIData="false" />
 </form1Data>

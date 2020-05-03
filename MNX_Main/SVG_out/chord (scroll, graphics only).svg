@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet href="../../fontsStyleSheet.css" type="text/css"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-	width="450"
+	width="400"
 	height="168"
-	viewBox="0 0 4500 1688">
+	viewBox="0 0 4000 1688">
 	<defs>
 		<style
 			type="text/css"><![CDATA[
@@ -51,11 +51,11 @@
                 font-size:0px;
                 text-anchor:end
             }
-            .notehead, .clef
+            .rest, .notehead, .clef
             {
                 font-family:CLicht
             }
-            .notehead, .clef
+            .rest, .notehead, .clef
             {
                 font-size:392px
             }
@@ -71,11 +71,15 @@
             {
                 font-size:420px
             }
-            .staffline, .ledgerline
+            .staffline, .ledgerline, .stem
             {
                 stroke:black;
                 stroke-width:10px;
                 fill:black
+            }
+            .stem
+            {
+                stroke-linecap:round                
             }
             .normalBarline
             {
@@ -110,7 +114,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">helloworld (scroll, graphics only), Sunday 03.05.2020, 11:07:06</text>
+			y="150">chord (scroll, graphics only), Sunday 03.05.2020, 11:07:21</text>
 		<g
 			class="system">
 			<g
@@ -122,31 +126,31 @@
 						class="staffline"
 						x1="500"
 						y1="700"
-						x2="3300"
+						x2="3500"
 						y2="700" />
 					<line
 						class="staffline"
 						x1="500"
 						y1="800"
-						x2="3300"
+						x2="3500"
 						y2="800" />
 					<line
 						class="staffline"
 						x1="500"
 						y1="900"
-						x2="3300"
+						x2="3500"
 						y2="900" />
 					<line
 						class="staffline"
 						x1="500"
 						y1="1000"
-						x2="3300"
+						x2="3500"
 						y2="1000" />
 					<line
 						class="staffline"
 						x1="500"
 						y1="1100"
-						x2="3300"
+						x2="3500"
 						y2="1100" />
 				</g>
 				<g
@@ -171,34 +175,58 @@
 						class="chord">
 						<g
 							class="graphics">
+							<line
+								class="stem"
+								x1="1357.72"
+								y1="640"
+								x2="1357.72"
+								y2="1188.45" />
 							<text
 								class="notehead"
-								x="1274.743"
-								y="1200">w</text>
+								x="1247.641"
+								y="1000">˙</text>
+							<text
+								class="notehead"
+								x="1247.641"
+								y="1100">˙</text>
+							<text
+								class="notehead"
+								x="1247.641"
+								y="1200">˙</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
 									x1="1200.102"
 									y1="1200"
-									x2="1518.668"
+									x2="1410.26"
 									y2="1200" />
 							</g>
+						</g>
+					</g>
+					<g
+						class="rest">
+						<g
+							class="graphics">
+							<text
+								class="rest"
+								x="2285.2"
+								y="900">∑</text>
 						</g>
 					</g>
 					<g
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="3240"
+							x1="3440"
 							y1="695"
-							x2="3240"
+							x2="3440"
 							y2="1105" />
 						<line
 							class="thickBarline"
-							x1="3300"
+							x1="3500"
 							y1="695"
-							x2="3300"
+							x2="3500"
 							y2="1105" />
 					</g>
 				</g>

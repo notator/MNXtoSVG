@@ -18,11 +18,6 @@ namespace MNX.Main
         {
             InitializeComponent();
 
-            Form1OptionsStrings options = new OptionsForWriteAll().Options;
-            OptionWritePage1TitlesCheckBox.CheckState = (options.WritePage1Titles == "true") ? CheckState.Checked : CheckState.Unchecked;
-            OptionIncludeMIDIDataCheckBox.CheckState = (options.IncludeMIDIData == "true") ? CheckState.Checked : CheckState.Unchecked;
-            OptionWriteScoreAsScrollCheckBox.CheckState = (options.WriteScrollScore == "true") ? CheckState.Checked : CheckState.Unchecked;
-
             this.MNXSelect.DropDownStyle = ComboBoxStyle.DropDownList;
             this.StafflineStemStrokeWidthComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             this.GapSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -55,11 +50,10 @@ namespace MNX.Main
 
             if(selectedIndex == 0)
             {
-                OptionsForWriteAll optionsForWriteAll = new OptionsForWriteAll();
                 for(var i = 0; i < _MNX_Form1Data_Paths.Count; i++)
                 {
                     var form1StringData = new Form1StringData(_MNX_Form1Data_Paths[i].Item2);
-                    form1StringData.Options = optionsForWriteAll.Options; // override when writing all scores
+
                     var form1Data = new Form1Data(form1StringData);
 
                     M.MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
@@ -175,7 +169,7 @@ namespace MNX.Main
                 NotationGroupBox.Enabled = false;
                 SpeedGroupBox.Enabled = false;
                 MetadataGroupBox.Enabled = false;
-                OptionsGroupBox.Enabled = true;
+                OptionsGroupBox.Enabled = false;
 
                 WriteButton.Text = "Write all Scores";
             }
@@ -339,47 +333,36 @@ namespace MNX.Main
 
         public void SaveSettings()
         {
-            Form1StringData svgds = null;
-            if(MNXSelect.SelectedIndex == 0)
-            {
-                svgds = new OptionsForWriteAll();
-                var options = svgds.Options;
-                options.WritePage1Titles = (this.OptionWritePage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
-                options.IncludeMIDIData = (this.OptionIncludeMIDIDataCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
-                options.WriteScrollScore = (this.OptionWriteScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
-            }
-            else
-            {
-                svgds = new Form1StringData(_MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item2);
+            Form1StringData svgds = new Form1StringData(_MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item2);
 
-                var page = svgds.Page;
-                page.Width = PageWidthTextBox.Text;
-                page.Height = PageHeightTextBox.Text;
-                page.MarginTopPage1 = MarginTopPage1TextBox.Text;
-                page.MarginTopOther = MarginTopOtherPagesTextBox.Text;
-                page.MarginRight = MarginRightTextBox.Text;
-                page.MarginLeft = MarginLeftTextBox.Text;
-                page.MarginBottom = MarginBottomTextBox.Text;
+            var page = svgds.Page;
+            page.Width = PageWidthTextBox.Text;
+            page.Height = PageHeightTextBox.Text;
+            page.MarginTopPage1 = MarginTopPage1TextBox.Text;
+            page.MarginTopOther = MarginTopOtherPagesTextBox.Text;
+            page.MarginRight = MarginRightTextBox.Text;
+            page.MarginLeft = MarginLeftTextBox.Text;
+            page.MarginBottom = MarginBottomTextBox.Text;
 
-                var notes = svgds.Notation;
-                notes.stafflineStemStrokeWidth = (string)StafflineStemStrokeWidthComboBox.Items[StafflineStemStrokeWidthComboBox.SelectedIndex];
-                notes.gapSize = (string)GapSizeComboBox.Items[GapSizeComboBox.SelectedIndex];
-                notes.minGapsBetweenStaves = MinimumGapsBetweenStavesTextBox.Text;
-                notes.minGapsBetweenSystems = MinimumGapsBetweenSystemsTextBox.Text;
-                notes.systemStartBars = SystemStartBarsTextBox.Text;
-                notes.crotchetsPerMinute = CrotchetsPerMinuteTextBox.Text;
+            var notes = svgds.Notation;
+            notes.stafflineStemStrokeWidth = (string)StafflineStemStrokeWidthComboBox.Items[StafflineStemStrokeWidthComboBox.SelectedIndex];
+            notes.gapSize = (string)GapSizeComboBox.Items[GapSizeComboBox.SelectedIndex];
+            notes.minGapsBetweenStaves = MinimumGapsBetweenStavesTextBox.Text;
+            notes.minGapsBetweenSystems = MinimumGapsBetweenSystemsTextBox.Text;
+            notes.systemStartBars = SystemStartBarsTextBox.Text;
+            notes.crotchetsPerMinute = CrotchetsPerMinuteTextBox.Text;
 
-                var metadata = svgds.Metadata;
-                metadata.Title = this.MetadataTitleTextBox.Text;
-                metadata.Author = this.MetadataAuthorTextBox.Text;
-                metadata.Keywords = this.MetadataKeywordsTextBox.Text;
-                metadata.Comment = this.MetadataCommentTextBox.Text;
+            var metadata = svgds.Metadata;
+            metadata.Title = this.MetadataTitleTextBox.Text;
+            metadata.Author = this.MetadataAuthorTextBox.Text;
+            metadata.Keywords = this.MetadataKeywordsTextBox.Text;
+            metadata.Comment = this.MetadataCommentTextBox.Text;
 
-                var options = svgds.Options;
-                options.WritePage1Titles = (this.OptionWritePage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
-                options.IncludeMIDIData = (this.OptionIncludeMIDIDataCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
-                options.WriteScrollScore = (this.OptionWriteScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
-            }
+            var options = svgds.Options;
+            options.WritePage1Titles = (this.OptionWritePage1TitlesCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+            options.IncludeMIDIData = (this.OptionIncludeMIDIDataCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+            options.WriteScrollScore = (this.OptionWriteScoreAsScrollCheckBox.CheckState == CheckState.Checked) ? "true" : "false";
+
             svgds.SaveSettings();
         }
 

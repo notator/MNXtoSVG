@@ -17,6 +17,8 @@ namespace Moritz.Symbols
         public OutputRestSymbol(Voice voice, IUniqueDef iumdd, int absMsPosition, PageFormat pageFormat)
 			: base(voice, iumdd, absMsPosition, pageFormat.MinimumCrotchetDuration, pageFormat.MusicFontHeight)
         {
+            M.Assert(false); // 03.05.2020: don't use this constructor (to be inspected once work on midi info begins).
+
             if(iumdd is MidiRestDef mrd)
             {
                 _midiRestDef = mrd;

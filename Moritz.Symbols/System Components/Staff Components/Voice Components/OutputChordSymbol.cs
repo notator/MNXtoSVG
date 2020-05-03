@@ -30,6 +30,8 @@ namespace Moritz.Symbols
         public OutputChordSymbol(Voice voice, MidiChordDef umcd, int absMsPosition, PageFormat pageFormat)
             : base(voice, umcd.MsDuration, absMsPosition, pageFormat.MinimumCrotchetDuration, pageFormat.MusicFontHeight, umcd.BeamContinues)
         {
+            M.Assert(false); // 03.05.2020: don't use this constructor (to be inspected once work on midi info begins).
+
             _midiChordDef = umcd;
 
             _msDurationToNextBarline = umcd.MsDurationToNextBarline;

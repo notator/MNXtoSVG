@@ -16,9 +16,19 @@ namespace Moritz.Symbols
 
         }
 
+        /// <summary>
+        /// Old constructor, currently not used, but retained for future inspection
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <param name="iumdd"></param>
+        /// <param name="absMsPosition"></param>
+        /// <param name="minimumCrotchetDurationMS"></param>
+        /// <param name="fontHeight"></param>
         public RestSymbol(Voice voice, IUniqueDef iumdd, int absMsPosition, int minimumCrotchetDurationMS, double fontHeight)
             : base(voice, iumdd.MsDuration, absMsPosition, minimumCrotchetDurationMS, fontHeight)
         {
+            M.Assert(false); // 03.05.2020: don't use this constructor (to be inspected once work on midi info begins).
+
             if(iumdd is CautionaryChordDef)
             {
                 Console.WriteLine("rest is CautionaryChordDef!");

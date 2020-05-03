@@ -22,6 +22,8 @@ namespace Moritz.Symbols
         public ChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, double fontSize, bool beamContinues)
             : base(voice, msDuration, absMsPosition, minimumCrotchetDurationMS, fontSize)
         {
+            M.Assert(false); // 03.05.2020: don't use this constructor (to be inspected once work on midi info begins).
+
             // note that all chord symbols have a stem! 
             // Even cautionary, semibreves and breves need a stem direction in order to set chord Metrics correctly.
             Stem = new Stem(this, beamContinues);

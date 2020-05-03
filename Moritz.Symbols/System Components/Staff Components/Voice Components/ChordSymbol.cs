@@ -19,6 +19,9 @@ namespace Moritz.Symbols
             // Beam is currently null. Create when necessary.
         }
 
+        /// <summary>
+        /// Old constructor, currently not used (03.05.2020), but retained for future inspection
+        /// </summary>
         public ChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, double fontSize, bool beamContinues)
             : base(voice, msDuration, absMsPosition, minimumCrotchetDurationMS, fontSize)
         {

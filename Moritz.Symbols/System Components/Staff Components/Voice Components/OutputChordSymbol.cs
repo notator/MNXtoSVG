@@ -27,6 +27,9 @@ namespace Moritz.Symbols
             HeadsTopDown.Sort((a, b) => (M.MidiPitchDict[b.Pitch] - M.MidiPitchDict[a.Pitch]));
         }
 
+        /// <summary>
+        /// Old constructor, currently not used (03.05.2020), but retained for future inspection
+        /// </summary>
         public OutputChordSymbol(Voice voice, MidiChordDef umcd, int absMsPosition, PageFormat pageFormat)
             : base(voice, umcd.MsDuration, absMsPosition, pageFormat.MinimumCrotchetDuration, pageFormat.MusicFontHeight, umcd.BeamContinues)
         {

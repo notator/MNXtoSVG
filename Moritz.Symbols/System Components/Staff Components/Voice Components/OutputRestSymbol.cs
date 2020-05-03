@@ -14,6 +14,9 @@ namespace Moritz.Symbols
 
         }
 
+        /// <summary>
+        /// Old constructor, currently not used (03.05.2020), but retained for future inspection
+        /// </summary>
         public OutputRestSymbol(Voice voice, IUniqueDef iumdd, int absMsPosition, PageFormat pageFormat)
 			: base(voice, iumdd, absMsPosition, pageFormat.MinimumCrotchetDuration, pageFormat.MusicFontHeight)
         {

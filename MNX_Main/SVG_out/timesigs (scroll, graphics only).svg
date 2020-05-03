@@ -1,0 +1,384 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="../../fontsStyleSheet.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+	width="750"
+	height="208"
+	viewBox="0 0 7500 2088">
+	<defs>
+		<style
+			type="text/css"><![CDATA[
+			@font-face
+			{
+				font-family: 'CLicht';
+				src: url('https://james-ingram-act-two.de/fonts/clicht_plain-webfont.eot');
+				src: url('https://james-ingram-act-two.de/fonts/clicht_plain-webfont.eot?#iefix') format('embedded-opentype'),
+				url('https://james-ingram-act-two.de/fonts/clicht_plain-webfont.woff') format('woff'),
+				url('https://james-ingram-act-two.de/fonts/clicht_plain-webfont.ttf') format('truetype'),
+				url('https://james-ingram-act-two.de/fonts/clicht_plain-webfont.svg#webfontl9D2oOyX') format('svg');
+				font-weight: normal;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Arial';
+				src: url('https://james-ingram-act-two.de/fonts/arial.ttf') format('truetype');
+				font-weight:400;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Open Sans';
+				src: url('https://james-ingram-act-two.de/fonts/OpenSans-Regular.ttf') format('truetype');
+				font-weight:400;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Open Sans Condensed';
+				src: url('https://james-ingram-act-two.de/fonts/OpenSans-CondBold.ttf') format('truetype');
+				font-weight:600;
+				font-style: normal;
+			}
+		    .mainTitle
+            {
+                font-family:"Open Sans";
+                font-size:0px;
+                text-anchor:middle
+            }
+            .author
+            {
+                font-family:"Open Sans";
+                font-size:0px;
+                text-anchor:end
+            }
+            .notehead, .clef
+            {
+                font-family:CLicht
+            }
+            .notehead, .clef
+            {
+                font-size:392px
+            }
+            .timeStamp, .timeSigNumerator, .timeSigDenominator
+            {
+                font-family:Arial
+            }
+            .timeStamp
+            {
+                font-size:150px
+            }
+            .timeSigNumerator, .timeSigDenominator
+            {
+                font-size:420px
+            }
+            .staffline, .ledgerline, .stem
+            {
+                stroke:black;
+                stroke-width:10px;
+                fill:black
+            }
+            .stem
+            {
+                stroke-linecap:round                
+            }
+            .normalBarline
+            {
+                stroke:black;
+                stroke-width:20px
+            }
+            .thickBarline
+            {
+                stroke:black;
+                stroke-width:40px
+            }
+            ]]></style>
+		<g
+			id="trebleClef">
+			<text
+				class="clef">&amp;</text>
+		</g>
+		<g
+			id="timeSig_4/4">
+			<text
+				class="timeSigNumerator"
+				x="0"
+				y="0">4</text>
+			<text
+				class="timeSigDenominator"
+				x="0"
+				y="303.2">4</text>
+		</g>
+		<g
+			id="timeSig_2/4">
+			<text
+				class="timeSigNumerator"
+				x="0"
+				y="0">2</text>
+			<text
+				class="timeSigDenominator"
+				x="0"
+				y="303.2">4</text>
+		</g>
+	</defs>
+	<g
+		class="systems">
+		<text
+			class="timeStamp"
+			x="32"
+			y="150">timesigs (scroll, graphics only), Sunday 03.05.2020, 12:40:00</text>
+		<g
+			class="system">
+			<g
+				class="staff"
+				staffName="">
+				<g
+					class="stafflines">
+					<line
+						class="staffline"
+						x1="700"
+						y1="1100"
+						x2="6800"
+						y2="1100" />
+					<line
+						class="staffline"
+						x1="700"
+						y1="1200"
+						x2="6800"
+						y2="1200" />
+					<line
+						class="staffline"
+						x1="700"
+						y1="1300"
+						x2="6800"
+						y2="1300" />
+					<line
+						class="staffline"
+						x1="700"
+						y1="1400"
+						x2="6800"
+						y2="1400" />
+					<line
+						class="staffline"
+						x1="700"
+						y1="1500"
+						x2="6800"
+						y2="1500" />
+				</g>
+				<g
+					class="voice">
+					<use
+						class="clef"
+						href="#trebleClef"
+						x="700"
+						y="1400" />
+					<line
+						class="normalBarline"
+						x1="1010"
+						y1="1100"
+						x2="1010"
+						y2="1500" />
+					<use
+						class="timeSig"
+						href="#timeSig_4/4"
+						x="1118.462"
+						y="1300" />
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="1460.781"
+								y1="1261.55"
+								x2="1460.781"
+								y2="1610" />
+							<text
+								class="notehead"
+								x="1455.781"
+								y="1250">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="1915.795"
+								y1="1211.55"
+								x2="1915.795"
+								y2="1560" />
+							<text
+								class="notehead"
+								x="1910.795"
+								y="1200">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="2370.809"
+								y1="1161.55"
+								x2="2370.809"
+								y2="1510" />
+							<text
+								class="notehead"
+								x="2365.809"
+								y="1150">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="2825.823"
+								y1="1111.55"
+								x2="2825.823"
+								y2="1460" />
+							<text
+								class="notehead"
+								x="2820.823"
+								y="1100">œ</text>
+						</g>
+					</g>
+					<line
+						class="normalBarline"
+						x1="3343.376"
+						y1="1100"
+						x2="3343.376"
+						y2="1500" />
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="3434.056"
+								y1="1261.55"
+								x2="3434.056"
+								y2="1610" />
+							<text
+								class="notehead"
+								x="3429.056"
+								y="1250">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="3889.07"
+								y1="1211.55"
+								x2="3889.07"
+								y2="1560" />
+							<text
+								class="notehead"
+								x="3884.07"
+								y="1200">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="4344.084"
+								y1="1161.55"
+								x2="4344.084"
+								y2="1510" />
+							<text
+								class="notehead"
+								x="4339.084"
+								y="1150">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="4799.098"
+								y1="1111.55"
+								x2="4799.098"
+								y2="1460" />
+							<text
+								class="notehead"
+								x="4794.098"
+								y="1100">œ</text>
+						</g>
+					</g>
+					<line
+						class="normalBarline"
+						x1="5316.651"
+						y1="1100"
+						x2="5316.651"
+						y2="1500" />
+					<use
+						class="timeSig"
+						href="#timeSig_2/4"
+						x="5425.113"
+						y="1300" />
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="5767.433"
+								y1="1311.55"
+								x2="5767.433"
+								y2="1660" />
+							<text
+								class="notehead"
+								x="5762.433"
+								y="1300">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="6222.447"
+								y1="1211.55"
+								x2="6222.447"
+								y2="1560" />
+							<text
+								class="notehead"
+								x="6217.447"
+								y="1200">œ</text>
+						</g>
+					</g>
+					<g
+						class="endOfScoreBarline">
+						<line
+							class="normalBarline"
+							x1="6740"
+							y1="1095"
+							x2="6740"
+							y2="1505" />
+						<line
+							class="thickBarline"
+							x1="6800"
+							y1="1095"
+							x2="6800"
+							y2="1505" />
+					</g>
+				</g>
+			</g>
+			<g
+				class="staffConnectors" />
+		</g>
+	</g>
+	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->
+</svg>

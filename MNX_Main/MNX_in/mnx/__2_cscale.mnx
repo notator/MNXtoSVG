@@ -33,7 +33,8 @@
         <measure barline="regular">
           <sequence>
             <event value="/4">
-              <note pitch="G4"/>
+              <rest pitch="G4"/>
+              <!--<note pitch="G4"/>-->
             </event>
             <event value="/4">
               <note pitch="A4"/>

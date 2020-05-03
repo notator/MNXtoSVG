@@ -1018,13 +1018,13 @@ namespace Moritz.Symbols
             SvgSystem system1 = Systems[systemIndex];
             SvgSystem system2 = Systems[systemIndex+1];
             M.Assert(system1.Staves.Count == system2.Staves.Count);
-			foreach (Staff staff in system2.Staves)
-			{
-				foreach (Voice voice in staff.Voices)
-				{
-					M.Assert(voice.NoteObjects[0] is Clef);
-				}
-			}
+			//foreach (Staff staff in system2.Staves)
+			//{
+			//	foreach (Voice voice in staff.Voices)
+			//	{
+			//		M.Assert(voice.NoteObjects[0] is Clef);
+			//	}
+			//}
 
 			for (int staffIndex = 0; staffIndex < system2.Staves.Count; staffIndex++)
             {
@@ -1035,8 +1035,8 @@ namespace Moritz.Symbols
                 {
                     Voice voice1 = system1.Staves[staffIndex].Voices[voiceIndex];
                     Voice voice2 = system2.Staves[staffIndex].Voices[voiceIndex];
-					M.Assert(voice2.NoteObjects[0] is Clef);
-					voice2.NoteObjects.RemoveAt(0);
+					//M.Assert(voice2.NoteObjects[0] is Clef);
+					//voice2.NoteObjects.RemoveAt(0);
                     try
                     {
 						voice1.AppendNoteObjects(voice2.NoteObjects);
@@ -1198,17 +1198,17 @@ namespace Moritz.Symbols
             foreach(Staff staff in Systems[0].Staves)
                 nVoices.Add(staff.Voices.Count);
  
-            foreach(SvgSystem system in Systems)
-            {
-                for(int i = 0; i < system.Staves.Count; ++i)
-                {
-                    M.Assert(system.Staves[i].Voices.Count == nVoices[i]);
-					foreach(Voice voice in system.Staves[i].Voices)
-					{
-						M.Assert(voice.NoteObjects[0] is Clef);
-					}
-                }
-            }
+     //       foreach(SvgSystem system in Systems)
+     //       {
+     //           for(int i = 0; i < system.Staves.Count; ++i)
+     //           {
+     //               M.Assert(system.Staves[i].Voices.Count == nVoices[i]);
+					//foreach(Voice voice in system.Staves[i].Voices)
+					//{
+					//	M.Assert(voice.NoteObjects[0] is Clef);
+					//}
+     //           }
+     //       }
             #endregion preconditions
 
             AddNormalBarlines(); // 1. add a NormalBarline at the end of each system=bar,

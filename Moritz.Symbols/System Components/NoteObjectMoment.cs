@@ -91,25 +91,30 @@ namespace Moritz.Symbols
         }
 
         /// <summary>
-        /// Aligns barline glyphs in this moment, moving an immediately preceding keySignature and clef, but
-        /// without moving the following duration symbol (which is aligned at this.AlignmentX).
+        /// Moves NoteObjects in this NoteObjectMoment to their correct positions with respect to the aligning DurationSymbol.
+        /// The duration symbol remains where it is with Metrics.OriginX at AlignmentX == 0.
         /// </summary>
-        public void AlignClefKeySigAndBarlineGlyphs(double gap)
+        public void SetInternalXPositions(double gap)
         {
+            M.Assert(AlignmentX == 0F);
+
             double minBarlineOriginX = double.MaxValue;
-            foreach(NoteObject noteObject in _noteObjects)
+            for(var i = 0; i < _noteObjects.Count; i++)
             {
-				if(noteObject is Barline b && b.Metrics != null && b.Metrics.OriginX < minBarlineOriginX)
-					minBarlineOriginX = b.Metrics.OriginX;
+                if(_noteObjects[i] is Barline b && b.Metrics != null)
+                {
+                    if(b.Metrics.OriginX < minBarlineOriginX)
+                    {
+                        minBarlineOriginX = b.Metrics.OriginX;
+                    }
+                }
 			}
             for(int index = 0; index < _noteObjects.Count; index++)
             {
-				ChordSymbol chordSymbol = _noteObjects[index] as ChordSymbol;
-				if(_noteObjects[index] is Barline barline && barline.Metrics != null)
-				{
-					M.Assert(AlignmentX == 0F);
-					if(index > 0)
-					{
+                if(_noteObjects[index] is Barline barline && barline.Metrics != null)
+                {
+                    if(index > 0)
+                    {
                         if(_noteObjects[index - 1] is KeySignature keySignature)
                         {
                             keySignature.Metrics.Move(minBarlineOriginX - keySignature.Metrics.Right, 0);
@@ -122,18 +127,35 @@ namespace Moritz.Symbols
                         {
                             clef.Metrics.Move(minBarlineOriginX - clef.Metrics.Right, 0);
                         }
-					}
-					barline.Metrics.Move(minBarlineOriginX - barline.Metrics.OriginX, 0);
-				}
-				else if(chordSymbol != null && chordSymbol.Metrics != null)
-				{
-					if(index > 0)
-					{
-						if(_noteObjects[index - 1] is SmallClef smallClef)
-							smallClef.Metrics.Move(chordSymbol.Metrics.Left - smallClef.Metrics.Right + gap, 0);
-					}
-				}
-			}
+                    }
+                    barline.Metrics.Move(minBarlineOriginX - barline.Metrics.OriginX, 0);
+                }
+
+                if(_noteObjects[index] is ChordSymbol chordSymbol && chordSymbol.Metrics != null)
+                {
+                    if(index > 0)
+                    {
+                        double dx = 0;
+                        var prevNoteObject = _noteObjects[index - 1];
+
+                        if(prevNoteObject is SmallClef smallClef)
+                        {
+                            smallClef.Metrics.Move(chordSymbol.Metrics.Left - smallClef.Metrics.Right + gap, 0);
+                        }
+                        if(prevNoteObject is Barline)
+                        {
+                            dx = -(gap / 2);
+                            foreach(var noteObj in _noteObjects)
+                            {
+                                if(!(noteObj is ChordSymbol))
+                                {
+                                    noteObj.Metrics.Move(dx, 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public void ShowWarning_ControlsMustBeInTopVoice(DurationSymbol durationSymbol)

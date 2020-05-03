@@ -50,7 +50,7 @@ namespace MNX.Main
 
             if(selectedIndex == 0)
             {
-                List<int> compileNumbers = new List<int>() { 3 }; // the example numbers to be compiled (1 is ___1... etc.)
+                List<int> compileNumbers = new List<int>() { 2 }; // the example numbers to be compiled (1 is ___1... etc.)
                 foreach(var number in compileNumbers)
                 {
                     Compile(_MNX_Form1Data_Paths, number - 1);

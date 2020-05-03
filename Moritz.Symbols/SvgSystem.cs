@@ -557,7 +557,7 @@ namespace Moritz.Symbols
 
             foreach(NoteObjectMoment momentSymbol in momentSymbols)
             {
-                momentSymbol.AlignClefKeySigAndBarlineGlyphs(gap);
+                momentSymbol.SetInternalXPositions(gap);
             }
 
             #region debug

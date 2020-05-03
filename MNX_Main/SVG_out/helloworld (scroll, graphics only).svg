@@ -51,11 +51,11 @@
                 font-size:0px;
                 text-anchor:end
             }
-            .notehead, .clef
+            .rest, .notehead, .clef
             {
                 font-family:CLicht
             }
-            .notehead, .clef
+            .rest, .notehead, .clef
             {
                 font-size:392px
             }
@@ -71,11 +71,15 @@
             {
                 font-size:420px
             }
-            .staffline, .ledgerline
+            .staffline, .ledgerline, .stem
             {
                 stroke:black;
                 stroke-width:10px;
                 fill:black
+            }
+            .stem
+            {
+                stroke-linecap:round                
             }
             .normalBarline
             {
@@ -110,7 +114,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">helloworld (scroll, graphics only), Sunday 03.05.2020, 11:07:06</text>
+			y="150">helloworld (scroll, graphics only), Sunday 03.05.2020, 11:31:57</text>
 		<g
 			class="system">
 			<g

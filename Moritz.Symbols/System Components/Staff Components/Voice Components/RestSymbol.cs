@@ -10,6 +10,12 @@ namespace Moritz.Symbols
 {
 	internal abstract class RestSymbol : DurationSymbol
 	{
+        public RestSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.DurationSymbolType durationSymbolType, double fontSize)
+            : base(voice, msDuration, absMsPosition, durationSymbolType, fontSize)
+        {
+
+        }
+
         public RestSymbol(Voice voice, IUniqueDef iumdd, int absMsPosition, int minimumCrotchetDurationMS, double fontHeight)
             : base(voice, iumdd.MsDuration, absMsPosition, minimumCrotchetDurationMS, fontHeight)
         {

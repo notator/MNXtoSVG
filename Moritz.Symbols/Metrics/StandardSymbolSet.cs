@@ -541,14 +541,14 @@ namespace Moritz.Symbols
             }
             else if(midiRestDef != null || cautionaryChordDef != null)
             {
-                OutputRestSymbol outputRestSymbol = new OutputRestSymbol(voice, iud, absMsPosition, pageFormat);
+                OutputRestSymbol outputRestSymbol = new OutputRestSymbol(voice,mnxEventDef,absMsPosition, pageFormat);
                 noteObject = outputRestSymbol;
             }
             else if(mnxEventDef != null)
             {
                 if(mnxEventDef.Rest != null || mnxEventDef.Notes.Count == 0)
                 {
-                    OutputRestSymbol outputRestSymbol = new OutputRestSymbol(voice, iud, absMsPosition, pageFormat);
+                    OutputRestSymbol outputRestSymbol = new OutputRestSymbol(voice, mnxEventDef, absMsPosition, pageFormat);
                     noteObject = outputRestSymbol;
                 }
                 else

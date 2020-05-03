@@ -1,16 +1,19 @@
-﻿using System;
-using System.Text;
-using System.Diagnostics;
-
+﻿using MNX.Common;
 using MNX.Globals;
-using Moritz.Xml;
 using Moritz.Spec;
-using System.Collections.Generic;
+using Moritz.Xml;
+using System;
 
 namespace Moritz.Symbols
 {
     internal class OutputRestSymbol : RestSymbol
 	{
+        public OutputRestSymbol(Voice voice, MNX.Common.Event mnxEventDef, int absMsPosition, PageFormat pageFormat)
+            :base(voice, mnxEventDef.MsDuration, absMsPosition, (DurationSymbolType) mnxEventDef.MNXDurationSymbol.DurationSymbolTyp, pageFormat.MusicFontHeight)
+        {
+
+        }
+
         public OutputRestSymbol(Voice voice, IUniqueDef iumdd, int absMsPosition, PageFormat pageFormat)
 			: base(voice, iumdd, absMsPosition, pageFormat.MinimumCrotchetDuration, pageFormat.MusicFontHeight)
         {

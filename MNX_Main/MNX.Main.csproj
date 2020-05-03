@@ -165,6 +165,7 @@
     <Content Include="SVG_out\chord %28scroll, graphics only%29.svg" />
     <Content Include="SVG_out\cscale %28scroll, graphics only%29.svg" />
     <Content Include="SVG_out\helloworld %28scroll, graphics only%29.svg" />
+    <Content Include="SVG_out\keysigs %28scroll, graphics only%29.svg" />
     <Content Include="SVG_out\timesigs %28scroll, graphics only%29.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Sunday 03.05.2020, 11:01:20-->
+<!--file created: Sunday 03.05.2020, 21:32:58-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
@@ -11,7 +11,7 @@
 		marginBottom="50"
 		marginLeft="70" />
 	<notation
-		stafflineStemStrokeWidth="1.0"
+		stafflineStemStrokeWidth="1.5"
 		gapSize="10"
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="3"

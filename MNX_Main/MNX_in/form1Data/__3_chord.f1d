@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Saturday 25.04.2020, 12:14:54-->
+<!--file created: Sunday 03.05.2020, 21:32:15-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
-			width="400"
+		width="400"
 		height="350"
 		marginTopPage1="50"
 		marginTopOther="50"
@@ -11,7 +11,7 @@
 		marginBottom="50"
 		marginLeft="50" />
 	<notation
-		stafflineStemStrokeWidth="1.0"
+		stafflineStemStrokeWidth="1.5"
 		gapSize="10"
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="3"
@@ -23,6 +23,6 @@
 		comment="See https://w3c.github.io/mnx/by-example/" />
 	<options
 		writePage1Titles="false"
-		includeMIDIData="false"
-		writeScrollScore="true" />
+		writeScrollScore="true"
+		includeMIDIData="false" />
 </form1Data>

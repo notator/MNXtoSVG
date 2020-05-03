@@ -31,7 +31,6 @@ namespace MNX.Main
             form1DataPaths.Sort();
 
             MNXSelect.Items.Clear();
-            MNXSelect.Items.Add("All Scores");
             for(var i = 0; i < form1DataPaths.Count; i++)
             {
                 string mnxFilename = Path.GetFileName(mnxPaths[i]);
@@ -46,26 +45,8 @@ namespace MNX.Main
 
         private void WriteButton_Click(object sender, EventArgs e)
         {
-            var selectedIndex = MNXSelect.SelectedIndex;
-
-            if(selectedIndex == 0)
-            {
-                List<int> compileNumbers = new List<int>() { 2 }; // the example numbers to be compiled (1 is ___1... etc.)
-                foreach(var number in compileNumbers)
-                {
-                    Compile(_MNX_Form1Data_Paths, number - 1);
-                }
-            }
-            else
-            {
-                Compile(_MNX_Form1Data_Paths, selectedIndex - 1);
-            }
-        }
-
-        private void Compile(List<Tuple<string, string>> mNX_Form1Data_Paths, int index)
-        {
-            string mnxDataPath = _MNX_Form1Data_Paths[index].Item1;
-            string form1DataPath = _MNX_Form1Data_Paths[index].Item2;
+            string mnxDataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex].Item1;
+            string form1DataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex].Item2;
 
             var form1StringData = new Form1StringData(form1DataPath);
             var form1Data = new Form1Data(form1StringData);
@@ -79,21 +60,13 @@ namespace MNX.Main
 
         private void MNXSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(MNXSelect.SelectedIndex == 0)
-            {
-                // Write all scores
-                EnableDisableControls(true);
-            }
-            else
-            {
-                LoadOneScore();                
-            }
+            LoadScoreSettings(); // can also be called to revert settings               
         }
 
-        private void LoadOneScore()
+        private void LoadScoreSettings()
         {
             // Load a score (edit form1DataStrings)
-            var form1DataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item2;
+            var form1DataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex].Item2;
             var svgds = new Form1StringData(form1DataPath);
 
             //var mnxPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item1;
@@ -154,73 +127,8 @@ namespace MNX.Main
             return rval;
         }
 
-        private void EnableDisableControls(bool disable)
-        {
-            if(disable)
-            {
-                RemoveControlEvents();
-                DimensionsLabel.Enabled = false;
-                PaperSizeGroupBox.Enabled = false;
-                MarginsGroupBox.Enabled = false;
-                NotationGroupBox.Enabled = false;
-                SpeedGroupBox.Enabled = false;
-                MetadataGroupBox.Enabled = false;
-                OptionsGroupBox.Enabled = false;
-
-                WriteButton.Text = "Write all Scores";
-            }
-            else
-            {
-                ReplaceControlEvents();
-                DimensionsLabel.Enabled = true;
-                PaperSizeGroupBox.Enabled = true;
-                MarginsGroupBox.Enabled = true;
-                NotationGroupBox.Enabled = true;
-                SpeedGroupBox.Enabled = true;
-                MetadataGroupBox.Enabled = true;
-                OptionsGroupBox.Enabled = true;
-
-                WriteButton.Text = "Write Score";
-            }
-        }
-
-        private void ReplaceControlEvents()
-        {
-            PageWidthTextBox.Leave += IntTextBox_Leave;
-            PageHeightTextBox.Leave += IntTextBox_Leave;
-            MarginTopPage1TextBox.Leave += IntTextBox_Leave;
-            MarginTopOtherPagesTextBox.Leave += IntTextBox_Leave;
-            MarginRightTextBox.Leave += IntTextBox_Leave;
-            MarginBottomTextBox.Leave += IntTextBox_Leave;
-            MarginLeftTextBox.Leave += IntTextBox_Leave;
-            StafflineStemStrokeWidthComboBox.SelectedIndexChanged += ComboBox_SelectedIndexChanged;
-            GapSizeComboBox.SelectedIndexChanged += ComboBox_SelectedIndexChanged;
-            MinimumGapsBetweenStavesTextBox.Leave += IntTextBox_Leave;
-            MinimumGapsBetweenSystemsTextBox.Leave += IntTextBox_Leave;
-            SystemStartBarsTextBox.Leave += SystemStartBarsTextBox_Leave;
-            CrotchetsPerMinuteTextBox.Leave += IntTextBox_Leave;
-        }
-
-        private void RemoveControlEvents()
-        {
-            PageWidthTextBox.Leave -= IntTextBox_Leave; 
-            PageHeightTextBox.Leave -= IntTextBox_Leave;
-            MarginTopPage1TextBox.Leave -= IntTextBox_Leave;
-            MarginTopOtherPagesTextBox.Leave -= IntTextBox_Leave;
-            MarginRightTextBox.Leave -= IntTextBox_Leave;
-            MarginBottomTextBox.Leave -= IntTextBox_Leave;
-            MarginLeftTextBox.Leave -= IntTextBox_Leave;
-            StafflineStemStrokeWidthComboBox.SelectedIndexChanged -= ComboBox_SelectedIndexChanged;
-            GapSizeComboBox.SelectedIndexChanged -= ComboBox_SelectedIndexChanged;
-            MinimumGapsBetweenStavesTextBox.Leave -= IntTextBox_Leave;
-            MinimumGapsBetweenSystemsTextBox.Leave -= IntTextBox_Leave;
-            SystemStartBarsTextBox.Leave -= SystemStartBarsTextBox_Leave;
-            CrotchetsPerMinuteTextBox.Leave -= IntTextBox_Leave;
-        }
-
         private void SetButtons(bool settingsHaveChanged)
         {
-            EnableDisableControls(true);
             if(!settingsHaveChanged)
             {
                 RevertFormatButton.Enabled = false;
@@ -244,8 +152,6 @@ namespace MNX.Main
                     WriteButton.Enabled = false;
                 }
             }
-
-            EnableDisableControls(MNXSelect.SelectedIndex == 0);
         }
 
         private bool AllInputsAreErrorFree()
@@ -364,7 +270,7 @@ namespace MNX.Main
 
         private void RevertFormatButton_Click(object sender, EventArgs e)
         {
-            LoadOneScore();
+            LoadScoreSettings();
         }
     }
 }

@@ -123,7 +123,6 @@
             this.PaperSizeGroupBox.Controls.Add(this.PageWidthTextBox);
             this.PaperSizeGroupBox.Controls.Add(this.PaperHeightLabel);
             this.PaperSizeGroupBox.Controls.Add(this.PaperWidthLabel);
-            this.PaperSizeGroupBox.Enabled = false;
             this.PaperSizeGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PaperSizeGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.PaperSizeGroupBox.Location = new System.Drawing.Point(347, 86);
@@ -167,7 +166,6 @@
             // DimensionsLabel
             // 
             this.DimensionsLabel.AutoSize = true;
-            this.DimensionsLabel.Enabled = false;
             this.DimensionsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DimensionsLabel.Location = new System.Drawing.Point(344, 66);
             this.DimensionsLabel.Name = "DimensionsLabel";
@@ -187,7 +185,6 @@
             this.MarginsGroupBox.Controls.Add(this.MarginTopOtherPagesTextBox);
             this.MarginsGroupBox.Controls.Add(this.MarginRightLabel);
             this.MarginsGroupBox.Controls.Add(this.MarginTopOtherPagesLabel);
-            this.MarginsGroupBox.Enabled = false;
             this.MarginsGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MarginsGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.MarginsGroupBox.Location = new System.Drawing.Point(347, 169);
@@ -327,7 +324,6 @@
             this.NotationGroupBox.Controls.Add(this.MinimumGapsBetweenStavesLabel);
             this.NotationGroupBox.Controls.Add(this.GapSizeLabel);
             this.NotationGroupBox.Controls.Add(this.StafflineAndStemStrokeWidthLabel);
-            this.NotationGroupBox.Enabled = false;
             this.NotationGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.NotationGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.NotationGroupBox.Location = new System.Drawing.Point(592, 86);
@@ -351,7 +347,6 @@
             // 
             this.SpeedGroupBox.Controls.Add(this.CrotchetsPerMinuteTextBox);
             this.SpeedGroupBox.Controls.Add(this.CrotchetsPerMinuteLabel);
-            this.SpeedGroupBox.Enabled = false;
             this.SpeedGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SpeedGroupBox.ForeColor = System.Drawing.Color.DodgerBlue;
             this.SpeedGroupBox.Location = new System.Drawing.Point(15, 211);
@@ -513,7 +508,7 @@
             this.WriteButton.Name = "WriteButton";
             this.WriteButton.Size = new System.Drawing.Size(139, 51);
             this.WriteButton.TabIndex = 1;
-            this.WriteButton.Text = "Write all SVG scores";
+            this.WriteButton.Text = "Write SVG score";
             this.WriteButton.UseVisualStyleBackColor = true;
             this.WriteButton.Click += new System.EventHandler(this.WriteButton_Click);
             // 
@@ -539,7 +534,6 @@
             this.MetadataGroupBox.Controls.Add(this.MetadataCommentLabel);
             this.MetadataGroupBox.Controls.Add(this.MetadataKeywordsTextBox);
             this.MetadataGroupBox.Controls.Add(this.MetadataKeywordsLabel);
-            this.MetadataGroupBox.Enabled = false;
             this.MetadataGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.MetadataGroupBox.Location = new System.Drawing.Point(29, 130);
             this.MetadataGroupBox.Name = "MetadataGroupBox";
@@ -652,8 +646,6 @@
             this.OptionIncludeMIDIDataCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.OptionIncludeMIDIDataCheckBox.AutoSize = true;
             this.OptionIncludeMIDIDataCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.OptionIncludeMIDIDataCheckBox.Checked = true;
-            this.OptionIncludeMIDIDataCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.OptionIncludeMIDIDataCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.OptionIncludeMIDIDataCheckBox.Location = new System.Drawing.Point(16, 67);
             this.OptionIncludeMIDIDataCheckBox.Name = "OptionIncludeMIDIDataCheckBox";
@@ -684,7 +676,6 @@
             this.OptionsGroupBox.Controls.Add(this.OptionWritePage1TitlesCheckBox);
             this.OptionsGroupBox.Controls.Add(this.OptionWriteScoreAsScrollCheckBox);
             this.OptionsGroupBox.Controls.Add(this.OptionIncludeMIDIDataCheckBox);
-            this.OptionsGroupBox.Enabled = false;
             this.OptionsGroupBox.ForeColor = System.Drawing.Color.Crimson;
             this.OptionsGroupBox.Location = new System.Drawing.Point(181, 23);
             this.OptionsGroupBox.Name = "OptionsGroupBox";

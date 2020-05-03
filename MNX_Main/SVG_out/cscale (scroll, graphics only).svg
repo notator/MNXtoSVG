@@ -114,7 +114,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">cscale (scroll, graphics only), Sunday 03.05.2020, 14:05:27</text>
+			y="150">cscale (scroll, graphics only), Sunday 03.05.2020, 14:15:08</text>
 		<g
 			class="system">
 			<g
@@ -202,13 +202,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2254.881"
+								x1="2251.756"
 								y1="1190"
-								x2="2254.881"
+								x2="2251.756"
 								y2="1538.45" />
 							<text
 								class="notehead"
-								x="2144.802"
+								x="2141.677"
 								y="1550">œ</text>
 						</g>
 					</g>
@@ -218,13 +218,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2952.042"
+								x1="2945.792"
 								y1="1140"
-								x2="2952.042"
+								x2="2945.792"
 								y2="1488.45" />
 							<text
 								class="notehead"
-								x="2841.963"
+								x="2835.713"
 								y="1500">œ</text>
 						</g>
 					</g>
@@ -234,21 +234,21 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="3649.203"
+								x1="3639.828"
 								y1="1090"
-								x2="3649.203"
+								x2="3639.828"
 								y2="1438.45" />
 							<text
 								class="notehead"
-								x="3539.124"
+								x="3529.749"
 								y="1450">œ</text>
 						</g>
 					</g>
 					<line
 						class="normalBarline"
-						x1="4303.824"
+						x1="4291.324"
 						y1="1100"
-						x2="4303.824"
+						x2="4291.324"
 						y2="1500" />
 					<g
 						class="rest">
@@ -256,7 +256,7 @@
 							class="graphics">
 							<text
 								class="rest"
-								x="4380.481"
+								x="4392.981"
 								y="1300">Œ</text>
 						</g>
 					</g>
@@ -266,13 +266,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="5191.057"
+								x1="5200.432"
 								y1="990"
-								x2="5191.057"
+								x2="5200.432"
 								y2="1338.45" />
 							<text
 								class="notehead"
-								x="5080.978"
+								x="5090.353"
 								y="1350">œ</text>
 						</g>
 					</g>
@@ -282,13 +282,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="5783.139"
+								x1="5789.389"
 								y1="1311.55"
-								x2="5783.139"
+								x2="5789.389"
 								y2="1660" />
 							<text
 								class="notehead"
-								x="5778.139"
+								x="5784.389"
 								y="1300">œ</text>
 						</g>
 					</g>
@@ -298,13 +298,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="6480.3"
+								x1="6483.425"
 								y1="1261.55"
-								x2="6480.3"
+								x2="6483.425"
 								y2="1610" />
 							<text
 								class="notehead"
-								x="6475.3"
+								x="6478.425"
 								y="1250">œ</text>
 						</g>
 					</g>

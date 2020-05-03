@@ -131,7 +131,7 @@ namespace Moritz.Symbols
                     barline.Metrics.Move(minBarlineOriginX - barline.Metrics.OriginX, 0);
                 }
 
-                if(_noteObjects[index] is ChordSymbol chordSymbol && chordSymbol.Metrics != null)
+                if(_noteObjects[index] is DurationSymbol durationSymbol && durationSymbol.Metrics != null)
                 {
                     if(index > 0)
                     {
@@ -140,14 +140,14 @@ namespace Moritz.Symbols
 
                         if(prevNoteObject is SmallClef smallClef)
                         {
-                            smallClef.Metrics.Move(chordSymbol.Metrics.Left - smallClef.Metrics.Right + gap, 0);
+                            smallClef.Metrics.Move(durationSymbol.Metrics.Left - smallClef.Metrics.Right + gap, 0);
                         }
                         if(prevNoteObject is Barline)
                         {
-                            dx = -(gap / 2);
+                            dx = (durationSymbol is OutputChordSymbol) ? -(gap / 2) : -(gap / 4); // OutputRests are different...
                             foreach(var noteObj in _noteObjects)
                             {
-                                if(!(noteObj is ChordSymbol))
+                                if(!(noteObj is DurationSymbol))
                                 {
                                     noteObj.Metrics.Move(dx, 0);
                                 }

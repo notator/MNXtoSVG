@@ -50,35 +50,31 @@ namespace MNX.Main
 
             if(selectedIndex == 0)
             {
-                for(var i = 0; i < _MNX_Form1Data_Paths.Count; i++)
+                List<int> compileNumbers = new List<int>() { 3 };
+                foreach(var number in compileNumbers)
                 {
-                    var form1StringData = new Form1StringData(_MNX_Form1Data_Paths[i].Item2);
-
-                    var form1Data = new Form1Data(form1StringData);
-
-                    M.MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
-
-                    var mnx = new MNX(_MNX_Form1Data_Paths[i].Item1);
-                    MNXCommonData mnxCommonData = mnx.MNXCommonData;
-
-                    SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
-                    if(i == 0) // temp
-                    {
-                        break;
-                    }
+                    Compile(_MNX_Form1Data_Paths, number - 1);
                 }
             }
             else
             {
-                var form1StringData = new Form1StringData(_MNX_Form1Data_Paths[selectedIndex - 1].Item2);
-                var form1Data = new Form1Data(form1StringData);
-
-                M.MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
-
-                var mnx = new MNX(_MNX_Form1Data_Paths[selectedIndex - 1].Item1);
-                MNXCommonData mnxCommonData = mnx.MNXCommonData;
-                SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
+                Compile(_MNX_Form1Data_Paths, selectedIndex - 1);
             }
+        }
+
+        private void Compile(List<Tuple<string, string>> mNX_Form1Data_Paths, int index)
+        {
+            string mnxDataPath = _MNX_Form1Data_Paths[index].Item1;
+            string form1DataPath = _MNX_Form1Data_Paths[index].Item2;
+
+            var form1StringData = new Form1StringData(form1DataPath);
+            var form1Data = new Form1Data(form1StringData);
+
+            M.MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
+
+            var mnx = new MNX(mnxDataPath);
+            MNXCommonData mnxCommonData = mnx.MNXCommonData;
+            SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
         }
 
         private void MNXSelect_SelectedIndexChanged(object sender, EventArgs e)

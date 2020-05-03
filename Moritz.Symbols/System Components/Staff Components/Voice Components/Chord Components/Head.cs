@@ -110,7 +110,7 @@ namespace Moritz.Symbols
             int octave = 0;
             try
             {
-                string octaveString = this.Pitch.Substring(1);
+                string octaveString = this.Pitch.Substring(this.Pitch.Length - 1);
                 if(octaveString == ":")
                     octave = 10;
                 else

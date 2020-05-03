@@ -143,7 +143,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Issues.txt" />
-    <Content Include="MNX_in\pngExamples.html" />
+    <Content Include="originalPNGandSVGoutput.html" />
     <Content Include="MNX_in\png\__10_beamhooks.png" />
     <Content Include="MNX_in\png\__11a_nestedtuplets.png" />
     <Content Include="MNX_in\png\__11_tuplets.png" />

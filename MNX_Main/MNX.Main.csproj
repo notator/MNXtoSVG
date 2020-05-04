@@ -162,6 +162,7 @@
     <Content Include="MNX_in\png\___7_dots.png" />
     <Content Include="MNX_in\png\___8_ties.png" />
     <Content Include="MNX_in\png\___9_beams.png" />
+    <Content Include="SVG_out\accidentals %28scroll, graphics only%29.svg" />
     <Content Include="SVG_out\chord %28scroll, graphics only%29.svg" />
     <Content Include="SVG_out\cscale %28scroll, graphics only%29.svg" />
     <Content Include="SVG_out\helloworld %28scroll, graphics only%29.svg" />

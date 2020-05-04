@@ -16,8 +16,10 @@ namespace Moritz.Symbols
         #region fields
 
         #region constructor
-        internal readonly string FileName = null; // The base file name with ".svg" (appears in info string at top of each page)
-        internal readonly string FilePath = null; // The complete path, including the FileName.
+        internal readonly string TargetFolder = null;
+        internal readonly string FileNameWithoutExtension = null; // The base file name with ".svg" (appears in info string at top of each page)
+        internal Form1OptionsData Form1Options = null;
+
         #endregion constructor
 
         #region subclass constructor
@@ -26,24 +28,20 @@ namespace Moritz.Symbols
         #endregion
 
         public Notator Notator = null;
-
-        protected ScoreData ScoreData = null;
-
         public int PageCount { get { return _pages.Count; } }
-
-       
-
+        protected ScoreData ScoreData = null;
         protected List<SvgPage> _pages = new List<SvgPage>();
 
         #endregion fields
        
         /// <param name="targetFolder">The complete path to the folder that will contain the output file.</param>
-        /// <param name="targetFilenameWithoutSuffix">The file name for the score, without '.svg' suffix.</param>
-        public SvgScore(string targetFolder, string targetFilenameWithoutSuffix)
+        /// <param name="targetFilenameWithoutExtension">The file name for the score, without '.svg' extension.</param>
+        public SvgScore(string targetFolder, string targetFilenameWithoutExtension, Form1OptionsData form1Options)
         { 
             M.CreateDirectoryIfItDoesNotExist(targetFolder);
-            FileName = targetFilenameWithoutSuffix + ".svg";
-            FilePath = targetFolder + @"\" + FileName;
+            TargetFolder = targetFolder;
+            FileNameWithoutExtension = targetFilenameWithoutExtension;
+            Form1Options = form1Options;
         }
 
         #region functions
@@ -65,10 +63,7 @@ namespace Moritz.Symbols
             }
             List<string> svgPagenames = SaveSVGPages(graphicsOnly, printTitleAndAuthorOnPage1);
 
-            if(File.Exists(FilePath))
-            {
-                File.Delete(FilePath);
-            }
+            string filePath = TargetFolder + "/" + FileNameWithoutExtension + ".html";
 
             XmlWriterSettings settings = new XmlWriterSettings
 			{
@@ -80,21 +75,19 @@ namespace Moritz.Symbols
 				Encoding = Encoding.GetEncoding("utf-8")
 			};
 
-            using(XmlWriter w = XmlWriter.Create(FilePath, settings))
+            using(XmlWriter w = XmlWriter.Create(filePath, settings))
             {
                 w.WriteDocType("html", null, null, null);
                 w.WriteStartElement("html", "http://www.w3.org/1999/xhtml");
                 w.WriteAttributeString("lang", "en");
                 w.WriteAttributeString("xml", "lang", null, "en");
 
-                WriteHTMLScoreHead(w, Path.GetFileNameWithoutExtension(FilePath));
+                WriteHTMLScoreHead(w, Path.GetFileNameWithoutExtension(filePath));
 
                 w.WriteStartElement("body");
-                w.WriteAttributeString("style", "text-align:center");
                 w.WriteStartElement("div");
-                w.WriteAttributeString("class", "centredReferenceDiv");
-                string styleString = "position:relative; text-align: left; top: 0px; padding-top: 0px; margin-top: 0px; width: " + 
-                    PageFormat.BottomVBPX.ToString() + "px; margin-left: auto; margin-right: auto;";
+                string styleString = "position:relative; text-align: left; top: 0px; padding-top: 0px; margin-top: 0px; width: " +
+                    PageFormat.BottomVBPX.ToString();
                 w.WriteAttributeString("style", styleString);
 
                 w.WriteStartElement("div");
@@ -107,8 +100,8 @@ namespace Moritz.Symbols
                     w.WriteAttributeString("src", svgPagename);
                     w.WriteAttributeString("content-type", "image/svg+xml");
                     w.WriteAttributeString("class", "svgPage");
-                    w.WriteAttributeString("width", M.DoubleToShortString(PageFormat.RightVBPX));
-                    w.WriteAttributeString("height", M.DoubleToShortString(PageFormat.BottomVBPX));
+                    w.WriteAttributeString("width", M.DoubleToShortString(PageFormat.RightVBPX / PageFormat.ViewBoxMagnification));
+                    w.WriteAttributeString("height", M.DoubleToShortString(PageFormat.BottomVBPX / PageFormat.ViewBoxMagnification));
                     w.WriteEndElement();
                     w.WriteStartElement("br");
                     w.WriteEndElement();
@@ -124,7 +117,7 @@ namespace Moritz.Symbols
                 w.Close(); // close actually unnecessary because of the using statement.
             }
 
-            return FilePath; // html
+            return filePath; // html
         }
 
         private void WriteHTMLScoreHead(XmlWriter w, string title)
@@ -138,32 +131,52 @@ namespace Moritz.Symbols
 
         private List<string> SaveSVGPages(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
         {
-            List<string> pageFilenames = new List<string>();
+            CreatePages(graphicsOnly);
+
+            List<string> pageNames = new List<string>();
 
             int pageNumber = 1;
             foreach(SvgPage page in _pages)
             {
-				string pageFilename = Path.GetFileNameWithoutExtension(FilePath);
-				if(graphicsOnly)
-				{
-					pageFilename += " page " + (pageNumber).ToString() + " graphics.svg";
-				}
-				else
-				{
-					pageFilename += " page " + (pageNumber).ToString() + ".svg";
-				}
-                string pagePath = Path.GetDirectoryName(FilePath) + @"\" + pageFilename;
+                string pagePath = GetSVGFilePath(pageNumber);
+				string pageFilename = Path.GetFileName(pagePath);
 
-                pageFilenames.Add(pageFilename);
+                pageNames.Add(pageFilename);
 
                 SaveSVGPage(pagePath, page, this.MetadataWithDate, false, graphicsOnly, printTitleAndAuthorOnPage1);
                 pageNumber++;
             }
 
-            return pageFilenames;
+            return pageNames;
         }
 
-		internal void WriteScoreData(SvgWriter w)
+        /// <summary>
+        /// Puts up a Warning MessageBox, and returns false if systems cannot be fit
+        /// vertically on the page. Otherwise true.
+        /// </summary>
+        protected bool CreatePages(bool graphicsOnly)
+        {
+            bool success = true;
+            int pageNumber = 1;
+            int systemIndex = 0;
+            while(systemIndex < Systems.Count)
+            {
+                int oldSystemIndex = systemIndex;
+                SvgPage newPage = NewSvgPage(GetSVGFilePath(pageNumber), pageNumber++, ref systemIndex, graphicsOnly);
+                if(oldSystemIndex == systemIndex)
+                {
+                    MessageBox.Show("The systems are too high for the page height.\n\n" +
+                        "Reduce the height of the systems, or increase the page height.",
+                        "Height Problem", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    success = false;
+                    break;
+                }
+                _pages.Add(newPage);
+            }
+            return success;
+        }
+
+        internal void WriteScoreData(SvgWriter w)
 		{
 			if(ScoreData != null)
 			{
@@ -812,43 +825,52 @@ namespace Moritz.Symbols
         #region save single svg score
         /// <summary>
         /// Writes the "scroll" version of the score. This is a standalone SVG file.
-        /// When graphicsOnly is true, the following are omitted (for ease of use in CorelDraw):
+        /// When graphicsOnly is true, the following are omitted:
         ///     a) the metadata element, and all its required namespaces,
         ///     b) all temporal (i.e.MIDI etc.) informaton the score namespace, and all its enclosed (temporal and alignment) information.
         /// If printTitleAndAuthorOnScorePage1 is false then the main title and author information is omitted on page 1, and page 1
         /// has the margins otherwise allocated for all the other pages.
         /// </summary>
-        /// <returns>The path to the written file.</returns>
-        public string SaveSingleSVGScore(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
+        public string SaveSVGScrollScore(bool graphicsOnly, bool printTitleAndAuthorOnPage1)
 		{
             if(printTitleAndAuthorOnPage1)
             {
                 PageFormat.TopMarginPage1VBPX = PageFormat.TopMarginOtherPagesVBPX;
             }
 
-            TextInfo infoTextInfo = GetBasicInfoTextAtTopOfPage(0);
+            string filePath = GetSVGFilePath(0);
+
+            TextInfo infoTextInfo = GetInfoTextAtTopOfPage(filePath);
 
             SvgPage singlePage = new SvgPage(this, PageFormat, 0, infoTextInfo, this.Systems, true);
 
-			string pageFilename = Path.GetFileNameWithoutExtension(FilePath);
-			if(graphicsOnly)
-			{
-				pageFilename += " (scroll, graphics only).svg";
-			}
-			else
-			{
-				pageFilename += " (scroll).svg";
+			SaveSVGPage(filePath, singlePage, MetadataWithDate, true, graphicsOnly, printTitleAndAuthorOnPage1);
 
-			}
-			string pagePath = Path.GetDirectoryName(FilePath) + @"\" + pageFilename;
-
-			SaveSVGPage(pagePath, singlePage, this.MetadataWithDate, true, graphicsOnly, printTitleAndAuthorOnPage1);
-
-            return pagePath;
+            return filePath;
 		}
 
 
-		#endregion save single svg score
+        #endregion save single svg score
+
+
+        protected string GetSVGFilePath(int pageNumber)
+        {
+            string pageFilename = FileNameWithoutExtension;
+
+            if(!Form1Options.IncludeMIDIData)
+            {
+                pageFilename += " (graphics only)";
+            }
+
+            if(pageNumber > 0)
+            {
+                pageFilename += (" page " + pageNumber.ToString());
+            }
+
+            string pagePath = TargetFolder + @"\" + pageFilename + ".svg";
+
+            return pagePath;
+        }
 
         /// <summary>
         /// The score's systems
@@ -1476,35 +1498,9 @@ namespace Moritz.Symbols
 			}
 		}
 
-		/// <summary>
-		/// Puts up a Warning MessageBox, and returns false if systems cannot be fit
-		/// vertically on the page. Otherwise true.
-		/// </summary>
-		protected bool CreatePages()
+        protected SvgPage NewSvgPage(string filePath, int pageNumber, ref int systemIndex, bool graphicsOnly)
         {
-            bool success = true;
-            int pageNumber = 1;
-            int systemIndex = 0;
-            while(systemIndex < Systems.Count)
-            {
-                int oldSystemIndex = systemIndex;
-                SvgPage newPage = NewSvgPage(pageNumber++, ref systemIndex);
-                if(oldSystemIndex == systemIndex)
-                {
-                    MessageBox.Show("The systems are too high for the page height.\n\n" +
-                        "Reduce the height of the systems, or increase the page height.",
-                        "Height Problem", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    success = false;
-                    break;
-                }
-                _pages.Add(newPage);
-            }
-            return success;
-        }
-
-        protected SvgPage NewSvgPage(int pageNumber, ref int systemIndex)
-        {
-            TextInfo infoTextInfo = GetBasicInfoTextAtTopOfPage(pageNumber);
+            TextInfo infoTextInfo = GetInfoTextAtTopOfPage(filePath);
 
             List<SvgSystem> systemsOnPage = new List<SvgSystem>();
             bool lastPage = true;
@@ -1540,26 +1536,14 @@ namespace Moritz.Symbols
             return new SvgPage(this, PageFormat, pageNumber, infoTextInfo, systemsOnPage, lastPage);
         }
 
-        private TextInfo GetBasicInfoTextAtTopOfPage(int pageNumber)
+        private TextInfo GetInfoTextAtTopOfPage(string filePath)
         {
-            StringBuilder infoAtTopOfPageSB = new StringBuilder();
-
-            if(!String.IsNullOrEmpty(FileName))
-                infoAtTopOfPageSB.Append(Path.GetFileNameWithoutExtension(FileName));
-
-			if(pageNumber == 0)
-			{
-				infoAtTopOfPageSB.Append(" (scroll)");
-			}
-			else
-			{
-				infoAtTopOfPageSB.Append(" page " + pageNumber.ToString());
-			}				
+            string infoString = Path.GetFileName(filePath);				
 
             if(MetadataWithDate != null)
-                infoAtTopOfPageSB.AppendFormat(", " + MetadataWithDate.Date);
+                infoString += (", " + MetadataWithDate.Date);
 
-            return new TextInfo(infoAtTopOfPageSB.ToString(), "Arial", PageFormat.TimeStampFontHeight, TextHorizAlign.left);
+            return new TextInfo(infoString, "Arial", PageFormat.TimeStampFontHeight, TextHorizAlign.left);
         }
 
 

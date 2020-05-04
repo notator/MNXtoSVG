@@ -164,13 +164,6 @@ namespace Moritz.Symbols
 		{
             w.SvgStartGroup(CSSObjectClass.systems.ToString());
 
-			if(graphicsOnly)
-			{
-				var bracketIndex = _infoTextInfo.Text.IndexOf(')');
-				var text = _infoTextInfo.Text.Insert(bracketIndex, ", graphics only");
-				_infoTextInfo = new TextInfo(text, _infoTextInfo.FontFamily, _infoTextInfo.FontHeight, _infoTextInfo.TextHorizAlign);
-			}
-
 			w.SvgText(CSSObjectClass.timeStamp, _infoTextInfo.Text, 32, _infoTextInfo.FontHeight);
 
 			if((pageNumber == 1 || pageNumber == 0) && printTitleAndAuthorOnScorePage1)

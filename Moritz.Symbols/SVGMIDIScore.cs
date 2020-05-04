@@ -4,13 +4,14 @@ using Moritz.Spec;
 using Moritz.Xml;
 using MNX.Globals;
 using MNX.Common;
+using System.IO;
 
 namespace Moritz.Symbols
 {
 	public class SVGMIDIScore : SvgScore
     {
         public SVGMIDIScore(string targetFolder, MNXCommonData mnxCommonData, Form1Data form1Data)
-            : base(targetFolder, form1Data.Metadata.Title)
+            : base(targetFolder, form1Data.FileNameWithoutExtension, form1Data.Options)
         {
             this.MetadataWithDate = new MetadataWithDate()
             {
@@ -36,7 +37,7 @@ namespace Moritz.Symbols
             {
                 PageFormat.BottomVBPX = GetNewBottomVBPX(Systems);
                 PageFormat.BottomMarginPosVBPX = (int)(PageFormat.BottomVBPX - PageFormat.DefaultDistanceBetweenSystemsVBPX);
-                filePath = SaveSingleSVGScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
+                filePath = SaveSVGScrollScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
             }
             else
             {
@@ -293,7 +294,6 @@ namespace Moritz.Symbols
 
             CreateEmptySystems(bars); // one system per bar
 
-            bool success = true;
             if(PageFormat.ChordSymbolType != "none") // set by AudioButtonsControl
             {
                 Notator.ConvertVoiceDefsToNoteObjects(this.Systems);
@@ -304,7 +304,7 @@ namespace Moritz.Symbols
                 /// The systems are given Metrics inside the following function then justified internally,
                 /// both horizontally and vertically.
                 Notator.CreateMetricsAndJustifySystems(this.Systems);
-                success = CreatePages();
+
             }
 
             CheckSystems(this.Systems);

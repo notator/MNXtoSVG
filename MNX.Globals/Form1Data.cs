@@ -9,13 +9,16 @@ namespace MNX.Globals
 {
     public class Form1Data
     {
+        public readonly string FileNameWithoutExtension = null;
         public readonly Form1PageData Page = new Form1PageData();
         public readonly Form1NotationData Notation = new Form1NotationData();
         public readonly Form1MetadataData Metadata = new Form1MetadataData();
         public readonly Form1OptionsData Options = new Form1OptionsData();
 
         public Form1Data(Form1StringData form1DataStrings)
-        {            
+        {
+            FileNameWithoutExtension = form1DataStrings._fileName;
+
             Page.Width = int.Parse(form1DataStrings.Page.Width);
             Page.Height = int.Parse(form1DataStrings.Page.Height);
             Page.MarginTopPage1 = int.Parse(form1DataStrings.Page.MarginTopPage1);

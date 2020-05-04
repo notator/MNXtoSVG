@@ -57,11 +57,35 @@ namespace Moritz.Symbols
             _midiVelocity = midiVelocity;
         }
 
-        public Head(OutputChordSymbol outputChordSymbol, Note note)
+        public Head(OutputChordSymbol outputChordSymbol, Note mnxcNote)
         {
             Chord = outputChordSymbol;
-            Pitch = note.Pitch;
-            MNXNote = note;
+            Pitch = mnxcNote.Pitch;
+            if(Pitch.Contains("##"))
+            {
+                Alteration = 2;
+            }
+            else if(Pitch.Contains("#"))
+            {
+                Alteration = 1;
+            }
+            else if(Pitch.Contains("bb"))
+            {
+                Alteration = -2;
+            }
+            else if(Pitch.Contains("b"))
+            {
+                Alteration = -1;
+            }
+            else
+            {
+                Alteration = 0;
+            }
+
+            if(mnxcNote.Accidental != null)
+            {
+                this.DisplayAccidental = DisplayAccidental.force; 
+            }
         }
 
         /// <summary>

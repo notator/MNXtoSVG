@@ -1221,7 +1221,6 @@ namespace Moritz.Symbols
 
             NormalizeSmallClefs();
 
-            FinalizeAccidentals();
             AddNormalBarlineAtStartOfEachSystem(); // 4. adds a NormalBarline at the start of each system, after the clef (and keySignature, if any).
 
 			AddBarNumbers(); // 5.add a barnumber to the first (Normal)Barline on each system.
@@ -1582,21 +1581,6 @@ namespace Moritz.Symbols
         }
 
         #endregion protected functions
-
-        private void FinalizeAccidentals()
-        {
-            for(int staffIndex = 0; staffIndex < Systems[0].Staves.Count; staffIndex++)
-            {
-                NoteObjectMoment previousStaffMoment = null;
-                foreach(SvgSystem system in Systems)
-                {
-                    Staff staff = system.Staves[staffIndex];
-                    {
-                        previousStaffMoment = staff.FinalizeAccidentals(previousStaffMoment);
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Adds a bar number to the first Barline in the top voice of each system except the first.

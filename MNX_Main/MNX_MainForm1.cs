@@ -30,6 +30,7 @@ namespace MNX.Main
             var form1DataPaths = new List<string>(form1DataArray);
             form1DataPaths.Sort();
 
+            MNXSelect.SuspendLayout();
             MNXSelect.Items.Clear();
             for(var i = 0; i < form1DataPaths.Count; i++)
             {
@@ -38,9 +39,10 @@ namespace MNX.Main
                 MNXSelect.Items.Add(mnxFilename);
             }
             MNXSelect.SelectedIndex = 0;
+            MNXSelect.ResumeLayout();
 
-            _settingsHaveChanged = false;
-            SetButtons(_settingsHaveChanged);
+            M.MillisecondsPerTick = 10000; // dummy value to prevent exception
+            LoadSettings(MNXSelect.SelectedIndex);
         }
 
         private void WriteButton_Click(object sender, EventArgs e)
@@ -60,24 +62,22 @@ namespace MNX.Main
 
         private void MNXSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadScoreSettings(); // can also be called to revert settings               
-        }
-
-        private void LoadScoreSettings()
-        {
-            // Load a score (edit form1DataStrings)
-            var form1DataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex].Item2;
-            var svgds = new Form1StringData(form1DataPath);
-
-            //var mnxPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex - 1].Item1;
-            //var mnx = new MNX(mnxPath);
-            //_numberOfMeasures = mnx.MNXCommonData.NumberOfMeasures;
-            _numberOfMeasures = 99;
-
-            LoadControls(svgds, _numberOfMeasures);
+            LoadSettings(MNXSelect.SelectedIndex); // can also be called to revert settings 
 
             _settingsHaveChanged = false;
             SetButtons(_settingsHaveChanged);
+        }
+
+        private void LoadSettings(int mnxSelectedIndex)
+        {
+            var mnx = new MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1);
+            MNXCommonData mnxCommonData = mnx.MNXCommonData;
+            _numberOfMeasures = mnxCommonData.NumberOfMeasures;
+
+            var form1DataPath = _MNX_Form1Data_Paths[mnxSelectedIndex].Item2;
+            var svgds = new Form1StringData(form1DataPath);
+
+            LoadControls(svgds, _numberOfMeasures);
         }
 
         private void LoadControls(Form1StringData svgds, int numberOfMeasures)
@@ -218,6 +218,9 @@ namespace MNX.Main
         private void TextBox_Changed(object sender, EventArgs e)
         {
             M.SetToWhite(sender as TextBox);
+            RevertFormatButton.Enabled = true;
+            SaveFormatButton.Enabled = true;
+            WriteButton.Enabled = false;
         }
 
         private void SaveFormatButton_Click(object sender, EventArgs e)
@@ -270,7 +273,12 @@ namespace MNX.Main
 
         private void RevertFormatButton_Click(object sender, EventArgs e)
         {
-            LoadScoreSettings();
+            LoadSettings(MNXSelect.SelectedIndex);
+
+            _settingsHaveChanged = false;
+            RevertFormatButton.Enabled = false;
+            SaveFormatButton.Enabled = false;
+            WriteButton.Enabled = true;
         }
     }
 }

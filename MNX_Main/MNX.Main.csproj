@@ -70,7 +70,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="MNX_in\form1Data\_10_beamhooks.f1d" />
-    <None Include="MNX_in\form1Data\_11a_nestedtuplets.f1d" />
     <None Include="MNX_in\form1Data\_11_tuplets.f1d" />
     <None Include="MNX_in\form1Data\_12_voices.f1d" />
     <None Include="MNX_in\form1Data\_13_octaves.f1d" />
@@ -88,7 +87,6 @@
     <None Include="MNX_in\form1Data\__8_ties.f1d" />
     <None Include="MNX_in\form1Data\__9_beams.f1d" />
     <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
-    <None Include="MNX_in\mnx\_11a_nestedtuplets.mnx" />
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
     <None Include="MNX_in\mnx\_12_voices.mnx" />
     <None Include="MNX_in\mnx\_13_octaves.mnx" />
@@ -143,9 +141,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Issues.txt" />
-    <Content Include="originalPNGandSVGoutput.html" />
     <Content Include="MNX_in\png\__10_beamhooks.png" />
-    <Content Include="MNX_in\png\__11a_nestedtuplets.png" />
     <Content Include="MNX_in\png\__11_tuplets.png" />
     <Content Include="MNX_in\png\__12_voices.png" />
     <Content Include="MNX_in\png\__13_octaves.png" />
@@ -162,12 +158,13 @@
     <Content Include="MNX_in\png\___7_dots.png" />
     <Content Include="MNX_in\png\___8_ties.png" />
     <Content Include="MNX_in\png\___9_beams.png" />
-    <Content Include="SVG_out\__1_helloworld.svg %28scroll, graphics only%29.svg" />
-    <Content Include="SVG_out\__2_cscale.svg %28scroll, graphics only%29.svg" />
-    <Content Include="SVG_out\__3_chord.svg %28scroll, graphics only%29.svg" />
-    <Content Include="SVG_out\__4_timesigs.svg %28scroll, graphics only%29.svg" />
-    <Content Include="SVG_out\__5_keysigs.svg %28scroll, graphics only%29.svg" />
-    <Content Include="SVG_out\__6_accidentals.svg %28scroll, graphics only%29.svg" />
+    <Content Include="originalPNGandSVGoutput.html" />
+    <Content Include="SVG_out\__1_helloworld %28graphics only%29.svg" />
+    <Content Include="SVG_out\__2_cscale %28graphics only%29.svg" />
+    <Content Include="SVG_out\__3_chord %28graphics only%29.svg" />
+    <Content Include="SVG_out\__4_timesigs %28graphics only%29.svg" />
+    <Content Include="SVG_out\__5_keysigs %28graphics only%29.svg" />
+    <Content Include="SVG_out\__6_accidentals %28graphics only%29.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

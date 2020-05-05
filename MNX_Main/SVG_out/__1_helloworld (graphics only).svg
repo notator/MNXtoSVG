@@ -71,15 +71,15 @@
             {
                 font-size:420px
             }
-            .staffline, .ledgerline, .stem
+            .backgroundFill
+            {
+                fill:white                
+            }
+            .staffline, .ledgerline
             {
                 stroke:black;
                 stroke-width:15px;
                 fill:black
-            }
-            .stem
-            {
-                stroke-linecap:round                
             }
             .normalBarline
             {
@@ -114,7 +114,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">__1_helloworld (graphics only).svg, Monday 04.05.2020, 15:10:45</text>
+			y="150">__1_helloworld (graphics only).svg, Tuesday 05.05.2020, 10:03:45</text>
 		<g
 			class="system">
 			<g

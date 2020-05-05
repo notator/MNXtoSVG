@@ -47,7 +47,7 @@ namespace MNX.Globals
         // contains page formatting data parallel to the files in the MNX_in_Folder.
         public static readonly string Form1Data_Folder = mnxMain_Folder + @"\MNX_in\form1Data\";
         // contains the output SVG.
-        public static readonly string SVG_out_Folder = mnxMain_Folder + @"\SVG_out\";
+        public static readonly string SVG_out_Folder = mnxMain_Folder + @"\SVG_temp\";
 
         //Creates and initializes the CultureInfo which uses the international sort.
         public static CultureInfo ci = new CultureInfo("en-US", false);

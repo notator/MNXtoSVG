@@ -118,14 +118,16 @@ namespace Moritz.Symbols
 
             _score.WriteDefs(w, _pageNumber);
 
-			if(isSinglePageScore && (!graphicsOnly))
+            if(isSinglePageScore && (!graphicsOnly))
 			{
 				_score.WriteScoreData(w);
 			}
 
-			#region layers
+            #region layers
 
-			if(_pageNumber > 0)
+            WriteBackgroundLayer(w, _pageFormat.RightVBPX, _pageFormat.BottomVBPX);
+
+            if(_pageNumber > 0)
 			{ 
 				WriteFrameLayer(w, _pageFormat.RightVBPX, _pageFormat.BottomVBPX);
 			}
@@ -140,7 +142,7 @@ namespace Moritz.Symbols
             w.WriteEndDocument();
         }
 
-		private void GetNumberOfVoices(SvgSystem svgSystem, ref int nOutputVoices)
+        private void GetNumberOfVoices(SvgSystem svgSystem, ref int nOutputVoices)
 		{
 			nOutputVoices = 0;
             foreach(Staff staff in svgSystem.Staves)
@@ -155,7 +157,12 @@ namespace Moritz.Symbols
 			}
 		}
 
-		private void WriteFrameLayer(SvgWriter w, double width, double height)
+        private void WriteBackgroundLayer(SvgWriter w, double width, double height)
+        {
+            w.SvgRect(CSSObjectClass.backgroundFill, 0, 0, width, height);
+        }
+
+        private void WriteFrameLayer(SvgWriter w, double width, double height)
 		{
             w.SvgRect(CSSObjectClass.frame, 0, 0, width, height);
         }

@@ -20,7 +20,8 @@ namespace Moritz.Xml
 		none,    // Exists and is recorded, but is never used as an element class and never given a CSS definition!
 		metadata, // Used and defined on every page. Not recorded. Container:svg. This metadata element is compatible with Inkscape's.
 		frame,       // Used and defined for single pages, not for scroll formatted scores. Not recorded. Container:svg.
-		timeStamp,  // Used and defined on every page. Not recorded. Container:systems.
+        backgroundFill, // Defined for all pages. Can easiy be deleted from the SVG if/when necessary.
+        timeStamp,  // Used and defined on every page. Not recorded. Container:systems.
 		titles,  // Used and defined on page 1. Not recorded. Container:systems.
 		mainTitle,  // Used and defined on page 1. Not recorded. Container:titles. 
 		author,     // Used and defined on page 1. Not recorded. Container:titles.

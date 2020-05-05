@@ -225,7 +225,7 @@ namespace Moritz.Symbols
 
             w.WriteStartElement("style");
 			w.WriteAttributeString("type", "text/css");
-			w.WriteCData(css.ToString());// CDATA block needed by CorelDraw when importing. (?)
+			w.WriteCData(css.ToString());
 			w.WriteEndElement();
 		}
 
@@ -660,8 +660,15 @@ namespace Moritz.Symbols
             
             string strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX);
             StringBuilder standardLineClasses = GetStandardLineClasses(usedCSSClasses, defineFlagStyle);
-			//".staffline, .ledgerline, .stem, .beam, .flag, regionFrameConnector
-			lineStyles.Append($@"{standardLineClasses.ToString()}
+
+            lineStyles.Append($@".backgroundFill
+            {{
+                fill:white                
+            }}
+            ");
+
+            //".staffline, .ledgerline, .stem, .beam, .flag, regionFrameConnector
+            lineStyles.Append($@"{standardLineClasses.ToString()}
             {{
                 stroke:black;
                 stroke-width:{strokeWidth}px;
@@ -764,8 +771,7 @@ namespace Moritz.Symbols
                 lineStyles.Append($@".frame
             {{
                 stroke:black;
-                stroke-width:{strokeWidth}px;
-                fill:white                
+                stroke-width:{strokeWidth}px;                
             }}
             ");
             }

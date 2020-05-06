@@ -66,7 +66,7 @@ namespace Moritz.Symbols
                 w.WriteAttributeString("id", keySigID);
 
                 string innerText = null;
-                var accidentals = keySigDefs[keySigID];
+                var accidentals = keySigDefs[keySigID].AccidentalMetrics;
                 foreach(var acc in accidentals)
                 {
                     innerText = (keySigID.EndsWith("s")) ? "#" : "b";

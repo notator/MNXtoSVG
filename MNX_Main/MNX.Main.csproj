@@ -138,9 +138,7 @@
       <Name>Moritz.Xml</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SVG_out\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Issues.txt" />
     <Content Include="MNX_in\png\__10_beamhooks.png" />
@@ -161,6 +159,12 @@
     <Content Include="MNX_in\png\___8_ties.png" />
     <Content Include="MNX_in\png\___9_beams.png" />
     <Content Include="originalPNGandSVGoutput.html" />
+    <Content Include="SVG_out\__1_helloworld %28graphics only%29.svg" />
+    <Content Include="SVG_out\__2_cscale %28graphics only%29.svg" />
+    <Content Include="SVG_out\__3_chord %28graphics only%29.svg" />
+    <Content Include="SVG_out\__4_timesigs %28graphics only%29.svg" />
+    <Content Include="SVG_out\__5_keysigs %28graphics only%29.svg" />
+    <Content Include="SVG_out\__6_accidentals %28graphics only%29.svg" />
     <Content Include="SVG_temp\__1_helloworld %28graphics only%29.svg" />
     <Content Include="SVG_temp\__2_cscale %28graphics only%29.svg" />
     <Content Include="SVG_temp\__3_chord %28graphics only%29.svg" />

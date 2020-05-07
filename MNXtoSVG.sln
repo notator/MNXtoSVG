@@ -15,46 +15,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moritz.Symbols", "Moritz.Sy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moritz.Xml", "Moritz.Xml\Moritz.Xml.csproj", "{B239C302-A15D-4397-9F3C-EE6CC85440F3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gh_pages", "gh_pages", "{31BBD0B7-EDFC-47DD-B01E-387FBDD8AAC8}"
-	ProjectSection(SolutionItems) = preProject
-		MNX_Main\originalPNGandSVGoutput.html = MNX_Main\originalPNGandSVGoutput.html
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "svg", "svg", "{EB574E05-5D45-4D66-B9EB-10E1733C643F}"
-	ProjectSection(SolutionItems) = preProject
-		MNX_Main\SVG_out\__1_helloworld (graphics only).svg = MNX_Main\SVG_out\__1_helloworld (graphics only).svg
-		MNX_Main\SVG_out\__2_cscale (graphics only).svg = MNX_Main\SVG_out\__2_cscale (graphics only).svg
-		MNX_Main\SVG_out\__3_chord (graphics only).svg = MNX_Main\SVG_out\__3_chord (graphics only).svg
-		MNX_Main\SVG_out\__4_timesigs (graphics only).svg = MNX_Main\SVG_out\__4_timesigs (graphics only).svg
-		MNX_Main\SVG_out\__5_keysigs (graphics only).svg = MNX_Main\SVG_out\__5_keysigs (graphics only).svg
-		MNX_Main\SVG_out\__6_accidentals (graphics only).svg = MNX_Main\SVG_out\__6_accidentals (graphics only).svg
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "png", "png", "{0B7920E2-B0B1-4A13-82FD-46A3DA3649B6}"
-	ProjectSection(SolutionItems) = preProject
-		MNX_Main\MNX_in\png\__10_beamhooks.png = MNX_Main\MNX_in\png\__10_beamhooks.png
-		MNX_Main\MNX_in\png\__11_tuplets.png = MNX_Main\MNX_in\png\__11_tuplets.png
-		MNX_Main\MNX_in\png\__12_voices.png = MNX_Main\MNX_in\png\__12_voices.png
-		MNX_Main\MNX_in\png\__13_octaves.png = MNX_Main\MNX_in\png\__13_octaves.png
-		MNX_Main\MNX_in\png\__14_slurs.png = MNX_Main\MNX_in\png\__14_slurs.png
-		MNX_Main\MNX_in\png\__15_slurchords.png = MNX_Main\MNX_in\png\__15_slurchords.png
-		MNX_Main\MNX_in\png\__16_slurnotes.png = MNX_Main\MNX_in\png\__16_slurnotes.png
-		MNX_Main\MNX_in\png\__17_slurincomplete.png = MNX_Main\MNX_in\png\__17_slurincomplete.png
-		MNX_Main\MNX_in\png\___1_helloworld.png = MNX_Main\MNX_in\png\___1_helloworld.png
-		MNX_Main\MNX_in\png\___2_cscale.png = MNX_Main\MNX_in\png\___2_cscale.png
-		MNX_Main\MNX_in\png\___3_chord.png = MNX_Main\MNX_in\png\___3_chord.png
-		MNX_Main\MNX_in\png\___4_timesigs.png = MNX_Main\MNX_in\png\___4_timesigs.png
-		MNX_Main\MNX_in\png\___5_keysigs.png = MNX_Main\MNX_in\png\___5_keysigs.png
-		MNX_Main\MNX_in\png\___6_accidentals.png = MNX_Main\MNX_in\png\___6_accidentals.png
-		MNX_Main\MNX_in\png\___7_dots.png = MNX_Main\MNX_in\png\___7_dots.png
-		MNX_Main\MNX_in\png\___8_ties.png = MNX_Main\MNX_in\png\___8_ties.png
-		MNX_Main\MNX_in\png\___9_beams.png = MNX_Main\MNX_in\png\___9_beams.png
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ADE2741C-9646-4E2B-9918-C35DD6AB9A47}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D8562620-73B5-44D7-8CC0-DE16ACBBFBAB}"
+	ProjectSection(SolutionItems) = preProject
+		docs\index.html = docs\index.html
 	EndProjectSection
 EndProject
 Global
@@ -92,8 +61,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EB574E05-5D45-4D66-B9EB-10E1733C643F} = {31BBD0B7-EDFC-47DD-B01E-387FBDD8AAC8}
-		{0B7920E2-B0B1-4A13-82FD-46A3DA3649B6} = {31BBD0B7-EDFC-47DD-B01E-387FBDD8AAC8}
+		{D8562620-73B5-44D7-8CC0-DE16ACBBFBAB} = {ADE2741C-9646-4E2B-9918-C35DD6AB9A47}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {08DE5EEC-8382-4B02-AE0A-7E62ABFD4BE9}

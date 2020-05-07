@@ -13,7 +13,7 @@ The application is really designed to be used in debug mode inside Visual Studio
 <b>Its main purpose is to provide feedback about the developing standards.</b><br />
 By-products will be both the accumulation of some possibly useful music notation object definitions and, hopefully, a contribution to the wider debate about music notation in general.
 
-A more detailed description of how this application looks and works in practice can be found (at this repository's github.io site). 
+A more detailed description of how this application looks and works can be found at [https://notator.github.io/MNXtoSVG/](https://notator.github.io/MNXtoSVG/). 
 
 May 7th, 2020
  

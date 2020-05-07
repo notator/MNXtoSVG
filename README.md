@@ -10,9 +10,12 @@ Insights gained from looking at real code should, however, provide invaluable fe
 <b>MNXtoSVG</b> inherits code from my [Moritz](https://github.com/notator/Moritz) repository, but Moritz was designed to use only a subset of Common Western Music Notation, so code for the missing objects is having to be added. This is being done incrementally, by instantiating the examples in [MNX-Common by Example](https://w3c.github.io/mnx/by-example/) in the order they appear. Completed examples can be found in the [SVG out folder](https://github.com/notator/MNXtoSVG/tree/master/MNX_Main/SVG_out).
 
 The application is really designed to be used in debug mode inside Visual Studio, not as a finished tool.<br />
-Its main purpose is to provide feedback about the developing standards, but it should also accumulate a set of useful music notation object definitions and, hopefully, contribute to a wider debate about music notation in general.<br />
+Its main purpose is to provide feedback about the developing standards.<br />
+By-products are
+1. the accumulation of some possibly useful music notation object definitions and
+2. hopefully, a contribution to the wider debate about music notation in general.
 
-A more detailed description of how it looks and works can be found (at this repository's github.io site). 
+A more detailed description of how this application looks and works in practice can be found (at this repository's github.io site). 
 
 May 7th, 2020
  

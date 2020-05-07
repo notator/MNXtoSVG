@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>About MNXtoSVG</title>
+    <link href="styleSheet.css" rel="stylesheet" />
+</head>
+<body style="width:700px; margin-left:auto; margin-right:auto">
+    <p class="header1">MNXtoSVG</p>
+    <hr class="hrHeight2" />
+    <br />
+    For a more general description of this application, see the <a href="https://github.com/notator/MNXtoSVG/blob/master/README.md">README</a> file in its main repository.<br /><br />
+
+    <hr class="hrHeight2" />
+
+    <p class="boldHeader1">Usage</p>
+
+    <div class="note" style="width:620px; margin-left:20px">
+        Notes:
+        <ol style="margin:0 0 0 20px; padding:0;">
+            <li>
+                This application is designed to be used in debug mode in Visual Studio, not as a finished tool.
+            </li>
+            <li>
+                Files and Folders in this documentation refer to files and folders that can be found in the <a href="https://github.com/notator/MNXtoSVG">GitHub repository</a>.
+            </li>
+            <li>
+                I have added a number prefix to the original file names,
+                so that they list in the order given in<br />
+                <a href="https://w3c.github.io/mnx/by-example/"><i>MNX-Common by Example</i></a>.
+            </li>
+
+        </ol>
+    </div>
+
+    <p class="boldHeader2">Input folders and files</p>
+
+
+    <span class="small bold">MNX.Main/MNX_in/mnx</span>: This folder contains one or more .mnx (currently <i>MNX-Common</i>) files.<br />
+    <span class="small bold">MNX.Main/MNX_in/png</span>: contains, for reference, copies of the corresponding <span class="small">
+        (<a href="https://w3c.github.io/mnx/by-example/"><i>MNX-Common by Example</i></a>)</span> .png files.
+    <br />
+    <span class="small bold">MNX.Main/MNX_in/form1Data</span>: contains an .f1d file for each .mnx file in the <span class="small bold">mnx</span> folder.
+    These files contain basic formatting information for each corresponding .mnx file, and are edited by this application (see below).<br />
+
+
+    <p class="boldHeader2">Output folders and files</p>
+
+    <span class="small bold">MNX.Main/SVG_temp</span>: This is where the applicaton saves its output. Files in this folder are not uploaded to the GitHub repository.<br />
+    <span class="small bold">MNX.Main/SVG_out</span>: When an example has been completed, and the SVG is ready for publication, it is copied into this folder by hand. Files in this folder are uploaded to the GitHub repository
+    where they can be publicly viewed.<br />
+    (Right-Click the viewed example in GitHub to download it into a browser.)
+
+    <p class="boldHeader2">Directory structure summary:</p>
+    <span class="small bold">MNX.Main</span> is one of the six (.dll) projects in this application.<br />
+    The complete list, in order of dependency, is currently (May 2020):<br />
+    <div style="margin-left:100px">
+        <span class="small bold">MNX.Globals</span> &mdash; Application-wide constants and functions<br />
+        <span class="small bold">Moritz.Xml</span> &mdash; The SVG Writer<br />
+        <span class="small bold">Moritz.Spec</span> &mdash; Basic object definitions<br />
+        <span class="small bold">MNX.Common</span> &mdash; The MNX-Common parser<br />
+        <span class="small bold">Moritz.Symbols</span> &mdash; SVG definitions, Metrics<br />
+        <span class="small bold"> MNX.Main</span> &mdash; The GUI with input and output directories.<br />
+        <div style="margin-left:50px">
+            <span class="small bold">MNX_in</span>
+            <div style="margin-left:50px">
+                <span class="small bold">mnx</span> &mdash; .mnx files<br />
+                <span class="small bold">png</span> &mdash; .png files from <i>MNX-Common by Example</i><br />
+                <span class="small bold">form1Data</span> &mdash; formatting data to be edited in the main form
+            </div>
+            <span class="small bold">SVG_temp</span> &mdash; used while testing<br />
+            <span class="small bold">SVG_out</span> &mdash; completed examples, viewable on GitHub
+        </div>
+    </div>
+    <br />
+    <hr class="hrHeight2" />
+
+    <p class="boldHeader2">Usage</p>
+
+    When the application starts up, the .mnx file names are loaded into the main file selector (top, middle).<br />
+    The selector is set to the first file in the <b>mnx</b> folder, and the corresponding formatting information
+    is loaded from the <b>form1Data</b> folder into the corresponding input fields on the form.<br />
+    <img src="png/MNXtoSVG_helloworld.png" />
+    <br /><br />
+    The formatting information for other examples is loaded using this selector: <br />
+    <img src="png/MNXtoSVG_fileMenu.png" />
+    <br /><br />
+    The basic stroke width is selected in the "stafflines and stem stroke widths" selector.<br />
+    Other stroke widths (e.g. thick barlines etc.) are set on the basis of the value selected here.<br />
+    Formatting that is not available on this form constitutes the application's "House Style".
+    <br />
+    <img style="margin-left:200px" src="png/MNXtoSVG_strokeWidth.png" />
+    <br /><br />
+    The vertical distance between stafflines (the "gap") is defined using the gap selector:
+    <img style="margin-left:200px" src="png/MNXtoSVG_gapSize.png" />
+    <br /><br />
+    If an example has more than one bar, system breaks can be set using the "system start bars" field:<br />
+    (This is how the help line looks when a 3-bar example is loaded.)<br />
+    <img style="margin-left:210px" src="png/MNXtoSVG_systemStartBars.png" /><br />
+    The input here must be a list of bar numbers, each separated by a space or comma character.<br />
+    (The form does plausibility checking everywhere, and activates the appropriate buttons accordingly.)
+    <br /><br />
+    If there are no errors on the form and it has been saved, clicking the "Write SVG score" button will create an output SVG in the <span class="small bold">SVG_temp</span> folder.
+    <br /><br />
+    <hr class="hrHeight1" />
+    <p class="boldHeader3">Options</p>
+    <img style="margin-left:250px" src="png/MNXtoSVG_options.png" /><br />
+    <ol>
+        <li>write page 1 titles: writes the title and author (from the metadata) at the top of page 1.</li>
+        <li>
+            write scroll score: writes the score's systems, one above the other, on a single page that is high enough to accomodate all the systems.
+            Such scroll scores are useful on the web. If this option is unchecked, the systems will be written on separate pages (for printing on paper).
+        </li>
+        <li>
+            include MIDI data: If this option is selected, temporal information will be embedded (using a dedicated namespace) in the SVG score's <span class="small bold">&lt;g class="chord"&gt;</span>
+            and <span class="small bold">&lt;g class="rest"&gt;</span> elements.<br />
+            This option is not currently being tested, but the code already exists (inherited from <a href="https://github.com/notator/Moritz">Moritz</a>).
+        </li>
+    </ol>
+    <hr class="hrHeight2" />
+    <br />
+    <div class="signature">
+        ji www 05.05.2020
+    </div>
+</body>
+</html>

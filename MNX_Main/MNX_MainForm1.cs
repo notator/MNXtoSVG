@@ -41,7 +41,6 @@ namespace MNX.Main
             MNXSelect.SelectedIndex = 0;
             MNXSelect.ResumeLayout();
 
-            M.MillisecondsPerTick = 10000; // dummy value to prevent exception
             LoadSettings(MNXSelect.SelectedIndex);
         }
 
@@ -53,9 +52,9 @@ namespace MNX.Main
             var form1StringData = new Form1StringData(form1DataPath);
             var form1Data = new Form1Data(form1StringData);
 
-            M.MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
+            var millisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
 
-            var mnx = new MNX(mnxDataPath);
+            var mnx = new MNX(mnxDataPath, millisecondsPerTick);
             MNXCommonData mnxCommonData = mnx.MNXCommonData;
             SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
         }
@@ -70,7 +69,7 @@ namespace MNX.Main
 
         private void LoadSettings(int mnxSelectedIndex)
         {
-            var mnx = new MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1);
+            var mnx = new MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1, 1); // dummy millisecondsPerTick = 1
             MNXCommonData mnxCommonData = mnx.MNXCommonData;
             _numberOfMeasures = mnxCommonData.NumberOfMeasures;
 

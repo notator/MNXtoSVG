@@ -17,10 +17,12 @@ namespace MNX.Main
         private readonly Collection Collection = null;
 
         internal readonly string FileName;
+        internal readonly double MillisecondsPerTick;
 
-        internal MNX(string mnxPath)
+        internal MNX(string mnxPath, double millisecondsPerTick)
         {
             FileName = Path.GetFileNameWithoutExtension(mnxPath);
+            MillisecondsPerTick = millisecondsPerTick;
 
             using(XmlReader r = XmlReader.Create(mnxPath))
             {
@@ -64,7 +66,7 @@ namespace MNX.Main
         {
             get
             {
-                MNXCommonData mnxCommonData = Score.MNXCommon.GetMNXCommonData();
+                MNXCommonData mnxCommonData = Score.MNXCommon.GetMNXCommonData(MillisecondsPerTick);
                 return mnxCommonData;
             }
 

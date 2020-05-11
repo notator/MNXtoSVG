@@ -62,8 +62,6 @@ namespace MNX.Globals
 
         // This value could be raised by any power of 2.
         public static int TicksPerCrotchet = 1024;
-        // this value is used while creating an SVG file.
-        public static double MillisecondsPerTick = 10000; // must be set, but is reset before writing svg file
 
         public readonly static int[] DurationSymbolTicks = GetDurationSymbolTicks();
 

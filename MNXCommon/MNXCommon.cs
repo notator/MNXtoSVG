@@ -78,7 +78,7 @@ namespace MNX.Common
             M.Assert(ScoreAudios.Count >= 0);
         }
 
-        public MNXCommonData GetMNXCommonData()
+        public MNXCommonData GetMNXCommonData(double millisecondsPerTick)
         {
             List<List<int>> midiChannelsPerStaff = new List<List<int>>();
             int currentMIDIChannel = 0;
@@ -106,7 +106,7 @@ namespace MNX.Common
                             int newNStaves = (int)sequence.StaffIndex; // StaffIndex starts at 1 !
                             numberOfStaves = (newNStaves > numberOfStaves) ? newNStaves : numberOfStaves;
                         }
-                        List <IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(M.MillisecondsPerTick);
+                        List <IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(millisecondsPerTick);
                         MeasureInsertGlobalIUDsInIUDs(globalIUDs, seqIUDs);
                         Trk newTrk = new Trk(currentMIDIChannel, 0, seqIUDs);
                         track.Add(newTrk);

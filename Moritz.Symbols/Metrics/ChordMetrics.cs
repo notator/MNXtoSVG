@@ -38,7 +38,9 @@ namespace Moritz.Symbols
 
             // if the chord is part of a beamGroup, the stem tips are all at one height here.
             // These objects are created with originX and originY at 0,0 (the chord's origin).
-            CreateLedgerlineAndAccidentalMetrics(chord.FontHeight, chord.HeadsTopDown, _headsMetricsTopDown, stemStrokeWidthVBPX, chordClass);
+            CreateLedgerlineMetrics(_headsMetricsTopDown, stemStrokeWidthVBPX, chordClass);
+            CreateAccidentalMetrics(chord.FontHeight, chord.HeadsTopDown, _headsMetricsTopDown, chordClass);
+            CreateAugDotMetrics(chord.NAugmentationDots, chord.FontHeight, _headsMetricsTopDown, chordClass);
 
             ChordSymbol cautionaryChordSymbol = chord as CautionaryChordSymbol;
             if(cautionaryChordSymbol != null)
@@ -183,6 +185,16 @@ namespace Moritz.Symbols
             return accidentalClass;
         }
 
+        private CSSObjectClass GetAugDotClass(CSSObjectClass chordClass)
+        {
+            CSSObjectClass augDotClass = CSSObjectClass.augDot; // chordClass == chord
+            if(chordClass == CSSObjectClass.cautionaryChord)
+            {
+                augDotClass = CSSObjectClass.cautionaryAugDot;
+            }
+            return augDotClass;
+        }
+
         private CSSObjectClass GetDynamicClass(ChordSymbol chord)
         {
             CSSObjectClass dynamicClass = CSSObjectClass.dynamic; // OutputChordSymbol
@@ -195,14 +207,17 @@ namespace Moritz.Symbols
             return lyricClass;
         }
 
-        private void CreateLedgerlineAndAccidentalMetrics(double fontHeight, List<Head> topDownHeads, List<HeadMetrics> topDownHeadsMetrics, double ledgerlineStemStrokeWidth, CSSObjectClass chordClass)
+        private void CreateLedgerlineMetrics(List<HeadMetrics> topDownHeadsMetrics, double ledgerlineStemStrokeWidth, CSSObjectClass chordClass)
         {
             double limbLength = (topDownHeadsMetrics[0].RightStemX - topDownHeadsMetrics[0].LeftStemX) / 2; // change to taste later
 
             CSSObjectClass llsClass = GetLedgerlinesClass(chordClass);
             _upperLedgerlineBlockMetrics = CreateUpperLedgerlineBlock(topDownHeadsMetrics, limbLength, ledgerlineStemStrokeWidth, llsClass);
             _lowerLedgerlineBlockMetrics = CreateLowerLedgerlineBlock(topDownHeadsMetrics, limbLength, ledgerlineStemStrokeWidth, llsClass);
+        }
 
+        private void CreateAccidentalMetrics(double fontHeight, List<Head> topDownHeads, List<HeadMetrics> topDownHeadsMetrics, CSSObjectClass chordClass)
+        {
             List<AccidentalMetrics> existingAccidentalsMetrics = new List<AccidentalMetrics>();
             for(int i = 0; i < topDownHeads.Count; i++)
             {
@@ -225,12 +240,145 @@ namespace Moritz.Symbols
             }
         }
 
+        private void CreateAugDotMetrics(int nAugmentationDots, double fontHeight, List<HeadMetrics> topDownHeadsMetrics, CSSObjectClass chordClass)
+        {
+            double separationX = _gap * 0.5;
+            if(nAugmentationDots > 0)
+            {
+                _topDownAugDotMetrics = new List<AugDotMetrics>();
+                CSSObjectClass augDotClass = GetAugDotClass(chordClass);
+                separationX = ( augDotClass == CSSObjectClass.cautionaryAugDot) ? separationX * 0.8 : separationX;
+                List<AugDotMetrics> templateAugDotRowMetrics = GetTemplateAugDotRowMetrics(nAugmentationDots, fontHeight, separationX, augDotClass);
+                List<Tuple<double, double>> shiftPairs = GetAugDotRowShiftPairs(topDownHeadsMetrics);
+                foreach(var shiftPair in shiftPairs)
+                {
+                    List<AugDotMetrics> augDotRowMetrics = GetClone(templateAugDotRowMetrics);
+                    foreach(var augDotMetrics in augDotRowMetrics)
+                    {
+                        augDotMetrics.Move(shiftPair.Item1 - augDotMetrics.OriginX, shiftPair.Item2 - augDotMetrics.OriginY);
+                        _topDownAugDotMetrics.Add(augDotMetrics);
+                    }
+                }
+            }
+        }
+
+        private List<AugDotMetrics> GetClone(List<AugDotMetrics> templateAugDotRowMetrics)
+        {
+            List<AugDotMetrics> rval = new List<AugDotMetrics>();
+            foreach(var augDotMetrics in templateAugDotRowMetrics)
+            {
+                rval.Add( (AugDotMetrics) augDotMetrics.Clone());
+            }
+            return rval;
+        }
+
         /// <summary>
-		/// Accidentals
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		private string GetClichtAccidentalCharacterString(Head head)
+        /// Returns a list of unique x, y shift pairs for moving AugDotRow clones.
+        /// The returned list may be smaller than the number of Heads (in dense clusters).
+        /// </summary>
+        private List<Tuple<double, double>> GetAugDotRowShiftPairs(List<HeadMetrics> topDownHeadsMetrics)
+        {
+            List<Tuple<double, double>> shiftPairs = new List<Tuple<double, double>>();
+
+            double headRightToFirstAugDotOriginX = _gap * 0.5;
+            double augDotsOriginXForHeads = FindAugDotsFirstOriginX(topDownHeadsMetrics, headRightToFirstAugDotOriginX);
+            double ledgerlineRightToFirstAugDotOriginX = _gap * 0.4;
+            double? augDotsOriginXForUpperLedgerlines = FindAugDotsFirstOriginX(_upperLedgerlineBlockMetrics, ledgerlineRightToFirstAugDotOriginX);
+            double? augDotsoriginXForLowerLedgerlines = FindAugDotsFirstOriginX(_lowerLedgerlineBlockMetrics, ledgerlineRightToFirstAugDotOriginX);
+
+            for(int i = 0; i < topDownHeadsMetrics.Count; i++)
+            {
+                double shiftX = 0;
+                HeadMetrics headMetrics = topDownHeadsMetrics[i];
+                if(headMetrics.OriginY < (_gap / 2))
+                {
+                    shiftX = (double)augDotsOriginXForUpperLedgerlines;
+                }
+                else if(headMetrics.OriginY > (_gap * 4.5))
+                {
+                    shiftX = (double)augDotsoriginXForLowerLedgerlines;
+                }
+                else
+                {
+                    shiftX = augDotsOriginXForHeads;
+                }
+
+                double shiftY = headMetrics.OriginY;
+                if(shiftY % _gap == 0)
+                {
+                    shiftY -= (_gap / 2);
+                }
+                if(shiftPairs.FindIndex(obj => obj.Item2 == shiftY) >= 0)
+                {
+                    shiftY += _gap;
+                }
+
+                if(shiftPairs.FindIndex(obj => obj.Item2 == shiftY) < 0)
+                {
+                    shiftPairs.Add(new Tuple<double, double>(shiftX, shiftY));
+                }
+            }
+
+            return shiftPairs;
+        }
+
+        /// <summary>
+        /// Returns the OriginX of the leftMost AugDot right of the ledgerlineBlock.
+        /// Returns null if the ledgerlineBlock is null, or (ledgerlineBlockMetrics.Right + separationX)
+        /// </summary>
+        private double? FindAugDotsFirstOriginX(LedgerlineBlockMetrics ledgerlineBlockMetrics, double separationX)
+        {
+            double? originX = null;
+            if(ledgerlineBlockMetrics != null)
+            {
+                originX = ledgerlineBlockMetrics.Right + separationX;
+            }
+            return originX;
+        }
+
+        /// <summary>
+        /// Returns the OriginX of the leftMost AugDot.
+        /// This is the rightmost edge of any head, + separationX.
+        /// </summary>
+        private double FindAugDotsFirstOriginX(List<HeadMetrics> topDownHeadsMetrics, double separationX)
+        {
+            double maxRight = topDownHeadsMetrics[0].Right;
+            foreach(var headMetrics in topDownHeadsMetrics)
+            {
+                maxRight = (headMetrics.Right > maxRight) ? headMetrics.Right : maxRight;
+            }
+            return (maxRight + separationX);
+        }
+
+        /// <summary>
+        /// The returned row of AugDotMetrics all have their OriginY at 0.
+        /// The left-most AugDotMetrics has OriginX == 0.
+        /// The other AugDotMetrics.OriginX values are separated by separationX from the previous AugDotMetrics.OriginX.
+        /// </summary>
+        private List<AugDotMetrics> GetTemplateAugDotRowMetrics(int nAugmentationDots, double fontHeight, double separationX, CSSObjectClass augDotClass)
+        {
+            var rval = new List<AugDotMetrics>();
+            double previousOriginX = -separationX;
+            string augDotCharstring = ".";
+
+            for(var j = 0; j < nAugmentationDots; j++)
+            {
+                AugDotMetrics augDotMetrics = new AugDotMetrics(augDotCharstring, fontHeight, _gap, augDotClass);
+                augDotMetrics.Move(previousOriginX - augDotMetrics.OriginX + separationX, 0 - augDotMetrics.OriginY);
+                previousOriginX = augDotMetrics.OriginX;
+                rval.Add(augDotMetrics);
+            }
+            return rval;
+        }
+
+
+
+        /// <summary>
+        /// Accidentals
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private string GetClichtAccidentalCharacterString(Head head)
         {
             string cLichtCharacterString = null;
             switch(head.Alteration)
@@ -927,8 +1075,7 @@ namespace Moritz.Symbols
         /// This function resets the public Top, Right, Bottom and Left properties, and
         /// must be called before leaving any public function that moves any of this ChordMetrics'
         /// private objects.
-        /// An attached BeamBlock or NoteheadExtender is not part of the external boundary, but
-        /// is.
+        /// An attached BeamBlock or NoteheadExtender is not part of the external boundary.
         /// </summary>
         private void SetExternalBoundary()
         {
@@ -950,6 +1097,11 @@ namespace Moritz.Symbols
             {
                 foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
                     SetBoundary(accidentalMetric);
+            }
+            if(_topDownAugDotMetrics != null)
+            {
+                foreach(AugDotMetrics augDotMetric in _topDownAugDotMetrics)
+                    SetBoundary(augDotMetric);
             }
             if(_upperLedgerlineBlockMetrics != null)
             {
@@ -1002,6 +1154,11 @@ namespace Moritz.Symbols
             {
                 foreach(AccidentalMetrics accidentalMetrics in _topDownAccidentalsMetrics)
                     accidentalMetrics.WriteSVG(w);
+            }
+            if(_topDownAugDotMetrics!= null)
+            {
+                foreach(AugDotMetrics augDotMetrics in _topDownAugDotMetrics)
+                    augDotMetrics.WriteSVG(w);
             }
             if(_upperLedgerlineBlockMetrics != null)
             {
@@ -1057,6 +1214,11 @@ namespace Moritz.Symbols
             {
                 foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
                     accidentalMetric.Move(dx, dy);
+            }
+            if(_topDownAugDotMetrics != null)
+            {
+                foreach(AugDotMetrics augDotMetrics in _topDownAugDotMetrics)
+                    augDotMetrics.Move(dx, dy);
             }
             if(_upperLedgerlineBlockMetrics != null)
             {
@@ -2182,6 +2344,7 @@ namespace Moritz.Symbols
         private FlagsMetrics _flagsMetrics = null;
         private List<HeadMetrics> _headsMetricsTopDown = null; // heads are always in top->bottom order
         private List<AccidentalMetrics> _topDownAccidentalsMetrics = null; // accidentals are always in top->bottom order
+        private List<AugDotMetrics> _topDownAugDotMetrics = null; // augDots are always in top->bottom order (top row, then next row etc.)
         private LedgerlineBlockMetrics _upperLedgerlineBlockMetrics = null;
         private LedgerlineBlockMetrics _lowerLedgerlineBlockMetrics = null;
         private List<CautionaryBracketMetrics> _cautionaryBracketsMetrics = null;

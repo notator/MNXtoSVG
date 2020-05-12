@@ -65,10 +65,10 @@ namespace Moritz.Symbols
     internal class CLichtCharacterMetrics : TextStyle
 	{
         /// <summary>
-        /// Used by DynamicMetrics
+        /// Used by DynamicMetrics and AugDotMetrics
         /// </summary>
-		public CLichtCharacterMetrics(string characterString, double fontHeight, TextHorizAlign textHorizAlign, CSSObjectClass dynamicClass)
-			: base(dynamicClass, "CLicht", fontHeight, textHorizAlign)
+		public CLichtCharacterMetrics(string characterString, double fontHeight, TextHorizAlign textHorizAlign, CSSObjectClass objectClass)
+			: base(objectClass, "CLicht", fontHeight, textHorizAlign)
 		{
 			_characterString = characterString;
 
@@ -82,7 +82,7 @@ namespace Moritz.Symbols
 			// move so that Left = 0.
 			_left = 0;
 			_right = (m.Right - m.Left) * fontHeight;
-			_originX = -m.Left * fontHeight;
+			_originX = -m.Left * fontHeight; // overridden in AugDotMetrics constructor
 
 			_fontHeight = fontHeight;
 			_textHorizAlign = textHorizAlign;
@@ -440,44 +440,65 @@ namespace Moritz.Symbols
         public double RightStemX { get { return _rightStemX; } }
         private double _rightStemX;
     }
-	internal class AccidentalMetrics : CLichtCharacterMetrics
-	{
+    internal class AccidentalMetrics : CLichtCharacterMetrics
+    {
         public AccidentalMetrics(string accChar, double fontHeight, double gap, CSSObjectClass cssClass)
             : base(accChar, fontHeight, cssClass)
         {
-			double verticalPadding = gap / 5;
-			_top -= verticalPadding;
-			_bottom += verticalPadding;
+            double verticalPadding = gap / 5;
+            _top -= verticalPadding;
+            _bottom += verticalPadding;
 
-			switch(_characterString)
-			{
-				case "b":
-					_left -= gap * 0.2;
-					_right += gap * 0.2;
-					break;
-				case "n":
-					_left -= gap * 0.2;
-					_right += gap * 0.2;
-					break;
-				case "#":
-					_left -= gap * 0.1;
-					_right += gap * 0.1;
-					break;
-			}
+            switch(_characterString)
+            {
+                case "b":
+                    _left -= gap * 0.2;
+                    _right += gap * 0.2;
+                    break;
+                case "n":
+                    _left -= gap * 0.2;
+                    _right += gap * 0.2;
+                    break;
+                case "#":
+                    _left -= gap * 0.1;
+                    _right += gap * 0.1;
+                    break;
+            }
         }
 
-		public object Clone()
-		{
-			return this.MemberwiseClone();
-		}
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
 
-		public override void WriteSVG(SvgWriter w)
-		{
-			w.SvgText(CSSObjectClass, CSSColorClass, _characterString, _originX, _originY);
-		}
+        public override void WriteSVG(SvgWriter w)
+        {
+            w.SvgText(CSSObjectClass, CSSColorClass, _characterString, _originX, _originY);
+        }
 
-	}
-	internal class DynamicMetrics : CLichtCharacterMetrics, ICloneable
+    }
+
+    internal class AugDotMetrics : CLichtCharacterMetrics
+    {
+        public AugDotMetrics(string augDotChar, double fontHeight, double gap, CSSObjectClass cssClass)
+            : base(augDotChar, fontHeight, TextHorizAlign.center, cssClass)
+        {
+            _originX = (_right + _left) / 2;
+            Move(0 - _originX, 0F); // centre horizontally
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        public override void WriteSVG(SvgWriter w)
+        {
+            w.SvgText(CSSObjectClass, CSSColorClass, _characterString, _left, _bottom);
+        }
+
+    }
+    internal class DynamicMetrics : CLichtCharacterMetrics, ICloneable
 	{
 		/// <summary>
 		/// clichtDynamics: { "Ø", "∏", "π", "p", "P", "F", "f", "ƒ", "Ï", "Î" };

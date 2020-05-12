@@ -498,24 +498,26 @@ namespace Moritz.Symbols
         
         private StringBuilder GetStandardSizeClasses(List<CSSObjectClass> usedCSSClasses, List<ClefID> usedClefIDs)
         {
-            //".rest, .notehead, .accidental, .clef"
+            //".rest, .notehead, .accidental, .augDot, .clef"
 
             StringBuilder rval = new StringBuilder();
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.rest);
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.notehead);
-			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.accidental);
-			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.clef);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.accidental);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.augDot);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.clef);
             return rval;
         }
 
         private StringBuilder GetSmallClasses(List<CSSObjectClass> usedCSSClasses, List<ClefID> usedClefIDs)
         {
-            // .smallClef, .cautionaryNotehead, .cautionaryAccidental
+            // .smallClef, .cautionaryNotehead, .cautionaryAccidental, .cautionaryAugDot
 
             StringBuilder rval = new StringBuilder();
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryNotehead);
-			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryAccidental);
-			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.smallClef);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryAccidental);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryAugDot);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.smallClef);
 
             return rval;
         }

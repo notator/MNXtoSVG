@@ -14,12 +14,13 @@ namespace Moritz.Symbols
         /// <summary>
         /// Used by MNX.Common
         /// </summary>
-        public DurationSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.DurationSymbolType durationSymbolType, double fontHeight)
+        public DurationSymbol(Voice voice, int msDuration, int absMsPosition, MNXDurationSymbol mnxDurationSymbol, double fontHeight)
             : base(voice, fontHeight)
         {
             _msDuration = msDuration;
-            _absMsPosition = absMsPosition;
-            this.SetDurationClass(durationSymbolType);
+            AbsMsPosition = absMsPosition;
+            this.SetDurationClass((DurationSymbolType)mnxDurationSymbol.DurationSymbolTyp);
+            _nAugmentationDots = mnxDurationSymbol.NAugmentationDots ?? 0;
         }
 
         /// <summary>
@@ -76,7 +77,7 @@ namespace Moritz.Symbols
             : base(voice, fontHeight)
         {
             _msDuration = msDuration;
-            _absMsPosition = absMsPosition;
+            AbsMsPosition = absMsPosition;
             this.SetDurationClass(MsDuration, minimumCrotchetDuration);
         }
 
@@ -88,24 +89,24 @@ namespace Moritz.Symbols
         private void SetDurationClass(int msDuration, int minimumCrotchetDuration)
         {
             //_msDuration = durationMS;
-            _minimumCrotchetDuration = minimumCrotchetDuration;
+            MinimumCrotchetDuration = minimumCrotchetDuration;
             if(msDuration == 0)
                 _durationClass = DurationClass.cautionary;
-            else if(msDuration < (_minimumCrotchetDuration / 16))
+            else if(msDuration < (MinimumCrotchetDuration / 16))
                 _durationClass = DurationClass.fiveFlags;
-            else if(msDuration < (_minimumCrotchetDuration / 8))
+            else if(msDuration < (MinimumCrotchetDuration / 8))
                 _durationClass = DurationClass.fourFlags;
-            else if(msDuration < (_minimumCrotchetDuration / 4))
+            else if(msDuration < (MinimumCrotchetDuration / 4))
                 _durationClass = DurationClass.threeFlags;
-            else if(msDuration < (_minimumCrotchetDuration / 2))
+            else if(msDuration < (MinimumCrotchetDuration / 2))
                 _durationClass = DurationClass.semiquaver;
-            else if(msDuration < _minimumCrotchetDuration)
+            else if(msDuration < MinimumCrotchetDuration)
                 _durationClass = DurationClass.quaver;
-            else if(msDuration < (_minimumCrotchetDuration * 2))
+            else if(msDuration < (MinimumCrotchetDuration * 2))
                 _durationClass = DurationClass.crotchet;
-            else if(msDuration < (_minimumCrotchetDuration * 4))
+            else if(msDuration < (MinimumCrotchetDuration * 4))
                 _durationClass = DurationClass.minim;
-            else if(msDuration < (_minimumCrotchetDuration * 8))
+            else if(msDuration < (MinimumCrotchetDuration * 8))
                 _durationClass = DurationClass.semibreve;
             else _durationClass = DurationClass.breve;
         }
@@ -127,12 +128,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// The position from the beginning of the piece.
         /// </summary>
-        public int AbsMsPosition
-        {
-            get { return _absMsPosition; }
-            set { _absMsPosition = value; }
-        }
-        protected int _absMsPosition = 0;
+        public int AbsMsPosition = 0;
 
         public virtual int MsDuration 
         { 
@@ -143,9 +139,10 @@ namespace Moritz.Symbols
 
         // these fields are readonly
         public DurationClass DurationClass { get { return _durationClass; } }
-        public int MinimumCrotchetDuration { get { return _minimumCrotchetDuration; } }
+        public int NAugmentationDots { get { return _nAugmentationDots; } }
+        public int MinimumCrotchetDuration { get; private set; }
 
         protected DurationClass _durationClass = DurationClass.none;
-        private int _minimumCrotchetDuration;
+        protected int _nAugmentationDots;
     }
 }

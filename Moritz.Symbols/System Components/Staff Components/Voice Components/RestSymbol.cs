@@ -5,13 +5,14 @@ using System.Diagnostics;
 using MNX.Globals;
 using Moritz.Xml;
 using Moritz.Spec;
+using MNX.Common;
 
 namespace Moritz.Symbols
 {
 	internal abstract class RestSymbol : DurationSymbol
 	{
-        public RestSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.DurationSymbolType durationSymbolType, double fontSize)
-            : base(voice, msDuration, absMsPosition, durationSymbolType, fontSize)
+        public RestSymbol(Voice voice, int msDuration, int absMsPosition, MNXDurationSymbol mnxDurationSymbol, double fontSize)
+            : base(voice, msDuration, absMsPosition, mnxDurationSymbol, fontSize)
         {
 
         }

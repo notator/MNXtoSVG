@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using MNX.Common;
 using MNX.Globals;
 using Moritz.Xml;
 
@@ -9,8 +9,8 @@ namespace Moritz.Symbols
 {
     public abstract class ChordSymbol : DurationSymbol
     {
-        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.DurationSymbolType durationSymbolType, double fontSize, bool beamContinues)
-            : base(voice, msDuration, absMsPosition, durationSymbolType, fontSize)
+        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, MNXDurationSymbol mnxDurationSymbol, double fontSize, bool beamContinues)
+            : base(voice, msDuration, absMsPosition, mnxDurationSymbol, fontSize)
         {
             // note that all chord symbols have a stem! 
             // Even cautionary, semibreves and breves need a stem direction in order to set chord Metrics correctly.

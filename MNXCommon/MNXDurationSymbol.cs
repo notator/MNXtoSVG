@@ -6,7 +6,7 @@ namespace MNX.Common
 {
     /// <summary>
     /// The duration of DurationSymbols is measured in ticks.
-    /// The default number of ticks per MNXDurationSymbol are:
+    /// The default number of ticks per (undotted) MNXDurationSymbol are:
     ///          noteDoubleWhole_breve: 8192 ticks
     ///            noteWhole_semibreve: 4096 ticks
     ///                 noteHalf_minim: 2048 ticks
@@ -19,15 +19,18 @@ namespace MNX.Common
     ///               note256th_6flags: 16 ticks
     ///               note512th_7flags: 8 ticks
     ///              note1024th_8flags: 4 ticks
-    /// The actual number of ticks per duration symbol can be different,
-    /// dependng on whether the symbol is part of a Tuplet or Grace.
+    /// Adding augmentation dots adds the corresponding number of ticks
+    /// (A dotted crotchet has 1024 + 512 = 1536 ticks,
+    /// a double-dotted crotchet has 1024 + 512 + 256 = 1792 ticks, etc.) 
+    /// The actual number of ticks per duration symbol is also affected
+    /// if it is part of a Tuplet or Grace.
     /// Ticks can be converted to milliseconds when a tempo is provided.
     /// </summary>
     public class MNXDurationSymbol // N.B. This is not an ITicks. (See Ticks below)
     {
         public readonly int? Multiple = null;
         public readonly DurationSymbolType? DurationSymbolTyp = null;
-        public readonly int? NumberOfDots = null;
+        public readonly int? NAugmentationDots = null;
         public readonly int Tupletlevel = -1;
         public readonly int DefaultTicks = 0;
 
@@ -67,7 +70,7 @@ namespace MNX.Common
             Tuple<int, DurationSymbolType, int> analysis = StringAnalysis(value);
             Multiple = analysis.Item1;
             DurationSymbolTyp = analysis.Item2;
-            NumberOfDots = analysis.Item3;
+            NAugmentationDots = analysis.Item3;
 
             if(DefaultTicks == 0)
             {
@@ -193,7 +196,7 @@ namespace MNX.Common
         /// </summary>
         public int GetDefaultTicks()
         {
-            int dots = (int)NumberOfDots;
+            int dots = (int)NAugmentationDots;
             int baseTicks = M.DurationSymbolTicks[(int)DurationSymbolTyp];
             int extraTicks = baseTicks / 2;
             int rval = baseTicks;

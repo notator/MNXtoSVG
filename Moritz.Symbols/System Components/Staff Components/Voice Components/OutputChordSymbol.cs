@@ -12,7 +12,7 @@ namespace Moritz.Symbols
     public class OutputChordSymbol : ChordSymbol
     {
         public OutputChordSymbol(Voice voice, MNX.Common.Event mnxEventDef, int absMsPosition, PageFormat pageFormat)
-            : base(voice, mnxEventDef.MsDuration, absMsPosition, (DurationSymbolType) mnxEventDef.MNXDurationSymbol.DurationSymbolTyp, pageFormat.MusicFontHeight, true)
+            : base(voice, mnxEventDef.MsDuration, absMsPosition, mnxEventDef.MNXDurationSymbol, pageFormat.MusicFontHeight, true)
         {
             SetHeads(mnxEventDef);
         }

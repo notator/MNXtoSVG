@@ -70,8 +70,8 @@ namespace MNX.Main
         private void LoadSettings(int mnxSelectedIndex)
         {
             var mnx = new MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1, 1); // dummy millisecondsPerTick = 1
-            MNXCommonData mnxCommonData = mnx.MNXCommonData;
-            _numberOfMeasures = mnxCommonData.NumberOfMeasures;
+
+            _numberOfMeasures = mnx.NumberOfMeasures;
 
             var form1DataPath = _MNX_Form1Data_Paths[mnxSelectedIndex].Item2;
             var svgds = new Form1StringData(form1DataPath);

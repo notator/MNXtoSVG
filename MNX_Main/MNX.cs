@@ -72,6 +72,8 @@ namespace MNX.Main
 
         }
 
+        public int NumberOfMeasures { get { return Score.MNXCommon.NumberOfMeasures; } }
+
         public override string ToString()
         {
             return FileName;

@@ -102,7 +102,7 @@
             this.MNXSelect.FormattingEnabled = true;
             this.MNXSelect.Location = new System.Drawing.Point(347, 29);
             this.MNXSelect.Name = "MNXSelect";
-            this.MNXSelect.Size = new System.Drawing.Size(158, 23);
+            this.MNXSelect.Size = new System.Drawing.Size(223, 23);
             this.MNXSelect.TabIndex = 5;
             this.MNXSelect.SelectedIndexChanged += new System.EventHandler(this.MNXSelect_SelectedIndexChanged);
             // 

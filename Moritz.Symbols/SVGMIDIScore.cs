@@ -74,7 +74,10 @@ namespace Moritz.Symbols
                             if(sequence != null)
                             {
                                 List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
-                                InsertGlobalIUDsInSeqIUDs(globalIUDs, seqIUDs);
+                                if(voiceIndex == 0)
+                                {
+                                    InsertGlobalIUDsInSeqIUDs(globalIUDs, seqIUDs);
+                                }
                                 var midiChannel = midiChannelsPerStaff[staffIndex][voiceIndex];
                                 midiChannelIndexPerOutputVoice.Add(midiChannel);
                                 Trk trk = new Trk(midiChannel, 0, seqIUDs);
@@ -422,7 +425,14 @@ namespace Moritz.Symbols
             //if(form1Data.RegionStartBarIndices != null)
             //{
             //    ScoreData = SetScoreRegionsData(bars, form1Data.RegionStartBarIndices);
-            //}            
+            //} 
+
+            /**********************************************************************/
+
+            // Add an MNX.Common.Clef to the beginning of each voiceDef in each Bar,
+            // taking cautionary clefs into account.
+            // Cautionary clefs in lower voices have smallClef.IsVisible = false.
+            InsertInitialClefDefs(bars); // see Moritz: ComposableScore.cs line 63.
 
             CreateEmptySystems(bars); // one system per bar
 

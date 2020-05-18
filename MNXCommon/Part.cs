@@ -105,11 +105,6 @@ namespace MNX.Common
             Dictionary<string, int> CurrentVoiceIDs = new Dictionary<string, int>();
             foreach(var measure in Measures)
             {
-                List<int> IndexIDs = new List<int>();
-                for(var i = 0; i < maxNSequences; i++)
-                {
-                    IndexIDs.Add(i);
-                }
                 var sequences = measure.Sequences;
                 List<string> CarryVoiceIDs = new List<string>();
                 for(var seqIndex = 0; seqIndex < sequences.Count; seqIndex++)

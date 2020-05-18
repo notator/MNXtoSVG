@@ -126,22 +126,27 @@ namespace Moritz.Symbols
             MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
 
             var numberOfStavesPerPart = new List<int>();
-            foreach(var staffList in voicesPerStaffPerPart)
+            int nParts = voicesPerStaffPerPart.Count;
+            for(var partIndex = 0; partIndex < nParts; partIndex++)
             {
-                numberOfStavesPerPart.Add(staffList.Count);
+                numberOfStavesPerPart.Add(voicesPerStaffPerPart[partIndex].Count);
             }
             NumberOfStavesPerPart = numberOfStavesPerPart;
 
             var midiChannelsPerStaff = new List<List<int>>();
             int midiChannel = 0;
-            foreach(var voiceList in voicesPerStaffPerPart)
+            for(var partIndex = 0; partIndex < nParts; partIndex++)
             {
-                List<int> midiChannels = new List<int>();
-                foreach(var voice in voiceList)
+                for(var staffIndex = 0; staffIndex < voicesPerStaffPerPart[partIndex].Count; staffIndex++)
                 {
-                    midiChannels.Add(midiChannel++);
+                    var nVoicesInStaff = voicesPerStaffPerPart[partIndex][staffIndex];
+                    List<int> midiChannels = new List<int>();
+                    for(var v = 0; v < nVoicesInStaff; v++)
+                    {
+                        midiChannels.Add(midiChannel++);
+                    }
+                    midiChannelsPerStaff.Add(midiChannels);
                 }
-                midiChannelsPerStaff.Add(midiChannels);
             }
             MIDIChannelsPerStaff = midiChannelsPerStaff;
 

@@ -1227,18 +1227,18 @@ namespace Moritz.Symbols
             List<int> nVoices = new List<int>();
             foreach(Staff staff in Systems[0].Staves)
                 nVoices.Add(staff.Voices.Count);
- 
-     //       foreach(SvgSystem system in Systems)
-     //       {
-     //           for(int i = 0; i < system.Staves.Count; ++i)
-     //           {
-     //               M.Assert(system.Staves[i].Voices.Count == nVoices[i]);
-					//foreach(Voice voice in system.Staves[i].Voices)
-					//{
-					//	M.Assert(voice.NoteObjects[0] is Clef);
-					//}
-     //           }
-     //       }
+
+            foreach(SvgSystem system in Systems)
+            {
+                for(int i = 0; i < system.Staves.Count; ++i)
+                {
+                    M.Assert(system.Staves[i].Voices.Count == nVoices[i]);
+                    foreach(Voice voice in system.Staves[i].Voices)
+                    {
+                        M.Assert(voice.NoteObjects[0] is MNX.Common.Clef);
+                    }
+                }
+            }
             #endregion preconditions
 
             AddNormalBarlines(); // 1. add a NormalBarline at the end of each system=bar,
@@ -1455,7 +1455,7 @@ namespace Moritz.Symbols
 		private void MoveSmallClefsToFollowRests(Voice voice, int systemIndex, int staffIndex, int voiceIndex)
 		{
 			List<NoteObject> noteObjects = voice.NoteObjects;
-			M.Assert(noteObjects[0] is Clef);
+			//M.Assert(noteObjects[0] is Clef);
 			M.Assert(noteObjects[noteObjects.Count - 1] is Barline);
 
 			for(int i = noteObjects.Count - 1; i > 0; --i)

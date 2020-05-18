@@ -37,9 +37,10 @@ namespace Moritz.Symbols
 
         /// <summary>
         /// There is still one system per bar.
-		/// Each VoiceDef contains ClefDefs. The first is converted to a Clef, later ones to SmallClefs.
+		/// Each VoiceDef begins with an MNXCommon.Clef (taking small clefs into account).
 		/// An Exception will be thrown if a SmallClefDef is found on the lower voiceDef in a staff in the systems input.
 		/// Small clefs (if there are any) are copied from the top to the bottom voice (if there is one) on each staff.
+        /// Small clefs on lower voices on a staff have IsVisible set to false.
         /// </summary>
         /// <param name="systems"></param>
         public void ConvertVoiceDefsToNoteObjects(List<SvgSystem> systems)
@@ -65,7 +66,7 @@ namespace Moritz.Symbols
 
                         msPositionReVoiceDef = 0;
 						List<IUniqueDef> iuds = voice.VoiceDef.UniqueDefs;
-						//M.Assert(iuds[0] is ClefDef || iuds[0] is MNX.Common.Clef);
+						M.Assert(iuds[0] is ClefDef || iuds[0] is MNX.Common.Clef); /** <-------------- **/
 
 						for (int iudIndex = 0; iudIndex < iuds.Count; ++ iudIndex)
                         {

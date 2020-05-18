@@ -25,9 +25,7 @@ namespace Moritz.Symbols
             PageFormat = new PageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
             Notator = new Notator(PageFormat);
 
-            GetVoiceDefs(mnxCommon, out List<VoiceDef> voiceDefs, out List<int> endBarlineMsPositionPerBar);
-
-            List<Bar> bars = GetBars(voiceDefs, endBarlineMsPositionPerBar);
+            List<Bar> bars = GetBars(mnxCommon);
 
             CheckBars(bars);
 
@@ -50,338 +48,361 @@ namespace Moritz.Symbols
 
         }
 
-        private void GetVoiceDefs(MNXCommon mnxCommon, out List<VoiceDef> voiceDefs, out List<int> endBarlineMsPositionPerBar)
+        private List<Bar> GetBars(MNXCommon mnxCommon)
         {
-            List<List<int>> midiChannelsPerStaff = new List<List<int>>();
-            int currentMIDIChannel = 0;
-
+            var bars = new List<Bar>();
             List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
+            var midiChannelsPerStaff = PageFormat.MIDIChannelsPerStaff;
 
-            List<List<Trk>> Tracks = new List<List<Trk>>();
-            List<int> numberOfStavesPerPart = new List<int>();
-            foreach(var part in mnxCommon.Parts)
+            var absSeqMsPosition = 0;
+            for(var measureIndex = 0; measureIndex < globalIUDsPerMeasure.Count; measureIndex++)
             {
-                int nTracks = part.Measures[0].Sequences.Count;
-                List<int> midiChannelsPerPart = new List<int>();
-                int numberOfStaves = 1;
-                for(var i = 0; i < nTracks; i++)
+                var midiChannelIndexPerOutputVoice = new List<int>();
+                List<Trk> trks = new List<Trk>();
+                List<IUniqueDef> globalIUDs = globalIUDsPerMeasure[measureIndex];
+                foreach(var part in mnxCommon.Parts)
                 {
-                    midiChannelsPerPart.Add(currentMIDIChannel);
-                    List<Trk> track = new List<Trk>();
-                    for(int measureIndex = 0; measureIndex < part.Measures.Count; measureIndex++)
+                    var measure = part.Measures[measureIndex]; 
+                    var nStaves = part.VoicesPerStaff.Count;
+
+                    for(var staffIndex = 0; staffIndex < nStaves; ++staffIndex)
                     {
-                        List<IUniqueDef> globalIUDs = globalIUDsPerMeasure[measureIndex];
-                        var measure = part.Measures[measureIndex];
-                        Sequence sequence = measure.Sequences[i];
-                        if(sequence.StaffIndex != null)
+                        var nVoices = part.VoicesPerStaff[staffIndex];
+                        for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
                         {
-                            int newNStaves = (int)sequence.StaffIndex; // StaffIndex starts at 1 !
-                            numberOfStaves = (newNStaves > numberOfStaves) ? newNStaves : numberOfStaves;
+                            Sequence sequence = measure.Sequences.Find(obj => obj.IndexID == voiceIndex);
+                            if(sequence != null)
+                            {
+                                List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
+                                InsertGlobalIUDsInSeqIUDs(globalIUDs, seqIUDs);
+                                var midiChannel = midiChannelsPerStaff[staffIndex][voiceIndex];
+                                midiChannelIndexPerOutputVoice.Add(midiChannel);
+                                Trk trk = new Trk(midiChannel, 0, seqIUDs);
+                                trks.Add(trk);
+                            }
                         }
-                        List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
-                        MeasureInsertGlobalIUDsInIUDs(globalIUDs, seqIUDs);
-                        Trk newTrk = new Trk(currentMIDIChannel, 0, seqIUDs);
-                        track.Add(newTrk);
                     }
-                    Tracks.Add(track);
-                    currentMIDIChannel++;
                 }
-                numberOfStavesPerPart.Add(numberOfStaves);
-                midiChannelsPerStaff.Add(midiChannelsPerPart);
-            }
-
-            endBarlineMsPositionPerBar = GetEndBarlineMsPositionPerBar(Tracks[0]);
-            voiceDefs = GetVoiceDefs(Tracks);
-        }
-
-        private void MeasureInsertGlobalIUDsInIUDs(List<IUniqueDef> globalIUDs, List<IUniqueDef> seqIUDs)
-        {
-            if(globalIUDs.Find(obj => obj is TimeSignature) is TimeSignature timeSignature)
-            {
-                int insertIndex = (seqIUDs[0] is Clef) ? 1 : 0;
-                seqIUDs.Insert(insertIndex, timeSignature as IUniqueDef);
-            }
-            if(globalIUDs.Find(obj => obj is KeySignature) is KeySignature keySignature)
-            {
-                int insertIndex = (seqIUDs[0] is Clef) ? 1 : 0;
-                seqIUDs.Insert(insertIndex, keySignature as IUniqueDef);
-            }
-        }
-
-        private List<int> GetEndBarlineMsPositionPerBar(List<Trk> trks)
-        {
-            List<int> rval = new List<int>();
-            int currentPosition = 0;
-            foreach(var trk in trks)
-            {
-                currentPosition += trk.MsDuration;
-                rval.Add(currentPosition);
-            }
-            return rval;
-        }
-
-        /// <summary>
-        /// This function consumes its argumant.
-        /// </summary>
-        /// <param name="tracks"></param>
-        /// <returns></returns>
-        private List<VoiceDef> GetVoiceDefs(List<List<Trk>> tracks)
-        {
-            var rval = new List<VoiceDef>();
-
-            foreach(var trkList in tracks)
-            {
-                Trk trk = trkList[0];
-                for(var i = 1; i < trkList.Count; i++)
-                {
-                    trk.AddRange(trkList[i]);
-                }
-                rval.Add(trk);
-            }
-            return rval;
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /// <summary>
-        /// Used by GetBars(...) below.
-        /// </summary>
-        private List<VoiceDef> _voiceDefs = null;
-        /// Converts the List of VoiceDef to a list of Bar. The VoiceDefs are Cloned, and the Clones are consumed.
-        /// Uses the argument barline msPositions as the EndBarlines of the returned bars (which don't contain barlines).
-        /// An exception is thrown if:
-        ///    1) the first argument value is less than or equal to 0.
-        ///    2) the argument contains duplicate msPositions.
-        ///    3) the argument is not in ascending order.
-        ///    4) a Trk.MsPositionReContainer is not 0.
-        ///    5) an msPosition is not the endMsPosition of any IUniqueDef in the seq.
-        private List<Bar> GetBars(IReadOnlyList<VoiceDef> voiceDefs, IReadOnlyList<int> msPositionPerBar)
-        {
-            _voiceDefs = new List<VoiceDef>();
-            foreach(var voiceDef in voiceDefs)
-            {
-                _voiceDefs.Add(((Trk)voiceDef).Clone() as VoiceDef);
-            }
-
-            CheckBarlineMsPositions(msPositionPerBar);
-
-            List<int> barMsDurations = new List<int>();
-            int startMsPos = 0;
-            for(int i = 0; i < msPositionPerBar.Count; i++)
-            {
-                int endMsPos = msPositionPerBar[i];
-                barMsDurations.Add(endMsPos - startMsPos);
-                startMsPos = endMsPos;
-            }
-
-            List<Bar> bars = new List<Bar>();
-            int totalDurationBeforePop = voiceDefs[0].MsDuration;
-            List<int> midiChannelPerOutputVoice = new List<int>();
-            for(var i = 0; i < voiceDefs.Count; i++)
-            {
-                midiChannelPerOutputVoice.Add(i);
-            }
-            List<Trk> trks = new List<Trk>();
-            foreach(var voiceDef in voiceDefs)
-            {
-                trks.Add(voiceDef as Trk);
-            }
-
-            Seq seq = new Seq(0, trks, midiChannelPerOutputVoice);
-            Bar remainingBar = new Bar(seq);
-
-            foreach(int barMsDuration in barMsDurations)
-            {
-                Tuple<Bar, Bar> rTuple = PopBar(remainingBar, barMsDuration);
-                Bar poppedBar = rTuple.Item1;
-                remainingBar = rTuple.Item2; // null after the last pop.
-
-                M.Assert(poppedBar.MsDuration == barMsDuration);
-                if(remainingBar != null)
-                {
-                    M.Assert(poppedBar.MsDuration + remainingBar.MsDuration == totalDurationBeforePop);
-                    totalDurationBeforePop = remainingBar.MsDuration;
-                }
-                else
-                {
-                    M.Assert(poppedBar.MsDuration == totalDurationBeforePop);
-                }
-
-                bars.Add(poppedBar);
+                Seq seq = new Seq(absSeqMsPosition, trks, midiChannelIndexPerOutputVoice);
+                Bar bar = new Bar(seq);
+                bars.Add(bar);
+                absSeqMsPosition += seq.MsDuration;
             }
 
             return bars;
         }
 
-        /// <summary>
-        /// Returns a Tuple in which Item1 is the popped bar, Item2 is the remaining part of the input bar.
-        /// The popped bar has a list of voiceDefs containing the IUniqueDefs that
-        /// begin within barDuration. These IUniqueDefs are removed from the current bar before returning it as Item2.
-        /// MidiRestDefs and MidiChordDefs are split as necessary, so that when this
-        /// function returns, both the popped bar and the current bar contain voiceDefs
-        /// having the same msDuration. i.e.: Both the popped bar and the remaining bar "add up".
-        /// </summary>
-        /// <param name ="bar">The bar fron which the bar is popped.</param>
-        /// <param name="barMsDuration">The duration of the popped bar.</param>
-        /// <returns>The popped bar</returns>
-        private Tuple<Bar, Bar> PopBar(Bar bar, int barMsDuration)
+
+        private void InsertGlobalIUDsInSeqIUDs(List<IUniqueDef> globalIUDs, List<IUniqueDef> seqIUDs)
         {
-            M.Assert(barMsDuration > 0);
-
-            if(barMsDuration == bar.MsDuration)
+            if(globalIUDs.Find(obj => obj is MNX.Common.TimeSignature) is MNX.Common.TimeSignature timeSignature)
             {
-                return new Tuple<Bar, Bar>(bar, null);
+                int insertIndex = (seqIUDs[0] is MNX.Common.Clef) ? 1 : 0;
+                seqIUDs.Insert(insertIndex, timeSignature as IUniqueDef);
             }
 
-            Bar poppedBar = new Bar();
-            Bar remainingBar = new Bar();
-            int thisMsDuration = _voiceDefs[0].MsDuration;
-
-            VoiceDef poppedBarVoice;
-            VoiceDef remainingBarVoice;
-            foreach(VoiceDef voiceDef in bar.VoiceDefs)
+            if(globalIUDs.Find(obj => obj is MNX.Common.KeySignature) is MNX.Common.KeySignature keySignature)
             {
-                poppedBarVoice = new Trk(voiceDef.MidiChannel) { Container = poppedBar };
-                poppedBar.VoiceDefs.Add(poppedBarVoice);
-                remainingBarVoice = new Trk(voiceDef.MidiChannel) { Container = remainingBar };
-                remainingBar.VoiceDefs.Add(remainingBarVoice);
-
-                foreach(IUniqueDef iud in voiceDef.UniqueDefs)
-                {
-                    int iudMsDuration = iud.MsDuration;
-                    int iudStartPos = iud.MsPositionReFirstUD;
-                    int iudEndPos = iudStartPos + iudMsDuration;
-
-                    if(iudStartPos >= barMsDuration)
-                    {
-                        if(iud is ClefDef && iudStartPos == barMsDuration)
-                        {
-                            poppedBarVoice.UniqueDefs.Add(iud);
-                        }
-                        else
-                        {
-                            remainingBarVoice.UniqueDefs.Add(iud);
-                        }
-                    }
-                    else if(iudEndPos > barMsDuration)
-                    {
-                        int durationBeforeBarline = barMsDuration - iudStartPos;
-                        int durationAfterBarline = iudEndPos - barMsDuration;
-                        if(iud is MidiRestDef)
-                        {
-                            // This is a rest. Split it.
-                            MidiRestDef firstRestHalf = new MidiRestDef(iudStartPos, durationBeforeBarline);
-                            poppedBarVoice.UniqueDefs.Add(firstRestHalf);
-
-                            MidiRestDef secondRestHalf = new MidiRestDef(barMsDuration, durationAfterBarline);
-                            remainingBarVoice.UniqueDefs.Add(secondRestHalf);
-                        }
-                        if(iud is CautionaryChordDef)
-                        {
-                            M.Assert(false, "There shouldnt be any cautionary chords here.");
-                            // This error can happen if an attempt is made to set barlines too close together,
-                            // i.e. (I think) if an attempt is made to create a bar that contains nothing... 
-                        }
-                        else if(iud is MidiChordDef)
-                        {
-                            IUniqueSplittableChordDef uniqueChordDef = iud as IUniqueSplittableChordDef;
-                            uniqueChordDef.MsDurationToNextBarline = durationBeforeBarline;
-                            poppedBarVoice.UniqueDefs.Add(uniqueChordDef);
-
-                            M.Assert(remainingBarVoice.UniqueDefs.Count == 0);
-                            CautionaryChordDef ccd = new CautionaryChordDef(uniqueChordDef, 0, durationAfterBarline);
-                            remainingBarVoice.UniqueDefs.Add(ccd);
-                        }
-                    }
-                    else
-                    {
-                        M.Assert(iudEndPos <= barMsDuration && iudStartPos >= 0);
-                        poppedBarVoice.UniqueDefs.Add(iud);
-                    }
-                }
+                int insertIndex = (seqIUDs[0] is MNX.Common.Clef) ? 1 : 0;
+                seqIUDs.Insert(insertIndex, keySignature as IUniqueDef);
             }
-
-            poppedBar.AbsMsPosition = remainingBar.AbsMsPosition;
-            poppedBar.AssertConsistency();
-            if(remainingBar != null)
-            {
-                remainingBar.AbsMsPosition += barMsDuration;
-                remainingBar.SetMsPositionsReFirstUD();
-                remainingBar.AssertConsistency();
-            }
-
-            return new Tuple<Bar, Bar>(poppedBar, remainingBar);
         }
 
-        /// <summary>
-        /// An exception is thrown if:
-        ///    1) the first argument value is less than or equal to 0.
-        ///    2) the argument contains duplicate msPositions.
-        ///    3) the argument is not in ascending order.
-        ///    4) a VoiceDef.MsPositionReContainer is not 0.
-        ///    5) if the bar contains InputVoiceDefs, an msPosition is not the endMsPosition of any IUniqueDef in the InputVoiceDefs
-        ///       else if an msPosition is not the endMsPosition of any IUniqueDef in the Trks.
-        /// </summary>
-        private void CheckBarlineMsPositions(IReadOnlyList<int> barlineMsPositionsReThisBar)
-        {
-            M.Assert(barlineMsPositionsReThisBar[0] > 0, "The first msPosition must be greater than 0.");
 
-            int msDuration = _voiceDefs[0].MsDuration;
-            for(int i = 0; i < barlineMsPositionsReThisBar.Count; ++i)
-            {
-                int msPosition = barlineMsPositionsReThisBar[i];
-                M.Assert(msPosition <= _voiceDefs[0].MsDuration);
-                for(int j = i + 1; j < barlineMsPositionsReThisBar.Count; ++j)
-                {
-                    M.Assert(msPosition != barlineMsPositionsReThisBar[j], "Error: Duplicate barline msPositions.");
-                }
-            }
+        #region delete
+        //private void GetVoiceDefs(MNXCommon mnxCommon, out List<VoiceDef> voiceDefs, out List<int> endBarlineMsPositionPerBar)
+        //{
+        //    List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
 
-            int currentMsPos = -1;
-            foreach(int msPosition in barlineMsPositionsReThisBar)
-            {
-                M.Assert(msPosition > currentMsPos, "Value out of order.");
-                currentMsPos = msPosition;
-                bool found = false;
-                for(int i = _voiceDefs.Count - 1; i >= 0; --i)
-                {
-                    VoiceDef voiceDef = _voiceDefs[i];
+        //    List<List<Trk>> Tracks = new List<List<Trk>>();
+        //    foreach(var part in mnxCommon.Parts)
+        //    {
+        //        int nTracks = part.Measures[0].Sequences.Count;
+        //        for(var i = 0; i < nTracks; i++)
+        //        {
+        //            List<Trk> track = new List<Trk>();
+        //            for(int measureIndex = 0; measureIndex < part.Measures.Count; measureIndex++)
+        //            {
+        //                List<IUniqueDef> globalIUDs = globalIUDsPerMeasure[measureIndex];
+        //                var measure = part.Measures[measureIndex];
+        //                Sequence sequence = measure.Sequences[i];
+        //                List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
+        //                InsertGlobalIUDsInIUDs(globalIUDs, seqIUDs);
+        //                Trk newTrk = new Trk(currentMIDIChannel, 0, seqIUDs);
+        //                track.Add(newTrk);
+        //            }
+        //            Tracks.Add(track);
+        //            currentMIDIChannel++;
+        //        }
+        //    }
 
-                    M.Assert(voiceDef.MsPositionReContainer == 0);
+        //    endBarlineMsPositionPerBar = GetEndBarlineMsPositionPerBar(Tracks[0]);
+        //    voiceDefs = GetVoiceDefs(Tracks);
+        //}
 
-                    foreach(IUniqueDef iud in voiceDef.UniqueDefs)
-                    {
-                        if(msPosition == (iud.MsPositionReFirstUD + iud.MsDuration))
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if(found)
-                    {
-                        break;
-                    }
-                }
-                M.Assert(found, "Error: barline must be at the endMsPosition of at least one IUniqueDef in a Trk.");
-            }
-        }
+
+        //private List<int> GetEndBarlineMsPositionPerBar(List<Trk> trks)
+        //{
+        //    List<int> rval = new List<int>();
+        //    int currentPosition = 0;
+        //    foreach(var trk in trks)
+        //    {
+        //        currentPosition += trk.MsDuration;
+        //        rval.Add(currentPosition);
+        //    }
+        //    return rval;
+        //}
+
+        ///// <summary>
+        ///// This function consumes its argumant.
+        ///// </summary>
+        ///// <param name="tracks"></param>
+        ///// <returns></returns>
+        //private List<VoiceDef> GetVoiceDefs(List<List<Trk>> tracks)
+        //{
+        //    var rval = new List<VoiceDef>();
+
+        //    foreach(var trkList in tracks)
+        //    {
+        //        Trk trk = trkList[0];
+        //        for(var i = 1; i < trkList.Count; i++)
+        //        {
+        //            trk.AddRange(trkList[i]);
+        //        }
+        //        rval.Add(trk);
+        //    }
+        //    return rval;
+        //}
+
+        ///************************************************************/
+
+        ///// <summary>
+        ///// Used by GetBars(...) below.
+        ///// </summary>
+        //private List<VoiceDef> _voiceDefs = null;
+
+        ///// Converts the List of VoiceDef to a list of Bar. The VoiceDefs are Cloned, and the Clones are consumed.
+        ///// Uses the argument barline msPositions as the EndBarlines of the returned bars (which don't contain barlines).
+        ///// An exception is thrown if:
+        /////    1) the first argument value is less than or equal to 0.
+        /////    2) the argument contains duplicate msPositions.
+        /////    3) the argument is not in ascending order.
+        /////    4) a Trk.MsPositionReContainer is not 0.
+        /////    5) an msPosition is not the endMsPosition of any IUniqueDef in the seq.
+        //private List<Bar> GetBars(IReadOnlyList<VoiceDef> voiceDefs, IReadOnlyList<int> msPositionPerBar)
+        //{
+        //    _voiceDefs = new List<VoiceDef>();
+        //    foreach(var voiceDef in voiceDefs)
+        //    {
+        //        _voiceDefs.Add(((Trk)voiceDef).Clone() as VoiceDef);
+        //    }
+
+        //    CheckBarlineMsPositions(msPositionPerBar);
+
+        //    List<int> barMsDurations = new List<int>();
+        //    int startMsPos = 0;
+        //    for(int i = 0; i < msPositionPerBar.Count; i++)
+        //    {
+        //        int endMsPos = msPositionPerBar[i];
+        //        barMsDurations.Add(endMsPos - startMsPos);
+        //        startMsPos = endMsPos;
+        //    }
+
+        //    List<Bar> bars = new List<Bar>();
+        //    int totalDurationBeforePop = voiceDefs[0].MsDuration;
+        //    List<int> midiChannelPerOutputVoice = new List<int>();
+        //    for(var i = 0; i < voiceDefs.Count; i++)
+        //    {
+        //        midiChannelPerOutputVoice.Add(i);
+        //    }
+        //    List<Trk> trks = new List<Trk>();
+        //    foreach(var voiceDef in voiceDefs)
+        //    {
+        //        trks.Add(voiceDef as Trk);
+        //    }
+
+        //    Seq seq = new Seq(0, trks, midiChannelPerOutputVoice);
+        //    Bar remainingBar = new Bar(seq);
+
+        //    foreach(int barMsDuration in barMsDurations)
+        //    {
+        //        Tuple<Bar, Bar> rTuple = PopBar(remainingBar, barMsDuration);
+        //        Bar poppedBar = rTuple.Item1;
+        //        remainingBar = rTuple.Item2; // null after the last pop.
+
+        //        M.Assert(poppedBar.MsDuration == barMsDuration);
+        //        if(remainingBar != null)
+        //        {
+        //            M.Assert(poppedBar.MsDuration + remainingBar.MsDuration == totalDurationBeforePop);
+        //            totalDurationBeforePop = remainingBar.MsDuration;
+        //        }
+        //        else
+        //        {
+        //            M.Assert(poppedBar.MsDuration == totalDurationBeforePop);
+        //        }
+
+        //        bars.Add(poppedBar);
+        //    }
+
+        //    return bars;
+        //}
+        
+
+        ///// <summary>
+        ///// Returns a Tuple in which Item1 is the popped bar, Item2 is the remaining part of the input bar.
+        ///// The popped bar has a list of voiceDefs containing the IUniqueDefs that
+        ///// begin within barDuration. These IUniqueDefs are removed from the current bar before returning it as Item2.
+        ///// MidiRestDefs and MidiChordDefs are split as necessary, so that when this
+        ///// function returns, both the popped bar and the current bar contain voiceDefs
+        ///// having the same msDuration. i.e.: Both the popped bar and the remaining bar "add up".
+        ///// </summary>
+        ///// <param name ="bar">The bar fron which the bar is popped.</param>
+        ///// <param name="barMsDuration">The duration of the popped bar.</param>
+        ///// <returns>The popped bar</returns>
+        //private Tuple<Bar, Bar> PopBar(Bar bar, int barMsDuration)
+        //{
+        //    M.Assert(barMsDuration > 0);
+
+        //    if(barMsDuration == bar.MsDuration)
+        //    {
+        //        return new Tuple<Bar, Bar>(bar, null);
+        //    }
+
+        //    Bar poppedBar = new Bar();
+        //    Bar remainingBar = new Bar();
+        //    int thisMsDuration = _voiceDefs[0].MsDuration;
+
+        //    VoiceDef poppedBarVoice;
+        //    VoiceDef remainingBarVoice;
+        //    foreach(VoiceDef voiceDef in bar.VoiceDefs)
+        //    {
+        //        poppedBarVoice = new Trk(voiceDef.MidiChannel) { Container = poppedBar };
+        //        poppedBar.VoiceDefs.Add(poppedBarVoice);
+        //        remainingBarVoice = new Trk(voiceDef.MidiChannel) { Container = remainingBar };
+        //        remainingBar.VoiceDefs.Add(remainingBarVoice);
+
+        //        foreach(IUniqueDef iud in voiceDef.UniqueDefs)
+        //        {
+        //            int iudMsDuration = iud.MsDuration;
+        //            int iudStartPos = iud.MsPositionReFirstUD;
+        //            int iudEndPos = iudStartPos + iudMsDuration;
+
+        //            if(iudStartPos >= barMsDuration)
+        //            {
+        //                if(iud is ClefDef && iudStartPos == barMsDuration)
+        //                {
+        //                    poppedBarVoice.UniqueDefs.Add(iud);
+        //                }
+        //                else
+        //                {
+        //                    remainingBarVoice.UniqueDefs.Add(iud);
+        //                }
+        //            }
+        //            else if(iudEndPos > barMsDuration)
+        //            {
+        //                int durationBeforeBarline = barMsDuration - iudStartPos;
+        //                int durationAfterBarline = iudEndPos - barMsDuration;
+        //                if(iud is MidiRestDef)
+        //                {
+        //                    // This is a rest. Split it.
+        //                    MidiRestDef firstRestHalf = new MidiRestDef(iudStartPos, durationBeforeBarline);
+        //                    poppedBarVoice.UniqueDefs.Add(firstRestHalf);
+
+        //                    MidiRestDef secondRestHalf = new MidiRestDef(barMsDuration, durationAfterBarline);
+        //                    remainingBarVoice.UniqueDefs.Add(secondRestHalf);
+        //                }
+        //                if(iud is CautionaryChordDef)
+        //                {
+        //                    M.Assert(false, "There shouldnt be any cautionary chords here.");
+        //                    // This error can happen if an attempt is made to set barlines too close together,
+        //                    // i.e. (I think) if an attempt is made to create a bar that contains nothing... 
+        //                }
+        //                else if(iud is MidiChordDef)
+        //                {
+        //                    IUniqueSplittableChordDef uniqueChordDef = iud as IUniqueSplittableChordDef;
+        //                    uniqueChordDef.MsDurationToNextBarline = durationBeforeBarline;
+        //                    poppedBarVoice.UniqueDefs.Add(uniqueChordDef);
+
+        //                    M.Assert(remainingBarVoice.UniqueDefs.Count == 0);
+        //                    CautionaryChordDef ccd = new CautionaryChordDef(uniqueChordDef, 0, durationAfterBarline);
+        //                    remainingBarVoice.UniqueDefs.Add(ccd);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                M.Assert(iudEndPos <= barMsDuration && iudStartPos >= 0);
+        //                poppedBarVoice.UniqueDefs.Add(iud);
+        //            }
+        //        }
+        //    }
+
+        //    poppedBar.AbsMsPosition = remainingBar.AbsMsPosition;
+        //    poppedBar.AssertConsistency();
+        //    if(remainingBar != null)
+        //    {
+        //        remainingBar.AbsMsPosition += barMsDuration;
+        //        remainingBar.SetMsPositionsReFirstUD();
+        //        remainingBar.AssertConsistency();
+        //    }
+
+        //    return new Tuple<Bar, Bar>(poppedBar, remainingBar);
+        //}
+
+        ///// <summary>
+        ///// An exception is thrown if:
+        /////    1) the first argument value is less than or equal to 0.
+        /////    2) the argument contains duplicate msPositions.
+        /////    3) the argument is not in ascending order.
+        /////    4) a VoiceDef.MsPositionReContainer is not 0.
+        /////    5) if the bar contains InputVoiceDefs, an msPosition is not the endMsPosition of any IUniqueDef in the InputVoiceDefs
+        /////       else if an msPosition is not the endMsPosition of any IUniqueDef in the Trks.
+        ///// </summary>
+        //private void CheckBarlineMsPositions(IReadOnlyList<int> barlineMsPositionsReThisBar)
+        //{
+        //    M.Assert(barlineMsPositionsReThisBar[0] > 0, "The first msPosition must be greater than 0.");
+
+        //    int msDuration = _voiceDefs[0].MsDuration;
+        //    for(int i = 0; i < barlineMsPositionsReThisBar.Count; ++i)
+        //    {
+        //        int msPosition = barlineMsPositionsReThisBar[i];
+        //        M.Assert(msPosition <= _voiceDefs[0].MsDuration);
+        //        for(int j = i + 1; j < barlineMsPositionsReThisBar.Count; ++j)
+        //        {
+        //            M.Assert(msPosition != barlineMsPositionsReThisBar[j], "Error: Duplicate barline msPositions.");
+        //        }
+        //    }
+
+        //    int currentMsPos = -1;
+        //    foreach(int msPosition in barlineMsPositionsReThisBar)
+        //    {
+        //        M.Assert(msPosition > currentMsPos, "Value out of order.");
+        //        currentMsPos = msPosition;
+        //        bool found = false;
+        //        for(int i = _voiceDefs.Count - 1; i >= 0; --i)
+        //        {
+        //            VoiceDef voiceDef = _voiceDefs[i];
+
+        //            M.Assert(voiceDef.MsPositionReContainer == 0);
+
+        //            foreach(IUniqueDef iud in voiceDef.UniqueDefs)
+        //            {
+        //                if(msPosition == (iud.MsPositionReFirstUD + iud.MsDuration))
+        //                {
+        //                    found = true;
+        //                    break;
+        //                }
+        //            }
+        //            if(found)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        M.Assert(found, "Error: barline must be at the endMsPosition of at least one IUniqueDef in a Trk.");
+        //    }
+        //}
+
+
+        #endregion delete
 
         private int GetNewBottomVBPX(List<SvgSystem> Systems)
         {

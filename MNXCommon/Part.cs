@@ -86,6 +86,67 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "part-name", "part-abbreviation", "instrument-sound", "measure", "part");
             }
             M.Assert(r.Name == "part"); // end of part
+
+            SetSequenceIndexIDs();
+        }
+
+        /// <summary>
+        /// Sequences that have no VoiceID have IndexID == their top-bottom index value.
+        /// Sequences that have a VoiceID have an IndexID allocated in bottom-to-top order (on a 'heap').
+        /// </summary>
+        private void SetSequenceIndexIDs()
+        {
+            int maxNSequences = 0;
+            foreach(var measure in Measures)
+            {
+                int nSequences = measure.Sequences.Count;
+                maxNSequences = (maxNSequences > nSequences) ? maxNSequences : nSequences;
+            }
+            Dictionary<string, int> CurrentVoiceIDs = new Dictionary<string, int>();
+            foreach(var measure in Measures)
+            {
+                List<int> IndexIDs = new List<int>();
+                for(var i = 0; i < maxNSequences; i++)
+                {
+                    IndexIDs.Add(i);
+                }
+                var sequences = measure.Sequences;
+                List<string> CarryVoiceIDs = new List<string>();
+                for(var seqIndex = 0; seqIndex < sequences.Count; seqIndex++)
+                {
+                    var sequence = sequences[seqIndex];
+                    var voiceID = sequence.VoiceID;
+                    if(voiceID == null)
+                    {
+                        sequence.IndexID = seqIndex;
+                    }
+                    else if(CurrentVoiceIDs.ContainsKey(voiceID))
+                    {
+                        sequence.IndexID = CurrentVoiceIDs[voiceID];
+                        CarryVoiceIDs.Add(voiceID);
+                    }
+                    else
+                    {
+                        for(int i = maxNSequences - 1; i >= 0; i--)
+                        {
+                            if(CurrentVoiceIDs.ContainsValue(i) == false)
+                            {
+                                CurrentVoiceIDs.Add(voiceID, i);
+                                sequence.IndexID = i;
+                                CarryVoiceIDs.Add(voiceID);
+                                break;
+                            }
+                        }
+                    }
+                }
+                foreach(var entry in CurrentVoiceIDs)
+                {
+                    if(CarryVoiceIDs.Contains(entry.Key) == false)
+                    {
+                        CurrentVoiceIDs.Remove(entry.Key);
+                    }
+                }
+            }
         }
     }
 }

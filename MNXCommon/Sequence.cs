@@ -13,6 +13,13 @@ namespace MNX.Common
         public readonly int? StaffIndex = null; // default
         public readonly string VoiceID = null; // default
 
+        /// <summary>
+        /// This value is set by the Part constructor, once the Part as a whole has been read.
+        /// Sequences that have no VoiceID have IndexID == their top-bottom index value.
+        /// Sequences that have a VoiceID have an IndexID alloctaed in bottom-to-top order (on a 'heap').
+        /// </summary>
+        public int IndexID;
+
         public Sequence(XmlReader r, bool isGlobal)
         {
             M.Assert(r.Name == "sequence");

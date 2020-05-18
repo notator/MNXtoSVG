@@ -10,7 +10,7 @@ namespace MNX.Common
     public class Sequence : EventGroup, IHasTicks, IPartMeasureComponent
     {
         public readonly Orientation? Orient = null; // default
-        public readonly uint? StaffIndex = null; // default
+        public readonly int? StaffIndex = null; // default
         public readonly string VoiceID = null; // default
 
         public Sequence(XmlReader r, bool isGlobal)
@@ -30,7 +30,7 @@ namespace MNX.Common
                             Orient = Orientation.down;
                         break;
                     case "staff":
-                        StaffIndex = UInt32.Parse(r.Value);
+                        StaffIndex = Int32.Parse(r.Value) - 1; //MNX indices start at 1, MNXtoSVG indices start at 0.
                         break;
                     case "voice":
                         VoiceID = r.Value;
@@ -67,7 +67,7 @@ namespace MNX.Common
             return rval;
         }
 
-        internal List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(double millisecondsPerTick)
+        public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(double millisecondsPerTick)
         {
             List<Event> events = this.Events;
             SetMsDurationPerEvent(events, millisecondsPerTick);

@@ -5,7 +5,7 @@ using MNX.Globals;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#elementdef-score-audio
-    internal class ScoreAudio
+    public class ScoreAudio
     {
         public ScoreAudio(XmlReader r)
         {

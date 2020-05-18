@@ -12,17 +12,15 @@ namespace MNX.Main
     // https://w3c.github.io/mnx/specification/common/#the-mnx-element
     internal class MNX
     {
-        private readonly Head Head = null;
-        private readonly Score Score = null;
-        private readonly Collection Collection = null;
+        public readonly Head Head = null;
+        public readonly Score Score = null;
+        public readonly Collection Collection = null;
 
         internal readonly string FileName;
-        internal readonly double MillisecondsPerTick;
 
-        internal MNX(string mnxPath, double millisecondsPerTick)
+        internal MNX(string mnxPath)
         {
             FileName = Path.GetFileNameWithoutExtension(mnxPath);
-            MillisecondsPerTick = millisecondsPerTick;
 
             using(XmlReader r = XmlReader.Create(mnxPath))
             {
@@ -61,18 +59,6 @@ namespace MNX.Main
                 M.Assert((Score != null && Collection == null) || (Score == null && Collection != null));
             }
         }
-
-        internal MNXCommonData MNXCommonData
-        {
-            get
-            {
-                MNXCommonData mnxCommonData = Score.MNXCommon.GetMNXCommonData(MillisecondsPerTick);
-                return mnxCommonData;
-            }
-
-        }
-
-        public int NumberOfMeasures { get { return Score.MNXCommon.NumberOfMeasures; } }
 
         public override string ToString()
         {

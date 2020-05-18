@@ -10,7 +10,7 @@ namespace Moritz.Symbols
 {
 	public class SVGMIDIScore : SvgScore
     {
-        public SVGMIDIScore(string targetFolder, MNXCommonData mnxCommonData, Form1Data form1Data)
+        public SVGMIDIScore(string targetFolder, MNXCommon mnxCommon, Form1Data form1Data)
             : base(targetFolder, form1Data.FileNameWithoutExtension, form1Data.Options)
         {
             this.MetadataWithDate = new MetadataWithDate()
@@ -22,11 +22,12 @@ namespace Moritz.Symbols
                 Date = M.NowString
             };
 
-            PageFormat = new PageFormat(form1Data, mnxCommonData.MidiChannelsPerStaff, mnxCommonData.NumberOfStavesPerPart);
-
+            PageFormat = new PageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
             Notator = new Notator(PageFormat);
 
-            List<Bar> bars = GetBars(mnxCommonData.VoiceDefs, mnxCommonData.EndBarlineMsPositionPerBar);
+            GetVoiceDefs(mnxCommon, out List<VoiceDef> voiceDefs, out List<int> endBarlineMsPositionPerBar);
+
+            List<Bar> bars = GetBars(voiceDefs, endBarlineMsPositionPerBar);
 
             CheckBars(bars);
 
@@ -48,6 +49,116 @@ namespace Moritz.Symbols
             global::System.Diagnostics.Process.Start(filePath);
 
         }
+
+        private void GetVoiceDefs(MNXCommon mnxCommon, out List<VoiceDef> voiceDefs, out List<int> endBarlineMsPositionPerBar)
+        {
+            List<List<int>> midiChannelsPerStaff = new List<List<int>>();
+            int currentMIDIChannel = 0;
+
+            List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
+
+            List<List<Trk>> Tracks = new List<List<Trk>>();
+            List<int> numberOfStavesPerPart = new List<int>();
+            foreach(var part in mnxCommon.Parts)
+            {
+                int nTracks = part.Measures[0].Sequences.Count;
+                List<int> midiChannelsPerPart = new List<int>();
+                int numberOfStaves = 1;
+                for(var i = 0; i < nTracks; i++)
+                {
+                    midiChannelsPerPart.Add(currentMIDIChannel);
+                    List<Trk> track = new List<Trk>();
+                    for(int measureIndex = 0; measureIndex < part.Measures.Count; measureIndex++)
+                    {
+                        List<IUniqueDef> globalIUDs = globalIUDsPerMeasure[measureIndex];
+                        var measure = part.Measures[measureIndex];
+                        Sequence sequence = measure.Sequences[i];
+                        if(sequence.StaffIndex != null)
+                        {
+                            int newNStaves = (int)sequence.StaffIndex; // StaffIndex starts at 1 !
+                            numberOfStaves = (newNStaves > numberOfStaves) ? newNStaves : numberOfStaves;
+                        }
+                        List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
+                        MeasureInsertGlobalIUDsInIUDs(globalIUDs, seqIUDs);
+                        Trk newTrk = new Trk(currentMIDIChannel, 0, seqIUDs);
+                        track.Add(newTrk);
+                    }
+                    Tracks.Add(track);
+                    currentMIDIChannel++;
+                }
+                numberOfStavesPerPart.Add(numberOfStaves);
+                midiChannelsPerStaff.Add(midiChannelsPerPart);
+            }
+
+            endBarlineMsPositionPerBar = GetEndBarlineMsPositionPerBar(Tracks[0]);
+            voiceDefs = GetVoiceDefs(Tracks);
+        }
+
+        private void MeasureInsertGlobalIUDsInIUDs(List<IUniqueDef> globalIUDs, List<IUniqueDef> seqIUDs)
+        {
+            if(globalIUDs.Find(obj => obj is TimeSignature) is TimeSignature timeSignature)
+            {
+                int insertIndex = (seqIUDs[0] is Clef) ? 1 : 0;
+                seqIUDs.Insert(insertIndex, timeSignature as IUniqueDef);
+            }
+            if(globalIUDs.Find(obj => obj is KeySignature) is KeySignature keySignature)
+            {
+                int insertIndex = (seqIUDs[0] is Clef) ? 1 : 0;
+                seqIUDs.Insert(insertIndex, keySignature as IUniqueDef);
+            }
+        }
+
+        private List<int> GetEndBarlineMsPositionPerBar(List<Trk> trks)
+        {
+            List<int> rval = new List<int>();
+            int currentPosition = 0;
+            foreach(var trk in trks)
+            {
+                currentPosition += trk.MsDuration;
+                rval.Add(currentPosition);
+            }
+            return rval;
+        }
+
+        /// <summary>
+        /// This function consumes its argumant.
+        /// </summary>
+        /// <param name="tracks"></param>
+        /// <returns></returns>
+        private List<VoiceDef> GetVoiceDefs(List<List<Trk>> tracks)
+        {
+            var rval = new List<VoiceDef>();
+
+            foreach(var trkList in tracks)
+            {
+                Trk trk = trkList[0];
+                for(var i = 1; i < trkList.Count; i++)
+                {
+                    trk.AddRange(trkList[i]);
+                }
+                rval.Add(trk);
+            }
+            return rval;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /// <summary>
         /// Used by GetBars(...) below.

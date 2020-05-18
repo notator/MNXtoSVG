@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    internal class Global
+    public class Global
     {
         public List<string> PartIDs = null;
         public List<Measure> Measures = new List<Measure>();
@@ -45,7 +45,7 @@ namespace MNX.Common
             M.Assert(Measures.Count > 0);
         }
 
-        internal List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
+        public List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
         {
             var rval = new List<List<IUniqueDef>>();
             for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)

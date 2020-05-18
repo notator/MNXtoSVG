@@ -24,8 +24,8 @@ namespace Moritz.Symbols
         public double DefaultDistanceBetweenStavesVBPX; // The distance between staves when they are not vertically justified.
         public double DefaultDistanceBetweenSystemsVBPX; // The view box pixel distance between systems when they are not vertically justified.
         public List<int> SystemStartBars = null;
-        public double MillisecondsPerTick = 0;
 
+        public readonly double MillisecondsPerTick = 0;
         public IReadOnlyList<IReadOnlyList<int>> MIDIChannelsPerStaff = null;
         public IReadOnlyList<int> NumberOfStavesPerPart = null;
 
@@ -105,7 +105,7 @@ namespace Moritz.Symbols
 
         #endregion other attributes
 
-        public PageFormat(Form1Data form1Data, IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff, IReadOnlyList<int> numberOfStavesPerPart)
+        public PageFormat(Form1Data form1Data, IReadOnlyList<IReadOnlyList<int>> voicesPerStaffPerPart)
         {
             RightVBPX = form1Data.Page.Width * ViewBoxMagnification;
             BottomVBPX = form1Data.Page.Height * ViewBoxMagnification;
@@ -125,8 +125,25 @@ namespace Moritz.Symbols
 
             MillisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
 
-            MIDIChannelsPerStaff = midiChannelsPerStaff;
+            var numberOfStavesPerPart = new List<int>();
+            foreach(var staffList in voicesPerStaffPerPart)
+            {
+                numberOfStavesPerPart.Add(staffList.Count);
+            }
             NumberOfStavesPerPart = numberOfStavesPerPart;
+
+            var midiChannelsPerStaff = new List<List<int>>();
+            int midiChannel = 0;
+            foreach(var voiceList in voicesPerStaffPerPart)
+            {
+                List<int> midiChannels = new List<int>();
+                foreach(var voice in voiceList)
+                {
+                    midiChannels.Add(midiChannel++);
+                }
+                midiChannelsPerStaff.Add(midiChannels);
+            }
+            MIDIChannelsPerStaff = midiChannelsPerStaff;
 
             int nStaves = MIDIChannelsPerStaff.Count;
             for(var i = 0; i < nStaves; i++)

@@ -52,11 +52,8 @@ namespace MNX.Main
             var form1StringData = new Form1StringData(form1DataPath);
             var form1Data = new Form1Data(form1StringData);
 
-            var millisecondsPerTick = 60000 / (M.TicksPerCrotchet * form1Data.Notation.CrotchetsPerMinute);
-
-            var mnx = new MNX(mnxDataPath, millisecondsPerTick);
-            MNXCommonData mnxCommonData = mnx.MNXCommonData;
-            SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnxCommonData, form1Data);
+            var mnx = new MNX(mnxDataPath);
+            SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnx.Score.MNXCommon, form1Data);
         }
 
         private void MNXSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -69,9 +66,9 @@ namespace MNX.Main
 
         private void LoadSettings(int mnxSelectedIndex)
         {
-            var mnx = new MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1, 1); // dummy millisecondsPerTick = 1
+            var mnx = new MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1);
 
-            _numberOfMeasures = mnx.NumberOfMeasures;
+            _numberOfMeasures = mnx.Score.MNXCommon.NumberOfMeasures;
 
             var form1DataPath = _MNX_Form1Data_Paths[mnxSelectedIndex].Item2;
             var svgds = new Form1StringData(form1DataPath);

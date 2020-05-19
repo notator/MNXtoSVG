@@ -1235,7 +1235,7 @@ namespace Moritz.Symbols
                     M.Assert(system.Staves[i].Voices.Count == nVoices[i]);
                     foreach(Voice voice in system.Staves[i].Voices)
                     {
-                        M.Assert(voice.NoteObjects[0] is MNX.Common.Clef);
+                        M.Assert(voice.NoteObjects[0] is Clef);
                     }
                 }
             }

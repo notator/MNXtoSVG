@@ -62,27 +62,25 @@ namespace Moritz.Symbols
                 List<IUniqueDef> globalIUDs = globalIUDsPerMeasure[measureIndex];
                 foreach(var part in mnxCommon.Parts)
                 {
-                    var measure = part.Measures[measureIndex]; 
-                    var nStaves = part.VoicesPerStaff.Count;
+                    var measure = part.Measures[measureIndex];
+                    var voicesPerStaff = part.VoicesPerStaff;
+                    var nStaves = voicesPerStaff.Count;
 
                     for(var staffIndex = 0; staffIndex < nStaves; ++staffIndex)
                     {
-                        var nVoices = part.VoicesPerStaff[staffIndex];
+                        var nVoices = voicesPerStaff[staffIndex];
                         for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
                         {
-                            Sequence sequence = measure.Sequences.Find(obj => obj.IndexID == voiceIndex);
-                            if(sequence != null)
+                            Sequence sequence = measure.Sequences[voiceIndex];
+                            List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
+                            if(voiceIndex == 0)
                             {
-                                List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
-                                if(voiceIndex == 0)
-                                {
-                                    InsertGlobalIUDsInSeqIUDs(globalIUDs, seqIUDs);
-                                }
-                                var midiChannel = midiChannelsPerStaff[staffIndex][voiceIndex];
-                                midiChannelIndexPerOutputVoice.Add(midiChannel);
-                                Trk trk = new Trk(midiChannel, 0, seqIUDs);
-                                trks.Add(trk);
+                                InsertGlobalIUDsInSeqIUDs(globalIUDs, seqIUDs);
                             }
+                            var midiChannel = midiChannelsPerStaff[staffIndex][voiceIndex];
+                            midiChannelIndexPerOutputVoice.Add(midiChannel);
+                            Trk trk = new Trk(midiChannel, 0, seqIUDs);
+                            trks.Add(trk);
                         }
                     }
                 }
@@ -429,10 +427,12 @@ namespace Moritz.Symbols
 
             /**********************************************************************/
 
-            // Add an MNX.Common.Clef to the beginning of each voiceDef in each Bar,
-            // taking cautionary clefs into account.
-            // Cautionary clefs in lower voices have smallClef.IsVisible = false.
-            InsertInitialClefDefs(bars); // see Moritz: ComposableScore.cs line 63.
+            // Ensure that all VoiceDefs shared by a Staff begin with the same Clef, KeySignature and TimeSignature.
+            // Changes of Clef, KeySignature and TimeSignature over the course of the score are taken into account.
+            // Small (cautionary) Clefs in lower voices have smallClef.IsVisible = false.
+            InsertInitialIUDs(bars); // see Moritz: ComposableScore.cs line 63.
+
+
 
             CreateEmptySystems(bars); // one system per bar
 
@@ -451,6 +451,63 @@ namespace Moritz.Symbols
 
             CheckSystems(this.Systems);
         }
+
+        // Ensure that all VoiceDefs shared by a Staff begin with the same Clef, KeySignature and TimeSignature.
+        // Changes of Clef, KeySignature and TimeSignature over the course of the score are taken into account.
+        // Small (cautionary) Clefs in lower voices have smallClef.IsVisible = false.
+        private void InsertInitialIUDs(List<Bar> bars)
+        {
+            List<int> nVoicesPerStaff = GetNVoicesPerStaff(PageFormat.MIDIChannelsPerStaff);
+            List<List<List<VoiceDef>>> voiceDefsPerStaffPerBar = GetVoiceDefsPerStaffPerBar(bars, nVoicesPerStaff);
+            List<List<IUniqueDef>> initialIUDsPerStaff = GetInitialIUDsPerStaff(voiceDefsPerStaffPerBar[0]);
+
+            for(int barIndex = 0; barIndex < bars.Count; barIndex++)
+            {
+                var voiceDefsPerStaff = voiceDefsPerStaffPerBar[barIndex];
+                for(var staffIndex = 0; staffIndex < nVoicesPerStaff.Count; staffIndex++)
+                {
+                    List<VoiceDef> staffVoiceDefs = voiceDefsPerStaff[staffIndex];
+                    InsertInitialIUDs(staffVoiceDefs, initialIUDsPerStaff[staffIndex]);
+                    SetNextInitialIUDs(staffVoiceDefs, initialIUDsPerStaff[staffIndex]);   
+                }
+            }
+        }
+
+        #region private to InsertInitialIUDs(List<Bar> bars)
+        private List<int> GetNVoicesPerStaff(IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff)
+        {
+            List<int> nVoicesPerStaff = new List<int>();
+            foreach(var list in midiChannelsPerStaff)
+            {
+                nVoicesPerStaff.Add(list.Count);
+            }
+            return nVoicesPerStaff;
+        }
+
+        private List<List<List<VoiceDef>>> GetVoiceDefsPerStaffPerBar(List<Bar> bars, List<int> nVoicesPerStaff)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// If a staff has two voiceDefs, this function ensures that both begin with the same clef, keySignature and timeSignature.
+        /// </summary>
+        private List<List<IUniqueDef>> GetInitialIUDsPerStaff(List<List<VoiceDef>> staves)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void InsertInitialIUDs(List<VoiceDef> staffVoiceDefs, List<IUniqueDef> initialIUDs)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SetNextInitialIUDs(List<VoiceDef> staffVoiceDefs, List<IUniqueDef> list)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion private to InsertInitialIUDs(List<Bar> bars)
+
 
         public ScoreData SetScoreRegionsData(List<Bar> bars, List<int> regionStartBarIndices)
         {
@@ -503,36 +560,6 @@ namespace Moritz.Symbols
 
             return rval;
         }
-
-        /// <summary>
-        /// Inserts a ClefDef at the beginning of each Trk in each bar, taking any cautionaryChordDefs into account.
-        /// </summary>
-        /// <param name="bars"></param>
-        /// <param name="initialClefPerMIDIChannel">The clefs at the beginning of the score.</param>
-        private void InsertInitialClefDefs(List<Bar> bars, List<string> initialClefPerMIDIChannel)
-		{
-			// bars can currently contain cautionary clefs, but no initial clefs
-			List<string> currentClefs = new List<string>(initialClefPerMIDIChannel);
-			int nBars = bars.Count;
-			int nVoiceDefs = bars[0].VoiceDefs.Count;
-			M.Assert(nVoiceDefs == initialClefPerMIDIChannel.Count); // VoiceDefs are Trks
-			foreach (Bar bar in bars)
-			{
-				for (int i = 0; i < nVoiceDefs; ++i)
-				{
-					ClefDef initialClefDef = new ClefDef(currentClefs[i], 0); // msPos is set later in Notator.ConvertVoiceDefsToNoteObjects()
-					bar.VoiceDefs[i].Insert(0, initialClefDef);
-					List<IUniqueDef> iuds = bar.VoiceDefs[i].UniqueDefs;
-					for (int j = 1; j < iuds.Count; ++j)
-					{
-						if (iuds[j] is ClefDef cautionaryClefDef)
-						{
-							currentClefs[i] = cautionaryClefDef.ClefType;
-						}
-					}
-				}
-			}
-		}
 
 		private void CheckBars(List<Bar> bars)
 		{

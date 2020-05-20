@@ -426,13 +426,17 @@ namespace Moritz.Symbols
             //} 
 
             /**********************************************************************/
+            List<int> nVoicesPerStaff = GetNVoicesPerStaff(PageFormat.MIDIChannelsPerStaff);
+            List<List<List<VoiceDef>>> voiceDefsPerStaffPerBar = GetVoiceDefsPerStaffPerBar(bars, nVoicesPerStaff);
+
+            // If a staff has two voices (parallel sequences) then the first must be higher than the second.
+            // The order is swapped here if necessary. Stem directions are set later, when real Staff objects exist.
+            NormalizeTopToBottomVoiceOrder(voiceDefsPerStaffPerBar);
 
             // Ensure that all VoiceDefs shared by a Staff begin with the same Clef, KeySignature and TimeSignature.
             // Changes of Clef, KeySignature and TimeSignature over the course of the score are taken into account.
             // Small (cautionary) Clefs in lower voices have smallClef.IsVisible = false.
-            InsertInitialIUDs(bars); // see Moritz: ComposableScore.cs line 63.
-
-
+            InsertInitialIUDs(bars, voiceDefsPerStaffPerBar); // see Moritz: ComposableScore.cs line 63.
 
             CreateEmptySystems(bars); // one system per bar
 
@@ -452,28 +456,6 @@ namespace Moritz.Symbols
             CheckSystems(this.Systems);
         }
 
-        // Ensure that all VoiceDefs shared by a Staff begin with the same Clef, KeySignature and TimeSignature.
-        // Changes of Clef, KeySignature and TimeSignature over the course of the score are taken into account.
-        // Small (cautionary) Clefs in lower voices have smallClef.IsVisible = false.
-        private void InsertInitialIUDs(List<Bar> bars)
-        {
-            List<int> nVoicesPerStaff = GetNVoicesPerStaff(PageFormat.MIDIChannelsPerStaff);
-            List<List<List<VoiceDef>>> voiceDefsPerStaffPerBar = GetVoiceDefsPerStaffPerBar(bars, nVoicesPerStaff);
-            List<List<IUniqueDef>> initialIUDsPerStaff = GetInitialIUDsPerStaff(voiceDefsPerStaffPerBar[0]);
-
-            for(int barIndex = 0; barIndex < bars.Count; barIndex++)
-            {
-                var voiceDefsPerStaff = voiceDefsPerStaffPerBar[barIndex];
-                for(var staffIndex = 0; staffIndex < nVoicesPerStaff.Count; staffIndex++)
-                {
-                    List<VoiceDef> staffVoiceDefs = voiceDefsPerStaff[staffIndex];
-                    InsertInitialIUDs(staffVoiceDefs, initialIUDsPerStaff[staffIndex]);
-                    SetNextInitialIUDs(staffVoiceDefs, initialIUDsPerStaff[staffIndex]);   
-                }
-            }
-        }
-
-        #region private to InsertInitialIUDs(List<Bar> bars)
         private List<int> GetNVoicesPerStaff(IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff)
         {
             List<int> nVoicesPerStaff = new List<int>();
@@ -486,28 +468,208 @@ namespace Moritz.Symbols
 
         private List<List<List<VoiceDef>>> GetVoiceDefsPerStaffPerBar(List<Bar> bars, List<int> nVoicesPerStaff)
         {
-            throw new NotImplementedException();
+            var rval = new List<List<List<VoiceDef>>>();
+            foreach(var bar in bars)
+            {
+                int voiceIndexInBar = 0;
+                var voiceDefsPerStaff = new List<List<VoiceDef>>();
+                for(var staffIndex = 0; staffIndex < nVoicesPerStaff.Count; staffIndex++)
+                {
+                    var staffVoiceDefs = new List<VoiceDef>();
+                    var nStaffVoices = nVoicesPerStaff[staffIndex];
+                    for(var staffVoiceIndex = 0; staffVoiceIndex < nStaffVoices; staffVoiceIndex++)
+                    {
+                        staffVoiceDefs.Add(bar.VoiceDefs[voiceIndexInBar++]);
+                    }
+                    voiceDefsPerStaff.Add(staffVoiceDefs);
+                }
+                rval.Add(voiceDefsPerStaff);
+            }
+            return rval;
         }
 
         /// <summary>
-        /// If a staff has two voiceDefs, this function ensures that both begin with the same clef, keySignature and timeSignature.
+        /// If a staff has two voices (parallel sequences) then the first must be higher than the second.
+        /// The order is swapped here if necessary. Stem directions are set later, when real Staff objects exist.
         /// </summary>
-        private List<List<IUniqueDef>> GetInitialIUDsPerStaff(List<List<VoiceDef>> staves)
+        /// <param name="voiceDefsPerStaffPerBar"></param>
+        private void NormalizeTopToBottomVoiceOrder(List<List<List<VoiceDef>>> voiceDefsPerStaffPerBar)
         {
-            throw new NotImplementedException();
+            foreach(var voiceDefsPerStaff in voiceDefsPerStaffPerBar)
+            {
+                foreach(var staffVoiceDefs in voiceDefsPerStaff)
+                {
+                    M.Assert(staffVoiceDefs.Count > 0 && staffVoiceDefs.Count < 3);
+                    if(staffVoiceDefs.Count == 2)
+                    {
+                        double averagePitchV1 = GetAveragePitch(staffVoiceDefs[0]);
+                        double averagePitchV2 = GetAveragePitch(staffVoiceDefs[1]);
+                        if(averagePitchV1 < averagePitchV2)
+                        {
+                            var temp = staffVoiceDefs[0];
+                            staffVoiceDefs[0] = staffVoiceDefs[1];
+                            staffVoiceDefs[1] = temp;
+                        }
+                    }
+                }
+            }
+        }
+
+        private double GetAveragePitch(VoiceDef voiceDef)
+        {
+            double sum = 0;
+            double nNotes = 0;
+            foreach(IUniqueDef iud in voiceDef.UniqueDefs)
+            {
+                if(iud is Event e)
+                {
+                    foreach(var note in e.Notes)
+                    {
+                        var midiVal = M.MidiPitchDict[note.Pitch];
+                        sum += midiVal;
+                        nNotes++;
+                    }
+                }
+            }
+
+            return sum / nNotes;
+        }
+
+        // Ensure that all VoiceDefs shared by a Staff begin with the same Clef, KeySignature and TimeSignature.
+        // Changes of Clef, KeySignature and TimeSignature over the course of the score are taken into account.
+        // Small (cautionary) Clefs in lower voices have smallClef.IsVisible = false.
+        private void InsertInitialIUDs(List<Bar> bars, List<List<List<VoiceDef>>> voiceDefsPerStaffPerBar)
+        {
+            List<List<IUniqueDef>> initialIUDsPerStaff = GetInitialIUDsPerStaff(voiceDefsPerStaffPerBar[0]);
+
+            foreach(var voiceDefsPerStaff in voiceDefsPerStaffPerBar)
+            {
+                var nStaves = voiceDefsPerStaff.Count;
+                for(var staffIndex = 0; staffIndex < nStaves; staffIndex++)
+                {
+                    var staffVoiceDefs = voiceDefsPerStaff[staffIndex];
+                    InsertInitialIUDs(staffVoiceDefs, initialIUDsPerStaff[staffIndex]);
+                    UpdateInitialIUDs(staffVoiceDefs[0], initialIUDsPerStaff[staffIndex]);
+                }
+            }
+        }
+
+        private List<List<IUniqueDef>> GetInitialIUDsPerStaff(List<List<VoiceDef>> voiceDefsPerStaff)
+        {
+            var initialIUDsPerStaff = new List<List<IUniqueDef>>();
+            foreach(var staffVoiceDefs in voiceDefsPerStaff)
+            {
+                List<IUniqueDef> initialIUDs = new List<IUniqueDef>();
+                foreach(var voiceDef in staffVoiceDefs)
+                {
+                    foreach(var iud in voiceDef.UniqueDefs)
+                    {
+                        if(!(iud is Event))
+                        {
+                            M.Assert(!initialIUDs.Contains(iud));
+                            initialIUDs.Add(iud); // cloned later when inserted in the other voiceDef
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                AssertConsistency(initialIUDs);
+                initialIUDsPerStaff.Add(initialIUDs);
+            }
+            return initialIUDsPerStaff;
+        }
+
+        /// <summary>
+        /// Throws an exception if the following conditions are not met:
+        /// The initialIUDs has a maximum Count of 3,
+        /// The first IUniqueDef must be a Clef,
+        /// The other IUniqueDefs may be 1 each of KeySignature and TimeSignature (in that order)
+        /// </summary>
+        private void AssertConsistency(List<IUniqueDef> initialIUDs)
+        {
+            M.Assert(initialIUDs.Count >= 1 && initialIUDs.Count < 4);
+            M.Assert(initialIUDs[0] is MNX.Common.Clef);
+            if(initialIUDs.Count > 1)
+            {
+                M.Assert(initialIUDs[1] is MNX.Common.KeySignature || initialIUDs[1] is MNX.Common.TimeSignature);
+            }
+            if(initialIUDs.Count > 2)
+            {
+                M.Assert(initialIUDs[1] is MNX.Common.KeySignature && initialIUDs[2] is MNX.Common.TimeSignature);
+            }
         }
 
         private void InsertInitialIUDs(List<VoiceDef> staffVoiceDefs, List<IUniqueDef> initialIUDs)
         {
-            throw new NotImplementedException();
+            var clef = initialIUDs[0];
+            foreach(var voiceDef in staffVoiceDefs)
+            {
+                var voiceDefIUDs = voiceDef.UniqueDefs;
+                if(voiceDefIUDs.Contains(clef))
+                {
+                    foreach(var iud1 in initialIUDs)
+                    {
+                        M.Assert(voiceDefIUDs.Contains(iud1));
+                    }
+                }
+                else
+                {
+                    M.Assert(voiceDefIUDs[0] is Event);
+                    for(int i = initialIUDs.Count - 1; i >= 0; i--)
+                    {
+                        voiceDefIUDs.Insert(0, (IUniqueDef)initialIUDs[i].Clone());
+                    }
+                }
+            }
         }
 
-        private void SetNextInitialIUDs(List<VoiceDef> staffVoiceDefs, List<IUniqueDef> list)
+        private void UpdateInitialIUDs(VoiceDef voiceDef, List<IUniqueDef> initialIUDs)
         {
-            throw new NotImplementedException();
+            var initialTimeSig = initialIUDs.Find(obj => obj is MNX.Common.TimeSignature);
+            if(initialTimeSig != null)
+            {
+                initialIUDs.Remove(initialTimeSig);
+            }
+            MNX.Common.Clef finalClef = null;
+            MNX.Common.KeySignature finalKeySig = null;
+            MNX.Common.TimeSignature finalTimeSig = null;
+            foreach(var iud in voiceDef.UniqueDefs)
+            {
+                if(iud is MNX.Common.Clef lastClef)
+                {
+                    finalClef = lastClef;
+                }
+                else if(iud is MNX.Common.KeySignature lastKeySig)
+                {
+                    finalKeySig = lastKeySig;
+                }
+                else if(iud is MNX.Common.TimeSignature lastTimeSig)
+                {
+                    finalTimeSig = lastTimeSig;
+                }
+            }
+            if(finalClef != initialIUDs[0])
+            {
+                initialIUDs[0] = finalClef;
+            }
+            if(finalKeySig != null)
+            {
+                if(initialIUDs.Count == 2 && initialIUDs[1] != finalKeySig)
+                {
+                    initialIUDs[1] = finalKeySig;
+                }
+                else if(initialIUDs.Count == 1)
+                {
+                    initialIUDs.Add(finalKeySig);
+                }
+            }
+            if(finalTimeSig != null && finalTimeSig != initialTimeSig)
+            {
+                initialIUDs.Add(finalTimeSig);
+            }
         }
-        #endregion private to InsertInitialIUDs(List<Bar> bars)
-
 
         public ScoreData SetScoreRegionsData(List<Bar> bars, List<int> regionStartBarIndices)
         {

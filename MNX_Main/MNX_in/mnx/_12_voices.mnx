@@ -12,10 +12,18 @@
       <part>
         <part-name>Music</part-name>
         <measure>
-          <sequence orient="up"> <!-- orient="up" -->
+          <sequence>
             <directions>
               <clef sign="G" line="2"/>
             </directions>
+            <event value="/2">
+              <note pitch="C4"/>
+            </event>
+            <event value="/2">
+              <note pitch="G3"/>
+            </event>
+          </sequence>
+          <sequence>
             <event value="/4">
               <note pitch="E5"/>
             </event>
@@ -29,17 +37,14 @@
               <note pitch="B4"/>
             </event>
           </sequence>
-          <sequence orient="down"> <!-- orient="down" -->
-            <event value="/2">
-              <note pitch="C4"/>
-            </event>
-            <event value="/2">
-              <note pitch="G3"/>
-            </event>
-          </sequence>
         </measure>
         <measure>
-          <sequence orient="up"> <!-- orient="up" -->
+          <sequence>
+            <event value="/1">
+              <note pitch="C4"/>
+            </event>
+          </sequence>
+          <sequence>
             <event value="/4">
               <note pitch="D5"/>
             </event>
@@ -48,11 +53,6 @@
             </event>
             <event value="/2">
               <note pitch="C6"/>
-            </event>
-          </sequence>
-          <sequence orient="down"> <!-- orient="down" -->
-            <event value="/1">
-              <note pitch="C4"/>
             </event>
           </sequence>
         </measure>

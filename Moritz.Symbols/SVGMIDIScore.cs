@@ -438,7 +438,7 @@ namespace Moritz.Symbols
             // Small (cautionary) Clefs in lower voices have smallClef.IsVisible = false.
             InsertInitialIUDs(bars, voiceDefsPerStaffPerBar); // see Moritz: ComposableScore.cs line 63.
 
-            CreateEmptySystems(bars); // one system per bar
+            CreateEmptySystems(voiceDefsPerStaffPerBar); // one system per bar
 
             if(PageFormat.ChordSymbolType != "none") // set by AudioButtonsControl
             {
@@ -890,57 +890,46 @@ namespace Moritz.Symbols
 			}
 		}
 
-		/// <summary>
-		/// Creates one System per bar (=list of VoiceDefs) in the argument.
-		/// The Systems are complete with staves and voices of the correct type:
-		/// Each OutputStaff is allocated parallel (empty) OutputVoice fields.
-		/// Each Voice has a VoiceDef field that is allocated to the corresponding
-		/// VoiceDef from the argument.
-		/// The OutputVoices have MIDIChannels arranged according to PageFormat.OutputMIDIChannelsPerStaff.
-		/// OutputVoices are given a midi channel allocated from top to bottom in the printed score.
-		/// </summary>
-		public void CreateEmptySystems(List<Bar> bars)
+        /// <summary>
+        /// Creates one System per bar (=list of VoiceDefs) in the argument.
+        /// The Systems are complete with staves and voices of the correct type:
+        /// Each OutputStaff is allocated parallel (empty) OutputVoice fields.
+        /// Each Voice has a VoiceDef field that is allocated to the corresponding
+        /// VoiceDef from the argument.
+        /// The OutputVoices have MIDIChannels arranged according to PageFormat.OutputMIDIChannelsPerStaff.
+        /// OutputVoices are given a midi channel allocated from top to bottom in the printed score.
+        /// </summary>
+        private void CreateEmptySystems(List<List<List<VoiceDef>>> voiceDefsPerStaffPerBar)
         {
-            foreach(Bar bar in bars)
+            var nSystems = voiceDefsPerStaffPerBar.Count;
+            for(var systemIndex = 0; systemIndex < nSystems; systemIndex++)
             {
                 SvgSystem system = new SvgSystem(this);
                 this.Systems.Add(system);
-            }
-
-            CreateEmptyOutputStaves(bars);
-		}
-
-        private void CreateEmptyOutputStaves(List<Bar> bars)
-        {
-            int nStaves = PageFormat.MIDIChannelsPerStaff.Count;
-
-			for(int systemIndex = 0; systemIndex < Systems.Count; systemIndex++)
-            {
-                SvgSystem system = Systems[systemIndex];
-                IReadOnlyList<VoiceDef> voiceDefs = bars[systemIndex].VoiceDefs;
-
-				#region create visible staves
-				for(int staffIndex = 0; staffIndex < nStaves; staffIndex++)
+                var voiceDefsPerStaff = voiceDefsPerStaffPerBar[systemIndex];
+                var nStaves = voiceDefsPerStaff.Count;
+                for(var staffIndex = 0; staffIndex < nStaves; staffIndex++)
                 {
                     string staffname = StaffName(systemIndex, staffIndex);
                     OutputStaff outputStaff = new OutputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
 
-                    IReadOnlyList<int> outputVoiceIndices = PageFormat.MIDIChannelsPerStaff[staffIndex];
-                    for(int ovIndex = 0; ovIndex < outputVoiceIndices.Count; ++ovIndex)
+                    var staffVoiceDefs = voiceDefsPerStaff[staffIndex];
+                    var staffMidiChannels = PageFormat.MIDIChannelsPerStaff[staffIndex];
+                    M.Assert(staffVoiceDefs.Count == staffMidiChannels.Count);
+                    for(int ovIndex = 0; ovIndex < staffVoiceDefs.Count; ++ovIndex)
                     {
-                        Trk trkDef = voiceDefs[outputVoiceIndices[ovIndex]] as Trk;
+                        Trk trkDef = staffVoiceDefs[ovIndex] as Trk;
                         M.Assert(trkDef != null);
-                        OutputVoice outputVoice = new OutputVoice(outputStaff, trkDef.MidiChannel)
-						{
-							VoiceDef = trkDef
-						};
+                        OutputVoice outputVoice = new OutputVoice(outputStaff, staffMidiChannels[ovIndex])
+                        {
+                            VoiceDef = staffVoiceDefs[ovIndex]
+                        };
                         outputStaff.Voices.Add(outputVoice);
                     }
                     SetStemDirections(outputStaff);
                     system.Staves.Add(outputStaff);
                 }
-				#endregion
-			}
+            }
 		}
 
 		private string StaffName(int systemIndex, int staffIndex)

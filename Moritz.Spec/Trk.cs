@@ -164,7 +164,6 @@ namespace Moritz.Spec
 		/// </summary>
 		public override void Insert(int index, IUniqueDef iUniqueDef)
         {
-            M.Assert(iUniqueDef is MidiChordDef || iUniqueDef is MidiRestDef || iUniqueDef is ClefDef);
             _Insert(index, iUniqueDef);
         }
         /// <summary>

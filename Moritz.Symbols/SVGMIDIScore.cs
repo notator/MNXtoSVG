@@ -603,25 +603,69 @@ namespace Moritz.Symbols
 
         private void InsertInitialIUDs(List<VoiceDef> staffVoiceDefs, List<IUniqueDef> initialIUDs)
         {
-            var clef = initialIUDs[0];
+            MNX.Common.Clef initialClef = null;
+            MNX.Common.KeySignature initialKeySig = null;
+            MNX.Common.TimeSignature initialTimeSig = null;
+
             foreach(var voiceDef in staffVoiceDefs)
             {
-                var voiceDefIUDs = voiceDef.UniqueDefs;
-                if(voiceDefIUDs.Contains(clef))
+                for(var i = 0; i < 3; i++)
                 {
-                    foreach(var iud1 in initialIUDs)
+                    if(i < voiceDef.UniqueDefs.Count)
                     {
-                        M.Assert(voiceDefIUDs.Contains(iud1));
+                        if(voiceDef.UniqueDefs[i] is MNX.Common.Clef clef)
+                        {
+                            initialClef = clef;
+                        }
+                        if(voiceDef.UniqueDefs[i] is MNX.Common.KeySignature keySig)
+                        {
+                            initialKeySig = keySig;
+                        }
+                        if(voiceDef.UniqueDefs[i] is MNX.Common.TimeSignature timeSig)
+                        {
+                            initialTimeSig = timeSig;
+                        }
                     }
                 }
-                else
+            }
+            foreach(IUniqueDef iud in initialIUDs)
+            {
+                if(iud is MNX.Common.Clef clef && initialClef == null)
                 {
-                    M.Assert(voiceDefIUDs[0] is Event);
-                    for(int i = initialIUDs.Count - 1; i >= 0; i--)
+                    initialClef = (MNX.Common.Clef) clef;
+                }
+                if(iud is MNX.Common.KeySignature keySig && initialKeySig == null)
+                {
+                    initialKeySig = (MNX.Common.KeySignature) keySig;
+                }
+                if(iud is MNX.Common.TimeSignature timeSig && initialTimeSig == null)
+                {
+                    initialTimeSig = (MNX.Common.TimeSignature) timeSig;
+                }
+            }
+            M.Assert(initialClef != null);
+
+            foreach(var voiceDef in staffVoiceDefs)
+            {
+                for(int i = 2; i >= 0; i--)
+                {
+                    if(i < voiceDef.Count)
                     {
-                        voiceDefIUDs.Insert(0, (IUniqueDef)initialIUDs[i].Clone());
+                        if(voiceDef[i] is MNX.Common.Clef || voiceDef[i] is MNX.Common.KeySignature || voiceDef[i] is MNX.Common.TimeSignature)
+                        {
+                            voiceDef.RemoveAt(i);
+                        }
                     }
                 }
+                if(initialTimeSig != null)
+                {
+                    voiceDef.Insert(0, initialTimeSig);
+                }
+                if(initialKeySig != null)
+                {
+                    voiceDef.Insert(0, initialKeySig);
+                }
+                voiceDef.Insert(0, initialClef);
             }
         }
 

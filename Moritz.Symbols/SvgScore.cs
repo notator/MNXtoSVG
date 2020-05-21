@@ -1006,7 +1006,7 @@ namespace Moritz.Symbols
                     systemStartBarIndices.Add(i-1);
             }
 
-            DoJoinSystems(systemStartBarIndices);
+            JoinBarsToSystems(systemStartBarIndices);
 
 			SetCautionaryChordSymbolVisibility();
         }
@@ -1037,67 +1037,8 @@ namespace Moritz.Symbols
 		}
 
 		#region private for JoinSystems() and SetBarsPerSystem()
-		/// <summary>
-		/// Copies Systems[systemIndex+1]'s content to the end of Systems[systemIndex] (taking account of clefs),
-		/// then removes Systems[systemIndex+1] from the Systems list.
-		/// </summary>
-		/// <param name="barlineIndex"></param>
-		private void JoinNextSystemToSystem(int systemIndex)
-        {
-            M.Assert(Systems.Count > 1 && Systems.Count > systemIndex + 1);
-            SvgSystem system1 = Systems[systemIndex];
-            SvgSystem system2 = Systems[systemIndex+1];
-            M.Assert(system1.Staves.Count == system2.Staves.Count);
-			//foreach (Staff staff in system2.Staves)
-			//{
-			//	foreach (Voice voice in staff.Voices)
-			//	{
-			//		M.Assert(voice.NoteObjects[0] is Clef);
-			//	}
-			//}
 
-			for (int staffIndex = 0; staffIndex < system2.Staves.Count; staffIndex++)
-            {
-                //string clefTypeAtEndOfStaff1 = null;
-                //clefTypeAtEndOfStaff1 = FindClefTypeAtEndOfStaff1(system1.Staves[staffIndex].Voices[0]);
-
-                for(int voiceIndex = 0; voiceIndex < system2.Staves[staffIndex].Voices.Count; voiceIndex++)
-                {
-                    Voice voice1 = system1.Staves[staffIndex].Voices[voiceIndex];
-                    Voice voice2 = system2.Staves[staffIndex].Voices[voiceIndex];
-					//M.Assert(voice2.NoteObjects[0] is Clef);
-					//voice2.NoteObjects.RemoveAt(0);
-                    try
-                    {
-						voice1.AppendNoteObjects(voice2.NoteObjects);
-                    }
-                    catch(Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                }
-            }
-            Systems.Remove(system2);
-            system2 = null;
-        }
-
-        //private string FindClefTypeAtEndOfStaff1(Voice staff1voice0)
-        //{
-        //    Clef mainStaff1Clef = staff1voice0.NoteObjects[0] as Clef;
-        //    M.Assert(mainStaff1Clef != null);
-
-        //    string clefTypeAtEndOfStaff1 = mainStaff1Clef.ClefType;
-        //    foreach(NoteObject noteObject in staff1voice0.NoteObjects)
-        //    {
-        //        if(noteObject is SmallClef smallClef)
-        //        {
-        //            clefTypeAtEndOfStaff1 = smallClef.ClefType;
-        //        } 
-        //    }
-        //    return clefTypeAtEndOfStaff1;
-        //}
-
-        private void DoJoinSystems(List<int> systemStartBarIndices)
+        private void JoinBarsToSystems(List<int> systemStartBarIndices)
         {
             for(int systemIndex = 0; systemIndex < systemStartBarIndices.Count; systemIndex++)
             {
@@ -1113,44 +1054,111 @@ namespace Moritz.Symbols
 
 				for(int b = 0; b < nBarsToJoin; ++b)
 				{
-					JoinNextSystemToSystem(systemIndex);
+					JoinNextBarToSystem(systemIndex);
 				}
             }
-            MoveInitialBarlinesToPreviousSystem();
         }
-        #endregion
 
         /// <summary>
-        /// The score contains the correct number of bars per system.
-        /// Now, if a barline comes before any chords in a staff, it is moved to the end of the corresponding
-        /// staff in the previous system -- or deleted altogether if it is in the first System.
+        /// Copies Systems[systemIndex+1]'s content to the end of Systems[systemIndex]
+        /// (taking account of running clefs, keySignatures and timeSignatures),
+        /// then removes Systems[systemIndex+1] from the Systems list.
         /// </summary>
-        private void MoveInitialBarlinesToPreviousSystem()
+        /// <param name="barlineIndex"></param>
+        private void JoinNextBarToSystem(int systemIndex)
         {
-            for(int systemIndex = 0; systemIndex < Systems.Count; systemIndex++)
+            M.Assert(Systems.Count > 1 && Systems.Count > systemIndex + 1);
+            SvgSystem system1 = Systems[systemIndex];
+            SvgSystem system2 = Systems[systemIndex + 1];
+            M.Assert(system1.Staves.Count == system2.Staves.Count);
+            foreach(Staff staff in system2.Staves)
             {
-                SvgSystem system = Systems[systemIndex];
-                for(int staffIndex = 0; staffIndex < system.Staves.Count; staffIndex++)
+                foreach(Voice voice in staff.Voices)
                 {
-                    Staff staff = system.Staves[staffIndex];
-                    for(int voiceIndex = 0; voiceIndex < staff.Voices.Count; voiceIndex++)
+                    M.Assert(voice.NoteObjects[0] is Clef);
+                }
+            }
+
+            for(int staffIndex = 0; staffIndex < system2.Staves.Count; staffIndex++)
+            {
+                for(int voiceIndex = 0; voiceIndex < system2.Staves[staffIndex].Voices.Count; voiceIndex++)
+                {
+                    Voice voice1 = system1.Staves[staffIndex].Voices[voiceIndex];
+                    GetFinalDirections(voice1.NoteObjects, out Clef v1FinalClef, out KeySignature v1FinalKeySignature, out TimeSignature v1FinalTimeSignature);
+                    Voice voice2 = system2.Staves[staffIndex].Voices[voiceIndex];
+                    GetInitialDirections(voice2.NoteObjects, out Clef v2InitialClef, out KeySignature v2InitialKeySignature, out TimeSignature v2InitialTimeSignature);
+                    M.Assert(v1FinalClef != null);
+
+                    if(v2InitialClef != null && v2InitialClef.ClefType == v1FinalClef.ClefType)
                     {
-                        Voice voice = staff.Voices[voiceIndex];
-                        Barline barline = voice.InitialBarline;
-                        if(barline != null)
-                        {
-                            if(systemIndex > 0)
-                            {
-                                Voice voiceInPreviousSystem = Systems[systemIndex - 1].Staves[staffIndex].Voices[voiceIndex];
-								// yes: add a NormalBarline here
-								voiceInPreviousSystem.NoteObjects.Add(new NormalBarline(voiceInPreviousSystem));
-                            }
-                            voice.NoteObjects.Remove(barline);
-                        }
+                        voice2.NoteObjects.RemoveAt(0);
+                    }
+                    if(v2InitialKeySignature != null && v2InitialKeySignature.Fifths == v1FinalKeySignature.Fifths)
+                    {
+                        voice2.NoteObjects.Remove(v2InitialKeySignature);
+                    }
+                    if(v2InitialTimeSignature != null && v2InitialTimeSignature.Signature == v1FinalTimeSignature.Signature)
+                    {
+                        voice2.NoteObjects.Remove(v2InitialTimeSignature);
+                    }
+
+                    voice1.AppendNoteObjects(voice2.NoteObjects);
+                }
+            }
+            Systems.Remove(system2);
+            system2 = null;
+        }
+
+        private void GetInitialDirections(List<NoteObject> noteObjects, out Clef initialClef, out KeySignature initialKeySignature, out TimeSignature initialTimeSignature)
+        {
+            initialClef = null;
+            initialKeySignature = null;
+            initialTimeSignature = null;
+            for(var i = 0; i < 3; i++)
+            {
+                if(noteObjects.Count > i)
+                {
+                    var noteObject = noteObjects[i];
+                    if(noteObject is Clef clef)
+                    {
+                        initialClef = clef;
+                    }
+                    if(noteObject is KeySignature keySignature)
+                    {
+                        initialKeySignature = keySignature;
+                    }
+                    if(noteObject is TimeSignature timeSignature)
+                    {
+                        initialTimeSignature = timeSignature;
                     }
                 }
             }
         }
+
+        private void GetFinalDirections(List<NoteObject> noteObjects, out Clef outClef, out KeySignature outKeySignature, out TimeSignature outTimeSignature)
+        {
+            outClef = null;
+            outKeySignature = null;
+            outTimeSignature = null;
+
+            foreach(var noteObject in noteObjects)
+            {
+                if(noteObject is Clef clef)
+                {
+                    outClef = clef;
+                }
+                if(noteObject is KeySignature keySignature)
+                {
+                    outKeySignature = keySignature;
+                }
+                if(noteObject is TimeSignature timeSignature)
+                {
+                    outTimeSignature = timeSignature;
+                }
+            }
+        }
+
+        #endregion
 
         #region protected functions
 
@@ -1697,8 +1705,8 @@ namespace Moritz.Symbols
 		}
 
 		/// <summary>
-		/// Inserts a NormalBarline at the start of the first bar in each voice in each staff in each system.
-		/// If the first Noteobject in the voice is a clef, the barline is inserted after the clef.
+		/// Inserts a NormalBarline at the start of the first bar in each Voice in each Staff in each System.
+		/// The barline is inserted after the initial Clef, and after the initial KeySignature if it exists.
 		/// </summary>
 		private void AddNormalBarlineAtStartOfEachSystem()
         {
@@ -1708,11 +1716,12 @@ namespace Moritz.Symbols
                 {
                     foreach(Voice voice in staff.Voices)
                     {
-                        int clefIndex = voice.NoteObjects.FindIndex(obj => obj is Clef);
-                        int keySigIndex = voice.NoteObjects.FindIndex(obj => obj is KeySignature);
-                        int insertIndex = 0;
-                        insertIndex = (clefIndex >= 0) ? clefIndex + 1 : insertIndex;
-                        insertIndex = (keySigIndex >= 0) ? keySigIndex + 1 : insertIndex;
+                        M.Assert(voice.NoteObjects[0] is Clef);
+                        int insertIndex = 1;
+                        if(voice.NoteObjects[1] is KeySignature)
+                        {
+                            insertIndex = 2;
+                        }
                         voice.NoteObjects.Insert(insertIndex, new NormalBarline(voice));
                     }
                 }

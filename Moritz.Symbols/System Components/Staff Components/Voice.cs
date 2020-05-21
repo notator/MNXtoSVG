@@ -26,24 +26,18 @@ namespace Moritz.Symbols
             Staff = staff;
         }
 
-		public abstract void WriteSVG(SvgWriter w, int systemNumber, int staffNumber, int voiceNumber, List<CarryMsgs> carryMsgsPerChannel, bool graphicsOnly);
-
         /// <summary>
         /// Writes out an SVG Voice
+        /// The following NoteObject types are only written if voiceIndex == 0:
+        ///   Barline, Clef, SmallClef, KeySignature, TimeSignature.
         /// </summary>
         /// <param name="w"></param>
-        public virtual void WriteSVG(SvgWriter w, List<CarryMsgs> carryMsgsPerChannel, bool graphicsOnly)
+        public virtual void WriteSVG(SvgWriter w, int voiceIndex, List<CarryMsgs> carryMsgsPerChannel, bool graphicsOnly)
         {
             for(int i = 0; i < NoteObjects.Count; ++i)
             {
 				NoteObject noteObject = NoteObjects[i];
-                CautionaryChordSymbol cautionaryChordSymbol = noteObject as CautionaryChordSymbol;
-                OutputChordSymbol outputChordSymbol = noteObject as OutputChordSymbol;
-                OutputRestSymbol outputRestSymbol = noteObject as OutputRestSymbol;
-				Clef clef = noteObject as Clef;
-				SmallClef smallClef = noteObject as SmallClef;
-
-				if(noteObject is Barline barline)
+				if(noteObject is Barline barline && voiceIndex == 0)
 				{
 					bool isLastNoteObject = (i == (NoteObjects.Count - 1));
 					double top = Staff.Metrics.StafflinesTop;
@@ -54,21 +48,21 @@ namespace Moritz.Symbols
 					}
 					barline.WriteDrawObjectsSVG(w); 
 				}
-				else if(cautionaryChordSymbol != null)
+				if(noteObject is CautionaryChordSymbol cautionaryChordSymbol)
 				{
 					cautionaryChordSymbol.WriteSVG(w);
 				}
-				else if(outputChordSymbol != null)
+				if(noteObject is OutputChordSymbol outputChordSymbol)
 				{
 					M.Assert(carryMsgsPerChannel != null);
 					outputChordSymbol.WriteSVG(w, this.MidiChannel, carryMsgsPerChannel[this.MidiChannel], graphicsOnly);
 				}
-				else if(outputRestSymbol != null)
+				if(noteObject is OutputRestSymbol outputRestSymbol)
 				{
 					M.Assert(carryMsgsPerChannel != null);
 					outputRestSymbol.WriteSVG(w, this.MidiChannel, carryMsgsPerChannel[this.MidiChannel], graphicsOnly);
 				}
-				else if(clef != null) // clef
+				if(noteObject is Clef clef && voiceIndex == 0)
 				{
 					if(clef.Metrics != null)
 					{
@@ -77,7 +71,7 @@ namespace Moritz.Symbols
 						clef.WriteSVG(w, cm.ClefID, cm.OriginX, cm.OriginY);
 					}
 				}
-				else if(smallClef != null)
+				if(noteObject is SmallClef smallClef && voiceIndex == 0)
 				{
 					if(smallClef.Metrics != null)
 					{
@@ -85,18 +79,14 @@ namespace Moritz.Symbols
 						smallClef.WriteSVG(w, scm.ClefID, scm.OriginX, scm.OriginY);
 					}
 				}
-                else if(noteObject is KeySignature keySignature)
+                if(noteObject is KeySignature keySignature && voiceIndex == 0)
                 {
                     keySignature.WriteSVG(w, keySignature.Fifths.ToString(), keySignature.Metrics.OriginX, keySignature.Metrics.OriginY);
                 }
-                else if(noteObject is TimeSignature timeSignature)
+                if(noteObject is TimeSignature timeSignature && voiceIndex == 0)
                 {
                     timeSignature.WriteSVG(w, timeSignature.Signature, timeSignature.Metrics.OriginX, timeSignature.Metrics.OriginY);
                 }
-                else
-				{
-					throw new ApplicationException("Unknown noteObject type.");
-				}
 			}
 		}
 

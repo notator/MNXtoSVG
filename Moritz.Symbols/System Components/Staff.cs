@@ -36,11 +36,10 @@ namespace Moritz.Symbols
                     stafflineY += Gap;
             }
             w.SvgEndGroup();
- 
-			int voiceNumber = 1;
-            foreach(Voice voice in Voices)
+
+            for(var voiceIndex = 0; voiceIndex < Voices.Count; voiceIndex++)
             {
-				voice.WriteSVG(w, systemNumber, staffNumber, voiceNumber++, carryMsgsPerChannel, graphicsOnly);
+                Voices[voiceIndex].WriteSVG(w, voiceIndex, carryMsgsPerChannel, graphicsOnly);
             }
         }
 

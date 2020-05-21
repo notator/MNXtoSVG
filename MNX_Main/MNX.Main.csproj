@@ -71,6 +71,7 @@
     </Compile>
     <None Include="MNX_in\form1Data\_10_beamhooks.f1d" />
     <None Include="MNX_in\form1Data\_11_tuplets.f1d" />
+    <None Include="MNX_in\form1Data\_18_parts.f1d" />
     <None Include="MNX_in\form1Data\_12_voices.f1d" />
     <None Include="MNX_in\form1Data\_13_octaves.f1d" />
     <None Include="MNX_in\form1Data\_14_slurs.f1d" />
@@ -94,6 +95,7 @@
     <None Include="MNX_in\mnx\_15_slurchords.mnx" />
     <None Include="MNX_in\mnx\_16_slurnotes.mnx" />
     <None Include="MNX_in\mnx\_17_slurincomplete.mnx" />
+    <None Include="MNX_in\mnx\_18_parts.mnx" />
     <None Include="MNX_in\mnx\__1_helloworld.mnx" />
     <None Include="MNX_in\mnx\__2_cscale.mnx" />
     <None Include="MNX_in\mnx\__3_chord.mnx" />
@@ -141,6 +143,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Issues.txt" />
+    <Content Include="MNX_in\png\__18_parts.png" />
     <Content Include="MNX_in\png\__10_beamhooks.png" />
     <Content Include="MNX_in\png\__11_tuplets.png" />
     <Content Include="MNX_in\png\__12_voices.png" />

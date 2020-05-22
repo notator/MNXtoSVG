@@ -4,7 +4,7 @@ using MNX.Globals;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-octave-shift-element
-    public class OctaveShift : Span
+    public class OctaveShift : Span, ISeqComponent
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }

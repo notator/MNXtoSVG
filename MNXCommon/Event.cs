@@ -60,6 +60,28 @@ namespace MNX.Common
         }
         private int _ticks = 0;
 
+        public bool IsBeamStart
+        {
+            get { return _isBeamStart; }
+            set
+            {
+                M.Assert(!_isBeamEnd);
+                _isBeamStart = value;
+            }
+        }
+        private bool _isBeamStart = false;
+
+        public bool IsBeamEnd
+        {
+            get { return _isBeamEnd; }
+            set
+            {
+                M.Assert(!_isBeamStart);
+                _isBeamEnd = value;
+            }
+        }
+        private bool _isBeamEnd = false;
+
         #endregion runtime properties
 
         #region IUniqueDef
@@ -111,7 +133,6 @@ namespace MNX.Common
             }
         }
         private int _msPositionReFirstIUD = 0;
-
 
         #endregion IUniqueDef
 

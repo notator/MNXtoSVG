@@ -12,10 +12,10 @@
       <part>
         <part-name>Music</part-name>
         <measure>
+          <directions>
+            <clef sign="G" line="2"/>
+          </directions>
           <sequence>
-            <directions>
-              <clef sign="G" line="2"/>
-            </directions>
             <beamed>
               <event value="/8">
                 <note pitch="C5"/>
@@ -74,7 +74,7 @@
               </event>
             </beamed>
             <event value="/4">
-              <note pitch=""/>
+              <note pitch="C4"/>
             </event>
           </sequence>
         </measure>

@@ -9,12 +9,15 @@ namespace Moritz.Symbols
 {
     public abstract class ChordSymbol : DurationSymbol
     {
-        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, MNXDurationSymbol mnxDurationSymbol, double fontSize, bool beamContinues)
-            : base(voice, msDuration, absMsPosition, mnxDurationSymbol, fontSize)
+        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.Event mnxEventDef, double fontSize, bool beamContinues)
+            : base(voice, msDuration, absMsPosition, mnxEventDef.MNXDurationSymbol, fontSize)
         {
             // note that all chord symbols have a stem! 
             // Even cautionary, semibreves and breves need a stem direction in order to set chord Metrics correctly.
             Stem = new Stem(this, beamContinues);
+
+            IsBeamStart = mnxEventDef.IsBeamStart;
+            IsBeamEnd = mnxEventDef.IsBeamEnd;
 
             // Beam is currently null. Create when necessary.
         }
@@ -451,6 +454,10 @@ namespace Moritz.Symbols
 				return chordMetrics;
             }
         }
+
+        public readonly bool IsBeamStart;
+        public readonly bool IsBeamEnd;
+
         public Stem Stem = null; // defaults
         public BeamBlock BeamBlock = null; // defaults
         public List<Head> HeadsTopDown = new List<Head>(); // Heads are in top-down order.

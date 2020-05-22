@@ -69,9 +69,25 @@ namespace Moritz.Symbols
                     for(var staffIndex = 0; staffIndex < nStaves; ++staffIndex)
                     {
                         var nVoices = voicesPerStaff[staffIndex];
+                        var mDir = measure.Directions;
                         for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
                         {
                             Sequence sequence = measure.Sequences[voiceIndex];
+                            if(mDir != null)
+                            {
+                                if(mDir.TimeSignature != null)
+                                {
+                                    sequence.SequenceComponents.Insert(0, mDir.TimeSignature);
+                                }
+                                if(mDir.KeySignature != null)
+                                {
+                                    sequence.SequenceComponents.Insert(0, mDir.KeySignature);
+                                }
+                                if(mDir.Clef != null)
+                                {
+                                    sequence.SequenceComponents.Insert(0, mDir.Clef);
+                                }
+                            }
                             List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
                             if(voiceIndex == 0)
                             {

@@ -9,7 +9,7 @@ namespace Moritz.Symbols
 {
     public class BeamBlock : LineMetrics
     {
-        public BeamBlock(Clef clef, List<ChordSymbol> chordsBeamedTogether, VerticalDir voiceStemDirection, double beamThickness, double strokeThickness)
+        public BeamBlock(Clef clef, List<OutputChordSymbol> chordsBeamedTogether, VerticalDir voiceStemDirection, double beamThickness, double strokeThickness)
             : base(CSSObjectClass.beamBlock, strokeThickness, "black", "black")
         {
             Chords = new List<ChordSymbol>(chordsBeamedTogether);
@@ -39,7 +39,7 @@ namespace Moritz.Symbols
         /// </summary>
         /// <param name="currentClef"></param>
         /// <param name="chordsBeamedTogether"></param>
-        private void SetBeamedGroupStemDirection(Clef currentClef, List<ChordSymbol> chordsBeamedTogether, VerticalDir voiceStemDirection)
+        private void SetBeamedGroupStemDirection(Clef currentClef, List<OutputChordSymbol> chordsBeamedTogether, VerticalDir voiceStemDirection)
         {
             M.Assert(chordsBeamedTogether.Count > 1);
             VerticalDir groupStemDirection = voiceStemDirection;
@@ -47,7 +47,7 @@ namespace Moritz.Symbols
             {   // here, there is only one voice in the staff, so the direction depends on the height of the noteheads.
                 int upStems = 0;
                 int downStems = 0;
-                foreach(ChordSymbol chord in chordsBeamedTogether)
+                foreach(OutputChordSymbol chord in chordsBeamedTogether)
                 {
                     VerticalDir direction = chord.DefaultStemDirection(currentClef);
                     if(direction == VerticalDir.up)
@@ -69,7 +69,7 @@ namespace Moritz.Symbols
             }
         }
 
-        private VerticalDir GetDirectionFromExtremes(Clef currentClef, List<ChordSymbol> chordsBeamedTogether)
+        private VerticalDir GetDirectionFromExtremes(Clef currentClef, List<OutputChordSymbol> chordsBeamedTogether)
         {
             double headMinTop = double.MaxValue;
             double headMaxBottom = double.MinValue;
@@ -93,7 +93,7 @@ namespace Moritz.Symbols
                 return VerticalDir.down;
         }
 
-        private double GetDefaultStemTipY(Clef currentClef, List<ChordSymbol> chordsBeamedTogether)
+        private double GetDefaultStemTipY(Clef currentClef, List<OutputChordSymbol> chordsBeamedTogether)
         {
             double headMinTop = double.MaxValue;
             double headMaxBottom = double.MinValue;
@@ -101,7 +101,7 @@ namespace Moritz.Symbols
             int numberOfStafflines = chordsBeamedTogether[0].Voice.Staff.NumberOfStafflines;
             VerticalDir direction = chordsBeamedTogether[0].Stem.Direction;
 
-            foreach(ChordSymbol chord in chordsBeamedTogether)
+            foreach(OutputChordSymbol chord in chordsBeamedTogether)
             {
                 foreach(Head head in chord.HeadsTopDown)
                 {

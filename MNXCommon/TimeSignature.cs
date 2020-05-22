@@ -5,7 +5,7 @@ using Moritz.Spec;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-time-element
-    public class TimeSignature : IGlobalDirectionsComponent, IUniqueDef
+    public class TimeSignature : IGlobalDirectionsComponent, ISeqComponent, IUniqueDef
     {
         public readonly string Signature;
         public readonly string Measure;

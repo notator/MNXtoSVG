@@ -92,15 +92,32 @@ namespace MNX.Common
                     {
                         rval.Add(d.KeySignature as IUniqueDef);
                     }
-                    // TimeSignatures are IUniqueDefs but not SequenceComponents.
-                    // They only occur in the Global element.
-                    //if(d.TimeSignature != null)
-                    //{
-                    //    rval.Add(d.TimeSignature as IUniqueDef);
-                    //}
+                    if(d.TimeSignature != null)
+                    {
+                        rval.Add(d.TimeSignature as IUniqueDef);
+                    }
                     if(d.OctaveShift != null)
                     {
                         rval.Add(d.OctaveShift as IUniqueDef);
+                    }
+                }
+                else if(seqObj is Beamed beamed)
+                {
+                    M.Assert(beamed.Events.Count > 1);
+                    int maxIndex = beamed.Events.Count - 1;
+                    for(var i = 0; i < beamed.Events.Count; i++)
+                    {
+                        var evt = beamed.Events[i];
+                        if(i == 0)
+                        {
+                            evt.IsBeamStart = true;
+                        }
+                        else if( i == maxIndex)
+                        {
+                            evt.IsBeamEnd = true;
+                        }
+
+                        rval.Add(evt as IUniqueDef);
                     }
                 }
                 else

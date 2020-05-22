@@ -189,105 +189,89 @@ namespace Moritz.Symbols
 
         /// <summary>
         /// Sets Chord.Stem.Direction for each chord.
-        /// Chords are beamed together, duration classes permitting, unless a rest or clef intervenes.
-        /// If a barline intervenes, and beamsCrossBarlines is true, the chords are beamed together.
-        /// If a barline intervenes, and beamsCrossBarlines is false, the beam is broken.
+        /// BeamBlocks are created, beginning with a chord that has IsBeamStart == true, and ending with a chord that has IsBeamEnd == true.
+        /// BeamBlocks only contain ChordSymbols, but these may be interspersed with other NoteObjects (barlines, clefs, rests, cautionaryChords etc...)
+        /// An exception is thrown, if a BeamBlock is open at the end of the voice.
         /// </summary>
         public void SetChordStemDirectionsAndCreateBeamBlocks(PageFormat pageFormat)
         {
-            List<ChordSymbol> chordsBeamedTogether = new List<ChordSymbol>();
+            List<List<OutputChordSymbol>> beamedGroups = GetBeamedGroups();
+
             Clef currentClef = null;
-            bool breakGroup = false;
-            ChordSymbol lastChord = null;
-            foreach(ChordSymbol cs in ChordSymbols)
-                lastChord = cs;
-
-            foreach(NoteObject noteObject in NoteObjects)
+            int groupIndex = 0;
+            List<OutputChordSymbol> beamedGroup = null;
+            foreach(var noteObject in NoteObjects)
             {
-				ChordSymbol chord = noteObject as ChordSymbol;
-				RestSymbol rest = noteObject as RestSymbol;
-                Clef clef = noteObject as Clef;
-                Barline barline = noteObject as Barline;
-
-				if(noteObject is CautionaryChordSymbol cautionaryChord)
-					continue;
-
-				if(chord != null)
+                if(noteObject is OutputChordSymbol chord)
                 {
-                    if(chord.DurationClass == DurationClass.cautionary
-                    || chord.DurationClass == DurationClass.breve
-                    || chord.DurationClass == DurationClass.semibreve
-                    || chord.DurationClass == DurationClass.minim
-                    || chord.DurationClass == DurationClass.crotchet)
+                    if(chord.IsBeamStart)
                     {
-                        if(currentClef != null)
-                        {
-                            if(this.StemDirection == VerticalDir.none)
-                                chord.Stem.Direction = chord.DefaultStemDirection(currentClef);
-                            else
-                                chord.Stem.Direction = this.StemDirection;
-                        }
-                        breakGroup = true;
+                        M.Assert(currentClef != null);
+                        beamedGroup = beamedGroups[groupIndex++];
+                        double beamThickness = pageFormat.BeamThickness;
+                        double beamStrokeThickness = pageFormat.StafflineStemStrokeWidthVBPX;
+                        chord.BeamBlock = new BeamBlock(currentClef, beamedGroup, this.StemDirection, beamThickness, beamStrokeThickness);
                     }
-                    else
+                    else if(chord.IsBeamEnd)
                     {
-                        chordsBeamedTogether.Add(chord);
-						// chord.Stem.BeamContinues is the value of
-						// MidiChordDef.BeamContinues.
-						// This value is true by default, but can be set
-						// (in MidiChordDef) classes used by composition
-						// algorithms.
-						if(chord.Stem.BeamContinues)
-                            breakGroup = false;
+                        beamedGroup = null;
+                    }
+                    else if(beamedGroup == null)
+                    {
+                        M.Assert(currentClef != null);
+                        if(this.StemDirection == VerticalDir.none)
+                            chord.Stem.Direction = chord.DefaultStemDirection(currentClef);
                         else
-                            breakGroup = true;
+                            chord.Stem.Direction = this.StemDirection;
                     }
                 }
 
-                if(chordsBeamedTogether.Count > 0)
-                {
-                    if(rest != null)
-                    {
-                        if(rest.LocalCautionaryChordDef == null)
-                            breakGroup = true;
-                    }
-
-                    if(clef != null)
-                        breakGroup = true;
-
-                    if(barline != null && !pageFormat.BeamsCrossBarlines)
-                        breakGroup = true;
-
-                    if(chord == lastChord)
-                        breakGroup = true;
-                }
-
-                if(chordsBeamedTogether.Count > 0 && breakGroup)
-                {
-                    if(currentClef != null)
-                    {
-                        if(chordsBeamedTogether.Count == 1)
-                        {
-                            if(this.StemDirection == VerticalDir.none)
-                                chordsBeamedTogether[0].Stem.Direction = chordsBeamedTogether[0].DefaultStemDirection(currentClef);
-                            else
-                                chordsBeamedTogether[0].Stem.Direction = this.StemDirection;
-
-                        }
-                        else if(chordsBeamedTogether.Count > 1)
-                        {
-                            double beamThickness = pageFormat.BeamThickness;
-                            double beamStrokeThickness = pageFormat.StafflineStemStrokeWidthVBPX;
-                            chordsBeamedTogether[0].BeamBlock =
-                                new BeamBlock(currentClef, chordsBeamedTogether, this.StemDirection, beamThickness, beamStrokeThickness);
-                        }
-                    }
-                    chordsBeamedTogether.Clear();
-                }
-
-                if(clef != null)
+                if(noteObject is Clef clef)
                     currentClef = clef;
             }
+        }
+
+        private List<List<OutputChordSymbol>> GetBeamedGroups()
+        {
+            List<List<OutputChordSymbol>> beamedGroups = new List<List<OutputChordSymbol>>();
+
+            bool inGroup = false;
+            List<OutputChordSymbol> beamedGroup = null;
+            for(var i = 0; i < NoteObjects.Count; i++)
+            {
+                var noteObject = NoteObjects[i];
+                if(noteObject is OutputChordSymbol chordSymbol)
+                {
+                    if(chordSymbol.IsBeamStart)
+                    {
+                        M.Assert(inGroup == false);
+                        inGroup = true;
+                        beamedGroup = new List<OutputChordSymbol>
+                        {
+                            chordSymbol
+                        };
+                        beamedGroups.Add(beamedGroup);
+                        chordSymbol.Stem.BeamContinues = true;
+                    }
+                    else if(chordSymbol.IsBeamEnd)
+                    {
+                        M.Assert(inGroup == true);
+                        beamedGroup.Add(chordSymbol);
+                        chordSymbol.Stem.BeamContinues = false;
+                        inGroup = false;
+                    }
+                    else if(inGroup)
+                    {
+                        M.Assert(chordSymbol.DurationClass < DurationClass.crotchet);
+                        beamedGroup.Add(chordSymbol);
+                        chordSymbol.Stem.BeamContinues = true;
+                    }
+                }
+            }
+
+            M.Assert(inGroup == false); // Beamblocks may extend across Barlines, but not across Systems.
+
+            return beamedGroups;
         }
 
         /// <summary>

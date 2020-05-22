@@ -1,0 +1,573 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="../../fontsStyleSheet.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+	width="600"
+	height="148"
+	viewBox="0 0 6000 1488">
+	<defs>
+		<style
+			type="text/css"><![CDATA[
+			@font-face
+			{
+				font-family: 'CLicht';
+				src: url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.eot');
+				src: url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.eot?#iefix') format('embedded-opentype'),
+				url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.woff') format('woff'),
+				url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.ttf') format('truetype'),
+				url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.svg#webfontl9D2oOyX') format('svg');
+				font-weight: normal;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Arial';
+				src: url('https://github.com/notator/MNXtoSVG/fonts/arial.ttf') format('truetype');
+				font-weight:400;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Open Sans';
+				src: url('https://github.com/notator/MNXtoSVG/fonts/OpenSans-Regular.ttf') format('truetype');
+				font-weight:400;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Open Sans Condensed';
+				src: url('https://github.com/notator/MNXtoSVG/fonts/OpenSans-CondBold.ttf') format('truetype');
+				font-weight:600;
+				font-style: normal;
+			}
+		    .mainTitle
+            {
+                font-family:"Open Sans";
+                font-size:0px;
+                text-anchor:middle
+            }
+            .author
+            {
+                font-family:"Open Sans";
+                font-size:0px;
+                text-anchor:end
+            }
+            .rest, .notehead, .accidental, .clef
+            {
+                font-family:CLicht
+            }
+            .rest, .notehead, .accidental, .augDot, .clef
+            {
+                font-size:392px
+            }
+            .timeStamp, .timeSigNumerator, .timeSigDenominator
+            {
+                font-family:Arial
+            }
+            .timeStamp
+            {
+                font-size:150px
+            }
+            .timeSigNumerator, .timeSigDenominator
+            {
+                font-size:420px
+            }
+            .backgroundFill
+            {
+                fill:white                
+            }
+            .staffline, .ledgerline, .stem, .beam, .flag
+            {
+                stroke:black;
+                stroke-width:15px;
+                fill:black
+            }
+            .stem
+            {
+                stroke-linecap:round                
+            }
+            .normalBarline
+            {
+                stroke:black;
+                stroke-width:30px
+            }
+            .thickBarline
+            {
+                stroke:black;
+                stroke-width:60px
+            }
+            .opaqueBeam
+            {
+                stroke:white;
+                stroke-width:15px;
+                fill:white;
+                opacity:0.65                
+            }
+            ]]></style>
+		<g
+			id="trebleClef">
+			<text
+				class="clef">&amp;</text>
+		</g>
+		<g
+			id="left1Flag">
+			<path
+				d="M 0,0 0,-47.4163 124.6913,-96.7064 Q 117.208,-78.4 124.6913,-49.2744" />
+		</g>
+		<g
+			id="keySig_4s">
+			<text
+				class="accidental"
+				x="0"
+				y="0">#</text>
+			<text
+				class="accidental"
+				x="96.7332"
+				y="150">#</text>
+			<text
+				class="accidental"
+				x="193.4663"
+				y="-50">#</text>
+			<text
+				class="accidental"
+				x="290.1995"
+				y="100">#</text>
+		</g>
+		<g
+			id="keySig_4f">
+			<text
+				class="accidental"
+				x="0"
+				y="200">b</text>
+			<text
+				class="accidental"
+				x="85.0585"
+				y="50">b</text>
+			<text
+				class="accidental"
+				x="170.1169"
+				y="250">b</text>
+			<text
+				class="accidental"
+				x="255.1754"
+				y="100">b</text>
+		</g>
+		<g
+			id="keySig_2f">
+			<text
+				class="accidental"
+				x="0"
+				y="200">b</text>
+			<text
+				class="accidental"
+				x="85.0585"
+				y="50">b</text>
+		</g>
+		<g
+			id="timeSig_4/4">
+			<text
+				class="timeSigNumerator"
+				x="0"
+				y="0">4</text>
+			<text
+				class="timeSigDenominator"
+				x="0"
+				y="303.2">4</text>
+		</g>
+		<g
+			id="timeSig_2/4">
+			<text
+				class="timeSigNumerator"
+				x="0"
+				y="0">2</text>
+			<text
+				class="timeSigDenominator"
+				x="0"
+				y="303.2">4</text>
+		</g>
+	</defs>
+	<rect
+		class="backgroundFill"
+		x="0"
+		y="0"
+		width="6000"
+		height="1488" />
+	<g
+		class="systems">
+		<text
+			class="timeStamp"
+			x="32"
+			y="150">__9_beams (graphics only).svg, Friday 22.05.2020, 16:16:09</text>
+		<g
+			class="system">
+			<g
+				class="staff"
+				staffName="">
+				<g
+					class="stafflines">
+					<line
+						class="staffline"
+						x1="300"
+						y1="500"
+						x2="5700"
+						y2="500" />
+					<line
+						class="staffline"
+						x1="300"
+						y1="600"
+						x2="5700"
+						y2="600" />
+					<line
+						class="staffline"
+						x1="300"
+						y1="700"
+						x2="5700"
+						y2="700" />
+					<line
+						class="staffline"
+						x1="300"
+						y1="800"
+						x2="5700"
+						y2="800" />
+					<line
+						class="staffline"
+						x1="300"
+						y1="900"
+						x2="5700"
+						y2="900" />
+				</g>
+				<g
+					class="voice">
+					<use
+						class="clef"
+						href="#trebleClef"
+						x="300"
+						y="800" />
+					<line
+						class="normalBarline"
+						x1="625"
+						y1="500"
+						x2="625"
+						y2="900" />
+					<use
+						class="timeSig"
+						href="#timeSig_4/4"
+						x="690"
+						y="700" />
+					<g
+						class="beamBlock">
+						<path
+							class="beam"
+							d="M 1024.82 925 L 1829.265 875 1829.265 917 1024.82 967 z" />
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="1024.82"
+								y1="661.5499"
+								x2="1024.82"
+								y2="925" />
+							<text
+								class="notehead"
+								x="1017.32"
+								y="650">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="1292.968"
+								y1="611.5499"
+								x2="1292.968"
+								y2="908.3333" />
+							<text
+								class="notehead"
+								x="1285.468"
+								y="600">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="1561.116"
+								y1="561.5499"
+								x2="1561.116"
+								y2="891.6667" />
+							<text
+								class="notehead"
+								x="1553.616"
+								y="550">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="1829.265"
+								y1="511.5499"
+								x2="1829.265"
+								y2="875" />
+							<text
+								class="notehead"
+								x="1821.765"
+								y="500">œ</text>
+						</g>
+					</g>
+					<g
+						class="beamBlock">
+						<path
+							class="beam"
+							d="M 2197.492 533 L 3001.936 483 3001.936 525 2197.492 575 z" />
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="2197.492"
+								y1="533"
+								x2="2197.492"
+								y2="938.4501" />
+							<text
+								class="notehead"
+								x="2089.913"
+								y="950">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="2465.64"
+								y1="516.3333"
+								x2="2465.64"
+								y2="888.4501" />
+							<text
+								class="notehead"
+								x="2358.061"
+								y="900">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="2733.788"
+								y1="499.6667"
+								x2="2733.788"
+								y2="838.4501" />
+							<text
+								class="notehead"
+								x="2626.209"
+								y="850">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="3001.936"
+								y1="483"
+								x2="3001.936"
+								y2="788.4501" />
+							<text
+								class="notehead"
+								x="2894.357"
+								y="800">œ</text>
+						</g>
+					</g>
+					<line
+						class="normalBarline"
+						x1="3235.045"
+						y1="500"
+						x2="3235.045"
+						y2="900" />
+					<g
+						class="beamBlock">
+						<path
+							class="opaqueBeam"
+							d="M 3989.6 466 L 4151.04 466 4151.04 529 3989.6 529 z" />
+						<path
+							class="beam"
+							d="M 3989.6 508 L 4151.04 508 4151.04 550 3989.6 550 z" />
+						<path
+							class="beam"
+							d="M 3453.304 408 L 4304.299 408 4304.299 450 3453.304 450 z" />
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="3453.304"
+								y1="408"
+								x2="3453.304"
+								y2="788.4501" />
+							<text
+								class="notehead"
+								x="3345.725"
+								y="800">œ</text>
+						</g>
+					</g>
+					<g
+						class="rest">
+						<g
+							class="graphics">
+							<text
+								class="rest"
+								x="3613.039"
+								y="700">‰</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="3989.6"
+								y1="408"
+								x2="3989.6"
+								y2="938.4501" />
+							<text
+								class="notehead"
+								x="3882.021"
+								y="950">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="4151.04"
+								y1="408"
+								x2="4151.04"
+								y2="888.4501" />
+							<text
+								class="notehead"
+								x="4043.46"
+								y="900">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="4304.299"
+								y1="408"
+								x2="4304.299"
+								y2="788.4501" />
+							<text
+								class="notehead"
+								x="4196.72"
+								y="800">œ</text>
+						</g>
+					</g>
+					<g
+						class="beamBlock">
+						<path
+							class="beam"
+							d="M 4572.447 583 L 4840.595 599.667 4840.595 641.667 4572.447 625 z" />
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="4572.447"
+								y1="583"
+								x2="4572.447"
+								y2="888.4501" />
+							<text
+								class="notehead"
+								x="4464.868"
+								y="900">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="4840.595"
+								y1="599.6667"
+								x2="4840.595"
+								y2="938.4501" />
+							<text
+								class="notehead"
+								x="4733.016"
+								y="950">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="5108.743"
+								y1="640"
+								x2="5108.743"
+								y2="988.4501" />
+							<text
+								class="notehead"
+								x="5001.164"
+								y="1000">œ</text>
+							<g
+								class="ledgerlines">
+								<line
+									class="ledgerline"
+									x1="4958.625"
+									y1="1000"
+									x2="5158.783"
+									y2="1000" />
+							</g>
+						</g>
+					</g>
+					<g
+						class="endOfScoreBarline">
+						<line
+							class="normalBarline"
+							x1="5610"
+							y1="492.5"
+							x2="5610"
+							y2="907.5" />
+						<line
+							class="thickBarline"
+							x1="5700"
+							y1="492.5"
+							x2="5700"
+							y2="907.5" />
+					</g>
+				</g>
+			</g>
+			<g
+				class="staffConnectors" />
+		</g>
+	</g>
+	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->
+</svg>

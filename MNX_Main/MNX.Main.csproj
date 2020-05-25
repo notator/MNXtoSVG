@@ -164,6 +164,7 @@
     <Content Include="originalPNGandSVGoutput.html" />
     <Content Include="SVG_out\_10_beamhooks %28graphics only%29.svg" />
     <Content Include="SVG_out\_12_voices %28graphics only%29.svg" />
+    <Content Include="SVG_out\_18_parts %28graphics only%29.svg" />
     <Content Include="SVG_out\__1_helloworld %28graphics only%29.svg" />
     <Content Include="SVG_out\__2_cscale %28graphics only%29.svg" />
     <Content Include="SVG_out\__3_chord %28graphics only%29.svg" />
@@ -174,6 +175,7 @@
     <Content Include="SVG_out\__9_beams %28graphics only%29.svg" />
     <Content Include="SVG_temp\_10_beamhooks %28graphics only%29.svg" />
     <Content Include="SVG_temp\_12_voices %28graphics only%29.svg" />
+    <Content Include="SVG_temp\_18_parts %28graphics only%29.svg" />
     <Content Include="SVG_temp\__1_helloworld %28graphics only%29.svg" />
     <Content Include="SVG_temp\__2_cscale %28graphics only%29.svg" />
     <Content Include="SVG_temp\__3_chord %28graphics only%29.svg" />

@@ -622,22 +622,39 @@ namespace Moritz.Symbols
             var initialIUDsPerStaff = new List<List<IUniqueDef>>();
             foreach(var staffVoiceDefs in voiceDefsPerStaff)
             {
-                List<IUniqueDef> initialIUDs = new List<IUniqueDef>();
-                foreach(var voiceDef in staffVoiceDefs)
+                List<IUniqueDef> unSortedInitialIUDs = new List<IUniqueDef>();
+                for(var i = 0; i < 3; i++)
                 {
-                    foreach(var iud in voiceDef.UniqueDefs)
+                    foreach(var voiceDef in staffVoiceDefs)
                     {
+                        var iud = voiceDef.UniqueDefs[i];
                         if(!(iud is Event))
                         {
-                            M.Assert(!initialIUDs.Contains(iud));
-                            initialIUDs.Add(iud); // cloned later when inserted in the other voiceDef
-                        }
-                        else
-                        {
-                            break;
+                            if(!unSortedInitialIUDs.Contains(iud))
+                            {
+                                unSortedInitialIUDs.Add(iud); // cloned later when inserted in the other voiceDef
+                            }
                         }
                     }
                 }
+
+                List<IUniqueDef> initialIUDs = new List<IUniqueDef>();
+                IUniqueDef clef;
+                if((clef = unSortedInitialIUDs.Find(obj => obj is MNX.Common.Clef)) != null)
+                {
+                    initialIUDs.Add(clef);
+                }
+                IUniqueDef keySig;
+                if((keySig = unSortedInitialIUDs.Find(obj => obj is MNX.Common.KeySignature)) != null)
+                {
+                    initialIUDs.Add(keySig);
+                }
+                IUniqueDef timeSig;
+                if((timeSig = unSortedInitialIUDs.Find(obj => obj is MNX.Common.TimeSignature)) != null)
+                {
+                    initialIUDs.Add(timeSig);
+                }
+
                 AssertConsistency(initialIUDs);
                 initialIUDsPerStaff.Add(initialIUDs);
             }

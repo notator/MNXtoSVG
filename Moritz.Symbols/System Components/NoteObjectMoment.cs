@@ -91,81 +91,157 @@ namespace Moritz.Symbols
         }
 
         /// <summary>
-        /// Moves NoteObjects in this NoteObjectMoment to their correct positions with respect to the aligning DurationSymbol.
-        /// The duration symbol remains where it is with Metrics.OriginX at AlignmentX == 0.
+        /// OutputChordSymbols all have Metrics.OriginX at AlignmentX == 0, and are not moved.
+        /// OutputRestSymbols can have Metrics.OriginX at some other value, but they are not moved either.
+        /// Other NoteObjects are moved left so that they don't overlap the object on their right.
+        /// The left-right order is Clef-KeySignature-Barline-TimeSignature-DurationSymbol.
+        /// The finalBarline has no DurationSymbols. Its noteObjects are right-aligned to 0.
         /// </summary>
         public void SetInternalXPositions(double gap)
         {
             M.Assert(AlignmentX == 0F);
 
-            DurationSymbol ds = (DurationSymbol)_noteObjects.Find(obj => obj is DurationSymbol);
-            TimeSignature ts = (TimeSignature)_noteObjects.Find(obj => obj is TimeSignature);
-            KeySignature ks = (KeySignature)_noteObjects.Find(obj => obj is KeySignature);
-            Barline b = (Barline)_noteObjects.Find(obj => obj is Barline);
-            Clef c = (Clef)_noteObjects.Find(obj => obj is Clef);
-            SmallClef sc = (SmallClef)_noteObjects.Find(obj => obj is SmallClef);
+            var timeSignatures = new List<NoteObject>();
+            var keySignatures = new List<NoteObject>();
+            var barlines = new List<NoteObject>();
+            var clefs = new List<NoteObject>();
 
-            double leftEdge = 0;
-            if(ds != null)
+            double minLeft = double.MaxValue;
+            #region get typed objectLists and minLeft
+            foreach(var noteObject in _noteObjects)
             {
-                leftEdge = ds.Metrics.Left;
-                if(ts != null)
+                if(noteObject is DurationSymbol ds)
                 {
-                    ts.Metrics.Move(leftEdge - ts.Metrics.Right, 0);
-                    leftEdge = ts.Metrics.Left;
-                }
-                if(ks != null)
-                {
-                    ks.Metrics.Move(leftEdge - ks.Metrics.Right, 0);
-                    leftEdge = ks.Metrics.Left - (gap * 0.4);
-                }
-                if(b != null)
-                {
-                    if(ts != null && ks == null)
+                    if(ds is OutputChordSymbol ocs)
                     {
-                        leftEdge -= (gap * 0.5);
+                        M.Assert(ocs.Metrics.OriginX == 0);
                     }
-                    else if(ts == null && ks == null)
-                    {
-                        leftEdge = (ds is OutputRestSymbol) ? leftEdge -= (gap * 0.4) : leftEdge -= (gap * 0.8);
-                    }
-                    b.Metrics.Move(leftEdge - b.Metrics.Right, 0);
-                    leftEdge = b.Metrics.Left;
+                    minLeft = (minLeft < ds.Metrics.Left) ? minLeft : ds.Metrics.Left;
                 }
-                if(c != null)
+                else if(noteObject is TimeSignature ts)
                 {
-                    c.Metrics.Move(leftEdge - c.Metrics.Right, 0);
-                    leftEdge = c.Metrics.Left;
+                    timeSignatures.Add(ts);
                 }
-                if(sc != null)
+                else if(noteObject is KeySignature ks)
                 {
-                    sc.Metrics.Move(leftEdge - sc.Metrics.Right, 0);
-                    leftEdge = sc.Metrics.Left;
+                    keySignatures.Add(ks);
+                }
+                else if(noteObject is Barline b)
+                {
+                    barlines.Add(b);
+                }
+                else if(noteObject is Clef c)
+                {
+                    clefs.Add(c);
                 }
             }
-            else // final barline
+
+            if(minLeft < double.MaxValue) // this moment contains one or more DurationSymbols
             {
-                if(ts != null)
+                if(timeSignatures.Count > 0)
                 {
-                    ts.Metrics.Move(0 - ts.Metrics.Right, 0);
-                    leftEdge = ts.Metrics.Left - (gap * 0.5);
+                    minLeft -= 0; // padding between DurationSymbol and TimeSig
                 }
-                if(b != null)
+                else if(clefs.Count == 0)
                 {
-                    b.Metrics.Move(leftEdge - b.Metrics.OriginX, 0);
-                    leftEdge = b.Metrics.Left - (gap * 0.5);
+                    // put the keysig next to the timeSig or durationSymbol
+                    if(keySignatures.Count > 0)
+                    {
+                        minLeft -= gap / 3; // padding between DurationSymbol and KeySig
+                    }
+                    else if(barlines.Count > 0)
+                    {
+                        minLeft -= gap * 1; // padding between DurationSymbol and Barline
+                    }
                 }
-                if(ks != null)
+                else
                 {
-                    ks.Metrics.Move(leftEdge - ks.Metrics.Right, 0);
-                    leftEdge = ks.Metrics.Left;
-                }
-                if(sc != null)
-                {
-                    sc.Metrics.Move(leftEdge - sc.Metrics.Right, 0);
-                    leftEdge = sc.Metrics.Left;
+                    if(barlines.Count > 0)
+                    {
+                        minLeft -= gap * 1; // padding between DurationSymbol and Barline
+                    }
+                    if(keySignatures.Count > 0)
+                    {
+                        minLeft -= 0; // padding between DurationSymbol and KeySig
+                    }
+
+                    else if(clefs.Count > 0)
+                    {
+                        minLeft -= gap / 2; // padding between DurationSymbol and Clef
+                    }
+
                 }
             }
+            else // finalBarline
+            {
+                minLeft = 0;
+            }
+            #endregion
+
+                       
+            if(timeSignatures.Count > 0)
+            {
+                Move(timeSignatures, ref minLeft);
+
+                if(clefs.Count == 0 && keySignatures.Count > 0)
+                {
+                    // in this case the keySig comes right of the barline
+                    minLeft -= 0; // padding between TimeSignature and KeySignature
+                }
+                if(barlines.Count > 0)
+                {
+                    minLeft -= gap / 3; // padding between TimeSignature and Barline
+                }
+            }
+
+            if(keySignatures.Count > 0)
+            {
+                if(clefs.Count > 0)
+                {
+                    // Put clef and keySig together:
+                    // left to right order is Clef, KeySignature, Barline, TimeSignature
+                    if(barlines.Count > 0)
+                    {
+                        Move(barlines, ref minLeft);
+                        // padding between barline and KeySignature or Clef is 0.
+                    }
+                    Move(keySignatures, ref minLeft);
+                    // padding between KeySignature and Clef is 0.
+                }
+                else
+                {
+                    // Put keySig right of barline:
+                    // left to right order is Clef, Barline, KeySignature, TimeSignature
+                    Move(keySignatures, ref minLeft);
+                    if(barlines.Count > 0)
+                    {
+                        minLeft -= gap / 2; // padding between keySignature and Barline
+                        Move(barlines, ref minLeft);
+                        // padding between Barline and Clef is 0.
+                    }
+                }
+            }
+            else if(barlines.Count > 0)
+            {
+                Move(barlines, ref minLeft);
+                // padding between Barline and Clef is 0.
+            }
+
+            foreach(var clef in clefs)
+            {
+                clef.Metrics.Move(minLeft - clef.Metrics.Right, 0);
+            }
+        }
+
+        private static void Move(List<NoteObject> noteObjects, ref double minLeft)
+        {
+            double localLeft = double.MaxValue;
+            foreach(var noteObject in noteObjects)
+            {
+                noteObject.Metrics.Move(minLeft - noteObject.Metrics.Right, 0);
+                localLeft = (localLeft < noteObject.Metrics.Left) ? localLeft : noteObject.Metrics.Left;
+            }
+            minLeft = localLeft;
         }
 
         public void ShowWarning_ControlsMustBeInTopVoice(DurationSymbol durationSymbol)

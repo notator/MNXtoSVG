@@ -51,53 +51,41 @@ namespace Moritz.Symbols
         private List<Bar> GetBars(MNXCommon mnxCommon)
         {
             var bars = new List<Bar>();
-            List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
+            List<List<IUniqueDef>> globalDirectionsPerMeasure = mnxCommon.Global.GetGlobalDirectionsPerMeasure();
             var midiChannelsPerStaff = PageFormat.MIDIChannelsPerStaff;
+            var nSystemStaves = midiChannelsPerStaff.Count;
 
             var absSeqMsPosition = 0;
-            for(var measureIndex = 0; measureIndex < globalIUDsPerMeasure.Count; measureIndex++)
+            for(var measureIndex = 0; measureIndex < globalDirectionsPerMeasure.Count; measureIndex++)
             {
                 var midiChannelIndexPerOutputVoice = new List<int>();
                 List<Trk> trks = new List<Trk>();
-                List<IUniqueDef> globalIUDs = globalIUDsPerMeasure[measureIndex];
+                List<IUniqueDef> globalDirections = globalDirectionsPerMeasure[measureIndex];
+                var systemStaffIndex = 0;
                 foreach(var part in mnxCommon.Parts)
                 {
                     var measure = part.Measures[measureIndex];
+                    List<IUniqueDef> measureDirections = GetMeasureDirections(measure.Directions);
                     var voicesPerStaff = part.VoicesPerStaff;
-                    var nStaves = voicesPerStaff.Count;
+                    var nPartStaves = voicesPerStaff.Count;
 
-                    for(var staffIndex = 0; staffIndex < nStaves; ++staffIndex)
+                    for(var partStaffIndex = 0; partStaffIndex < nPartStaves; ++partStaffIndex)
                     {
-                        var nVoices = voicesPerStaff[staffIndex];
-                        var mDir = measure.Directions;
+                        var nVoices = voicesPerStaff[partStaffIndex];
+
                         for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
                         {
                             Sequence sequence = measure.Sequences[voiceIndex];
-                            if(mDir != null)
-                            {
-                                if(mDir.TimeSignature != null)
-                                {
-                                    sequence.SequenceComponents.Insert(0, mDir.TimeSignature);
-                                }
-                                if(mDir.KeySignature != null)
-                                {
-                                    sequence.SequenceComponents.Insert(0, mDir.KeySignature);
-                                }
-                                if(mDir.Clef != null)
-                                {
-                                    sequence.SequenceComponents.Insert(0, mDir.Clef);
-                                }
-                            }
                             List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
-                            if(voiceIndex == 0)
-                            {
-                                InsertGlobalIUDsInSeqIUDs(globalIUDs, seqIUDs);
-                            }
-                            var midiChannel = midiChannelsPerStaff[staffIndex][voiceIndex];
+
+                            InsertDirectionsInSeqIUDs(seqIUDs, measureDirections, globalDirections);
+
+                            var midiChannel = midiChannelsPerStaff[systemStaffIndex][voiceIndex];
                             midiChannelIndexPerOutputVoice.Add(midiChannel);
                             Trk trk = new Trk(midiChannel, 0, seqIUDs);
                             trks.Add(trk);
                         }
+                        systemStaffIndex++;
                     }
                 }
                 Seq seq = new Seq(absSeqMsPosition, trks, midiChannelIndexPerOutputVoice);
@@ -109,20 +97,79 @@ namespace Moritz.Symbols
             return bars;
         }
 
-
-        private void InsertGlobalIUDsInSeqIUDs(List<IUniqueDef> globalIUDs, List<IUniqueDef> seqIUDs)
+        private List<IUniqueDef> GetMeasureDirections(Directions measureDirections)
         {
-            if(globalIUDs.Find(obj => obj is MNX.Common.TimeSignature) is MNX.Common.TimeSignature timeSignature)
+            var rval = new List<IUniqueDef>();
+            if(measureDirections != null)
             {
-                int insertIndex = (seqIUDs[0] is MNX.Common.Clef) ? 1 : 0;
-                seqIUDs.Insert(insertIndex, timeSignature as IUniqueDef);
+                if(measureDirections.Clef != null)
+                {
+                    rval.Add(measureDirections.Clef);
+                }
+                if(measureDirections.KeySignature != null)
+                {
+                    rval.Add(measureDirections.KeySignature);
+                }
+                if(measureDirections.TimeSignature != null)
+                {
+                    rval.Add(measureDirections.TimeSignature);
+                }
+                if(measureDirections.OctaveShift != null)
+                {
+                    rval.Add(measureDirections.OctaveShift);
+                }
             }
 
-            if(globalIUDs.Find(obj => obj is MNX.Common.KeySignature) is MNX.Common.KeySignature keySignature)
+            return rval;
+        }
+
+        private void InsertDirectionsInSeqIUDs(List<IUniqueDef> seqIUDs, List<IUniqueDef> measureDirections, List<IUniqueDef> globalDirections)
+        {
+            MNX.Common.Clef clef = Find<MNX.Common.Clef>(seqIUDs, measureDirections, globalDirections);
+            MNX.Common.KeySignature keySignature = Find<MNX.Common.KeySignature>(seqIUDs, measureDirections, globalDirections);
+            MNX.Common.TimeSignature timeSignature = Find<MNX.Common.TimeSignature>(seqIUDs, measureDirections, globalDirections);
+
+            for(int i = 2; i >= 0; i--)
             {
-                int insertIndex = (seqIUDs[0] is MNX.Common.Clef) ? 1 : 0;
-                seqIUDs.Insert(insertIndex, keySignature as IUniqueDef);
+                if(i < seqIUDs.Count)
+                {
+                    var iud = seqIUDs[i];
+                    if(iud is MNX.Common.Clef || iud is MNX.Common.KeySignature || iud is MNX.Common.TimeSignature)
+                    {
+                        seqIUDs.RemoveAt(i);
+                    }
+                }
             }
+            if(timeSignature != null)
+            {
+                seqIUDs.Insert(0, (IUniqueDef)timeSignature.Clone());
+            }
+            if(keySignature != null)
+            {
+                seqIUDs.Insert(0, (IUniqueDef)keySignature.Clone());
+            }
+            if(clef != null)
+            {
+                seqIUDs.Insert(0, (IUniqueDef)clef.Clone());
+            }
+        }
+
+        private T Find<T>(List<IUniqueDef> seqIUDs, List<IUniqueDef> measureDirections, List<IUniqueDef> globalDirections)
+        {
+            T t = default(T);
+            if(seqIUDs.Find(obj => obj is T) is T seqT)
+            {
+                t = seqT;
+            }
+            else if(measureDirections.Find(obj => obj is T) is T measureT)
+            {
+                t = measureT;
+            }
+            else if(globalDirections.Find(obj => obj is T) is T globalT)
+            {
+                t = globalT;
+            }
+            return t;
         }
 
 
@@ -263,7 +310,7 @@ namespace Moritz.Symbols
 
         //    return bars;
         //}
-        
+
 
         ///// <summary>
         ///// Returns a Tuple in which Item1 is the popped bar, Item2 is the remaining part of the input bar.

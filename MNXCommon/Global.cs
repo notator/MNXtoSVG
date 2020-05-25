@@ -45,7 +45,7 @@ namespace MNX.Common
             M.Assert(Measures.Count > 0);
         }
 
-        public List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
+        public List<List<IUniqueDef>> GetGlobalDirectionsPerMeasure()
         {
             var rval = new List<List<IUniqueDef>>();
             for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)

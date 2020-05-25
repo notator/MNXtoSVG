@@ -131,7 +131,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">_18_parts (graphics only).svg, Monday 25.05.2020, 14:25:42</text>
+			y="150">_18_parts (graphics only).svg, Monday 25.05.2020, 16:08:46</text>
 		<g
 			class="system">
 			<g
@@ -266,4 +266,288 @@
 								class="stem"
 								x1="3863.167"
 								y1="661.5499"
-			
+								x2="3863.167"
+								y2="1010" />
+							<text
+								class="notehead"
+								x="3855.667"
+								y="650">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="4526.115"
+								y1="611.5499"
+								x2="4526.115"
+								y2="960" />
+							<text
+								class="notehead"
+								x="4518.615"
+								y="600">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="5189.063"
+								y1="561.5499"
+								x2="5189.063"
+								y2="910" />
+							<text
+								class="notehead"
+								x="5181.563"
+								y="550">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="5852.012"
+								y1="661.5499"
+								x2="5852.012"
+								y2="1010" />
+							<text
+								class="notehead"
+								x="5844.512"
+								y="650">œ</text>
+						</g>
+					</g>
+					<g
+						class="endOfScoreBarline">
+						<line
+							class="normalBarline"
+							x1="6580"
+							y1="492.5"
+							x2="6580"
+							y2="907.5" />
+						<line
+							class="thickBarline"
+							x1="6670"
+							y1="492.5"
+							x2="6670"
+							y2="907.5" />
+					</g>
+				</g>
+			</g>
+			<g
+				class="staff"
+				staffName="">
+				<g
+					class="stafflines">
+					<line
+						class="staffline"
+						x1="300"
+						y1="1400"
+						x2="6700"
+						y2="1400" />
+					<line
+						class="staffline"
+						x1="300"
+						y1="1500"
+						x2="6700"
+						y2="1500" />
+					<line
+						class="staffline"
+						x1="300"
+						y1="1600"
+						x2="6700"
+						y2="1600" />
+					<line
+						class="staffline"
+						x1="300"
+						y1="1700"
+						x2="6700"
+						y2="1700" />
+					<line
+						class="staffline"
+						x1="300"
+						y1="1800"
+						x2="6700"
+						y2="1800" />
+				</g>
+				<g
+					class="voice">
+					<use
+						class="clef"
+						href="#trebleClef"
+						x="300"
+						y="1700" />
+					<line
+						class="normalBarline"
+						x1="625"
+						y1="1400"
+						x2="625"
+						y2="1800" />
+					<use
+						class="timeSig"
+						href="#timeSig_4/4"
+						x="673.3333"
+						y="1600" />
+					<g
+						class="rest">
+						<g
+							class="graphics">
+							<text
+								class="rest"
+								x="1001.975"
+								y="1600">Ó</text>
+						</g>
+					</g>
+					<g
+						class="beamBlock">
+						<path
+							class="beam"
+							d="M 2334.05 1900 L 3328.473 1883.333 3328.473 1925.333 2334.05 1942 z" />
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="2334.05"
+								y1="1561.55"
+								x2="2334.05"
+								y2="1900" />
+							<text
+								class="notehead"
+								x="2326.55"
+								y="1550">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="2665.524"
+								y1="1511.55"
+								x2="2665.524"
+								y2="1894.444" />
+							<text
+								class="notehead"
+								x="2658.024"
+								y="1500">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="2996.999"
+								y1="1461.55"
+								x2="2996.999"
+								y2="1888.889" />
+							<text
+								class="notehead"
+								x="2989.499"
+								y="1450">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="3328.473"
+								y1="1511.55"
+								x2="3328.473"
+								y2="1883.333" />
+							<text
+								class="notehead"
+								x="3320.973"
+								y="1500">œ</text>
+						</g>
+					</g>
+					<line
+						class="normalBarline"
+						x1="3724.987"
+						y1="1400"
+						x2="3724.987"
+						y2="1800" />
+					<g
+						class="rest">
+						<g
+							class="graphics">
+							<text
+								class="rest"
+								x="3856.989"
+								y="1600">Ó</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="5189.063"
+								y1="1361.55"
+								x2="5189.063"
+								y2="1710" />
+							<text
+								class="notehead"
+								x="5181.563"
+								y="1350">œ</text>
+						</g>
+					</g>
+					<g
+						class="chord">
+						<g
+							class="graphics">
+							<line
+								class="stem"
+								x1="5852.012"
+								y1="1461.55"
+								x2="5852.012"
+								y2="1810" />
+							<text
+								class="notehead"
+								x="5844.512"
+								y="1450">œ</text>
+						</g>
+					</g>
+					<g
+						class="endOfScoreBarline">
+						<line
+							class="normalBarline"
+							x1="6580"
+							y1="1392.5"
+							x2="6580"
+							y2="1807.5" />
+						<line
+							class="thickBarline"
+							x1="6670"
+							y1="1392.5"
+							x2="6670"
+							y2="1807.5" />
+					</g>
+				</g>
+			</g>
+			<g
+				class="staffConnectors">
+				<line
+					class="normalBarline"
+					x1="625"
+					y1="900"
+					x2="625"
+					y2="1400" />
+			</g>
+		</g>
+	</g>
+	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->
+</svg>

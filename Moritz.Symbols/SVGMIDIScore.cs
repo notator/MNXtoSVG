@@ -514,9 +514,72 @@ namespace Moritz.Symbols
                 /// both horizontally and vertically.
                 Notator.CreateMetricsAndJustifySystems(this.Systems);
 
+                CreateTies(this.Systems, PageFormat.GapVBPX);
             }
 
             CheckSystems(this.Systems);
+        }
+
+        /// <summary>
+        /// All the NoteObjects have Metrics, and have been moved to their correct positions.
+        /// </summary>
+        /// <param name="systems"></param>
+        private void CreateTies(List<SvgSystem> systems, double gap)
+        {
+            List<string> HeadIDsTiedToPreviousSystem = new List<string>();
+            foreach(var system in systems)
+            {
+                foreach(var staff in system.Staves)
+                {
+                    foreach(var voice in staff.Voices)
+                    {
+                        // This function removes each ID from the list as it is used.
+                        voice.TieFirstHeads(HeadIDsTiedToPreviousSystem);
+                    }
+                }
+                M.Assert(HeadIDsTiedToPreviousSystem.Count == 0);
+
+                foreach(var staff in system.Staves)
+                {
+                    foreach(var voice in staff.Voices)
+                    {
+                        var noteObjects = voice.NoteObjects;
+                        OutputChordSymbol targetOCS = null;
+                        Head targetHead = null;
+                        for(var i = 0; i < noteObjects.Count; i++)
+                        {
+                            if(noteObjects[i] is OutputChordSymbol ocs)
+                            {
+                                Head leftHead = null;
+                                foreach(Head head in ocs.HeadsTopDown)
+                                {
+                                    if(head.Tied != null)
+                                    {
+                                        leftHead = head;
+                                        voice.FindTieTargetHead(leftHead.Tied.Target, i, out targetOCS, out targetHead);
+                                        if(targetHead == null)
+                                        {
+                                            HeadIDsTiedToPreviousSystem.Add(head.Tied.Target);
+                                        }
+                                    }
+                                }
+                                if(leftHead != null)
+                                {
+                                    if(targetHead == null)
+                                    {
+                                        ocs.DrawObjects.Add(new Tie(ocs, leftHead, noteObjects[noteObjects.Count - 1].Metrics.Right, gap));
+                                    }
+                                    else
+                                    {
+                                        ocs.DrawObjects.Add(new Tie(ocs, leftHead, targetOCS, targetHead, gap)); 
+                                    }
+                                }                                                                   
+                            }
+                        }
+                    }
+                }
+                
+            }
         }
 
         private List<int> GetNVoicesPerStaff(IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff)

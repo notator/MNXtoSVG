@@ -94,6 +94,7 @@
     <Compile Include="System Components\Staff Components\Voice Components\RestSymbol.cs" />
     <Compile Include="System Components\Staff Components\Voice.cs" />
     <Compile Include="System Components\Staff.cs" />
+    <Compile Include="System Components\Staff Components\Voice Components\Tie.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MNX.Globals\MNX.Globals.csproj">

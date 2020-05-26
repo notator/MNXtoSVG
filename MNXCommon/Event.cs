@@ -26,6 +26,7 @@ namespace MNX.Common
         public readonly int Staff = 1; // app-specific default
         //   duration - optional performed metrical duration, if different from value
         public readonly MNXDurationSymbol TicksOverride = null;
+        public readonly string ID = null;
         #endregion  MNX file attributes
 
         #region runtime properties
@@ -41,6 +42,7 @@ namespace MNX.Common
         //    2: The Event is contained in a Tuplet nested in a Tuplet.
         //    etc. (This app copes with arbitrarily nested tuplets.)
         public readonly int TupletLevel;
+
         public int Ticks
         {
             get
@@ -162,6 +164,9 @@ namespace MNX.Common
                         break;
                     case "duration":
                         TicksOverride = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
+                        break;
+                    case "id":
+                        ID = r.Value;
                         break;
                 }
             }

@@ -14,6 +14,10 @@ namespace MNX.Common
         public override string Target { get; }
         public override PositionInMeasure End { get; }
 
+        #region IUniqueDef
+        public override string ToString() => $"Tied: Target={Target} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        #endregion IUniqueDef
+
         public Tied(XmlReader r)
         {            
             M.Assert(r.Name == "tied");

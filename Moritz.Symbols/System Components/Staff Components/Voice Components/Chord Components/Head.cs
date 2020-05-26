@@ -54,7 +54,7 @@ namespace Moritz.Symbols
             if(chord != null)
                 FontSize = chord.FontHeight;
 
-            _midiVelocity = midiVelocity;
+            MidiVelocity = midiVelocity;
         }
 
         public Head(OutputChordSymbol outputChordSymbol, Note mnxcNote)
@@ -85,6 +85,13 @@ namespace Moritz.Symbols
             if(mnxcNote.Accidental != null)
             {
                 this.DisplayAccidental = DisplayAccidental.force; 
+            }
+
+            ID = mnxcNote.ID; // can be null;
+
+            if(mnxcNote.Tied != null)
+            {
+                Tied = mnxcNote.Tied;
             }
         }
 
@@ -240,7 +247,7 @@ namespace Moritz.Symbols
             }
         }
 
-        public int MidiVelocity { get { return _midiVelocity; } }
+        public int MidiVelocity { get; }
 
         public bool Silent = false;
         public HeadShape Shape = HeadShape.auto;
@@ -274,9 +281,10 @@ namespace Moritz.Symbols
         public DisplayAccidental DisplayAccidental = DisplayAccidental.auto;
         public double XShift_Gap4 = 0; // shifts the accidental, not the notehead!
         public double FontSize = 0;
+        public readonly string ID = null;
+        public readonly Tied Tied = null;
 
         private string _pitch;
         private int _alteration = 0;
-        private readonly int _midiVelocity;
     }
 }

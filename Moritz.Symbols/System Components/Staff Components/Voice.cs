@@ -395,9 +395,60 @@ namespace Moritz.Symbols
                 _firstDurationSymbol = value;
             }
         }
-		#endregion
+        #endregion
 
-		private int _midiChannel = int.MaxValue;
+        #region mnx functions
+        /// <summary>
+        /// If a head in the first chord in the NoteObjects has an ID contained in the argument,
+        /// add a small tie to its left, and remove the ID from the argument.
+        /// </summary>
+        /// <param name="headIDsTiedToPreviousSystem"></param>
+        internal void TieFirstHeads(List<string> headIDsTiedToPreviousSystem)
+        {
+            // TODO
+        }
+
+        /// <summary>
+        /// Returns targetOCS and targetHead. Either both will be null, or neither.
+        /// If targetHead is returned != null, then it is the Head having ID == targetID in the OutputChordSymbol following NoteObjects[leftNoteObjectIndex].
+        /// If targetOCS is returned != null, then it is the OutputChordSymbol containing the targetHead.
+        /// Both targetOCS and targetHead will be null if a following OutputChordSymbol is not found (i.e. the targetHead must be on the following System).
+        /// An exception is thrown if:
+        ///    a) An OutputRestSymbol precedes the following OutputChordSymbol.
+        ///       (It is not an error if other noteObject types (barlines, clefs etc.) intervene.)
+        ///    b) the targetHead is not found in the following OutputChordSymbol in the voice (=system).
+        /// </summary>
+        internal void FindTieTargetHead(string targetID, int leftNoteObjectIndex, out OutputChordSymbol targetOCS, out Head targetHead)
+        {
+            targetOCS = null;
+            targetHead = null;
+            for(var i = leftNoteObjectIndex + 1; i < NoteObjects.Count; i++)
+            {
+                M.Assert(!(NoteObjects[i] is OutputRestSymbol));
+                if(NoteObjects[i] is OutputChordSymbol ocs)
+                {
+                    targetOCS = ocs;
+                    foreach(var head in ocs.HeadsTopDown)
+                    {
+                        if(head.ID == targetID)
+                        {
+                            targetHead = head;
+                            break;
+                        }
+                    }
+                    M.Assert(targetHead != null); // if an OutputChordSymbol was found, it must contain the target head.
+                    break;
+                }
+                if(targetHead != null)
+                {
+                    break;
+                }
+            }
+        }
+
+        #endregion
+
+        private int _midiChannel = int.MaxValue;
 		/// <summary>
 		/// A MidiChannel attribute is always written for every OutputVoice in the first system in a score.
 		/// No other OutputVoice MidiChannels are written.

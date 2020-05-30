@@ -811,11 +811,11 @@ namespace Moritz.Symbols
             {
                 strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX / 4);
                 lineStyles.Append($@"{slurTieSB.ToString()}
-                {{
-                    stroke:black;
-                    stroke-width:{strokeWidth}px;               
-                }}
-                ");
+            {{
+                stroke:black;
+                stroke-width:{strokeWidth}px;               
+            }}
+            ");
             }
 
             return lineStyles;

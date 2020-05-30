@@ -550,9 +550,12 @@ namespace Moritz.Symbols
                         {
                             if(noteObjects[i] is OutputChordSymbol ocs)
                             {
-                                Head leftHead = null;
-                                foreach(Head head in ocs.HeadsTopDown)
+                                int headIndex = 0;
+                                int headsCount = ocs.HeadsTopDown.Count;
+                                for(headIndex = 0; headIndex < headsCount; headIndex++)
                                 {
+                                    Head leftHead = null;
+                                    var head = ocs.HeadsTopDown[headIndex];
                                     if(head.Tied != null)
                                     {
                                         leftHead = head;
@@ -562,18 +565,26 @@ namespace Moritz.Symbols
                                             HeadIDsTiedToPreviousSystem.Add(head.Tied.Target);
                                         }
                                     }
+
+                                    if(leftHead != null)
+                                    {
+                                        var tieOver = (headIndex < (headsCount / 2)) ? true : false;
+                                        Tie tie = null;
+                                        if(targetHead != null)
+                                        {
+                                            tie = new Tie(ocs, leftHead, targetOCS, targetHead, gap, tieOver);                                            
+                                        }
+                                        else
+                                        {
+                                            tie = new Tie(ocs, leftHead, noteObjects[noteObjects.Count - 1].Metrics.Right + (gap * 1.5), gap, tieOver);
+                                        }
+                                        if(ocs.ChordMetrics.Ties == null)
+                                        {
+                                            ocs.ChordMetrics.Ties = new List<Tie>();
+                                        }
+                                        ocs.ChordMetrics.Ties.Add(tie);
+                                    }
                                 }
-                                if(leftHead != null)
-                                {
-                                    if(targetHead == null)
-                                    {
-                                        ocs.DrawObjects.Add(new Tie(ocs, leftHead, noteObjects[noteObjects.Count - 1].Metrics.Right, gap));
-                                    }
-                                    else
-                                    {
-                                        ocs.DrawObjects.Add(new Tie(ocs, leftHead, targetOCS, targetHead, gap)); 
-                                    }
-                                }                                                                   
                             }
                         }
                     }

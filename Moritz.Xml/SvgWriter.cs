@@ -72,6 +72,28 @@ namespace Moritz.Xml
         }
 
         /// <summary>
+        /// Writes an SVG "path" element (such as a slur or tie)
+        /// </summary>
+        /// <param name="cssClass">the line's CSS style name</param>
+        /// <param name="originX"></param>
+        /// <param name="originY"></param>
+        /// <param name="scaleX"></param>
+        /// <param name="scaleY"></param>
+        public void SvgPath(CSSObjectClass cssClass, string dString, double originX, double originY, double scaleX=1, double scaleY=1)
+        {
+            string transformStr = $"translate({M.DoubleToShortString(originX)},{M.DoubleToShortString(originY)})";
+            if(scaleX != 1 || scaleY != 1)
+            {
+                transformStr += $" scale({M.DoubleToShortString(scaleX)},{M.DoubleToShortString(scaleY)})";
+            }
+            _w.WriteStartElement("path");
+            _w.WriteAttributeString("class", cssClass.ToString());
+            _w.WriteAttributeString("d", dString);
+            _w.WriteAttributeString("transform", transformStr);
+            _w.WriteEndElement(); //line
+        }
+
+        /// <summary>
         /// Writes an SVG "rect" element having a class that has a CSS definiton elsewhere.
         /// </summary>
         /// <param name="type">must be a valid string</param>

@@ -1195,6 +1195,16 @@ namespace Moritz.Symbols
                 foreach(NoteheadExtenderMetrics nem in NoteheadExtendersMetrics)
                     nem.WriteSVG(w);
             }
+            if(Ties != null)
+            {
+                foreach(Tie tie in Ties)
+                    tie.WriteSVG(w);
+            }
+            //if(Slurs != null)
+            //{
+            //    foreach(Slur slur in Slurs)
+            //        slur.WriteSVG(w);
+            //}
         }
 
         public override void Move(double dx, double dy)
@@ -1481,6 +1491,9 @@ namespace Moritz.Symbols
         public BeamBlock BeamBlock = null;
         public List<NoteheadExtenderMetrics> NoteheadExtendersMetrics = null;
         public List<NoteheadExtenderMetrics> NoteheadExtendersMetricsBefore = null;
+
+        public List<Tie> Ties = null;        
+        //public List<Slur> Slurs = null;
 
         /// <summary>
         /// Returns null or a clone of the _stemMetrics
@@ -2351,6 +2364,8 @@ namespace Moritz.Symbols
         private OrnamentMetrics _ornamentMetrics = null;
         private LyricMetrics _lyricMetrics = null;
         private DynamicMetrics _dynamicMetrics = null;
+
+
 
         private readonly List<DrawObject> _drawObjects;
         #endregion private variables

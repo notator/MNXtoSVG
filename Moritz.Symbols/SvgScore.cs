@@ -659,7 +659,7 @@ namespace Moritz.Symbols
         private StringBuilder LineStyles(PageFormat pageFormat, List<CSSObjectClass> usedCSSClasses, int pageNumber, bool defineFlagStyle)
         {
             StringBuilder lineStyles = new StringBuilder();
-            
+
             string strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX);
             StringBuilder standardLineClasses = GetStandardLineClasses(usedCSSClasses, defineFlagStyle);
 
@@ -678,49 +678,49 @@ namespace Moritz.Symbols
             }}
             ");
 
-			if(usedCSSClasses.Contains(CSSObjectClass.stem))
-			{
-				lineStyles.Append($@".stem
+            if(usedCSSClasses.Contains(CSSObjectClass.stem))
+            {
+                lineStyles.Append($@".stem
             {{
                 stroke-linecap:round                
             }}
             ");
-			}
+            }
 
-			if(usedCSSClasses.Contains(CSSObjectClass.normalBarline))
-			{
-				strokeWidth = M.DoubleToShortString(pageFormat.NormalBarlineStrokeWidth);
-				lineStyles.Append($@".{CSSObjectClass.normalBarline.ToString()}
+            if(usedCSSClasses.Contains(CSSObjectClass.normalBarline))
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.NormalBarlineStrokeWidth);
+                lineStyles.Append($@".{CSSObjectClass.normalBarline.ToString()}
             {{
                 stroke:black;
                 stroke-width:{strokeWidth}px
             }}
             ");
-			}
+            }
 
-			if(usedCSSClasses.Contains(CSSObjectClass.thinBarline))
-			{
-				strokeWidth = M.DoubleToShortString(pageFormat.ThinBarlineStrokeWidth);
-				lineStyles.Append($@".{CSSObjectClass.thinBarline.ToString()}
+            if(usedCSSClasses.Contains(CSSObjectClass.thinBarline))
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.ThinBarlineStrokeWidth);
+                lineStyles.Append($@".{CSSObjectClass.thinBarline.ToString()}
             {{
                 stroke:black;
                 stroke-width:{strokeWidth}px
             }}
             ");
-			}
+            }
 
-			if(usedCSSClasses.Contains(CSSObjectClass.thickBarline))
-			{
-				strokeWidth = M.DoubleToShortString(pageFormat.ThickBarlineStrokeWidth);
-				lineStyles.Append($@".{CSSObjectClass.thickBarline.ToString()}
+            if(usedCSSClasses.Contains(CSSObjectClass.thickBarline))
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.ThickBarlineStrokeWidth);
+                lineStyles.Append($@".{CSSObjectClass.thickBarline.ToString()}
             {{
                 stroke:black;
                 stroke-width:{strokeWidth}px
             }}
             ");
-			}
+            }
 
-			if(usedCSSClasses.Contains(CSSObjectClass.noteExtender))
+            if(usedCSSClasses.Contains(CSSObjectClass.noteExtender))
             {
                 strokeWidth = M.DoubleToShortString(pageFormat.NoteheadExtenderStrokeWidth);
                 lineStyles.Append($@".{CSSObjectClass.noteExtender.ToString()}
@@ -731,31 +731,31 @@ namespace Moritz.Symbols
             ");
             }
 
-			if(usedCSSClasses.Contains(CSSObjectClass.barNumber))
-			{
-				strokeWidth = M.DoubleToShortString(pageFormat.BarNumberFrameStrokeWidth);
-				lineStyles.Append($@".barNumberFrame
+            if(usedCSSClasses.Contains(CSSObjectClass.barNumber))
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.BarNumberFrameStrokeWidth);
+                lineStyles.Append($@".barNumberFrame
             {{
                 stroke:black;
                 stroke-width:{strokeWidth}px;
                 fill:none
             }}
             ");
-			}
+            }
 
-			if(usedCSSClasses.Contains(CSSObjectClass.framedRegionInfo))
-			{
-				strokeWidth = M.DoubleToShortString(pageFormat.RegionInfoFrameStrokeWidth);
-				lineStyles.Append($@".regionInfoFrame
+            if(usedCSSClasses.Contains(CSSObjectClass.framedRegionInfo))
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.RegionInfoFrameStrokeWidth);
+                lineStyles.Append($@".regionInfoFrame
             {{
                 stroke:black;
                 stroke-width:{strokeWidth}px;
                 fill:none
             }}
             ");
-			}
+            }
 
-			if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBracket))
+            if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBracket))
             {
                 strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX);
                 lineStyles.Append($@".cautionaryBracket
@@ -789,6 +789,33 @@ namespace Moritz.Symbols
                 opacity:0.65                
             }}
             ");
+            }
+
+            StringBuilder slurTieSB = new StringBuilder();
+            if(usedCSSClasses.Contains(CSSObjectClass.slur))
+            {
+                if(usedCSSClasses.Contains(CSSObjectClass.tie))
+                {
+                    slurTieSB.Append(".slur, .tie");
+                }
+                else
+                {
+                    slurTieSB.Append(".slur");
+                }
+            }
+            else if(usedCSSClasses.Contains(CSSObjectClass.tie))
+            {
+                slurTieSB.Append(".tie");
+            }
+            if(slurTieSB.Length > 0)
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX / 4);
+                lineStyles.Append($@"{slurTieSB.ToString()}
+                {{
+                    stroke:black;
+                    stroke-width:{strokeWidth}px;               
+                }}
+                ");
             }
 
             return lineStyles;

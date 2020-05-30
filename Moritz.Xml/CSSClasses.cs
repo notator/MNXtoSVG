@@ -74,6 +74,10 @@ namespace Moritz.Xml
 		regionInfoFrame,    // Container: regionInfo
 							// recorded and used if regionInfo exists
 		#endregion regionInfo
+
+        slur,
+        tie,
+
 		#endregion drawObjects
 
 		#region chord classes

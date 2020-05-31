@@ -1263,6 +1263,14 @@ namespace Moritz.Symbols
                 foreach(NoteheadExtenderMetrics nem in NoteheadExtendersMetrics)
                     nem.Move(dx, dy);
             }
+            if(_slurTieMetrics != null)
+            {
+                M.Assert(dx == 0); // slurs and ties are only ever moved vertically.
+                foreach(var slurTieMetrics in _slurTieMetrics)
+                {
+                    slurTieMetrics.Move(dx, dy);
+                }
+            }
 
             SetExternalBoundary();
         }
@@ -2355,6 +2363,20 @@ namespace Moritz.Symbols
 
         private StemMetrics _stemMetrics = null;
         private FlagsMetrics _flagsMetrics = null;
+        public IReadOnlyList<HeadMetrics> HeadsMetricsTopDown
+        {
+            get { return _headsMetricsTopDown; }
+        }
+
+        public void AddSlurTieMetrics(SlurTieMetrics slurTieMterics)
+        {
+            if(_slurTieMetrics == null)
+            {
+                _slurTieMetrics = new List<SlurTieMetrics>();
+            }
+            _slurTieMetrics.Add(slurTieMterics);
+        }
+
         private List<HeadMetrics> _headsMetricsTopDown = null; // heads are always in top->bottom order
         private List<AccidentalMetrics> _topDownAccidentalsMetrics = null; // accidentals are always in top->bottom order
         private List<AugDotMetrics> _topDownAugDotMetrics = null; // augDots are always in top->bottom order (top row, then next row etc.)
@@ -2364,8 +2386,7 @@ namespace Moritz.Symbols
         private OrnamentMetrics _ornamentMetrics = null;
         private LyricMetrics _lyricMetrics = null;
         private DynamicMetrics _dynamicMetrics = null;
-
-
+        private List<SlurTieMetrics> _slurTieMetrics = null;
 
         private readonly List<DrawObject> _drawObjects;
         #endregion private variables

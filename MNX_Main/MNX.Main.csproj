@@ -182,6 +182,7 @@
     <Content Include="SVG_temp\__5_keysigs %28graphics only%29.svg" />
     <Content Include="SVG_temp\__6_accidentals %28graphics only%29.svg" />
     <Content Include="SVG_temp\__7_dots %28graphics only%29.svg" />
+    <Content Include="SVG_temp\__8_ties %28graphics only%29.svg" />
     <Content Include="SVG_temp\__9_beams %28graphics only%29.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

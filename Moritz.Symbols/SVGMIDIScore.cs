@@ -568,11 +568,12 @@ namespace Moritz.Symbols
 
                                     if(leftHead != null)
                                     {
-                                        var tieOver = (headIndex < (headsCount / 2)) ? true : false;
+                                        //var tieOver = (headIndex < (headsCount / 2)) ? true : false;
+                                        var tieOver = true;
                                         Tie tie = null;
                                         if(targetHead != null)
                                         {
-                                            tie = new Tie(ocs, leftHead, targetOCS, targetHead, gap, tieOver);                                            
+                                            tie = new Tie(ocs, leftHead, targetOCS, targetHead, gap, tieOver);
                                         }
                                         else
                                         {

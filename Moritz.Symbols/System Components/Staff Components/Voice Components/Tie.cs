@@ -7,64 +7,36 @@ using MNX.Globals;
 namespace Moritz.Symbols
 {
     /// <summary>
-    /// Ties are drawn after the noteheads they connect have moved to their final positions,
-    /// so they dont need to be moved using their (DrawObject).Metrics.
-    /// They only do collision checking with respect to the connected chords.
+    /// Ties (and their Metrics) are created *after* the noteheads they connect have moved to their final
+    /// left-right positions on the system, but before the system has moved to its final vertical position.
+    /// Tie (and Slur) Metrics are therefore only ever moved vertically.
+    /// Tie widths are related to the x-distance between the noteheads they connect.
     /// </summary>
     internal class Tie : DrawObject
     {
         private string _dString = null;
-        private double _originX = 0;
-        private double _originY = 0;
         private double _scaleX = 1; // Can be set to a value less than 1 to compress short ties.
 
-        public Tie(OutputChordSymbol ocs, Head leftHead, OutputChordSymbol targetOCS, Head targetHead, double gap, bool tieOver)
-        {
-            List<Head> leftHeadsTopDown = ocs.HeadsTopDown;
-            IReadOnlyList<HeadMetrics> leftHeadMetricsTopDown = ocs.ChordMetrics.HeadsMetricsTopDown;
-            var leftHeadIndex = leftHeadsTopDown.FindIndex(obj => obj == leftHead);
-            HeadMetrics leftHeadMetrics = leftHeadMetricsTopDown[leftHeadIndex];
-            
-            List<Head> targetHeadsTopDown = targetOCS.HeadsTopDown;
-            IReadOnlyList<HeadMetrics> targetHeadMetricsTopDown = targetOCS.ChordMetrics.HeadsMetricsTopDown;
-            var targetHeadIndex = targetHeadsTopDown.FindIndex(obj => obj == targetHead);
-            HeadMetrics targetHeadMetrics = targetHeadMetricsTopDown[targetHeadIndex];
-
-            double leftHeadCx = (leftHeadMetrics.Left + leftHeadMetrics.Right) / 2;
-            double leftHeadCy = leftHeadMetrics.OriginY;
-            double targetHeadCx = (targetHeadMetrics.Left + targetHeadMetrics.Right) / 2;
-            double headCy = (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2;
-
-            SetPathAttributes(ocs, leftHeadCx, leftHeadCy, targetOCS, targetHeadCx, headCy, gap, tieOver);
-
-            Metrics = new SlurTieMetrics(CSSObjectClass.tie, gap, headCy, tieOver);
-            ocs.ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)Metrics);
-        }
-
-        public Tie(OutputChordSymbol ocs, Head leftHead, double systemRight, double gap, bool tieOver)
-        {
-            List<Head> leftHeadsTopDown = ocs.HeadsTopDown;
-            List<HeadMetrics> leftHeadMetricsTopDown = ocs.ChordMetrics.HeadsMetrics;
-            var leftHeadIndex = leftHeadsTopDown.FindIndex(obj => obj == leftHead);
-            HeadMetrics leftHeadMetrics = leftHeadMetricsTopDown[leftHeadIndex];
-            double leftHeadCx = (leftHeadMetrics.Left + leftHeadMetrics.Right) / 2;
-
-            double leftHeadCy = (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2;
-            double targetHeadCx = systemRight + (gap * 2);
-            double headCy = (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2;
-
-            SetPathAttributes(ocs, leftHeadCx, leftHeadCy, null, targetHeadCx, headCy, gap, tieOver);
-
-            Metrics = new SlurTieMetrics(CSSObjectClass.tie, gap, headCy, tieOver);
-            ocs.ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)Metrics);
-        }
-
         /// <summary>
-        /// The path attributes are this class's private fields:
-        ///    _dString, _originX, _originY and _scaleX
-        /// This function does collision checking with respect to the bordering chords.
+        /// 
         /// </summary>
-        private void SetPathAttributes(OutputChordSymbol ocs, double leftHeadCx, double leftHeadCy, OutputChordSymbol targetOCS, double targetHeadCx, double headCy, double gap, bool tieOver)
+        /// <param name="originX">The left end of the tie points at (originX, originY) (the centre of its left notehead)</param>
+        /// <param name="originY">The left end of the tie points at (originX, originY) (the centre of its left notehead)</param>
+        /// <param name="rightX">The right end of the tie points at (rightX, originY)</param>
+        /// <param name="gap"></param>
+        /// <param name="tieOver"></param>
+        public Tie(double originX, double originY, double rightX, double gap, bool tieOver)
+        {
+            SetPathAttributes(originX, originY, rightX, gap, tieOver);
+            Metrics = new SlurTieMetrics(CSSObjectClass.tie, gap, originX, originY, tieOver);            
+        }
+
+         /// <summary>
+        /// The path attributes are this class's private fields:
+        ///    _dString and _scaleX
+        /// This function should do collision checking with respect to the bordering chords.
+        /// </summary>
+        private void SetPathAttributes(double leftHeadCx, double leftHeadCy, double rightHeadCx, double gap, bool tieOver)
         {
             // At(gap = 32), a long tie with h = 0 is 164 units wide from leftNoteheadCX to rightNoteheadCX(164 = 12 + 70 + h + 70 + 12)
             //< g id = "LongTieUnder" class="slurTie">
@@ -73,7 +45,7 @@ namespace Moritz.Symbols
             //<g id = "LongTieOver" >
             //  < path d="m 12 -22 c 14 -31 62 -31 70 -31 h 36 c 8 0 56 0 70 31 c -14 -21 -62 -21 -70 -21 h -36 c -8 0 -56 0 -70 21" fill="black" stroke="black" stroke-width="1"/>
             //</g>
-            double headXSeparation = targetHeadCx - leftHeadCx;
+            double headXSeparation = rightHeadCx - leftHeadCx;
             double scale = gap / 32; // multiply the values in the template path by this scale.
             // template values for tieUnder
             double h = 0;
@@ -156,9 +128,6 @@ namespace Moritz.Symbols
             sb.Append($"c {cs4[0][0]} {cs4[0][1]} {cs4[1][0]} {cs4[1][1]} {cs4[2][0]} {cs4[2][1]}");
 
             _dString = sb.ToString();
-           
-            _originX = leftHeadCx;
-            _originY = leftHeadCy;
 
             if(h < 0)
             {
@@ -168,25 +137,25 @@ namespace Moritz.Symbols
 
         public override void WriteSVG(SvgWriter w)
         {
-            w.SvgPath(CSSObjectClass.tie, _dString, _originX, Metrics.OriginY, _scaleX);
+            w.SvgPath(CSSObjectClass.tie, _dString, Metrics.OriginX, Metrics.OriginY, _scaleX);
         }
     }
 
     /// <summary>
     /// The SlurTieMetrics class is only ever used to move a slur or tie vertically (together with a system).
-    /// It is created only *after* the related noteheads have been moved to their final positions wrt a system.
+    /// It is created only *after* the related noteheads have been moved to their final left-right positions on a system.
     /// </summary>
     class SlurTieMetrics : Metrics
     {
-        internal SlurTieMetrics(CSSObjectClass slurOrTie, double gap, double originY, bool tieOver)
+        internal SlurTieMetrics(CSSObjectClass slurOrTie, double gap, double originX, double originY, bool slurTieOver)
             :base(slurOrTie)
         {
-            _left = 0; // never used
+            _left = originX; // never changes
             _right = 0; // never used
-            _originX = 0; // never used
+            _originX = originX; // never changes
 
             _originY = originY;
-            if(tieOver)
+            if(slurTieOver)
             {
                 _bottom = originY;
                 _top = originY - (gap * 12 / 32);

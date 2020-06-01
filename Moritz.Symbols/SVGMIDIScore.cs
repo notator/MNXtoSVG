@@ -546,44 +546,36 @@ namespace Moritz.Symbols
                         var noteObjects = voice.NoteObjects;
                         OutputChordSymbol targetOCS = null;
                         Head targetHead = null;
-                        for(var i = 0; i < noteObjects.Count; i++)
+                        for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
                         {
-                            if(noteObjects[i] is OutputChordSymbol ocs)
+                            if(noteObjects[noteObjectIndex] is OutputChordSymbol leftChord)
                             {
-                                int headIndex = 0;
-                                int headsCount = ocs.HeadsTopDown.Count;
-                                for(headIndex = 0; headIndex < headsCount; headIndex++)
-                                {
-                                    Head leftHead = null;
-                                    var head = ocs.HeadsTopDown[headIndex];
+                                int headsCount = leftChord.HeadsTopDown.Count;
+                                for(var headIndex = 0; headIndex < headsCount; headIndex++)
+                                {                                   
+                                    var head = leftChord.HeadsTopDown[headIndex];
+                                    double tieOriginX = -1;
+                                    double tieOriginY = -1;
+                                    double tieRightX = -1;
                                     if(head.Tied != null)
                                     {
-                                        leftHead = head;
-                                        voice.FindTieTargetHead(leftHead.Tied.Target, i, out targetOCS, out targetHead);
-                                        if(targetHead == null)
+                                        HeadMetrics leftHeadMetrics = leftChord.ChordMetrics.HeadsMetricsTopDown[headIndex];
+                                        tieOriginX = (leftHeadMetrics.Left + leftHeadMetrics.Right) / 2;
+                                        tieOriginY = (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2;
+                                        bool tieContinuesOnNextSystem = voice.FindTieRightX(head.Tied.Target, noteObjectIndex, gap, out tieRightX);
+                                        if(tieContinuesOnNextSystem)
                                         {
                                             HeadIDsTiedToPreviousSystem.Add(head.Tied.Target);
                                         }
-                                    }
 
-                                    if(leftHead != null)
-                                    {
-                                        //var tieOver = (headIndex < (headsCount / 2)) ? true : false;
-                                        var tieOver = true;
-                                        Tie tie = null;
-                                        if(targetHead != null)
+                                        var tieOver = false;
+                                        Tie tie = new Tie(tieOriginX, tieOriginY, tieRightX, gap, tieOver);
+                                        if(leftChord.ChordMetrics.Ties == null)
                                         {
-                                            tie = new Tie(ocs, leftHead, targetOCS, targetHead, gap, tieOver);
+                                            leftChord.ChordMetrics.Ties = new List<Tie>();
                                         }
-                                        else
-                                        {
-                                            tie = new Tie(ocs, leftHead, noteObjects[noteObjects.Count - 1].Metrics.Right + (gap * 1.5), gap, tieOver);
-                                        }
-                                        if(ocs.ChordMetrics.Ties == null)
-                                        {
-                                            ocs.ChordMetrics.Ties = new List<Tie>();
-                                        }
-                                        ocs.ChordMetrics.Ties.Add(tie);
+                                        leftChord.ChordMetrics.Ties.Add(tie); // So that the tie will be written to SVG.
+                                        leftChord.ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)tie.Metrics); // So that the tie will be moved vertically with the system.
                                     }
                                 }
                             }

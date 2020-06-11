@@ -139,6 +139,79 @@ namespace Moritz.Symbols
         {
             w.SvgPath(CSSObjectClass.tie, _dString, Metrics.OriginX, Metrics.OriginY, _scaleX);
         }
+
+        /// <summary>
+        /// If the first DurationSymbol in the voice is an OutputChordSymbol (not an OutputRestSymbol):
+        /// foreach( tiedHead in the OutputChordSymbol heads) if a Head.Tied value matches a string in
+        /// headIDsTiedToPreviousSystem, create a tie before the head then remove the head.tied string
+        /// from headIDsTiedToPreviousSystem. 
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <param name="headIDsTiedToPreviousSystem"></param>
+        internal static void TieFirstHeads(Voice voice, List<string> headIDsTiedToPreviousSystem)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Each returned Tuple contains tieOriginX, tieOriginY, tieRightX, tieOver, tieTargetHeadID for one tie.
+        /// If the rightChord argument is null, the tie is to a notehead on the following system,
+        /// tieRightX will be returned greater than systemRight, and Item5 will contains the
+        /// ID of the tied notehead on the next system.
+        /// </summary>
+        /// <param name="leftChord"></param>
+        /// <param name="rightChord">If this is null, use systemRight</param>
+        /// <param name="systemRight">Only use this if rightChord is null</param>
+        /// <returns>A list of quintuples having Item1=tieOriginX, Item2=tieOriginY, Item3=tieRightX, Item4=tieIsOver, Item5=tieTargetHeadID</returns>
+        internal static List<Tuple<double, double, double, bool, string>> GetTiesData(OutputChordSymbol leftChord, OutputChordSymbol rightChord, double gap, double systemRight)
+        {
+            List<Tuple<double, double, double, bool, string>> returnList = new List<Tuple<double, double, double, bool, string>>();
+
+            double tieOriginX = 0;
+            double tieOriginY = 0;
+            double tieRightX = 0;
+            bool tieIsOver = true;
+            string tieTargetHeadID = null;
+
+            List<bool> tieIsOverList = GetTieIsOverList(leftChord);
+            M.Assert(tieIsOverList.Count == leftChord.HeadsTopDown.Count && tieIsOverList.Count == rightChord.HeadsTopDown.Count);
+
+            for(var j = 0; j < leftChord.HeadsTopDown.Count; j++)
+            {
+                tieIsOver = tieIsOverList[j];
+                Head leftHead = leftChord.HeadsTopDown[j];
+                HeadMetrics leftHeadMetrics = leftChord.ChordMetrics.HeadsMetricsTopDown[j];
+                tieOriginX = GetTieOriginX(leftChord, leftHeadMetrics, tieIsOver); // leftHeadMetrics.Left + leftHeadMetrics.Right) / 2;
+                tieOriginY = (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2;
+
+                if(rightChord == null)
+                {
+                    tieRightX = systemRight + (gap * 1.5);
+                }
+                else
+                {
+                    Head rightHead = rightChord.HeadsTopDown[j];
+                    M.Assert(leftHead.Tied.Target == rightHead.ID);
+                    tieTargetHeadID = rightHead.ID;
+                    HeadMetrics rightHeadMetrics = rightChord.ChordMetrics.HeadsMetricsTopDown[j];
+                    tieRightX = (rightHeadMetrics.Left + rightHeadMetrics.Right) / 2;
+                }
+
+                var tieData = new Tuple<double, double, double, bool, string>(tieOriginX, tieOriginY, tieRightX, tieIsOver, tieTargetHeadID);
+                returnList.Add(tieData);
+            }
+            return returnList;
+        }
+
+        private static List<bool> GetTieIsOverList(OutputChordSymbol leftChord)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static double GetTieOriginX(OutputChordSymbol leftChord, HeadMetrics leftHeadMetrics, bool tieIsOver)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>

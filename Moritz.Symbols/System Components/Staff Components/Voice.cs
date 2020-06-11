@@ -397,61 +397,6 @@ namespace Moritz.Symbols
         }
         #endregion
 
-        #region mnx functions
-        /// <summary>
-        /// If a head in the first chord in the NoteObjects has an ID contained in the argument,
-        /// add a small tie to its left, and remove the ID from the argument.
-        /// </summary>
-        /// <param name="headIDsTiedToPreviousSystem"></param>
-        internal void TieFirstHeads(List<string> headIDsTiedToPreviousSystem)
-        {
-            // TODO
-        }
-
-        /// <summary>
-        /// When this function returns, tieOriginX and tieOriginY are the coordinates of the centre of the tie's left notehead.
-        /// tieRightX is the x-coordinate of the centre of the tie's right notehead, or a value right of the end of the current system.
-        /// The return value is true if the tie extends beyond the current system, otherwise false.
-        /// An exception is thrown if:
-        ///    a) An OutputRestSymbol precedes the following OutputChordSymbol.
-        ///       (It is not an error if other noteObject types (barlines, clefs etc.) intervene.)
-        ///    b) A following OutputChordSymbol is found in the system, but it does not contain a Head with the appropriate targetID.
-        /// </summary>
-        internal bool FindTieRightX(string targetID, int leftNoteObjectIndex, double gap, out double tieRightX)
-        {
-            tieRightX = -1;
-            bool tieExtendsBeyondCurrentSystem = false;
-            
-            for(var i = leftNoteObjectIndex + 1; i < NoteObjects.Count; i++)
-            {
-                M.Assert(!(NoteObjects[i] is OutputRestSymbol));
-                if(NoteObjects[i] is OutputChordSymbol ocs)
-                {
-                    for(var j = 0; j < ocs.HeadsTopDown.Count; j++)
-                    {
-                        Head head = ocs.HeadsTopDown[j];
-                        if(head.ID == targetID)
-                        {
-                            HeadMetrics headMetrics = ocs.ChordMetrics.HeadsMetricsTopDown[j];
-                            tieRightX = (headMetrics.Left + headMetrics.Right) / 2;
-                            break;
-                        }
-                    }
-                    M.Assert(tieRightX != -1); // if an OutputChordSymbol was found, it must contain the target head.
-                    tieExtendsBeyondCurrentSystem = false;
-                    break;
-                }
-            }
-            if(tieRightX == -1)
-            {
-                tieExtendsBeyondCurrentSystem = true;
-                tieRightX = NoteObjects[NoteObjects.Count - 1].Metrics.Right + (gap * 1.5);
-            }
-            return tieExtendsBeyondCurrentSystem;
-        }
-
-        #endregion
-
         private int _midiChannel = int.MaxValue;
 		/// <summary>
 		/// A MidiChannel attribute is always written for every OutputVoice in the first system in a score.

@@ -529,12 +529,15 @@ namespace Moritz.Symbols
             List<string> HeadIDsTiedToPreviousSystem = new List<string>();
             foreach(var system in systems)
             {
-                foreach(var staff in system.Staves)
+                if(HeadIDsTiedToPreviousSystem.Count > 0)
                 {
-                    foreach(var voice in staff.Voices)
+                    foreach(var staff in system.Staves)
                     {
-                        // This function removes each ID from the list as it is used.
-                        voice.TieFirstHeads(HeadIDsTiedToPreviousSystem);
+                        foreach(var voice in staff.Voices)
+                        {
+                            // This function removes each ID from the list as it is used.
+                            Tie.TieFirstHeads(voice, HeadIDsTiedToPreviousSystem);
+                        }
                     }
                 }
                 M.Assert(HeadIDsTiedToPreviousSystem.Count == 0);
@@ -544,32 +547,36 @@ namespace Moritz.Symbols
                     foreach(var voice in staff.Voices)
                     {
                         var noteObjects = voice.NoteObjects;
-                        OutputChordSymbol targetOCS = null;
-                        Head targetHead = null;
                         for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
                         {
                             if(noteObjects[noteObjectIndex] is OutputChordSymbol leftChord)
                             {
-                                int headsCount = leftChord.HeadsTopDown.Count;
-                                for(var headIndex = 0; headIndex < headsCount; headIndex++)
-                                {                                   
-                                    var head = leftChord.HeadsTopDown[headIndex];
-                                    double tieOriginX = -1;
-                                    double tieOriginY = -1;
-                                    double tieRightX = -1;
-                                    if(head.Tied != null)
+                                if(leftChord.HeadsTopDown[0].Tied != null)
+                                {
+                                    OutputChordSymbol rightChord = FindNextChord(voice, noteObjectIndex); // returns null if there is no OutputChordSymbol to the right.
+                                    double tieOriginX = 0;
+                                    double tieOriginY = 0;
+                                    double tieRightX = 0;
+                                    bool tieIsOver = true;
+                                    string tieTargetHeadID = null;
+
+                                    // Each Tuple contains tieOriginX, tieOriginY, tieRightX, tieIsOver, tieTargetHeadID 
+                                    List<Tuple<double, double, double, bool, string>> tiesData = Tie.GetTiesData(leftChord, rightChord, gap, system.Metrics.Right);
+
+                                    foreach(var tieData in tiesData)
                                     {
-                                        HeadMetrics leftHeadMetrics = leftChord.ChordMetrics.HeadsMetricsTopDown[headIndex];
-                                        tieOriginX = (leftHeadMetrics.Left + leftHeadMetrics.Right) / 2;
-                                        tieOriginY = (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2;
-                                        bool tieContinuesOnNextSystem = voice.FindTieRightX(head.Tied.Target, noteObjectIndex, gap, out tieRightX);
-                                        if(tieContinuesOnNextSystem)
+                                        tieOriginX = tieData.Item1;
+                                        tieOriginY = tieData.Item2;
+                                        tieRightX = tieData.Item3;
+                                        tieIsOver = tieData.Item4;
+                                        tieTargetHeadID = tieData.Item5;
+
+                                        if(tieRightX > system.Metrics.Right) // same as if(rightChord == null)
                                         {
-                                            HeadIDsTiedToPreviousSystem.Add(head.Tied.Target);
+                                            HeadIDsTiedToPreviousSystem.Add(tieTargetHeadID);
                                         }
 
-                                        var tieOver = false;
-                                        Tie tie = new Tie(tieOriginX, tieOriginY, tieRightX, gap, tieOver);
+                                        Tie tie = new Tie(tieOriginX, tieOriginY, tieRightX, gap, tieIsOver);
                                         if(leftChord.ChordMetrics.Ties == null)
                                         {
                                             leftChord.ChordMetrics.Ties = new List<Tie>();
@@ -581,9 +588,30 @@ namespace Moritz.Symbols
                             }
                         }
                     }
-                }
-                
+                }                
             }
+        }
+
+        /// <summary>
+        /// returns null if there is no OutputChordSymbol to the right of the one at noteObjectIndex.
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <param name="noteObjectIndex"></param>
+        /// <returns></returns>
+        private OutputChordSymbol FindNextChord(Voice voice, int noteObjectIndex)
+        {
+            OutputChordSymbol rval = null;
+            var noteObjects = voice.NoteObjects;
+            for(var i = noteObjectIndex + 1; i < noteObjects.Count; i++)
+            {
+                M.Assert(!(noteObjects[i] is OutputRestSymbol));
+                if(noteObjects[i] is OutputChordSymbol ocs)
+                {
+                    rval = ocs;
+                    break;
+                }
+            }
+            return rval;
         }
 
         private List<int> GetNVoicesPerStaff(IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff)

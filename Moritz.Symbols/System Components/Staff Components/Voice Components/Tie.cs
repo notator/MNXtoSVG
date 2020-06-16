@@ -172,16 +172,23 @@ namespace Moritz.Symbols
             double tieRightX = 0;
             bool tieIsOver = true;
             string tieTargetHeadID = null;
+            var headsMetricsTopDown = leftChord.ChordMetrics.HeadsMetricsTopDown;
 
-            List<bool> tieIsOverList = GetTieIsOverList(leftChord);
-            M.Assert(tieIsOverList.Count == leftChord.HeadsTopDown.Count && tieIsOverList.Count == rightChord.HeadsTopDown.Count);
+            List<bool> tieIsOverList = GetTieIsOverList(leftChord, headsMetricsTopDown);
 
-            for(var j = 0; j < leftChord.HeadsTopDown.Count; j++)
+            var augDotMetricsTopDown = leftChord.ChordMetrics.AugDotMetricsTopDown;
+            var stemMetrics = leftChord.ChordMetrics.StemMetrics;
+            var nHeads = leftChord.HeadsTopDown.Count;
+            M.Assert(tieIsOverList.Count == nHeads && tieIsOverList.Count == rightChord.HeadsTopDown.Count);
+
+            for(var j = 0; j < nHeads; j++)
             {
                 tieIsOver = tieIsOverList[j];
-                Head leftHead = leftChord.HeadsTopDown[j];
-                HeadMetrics leftHeadMetrics = leftChord.ChordMetrics.HeadsMetricsTopDown[j];
-                tieOriginX = GetTieOriginX(leftChord, leftHeadMetrics, tieIsOver); // leftHeadMetrics.Left + leftHeadMetrics.Right) / 2;
+
+                bool isOuterHead = (j == 0 | j == (nHeads - 1));
+                tieOriginX = GetTieOriginX(j, headsMetricsTopDown, augDotMetricsTopDown, stemMetrics, isOuterHead);
+
+                HeadMetrics leftHeadMetrics = headsMetricsTopDown[j];
                 tieOriginY = (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2;
 
                 if(rightChord == null)
@@ -190,6 +197,7 @@ namespace Moritz.Symbols
                 }
                 else
                 {
+                    Head leftHead = leftChord.HeadsTopDown[j];
                     Head rightHead = rightChord.HeadsTopDown[j];
                     M.Assert(leftHead.Tied.Target == rightHead.ID);
                     tieTargetHeadID = rightHead.ID;
@@ -203,14 +211,82 @@ namespace Moritz.Symbols
             return returnList;
         }
 
-        private static List<bool> GetTieIsOverList(OutputChordSymbol leftChord)
+        private static List<bool> GetTieIsOverList(OutputChordSymbol leftChord, IReadOnlyList<HeadMetrics> headMetricsTopDown)
         {
-            throw new NotImplementedException();
+            var tieIsOverList = new List<bool>();
+
+            //if(voicesCount == 1)
+            //{
+                #region set tieOverList simply for stem direction
+
+                var nHeads = leftChord.HeadsTopDown.Count;
+                M.Assert(nHeads > 0);
+                var nOver = nHeads / 2; // is 0 if nHeads == 1
+                var nUnder = nHeads / 2; // is 0 if nHeads == 1
+                if((nOver + nUnder) < nHeads)
+                {
+                    if(leftChord.Stem.Direction == VerticalDir.down)
+                    {
+                        nOver++;
+                    }
+                    else
+                    {
+                        nUnder++;
+                    }
+                }
+                M.Assert(nOver + nUnder == nHeads);
+                double currentHeadLeft = -1;
+                for(var i = 0; i < nOver; i++)
+                {
+                    if(i > 0 && headMetricsTopDown[i].Left != currentHeadLeft)
+                    {
+                        nUnder = nHeads - (i + 1);
+                        break;
+                    }
+                    tieIsOverList.Add(true);
+                    currentHeadLeft = headMetricsTopDown[i].Left;
+                }
+                for(var i = 0; i < nUnder; i++)
+                {
+                    if(i > 0 && headMetricsTopDown[i].Left != currentHeadLeft)
+                    {
+                        tieIsOverList[i - 1] = true;
+                    }
+                    tieIsOverList.Add(false);
+                    currentHeadLeft = headMetricsTopDown[i].Left;
+                }
+
+            #endregion set tieOverList simply for stem direction
+            //}
+            //else // voicesCount == 2, top voice has stems up, bottom voice has stems down)
+            //{
+            //    var staff = leftChord.Voice.Staff;
+            //    var voicesCount = staff.Voices.Count;
+            //    M.Assert(voicesCount == 1 || voicesCount == 2); // this app only supports 1 or 2 voices per staff
+            //    var staffLinesTop = ((StaffMetrics)staff.Metrics).StafflinesTop;
+            //    var staffLinesBottom = ((StaffMetrics)staff.Metrics).StafflinesBottom;
+            //    var midStafflineY = (staffLinesTop + staffLinesBottom) / 2;
+
+            //}
+
+
+            return tieIsOverList;
         }
 
-        private static double GetTieOriginX(OutputChordSymbol leftChord, HeadMetrics leftHeadMetrics, bool tieIsOver)
+        private static double GetTieOriginX(int headIndex, IReadOnlyList<HeadMetrics> headMetricsTopDown, IReadOnlyList<AugDotMetrics> augDotMetricsTopDown, StemMetrics stemMetrics, bool isOuterHead)
         {
-            throw new NotImplementedException();
+            var headMetrics = headMetricsTopDown[headIndex];
+            double tieOriginX = (headMetrics.Left + headMetrics.Right) / 2;
+            if(isOuterHead == false)
+            {                
+                if(augDotMetricsTopDown != null)
+                {
+                    tieOriginX = augDotMetricsTopDown[headIndex].Right;
+                }
+                tieOriginX = (stemMetrics.Right > tieOriginX) ? stemMetrics.Right : tieOriginX;
+            }
+
+            return tieOriginX;
         }
     }
 

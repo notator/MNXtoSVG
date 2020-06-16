@@ -233,9 +233,9 @@ namespace Moritz.Symbols
                         _upperLedgerlineBlockMetrics, _lowerLedgerlineBlockMetrics,
                         existingAccidentalsMetrics);
                     existingAccidentalsMetrics.Add(accidentalMetrics);
-                    if(_topDownAccidentalsMetrics == null)
-                        _topDownAccidentalsMetrics = new List<AccidentalMetrics>();
-                    this._topDownAccidentalsMetrics.Add(accidentalMetrics);
+                    if(_accidentalsMetricsTopDown == null)
+                        _accidentalsMetricsTopDown = new List<AccidentalMetrics>();
+                    this._accidentalsMetricsTopDown.Add(accidentalMetrics);
                 }
             }
         }
@@ -245,7 +245,7 @@ namespace Moritz.Symbols
             double separationX = _gap * 0.5;
             if(nAugmentationDots > 0)
             {
-                _topDownAugDotMetrics = new List<AugDotMetrics>();
+                _augDotMetricsTopDown = new List<AugDotMetrics>();
                 CSSObjectClass augDotClass = GetAugDotClass(chordClass);
                 separationX = ( augDotClass == CSSObjectClass.cautionaryAugDot) ? separationX * 0.8 : separationX;
                 List<AugDotMetrics> templateAugDotRowMetrics = GetTemplateAugDotRowMetrics(nAugmentationDots, fontHeight, separationX, augDotClass);
@@ -256,7 +256,7 @@ namespace Moritz.Symbols
                     foreach(var augDotMetrics in augDotRowMetrics)
                     {
                         augDotMetrics.Move(shiftPair.Item1 - augDotMetrics.OriginX, shiftPair.Item2 - augDotMetrics.OriginY);
-                        _topDownAugDotMetrics.Add(augDotMetrics);
+                        _augDotMetricsTopDown.Add(augDotMetrics);
                     }
                 }
             }
@@ -433,9 +433,9 @@ namespace Moritz.Symbols
             left = double.MaxValue;
             bottom = double.MinValue;
             right = double.MinValue;
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                foreach(AccidentalMetrics am in _topDownAccidentalsMetrics)
+                foreach(AccidentalMetrics am in _accidentalsMetricsTopDown)
                 {
                     top = top < am.Top ? top : am.Top;
                     right = right > am.Right ? right : am.Right;
@@ -1016,10 +1016,10 @@ namespace Moritz.Symbols
                 double bottomOfBottomHead = _headsMetricsTopDown[_headsMetricsTopDown.Count - 1].Bottom;
                 bottomBoundary = (bottomBoundary > bottomOfBottomHead) ? bottomBoundary : bottomOfBottomHead;
 
-                if(_topDownAccidentalsMetrics != null)
+                if(_accidentalsMetricsTopDown != null)
                 {
-                    M.Assert(_topDownAccidentalsMetrics.Count > 0);
-                    double topOfTopAccidental = _topDownAccidentalsMetrics[0].Top;
+                    M.Assert(_accidentalsMetricsTopDown.Count > 0);
+                    double topOfTopAccidental = _accidentalsMetricsTopDown[0].Top;
                     topBoundary = (topBoundary < topOfTopAccidental) ? topBoundary : topOfTopAccidental;
                     //double bottomOfBottomAccidental = _topDownAccidentalsMetrics[_topDownAccidentalsMetrics.Count - 1].Bottom;
                     //bottomBoundary = (bottomBoundary > bottomOfBottomAccidental) ? bottomBoundary : bottomOfBottomAccidental;
@@ -1042,10 +1042,10 @@ namespace Moritz.Symbols
             {
                 double topOfTopHead = _headsMetricsTopDown[0].Top;
                 topBoundary = (topBoundary < topOfTopHead) ? topBoundary : topOfTopHead;
-                if(_topDownAccidentalsMetrics != null)
+                if(_accidentalsMetricsTopDown != null)
                 {
-                    M.Assert(_topDownAccidentalsMetrics.Count > 0);
-                    double topOfTopAccidental = _topDownAccidentalsMetrics[0].Top;
+                    M.Assert(_accidentalsMetricsTopDown.Count > 0);
+                    double topOfTopAccidental = _accidentalsMetricsTopDown[0].Top;
                     topBoundary = (topBoundary < topOfTopAccidental) ? topBoundary : topOfTopAccidental;
                 }
 
@@ -1093,14 +1093,14 @@ namespace Moritz.Symbols
                 foreach(HeadMetrics headMetric in _headsMetricsTopDown)
                     SetBoundary(headMetric);
             }
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
+                foreach(AccidentalMetrics accidentalMetric in _accidentalsMetricsTopDown)
                     SetBoundary(accidentalMetric);
             }
-            if(_topDownAugDotMetrics != null)
+            if(_augDotMetricsTopDown != null)
             {
-                foreach(AugDotMetrics augDotMetric in _topDownAugDotMetrics)
+                foreach(AugDotMetrics augDotMetric in _augDotMetricsTopDown)
                     SetBoundary(augDotMetric);
             }
             if(_upperLedgerlineBlockMetrics != null)
@@ -1150,14 +1150,14 @@ namespace Moritz.Symbols
                     headMetrics.WriteSVG(w);
                 }
             }
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                foreach(AccidentalMetrics accidentalMetrics in _topDownAccidentalsMetrics)
+                foreach(AccidentalMetrics accidentalMetrics in _accidentalsMetricsTopDown)
                     accidentalMetrics.WriteSVG(w);
             }
-            if(_topDownAugDotMetrics!= null)
+            if(_augDotMetricsTopDown!= null)
             {
-                foreach(AugDotMetrics augDotMetrics in _topDownAugDotMetrics)
+                foreach(AugDotMetrics augDotMetrics in _augDotMetricsTopDown)
                     augDotMetrics.WriteSVG(w);
             }
             if(_upperLedgerlineBlockMetrics != null)
@@ -1220,14 +1220,14 @@ namespace Moritz.Symbols
                 foreach(HeadMetrics headMetric in _headsMetricsTopDown)
                     headMetric.Move(dx, dy);
             }
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
+                foreach(AccidentalMetrics accidentalMetric in _accidentalsMetricsTopDown)
                     accidentalMetric.Move(dx, dy);
             }
-            if(_topDownAugDotMetrics != null)
+            if(_augDotMetricsTopDown != null)
             {
-                foreach(AugDotMetrics augDotMetrics in _topDownAugDotMetrics)
+                foreach(AugDotMetrics augDotMetrics in _augDotMetricsTopDown)
                     augDotMetrics.Move(dx, dy);
             }
             if(_upperLedgerlineBlockMetrics != null)
@@ -1575,9 +1575,9 @@ namespace Moritz.Symbols
             get
             {
                 List<AccidentalMetrics> accidentalsMetrics = new List<AccidentalMetrics>();
-                if(_topDownAccidentalsMetrics != null)
+                if(_accidentalsMetricsTopDown != null)
                 {
-                    foreach(AccidentalMetrics metrics in this._topDownAccidentalsMetrics)
+                    foreach(AccidentalMetrics metrics in this._accidentalsMetricsTopDown)
                     {
                         accidentalsMetrics.Add((AccidentalMetrics)metrics.Clone());
                     }
@@ -1658,9 +1658,9 @@ namespace Moritz.Symbols
             get
             {
                 List<AccidentalMetrics> accidentalsMetrics = new List<AccidentalMetrics>();
-                if(_topDownAccidentalsMetrics != null)
+                if(_accidentalsMetricsTopDown != null)
                 {
-                    foreach(AccidentalMetrics metrics in this._topDownAccidentalsMetrics)
+                    foreach(AccidentalMetrics metrics in this._accidentalsMetricsTopDown)
                     {
                         accidentalsMetrics.Add((AccidentalMetrics)metrics.Clone());
                     }
@@ -1726,18 +1726,18 @@ namespace Moritz.Symbols
             }
             #endregion
             #region _accidentalsMetrics
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
                 if(topEdge != null)
                 {
-                    foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
+                    foreach(AccidentalMetrics accidentalMetric in _accidentalsMetricsTopDown)
                     {
                         topEdge.Add(accidentalMetric);
                     }
                 }
                 else
                 {
-                    foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
+                    foreach(AccidentalMetrics accidentalMetric in _accidentalsMetricsTopDown)
                     {
                         bottomEdge.Add(accidentalMetric);
                     }
@@ -1894,9 +1894,9 @@ namespace Moritz.Symbols
             }
             #endregion
             #region _accidentalsMetrics
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
+                foreach(AccidentalMetrics accidentalMetric in _accidentalsMetricsTopDown)
                 {
                     overlap = followingMetrics.OverlapWidth(accidentalMetric);
                     maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
@@ -1983,9 +1983,9 @@ namespace Moritz.Symbols
             }
             #endregion
             #region _accidentalsMetrics
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
+                foreach(AccidentalMetrics accidentalMetric in _accidentalsMetricsTopDown)
                 {
                     overlap = accidentalMetric.OverlapWidth(previousAnchorageSymbol);
                     maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
@@ -2082,9 +2082,9 @@ namespace Moritz.Symbols
             }
             #endregion
             #region _accidentalsMetrics
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                foreach(AccidentalMetrics accidentalMetric in _topDownAccidentalsMetrics)
+                foreach(AccidentalMetrics accidentalMetric in _accidentalsMetricsTopDown)
                 {
                     overlap = accidentalMetric.OverlapHeight(metrics, padding);
                     if(overlap != 0F)
@@ -2160,36 +2160,36 @@ namespace Moritz.Symbols
         {
             #region conditions
             M.Assert(newAccidentalMetrics != null);
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                if(_topDownAccidentalsMetrics.Count > 1)
+                if(_accidentalsMetricsTopDown.Count > 1)
                 {
-                    for(int i = 1; i < _topDownAccidentalsMetrics.Count; ++i)
+                    for(int i = 1; i < _accidentalsMetricsTopDown.Count; ++i)
                     {
-                        M.Assert(_topDownAccidentalsMetrics[i].OriginY >= _topDownAccidentalsMetrics[i - 1].OriginY);
+                        M.Assert(_accidentalsMetricsTopDown[i].OriginY >= _accidentalsMetricsTopDown[i - 1].OriginY);
                     }
                 }
             }
             #endregion
             int insertIndex = -1;
-            if(_topDownAccidentalsMetrics != null)
+            if(_accidentalsMetricsTopDown != null)
             {
-                for(int i = 0; i < _topDownAccidentalsMetrics.Count; ++i)
+                for(int i = 0; i < _accidentalsMetricsTopDown.Count; ++i)
                 {
-                    if(_topDownAccidentalsMetrics[i].OriginY > newAccidentalMetrics.OriginY)
+                    if(_accidentalsMetricsTopDown[i].OriginY > newAccidentalMetrics.OriginY)
                     {
                         insertIndex = i;
                         break;
                     }
                 }
                 if(insertIndex == -1)
-                    _topDownAccidentalsMetrics.Add(newAccidentalMetrics);
+                    _accidentalsMetricsTopDown.Add(newAccidentalMetrics);
                 else
-                    _topDownAccidentalsMetrics.Insert(insertIndex, newAccidentalMetrics);
+                    _accidentalsMetricsTopDown.Insert(insertIndex, newAccidentalMetrics);
             }
             else
             {
-                _topDownAccidentalsMetrics = new List<AccidentalMetrics>() { newAccidentalMetrics };
+                _accidentalsMetricsTopDown = new List<AccidentalMetrics>() { newAccidentalMetrics };
             }
         }
 
@@ -2259,7 +2259,7 @@ namespace Moritz.Symbols
         /// <param name="movedCloneAM"></param>
         public void SetAccidentalXPos(AccidentalMetrics movedCloneAM)
         {
-            foreach(AccidentalMetrics am in this._topDownAccidentalsMetrics)
+            foreach(AccidentalMetrics am in this._accidentalsMetricsTopDown)
             {
                 if(am.CharacterString == movedCloneAM.CharacterString && am.OriginY == movedCloneAM.OriginY)
                 {
@@ -2367,19 +2367,23 @@ namespace Moritz.Symbols
         {
             get { return _headsMetricsTopDown; }
         }
+        public IReadOnlyList<AugDotMetrics> AugDotMetricsTopDown
+        {
+            get { return _augDotMetricsTopDown; }
+        }
 
-        public void AddSlurTieMetrics(SlurTieMetrics slurTieMterics)
+        public void AddSlurTieMetrics(SlurTieMetrics slurTieMetrics)
         {
             if(_slurTieMetrics == null)
             {
                 _slurTieMetrics = new List<SlurTieMetrics>();
             }
-            _slurTieMetrics.Add(slurTieMterics);
+            _slurTieMetrics.Add(slurTieMetrics);
         }
 
         private List<HeadMetrics> _headsMetricsTopDown = null; // heads are always in top->bottom order
-        private List<AccidentalMetrics> _topDownAccidentalsMetrics = null; // accidentals are always in top->bottom order
-        private List<AugDotMetrics> _topDownAugDotMetrics = null; // augDots are always in top->bottom order (top row, then next row etc.)
+        private List<AccidentalMetrics> _accidentalsMetricsTopDown = null; // accidentals are always in top->bottom order
+        private List<AugDotMetrics> _augDotMetricsTopDown = null; // augDots are always in top->bottom order (top row, then next row etc.)
         private LedgerlineBlockMetrics _upperLedgerlineBlockMetrics = null;
         private LedgerlineBlockMetrics _lowerLedgerlineBlockMetrics = null;
         private List<CautionaryBracketMetrics> _cautionaryBracketsMetrics = null;

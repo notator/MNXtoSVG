@@ -171,6 +171,7 @@
     <Content Include="SVG_out\__5_keysigs %28graphics only%29.svg" />
     <Content Include="SVG_out\__6_accidentals %28graphics only%29.svg" />
     <Content Include="SVG_out\__7_dots %28graphics only%29.svg" />
+    <Content Include="SVG_out\__8_ties %28graphics only%29.svg" />
     <Content Include="SVG_out\__9_beams %28graphics only%29.svg" />
     <Content Include="SVG_temp\_10_beamhooks %28graphics only%29.svg" />
     <Content Include="SVG_temp\_12_voices %28graphics only%29.svg" />

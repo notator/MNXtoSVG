@@ -1,0 +1,158 @@
+I'm keeping a separate document that tracks other issues and proposed changes to the spec that result from this thread. But we're not quite finished here yet...
+
+---
+### Summary of  the above code (in https://github.com/w3c/mnx/issues/185#issuecomment-640018187)
+I may occasionally have used different element or attribute names from those in the preceding discussion, but the differences, if any, are immaterial. We can change names ad lib. later.
+Also, where there are lists of elements I have consistently used a containing element. XML was designed to be both machine _and human_ readable, and modern tools for editing XML allow such container elements to be collapsed for a better overview of the file. It would be nice if this convention were adhered to in all MNX...
+
+#### The `<globals>` element
+The `<globals>` element contains a list of `<global>` definitions. These are the `<global>` elements, as defined in [§6.1.7](https://w3c.github.io/mnx/specification/common/#the-mnx-common-element) and [§6.1.8](https://w3c.github.io/mnx/specification/common/#the-global-element) in the current spec.
+
+#### The `<parts>` element
+The `<parts>` element contains a list of `<part>` definitions. These are the `<part>` elements, nearly as defined in [§6.1.7](https://w3c.github.io/mnx/specification/common/#the-mnx-common-element) and [§6.1.9](https://w3c.github.io/mnx/specification/common/#the-part-element) of the current spec. Each of the `<part>` elements has an `id` and a `name` attribute. (The `name` attribute may be redundant.) The `<part><part-name>` and `<part><part-abbreviation>` elements defined in [§6.11 of the spec](https://github.com/w3c/mnx/issues/185#issuecomment-640018187) _are_ redundant because the names printed to the left of the staves in a score are defined inside `<score><systemLayout>` elements (not as `<part>` element components).  The Spec's `<part><instrumentSound>` element needs to be discussed in a separate issue.
+Note that `<part>` definitions that can use multiple staves (i.e. that can have `<measure><sequence> staff` attributes) such as pianos, organs, _divisi_ violin parts etc. have a `bracket` attribute that can be used in the `<systemLayout>` definition.
+Here's how `<parts>` looks in more detail:
+```
+<parts>
+    <part id="fl1" name="Flute 1">
+        <measure>...</measure>
+        <measure>...</measure>
+        <measure>...</measure>
+        <!-- etc. more measures -->
+    </part>
+    <part id="pno1 name="Piano 1" bracket="curly">
+        <measure>...</measure>
+        <measure>...</measure>
+        <measure>...</measure>
+        <!-- etc. more measures -->
+    </part>
+    <part ... >...</part>
+    <!-- etc. more parts -->
+</parts>
+```
+
+#### The global `<partGroups>` element
+This is an optional element that contains a list of  `<partGroup>` elements that can be used by any of the scores in scope. It has the same structure as the `<score><partGroups>` element (described below).
+
+#### The global `<systemLayouts>` element
+This is an optional element that contains a list of  `<systemLayout>` elements that can be used by any of the scores in scope. It has the same structure as the `<score><systemLayouts>` element (described below).
+A simple `<systemLayout>`, having a single staff with no name to its left could, for example, be defined here for all partScores (booklets).
+
+#### The  `<scores>` element
+This contains a list of all the scores in this `<mnx-common>` element. (Note that the `<mnx><collection>` element can contain more than one `<mnx-common>` element.) 
+```
+<scores>
+    <score name="Full Score">... </score>
+    <score name="Flute 1 part">... </score>
+    <score name="Flute 2 part">... </score>
+    <score name="Flute 3 part">... </score>
+    <score name="Piano part">... </score>
+    <score name="Full Score arranged for piano">... </score>
+    <score name="Full Score arranged for choir and piano">... </score>
+    <!-- etc. all the scores -->
+</scores>
+```
+
+#### The `<score>` element
+The basic structure looks like this:
+```
+<score name="Full Score">
+    <globals>...</globals> <!-- "global" elements, like §6.1.7, but special to this score -->
+    <partGroups>...</partGroups> <!-- see below -->
+    <systemLayouts>...</systemLayouts> <!-- see below -->
+    <scoreLayout>...</scoreLayout> <!-- see below -->
+</score>
+```
+
+
+
+#### The `<systemLayouts>` element
+Contains a list of `<systemLayout>` elements. These can be referenced (and used in any order) by the local `<scoreLayout>` element.
+```
+<systemLayouts>
+    <systemLayout id="localSysLayout1">...</systemLayout>
+    <systemLayout id="localSysLayout2">...</systemLayout>
+    <systemLayout id="localSysLayout3">...</systemLayout>
+</systemLayouts>
+```
+
+#### The `<systemLayout>` element
+A `<systemLayout>` is a list of possibly nested `<staffGroup>` elements in top-to-bottom order:
+```
+<systemLayout id="sysLayout1"  staff-labels-text-align="center">
+    <staffGroup name="woodwind">...</staffGroup>
+        <systemStaff>...</systemStaff>
+        <systemStaff>...</systemStaff>
+        <systemStaff>...</systemStaff>
+        <systemStaff>...</systemStaff>
+    </partGroup>
+    <partGroup name="soloPiano">
+        <partStaff>...</partStaff>
+        <partStaff>...</partStaff>
+    </partGroup>    
+    <!-- etc. more partGroups -->
+</systemLayout>
+```
+
+#### The `<staffGroup>` element
+Each contained `<partGroup>` defines the `<part>`s that can have a common barline and/or a bracket to the left of each system. The precise way to draw the "common barline" is actually controlled by an attribute inside the `<systemLayout>` that _uses_ the `<partGroup>` (i.e. references it by ID).
+Note that
+- A `<partGroup>` can contain a single part (which therefore needs no `<partGroup> bracket` attribute)
+- Basic `<partGroup>`s have no (display) `name` attribute, and can be defined using a `partIDs` attribute that is a space-separated string containing the grouped partIDs.
+- Nested `<partGroup>`s can be defined inside the `<partGroup>` within which they nest, so that when the nested `<partGroup>`s are _used_ (referenced by id), the nesting can be reconstructed.
+(This proposal builds on @clnoel's proposal in https://github.com/w3c/mnx/issues/185#issuecomment-639536636):
+```
+<partGroups>
+    <partGroup id="partGroup1" bracket="brace" partIDs="fl1 fl2 cl1 cl2"" />
+    <partGroup id="partGroup2" bracket="brace" partIDs="tp1 tp2 hn1 hn2 hn3 hn4">
+        <!-- see https://github.com/w3c/mnx/issues/185#issuecomment-639477071 -->
+        <partGroup id="partGroup2.1" name="Horns in F" bracket="curly">
+            <partGroup id="partGroup2.1.1" name="1\n2" partIDs="hn1 hn2" />
+            <partGroup id="partGroup2.1.2" name="3\n4" partIDs="hn3 hn4" />
+        </partGroup>
+        <partGroup id="partGroup2.2" name="Horns in F" bracket="curly">
+            <partGroup id="partGroup2.2.1" name="1" partIDs="hn1" />
+            <partGroup id="partGroup2.2.2" name="2\n3\n4" partIDs="hn2 hn3 hn4" />
+        </partGroup>
+        <!-- etc more nested partGroup definitions for partGroup2 (the brass) -->
+    </partGroup>
+    <partGroup id="partGroup3" bracket="brace" partIDs="perc1 perc2 trngl piano2"  />
+    <!-- note that the following "partGroup" has no bracket (it only contains a single part) -->
+    <partGroup  id="partGroup4" partIDs="piano1" /> 
+    <partGroup  id="partGroup5" bracket="brace" ids="vn1 vn2 va vc db"  />
+</partGroups>
+```
+Any of these `<partGroups>` (nested or otherwise) can be referenced by any of the `<systemLayout>` definitions in scope.
+#### The `<systemStaff>` element
+Contains a `<systemVoices>` element containing `<systemVoice>` elements in top to bottom order. 
+```
+<systemStaff>
+    <systemVoices>
+        <systemVoice label="1-3" partIDs="fl1 fl2 fl3">
+        <systemVoice label="4" partIDs="fl4">
+    </systemVoices>
+</systemStaff>
+```
+or (with 3 flutes playing 3-note chords in one `<systemVoice>`)
+```
+<systemStaff>
+    <systemVoices>
+        <systemVoice label="Flutes 1-3" partIDs="fl1 fl2 fl3"> <!-- written as 3-part chords -->
+    </systemVoices>
+</systemStaff>
+```
+or (with 3 flutes playing 2-note chords in one `<systemVoice>`)
+```
+<systemStaff>
+    <systemVoices>
+        <!-- the labels are aligned vertically ->
+        <systemVoice label1="Flute 1" label2="Flutes 2+3" partIDs="fl1 fl2 fl3">
+    </systemVoices>
+</systemStaff>
+```
+
+#### The `<partStaff>` element
+Contains
+
+#### The `<scoreLayout>` element
+ 

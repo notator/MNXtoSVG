@@ -1,69 +1,62 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <mnx-common>
     <!-- like the globals defined in §6.1.7 in the current spec -->
-    <globals> 
+    <globals>
         <global>...</global>
         <!-- etc., more global definitions -->
     </globals>
-    
+
     <!-- like the parts defined in §6.1.7 in the current spec -->
-    <parts> 
-        <part id="fl1" name="Flute 1" >...</part> <!-- contains <measure>s etc. -->
+    <parts>
+        <part id="fl1" name="Flute 1" >...</part>
+        <!-- contains <measure>s etc. -->
         <part id="fl2" name="Flute 2" >...</part>
         <part id="fl3" name="Flute 3" >...</part>
-        <part id="pno" name="Piano" bracket="curly">...</part>
+        <part id="pno" name="Piano">...</part>
         <!-- etc., more part definitions -->
     </parts>
-    
-    <!-- global part-group definitions (optional) -->
-    <part-groups>...</part-groups>
-    
-    <!-- global system-layout-definitions (optional) -->
-    <system-layouts>
-        <system-layout id="globalSysLayout1">... </system-layout>
-        <system-layout id="globalSysLayout2">... </system-layout>
-        <system-layout id="globalSysLayout3">... </system-layout>
-        <!-- etc., more global system-layout definitions -->
-    </system-layouts>
-    
+
+    <!-- global systemLayout-definitions (optional) -->
+    <systemLayouts>
+        <systemLayout id="globalSysLayout1">... </systemLayout>
+        <systemLayout id="globalSysLayout2">... </systemLayout>
+        <systemLayout id="globalSysLayout3">... </systemLayout>
+        <!-- etc., more global systemLayout definitions -->
+    </systemLayouts>
+
     <!-- all the scores in this mnx-common element -->
     <scores>
-        
+
         <score name="Full Score">
             <!-- optional globals for the full score  -->
-            <globals>...</globals>            
-            <!-- part-group definitions for the full score  -->
-            <part-groups>...</part-groups>
-            <!-- system-layout-definitions for the full score  -->
-            <system-layouts>
-                <system-layout id="fullScoreSysLayout1">...</system-layout>
-                <system-layout id="fullScoreSysLayout2">...</system-layout>
-                <system-layout id="fullScoreSysLayout3">...</system-layout>
-                <!-- etc. more system-layout elements -->
-            </system-layouts>
-            <!-- score-layout for the full score -->
-            <score-layout>...</score-layout>
+            <globals>...</globals>
+            <!-- systemLayout-definitions for the full score  -->
+            <systemLayouts>
+                <systemLayout id="fullScoreSysLayout1">...</systemLayout>
+                <systemLayout id="fullScoreSysLayout2">...</systemLayout>
+                <systemLayout id="fullScoreSysLayout3">...</systemLayout>
+                <!-- etc. more systemLayout elements -->
+            </systemLayouts>
+            <!-- scoreLayout for the full score -->
+            <scoreLayout>...</scoreLayout>
         </score>
-        
-        <!-- Each score has the same internal structure -->
+
         <score name="Flute 1 part">
             <!-- optional globals for the flute 1 part -->
-            <globals>...</globals>            
-            <!-- part-group definitions for the flute 1 part -->
-            <part-groups>...</part-groups>
-            <!-- system-layout-definitions for the flute 1 part -->
-            <system-layouts>
-                <system-layout id="flute1SysLayout1">...</system-layout>
-                <system-layout id="flute1SysLayout2">...</system-layout>
-                <!-- etc. more system-layout elements -->
-            </system-layouts>
-            <!-- score-layout for the flute 1 part-->
-            <score-layout>...</score-layout>
+            <globals>...</globals>
+            <!-- systemLayout-definitions for the flute 1 part -->
+            <systemLayouts>
+                <systemLayout id="flute1SysLayout1">...</systemLayout>
+                <systemLayout id="flute1SysLayout2">...</systemLayout>
+                <!-- etc. more systemLayout elements -->
+            </systemLayouts>
+            <!-- scoreLayout for the flute 1 part-->
+            <scoreLayout>...</scoreLayout>
         </score>
-        
+
         <score name="Flute 2 part">...</score>
         <score name="Flute 3 part">...</score>
         <!-- etc., all the part "scores" (booklets) -->
     </scores>
-  </mnx-common>
+</mnx-common>
 

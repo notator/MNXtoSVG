@@ -60,7 +60,7 @@ namespace Moritz.Symbols
         public Head(OutputChordSymbol outputChordSymbol, Note mnxcNote)
         {
             Chord = outputChordSymbol;
-            Pitch = mnxcNote.Pitch;
+            Pitch = mnxcNote.NoteheadPitch;
             if(Pitch.Contains("##"))
             {
                 Alteration = 2;

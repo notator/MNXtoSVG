@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using MNX.Globals;
+using System.Text;
 
 namespace MNX.Common
 {
@@ -26,6 +27,14 @@ namespace MNX.Common
         public readonly int? MeasureNumber = null;
         public readonly string ID = null; // currently without the leading '#' (okay?)
         public readonly ShortTieOrSlur? Short = null;
+        public int TickPositionInMeasure
+        {
+            get
+            {
+                M.Assert(Position != null);
+                return Position.Ticks;
+            }
+        }
 
         public int Ticks
         {
@@ -58,6 +67,8 @@ namespace MNX.Common
             }
             else if((colonPos = value.IndexOf(':')) < 0)
             {
+                MeasureNumber = null; //  means "current measure"
+
                 switch(value)
                 {
                     case "incoming":

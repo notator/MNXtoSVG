@@ -80,6 +80,8 @@ namespace MNX.Common
             SetMsDurationPerEvent(events, millisecondsPerTick);
 
             var rval = new List<IUniqueDef>();
+            OctaveShift octaveShift = null;
+
             foreach(var seqObj in SequenceComponents)
             {
                 if(seqObj is Directions d)
@@ -98,7 +100,7 @@ namespace MNX.Common
                     }
                     if(d.OctaveShift != null)
                     {
-                        rval.Add(d.OctaveShift as IUniqueDef);
+                        octaveShift = d.OctaveShift; // set as Event or Grace attribute below
                     }
                 }
                 else if(seqObj is Beamed beamed)
@@ -120,9 +122,37 @@ namespace MNX.Common
                         rval.Add(evt as IUniqueDef);
                     }
                 }
+                else if(seqObj is Event evt)
+                {
+                    evt.OctaveShift = octaveShift;
+                    octaveShift = null;
+                    rval.Add(evt as IUniqueDef);
+                }
+                else if(seqObj is Grace g)
+                {
+                    var graceComponents = g.SequenceComponents;
+                    foreach(var graceCompt in graceComponents)
+                    {
+                        // Assuming that Grace groups can only contain Events and Directions...
+                        if(graceCompt is Event graceEvt)
+                        {
+                            graceEvt.OctaveShift = octaveShift;
+                            octaveShift = null;
+                            rval.Add(graceEvt as IUniqueDef);
+                        }
+                        if(graceCompt is Directions graceDir)
+                        {
+                            if(graceDir.OctaveShift != null)
+                            {
+                                octaveShift = graceDir.OctaveShift;
+                            }
+                        }
+                    }
+                }
                 else
                 {
-                    rval.Add(seqObj as IUniqueDef);
+                    throw new ApplicationException("unhandled SequenceComponent type.");
+                    //rval.Add(seqObj as IUniqueDef);
                 }
             }
             return rval;

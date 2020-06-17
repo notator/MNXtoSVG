@@ -94,7 +94,79 @@ namespace Moritz.Symbols
                 absSeqMsPosition += seq.MsDuration;
             }
 
+            AdjustNoteheadPitchesForOctaveShifts(bars);
+
             return bars;
+        }
+
+        /// <summary>
+        /// Adjust all NoteheadPitches where OctaveShifts are active.
+        /// For later OctaveShift bracket construction:
+        /// 1. The original OctaveShift attribute remains in the first Event (or Grace) object.
+        /// 2. The EndOctaveShift attribute in the final shifted Event is set to true (default is false). 
+        /// </summary>
+        /// <param name="bars"></param>
+        private void AdjustNoteheadPitchesForOctaveShifts(List<Bar> bars)
+        {
+            List<List<VoiceDef>> barsPerVoice = new List<List<VoiceDef>>();
+
+            #region get barsPerVoice
+            foreach(Bar bar in bars)
+            {
+                for(var voiceIndex = 0; voiceIndex < bar.VoiceDefs.Count; voiceIndex++)
+                {
+                    var voiceDef = bar.VoiceDefs[voiceIndex];
+                    if(voiceIndex > (barsPerVoice.Count - 1) )
+                    {
+                        barsPerVoice.Add(new List<VoiceDef>());
+                    }
+                    barsPerVoice[voiceIndex].Add(voiceDef);
+                }
+            }
+            #endregion
+
+            OctaveShift octaveShift = null;
+            Tuple<int, int> endOctaveShiftPos = null;
+            for(var voiceIndex = 0; voiceIndex < barsPerVoice.Count; voiceIndex++)
+            {
+                List<VoiceDef> voiceBars = barsPerVoice[voiceIndex];
+                for(var barIndex = 0; barIndex < voiceBars.Count; barIndex++)
+                {
+                    int tickPositionInBar = 0;
+                    var iuds = voiceBars[barIndex].UniqueDefs;
+                    for(var iudIndex = 0; iudIndex < iuds.Count; iudIndex++)
+                    {
+                        if(iuds[iudIndex] is Event evt)
+                        {
+                            if(evt.OctaveShift != null)
+                            {
+                                octaveShift = evt.OctaveShift;
+                                Tuple<int?, int> eosp = octaveShift.EndOctaveShiftPos;                                
+                                if(eosp.Item1 == null)
+                                {
+                                    endOctaveShiftPos = new Tuple<int, int>(barIndex, eosp.Item2);
+                                }
+                                else
+                                {
+                                    endOctaveShiftPos = new Tuple<int, int>((int)eosp.Item1, eosp.Item2);
+                                }
+                            }
+                            if(octaveShift != null)
+                            {
+                                evt.ShiftNoteheadPitches(octaveShift.Type);
+
+                                if(endOctaveShiftPos.Item1 == barIndex && endOctaveShiftPos.Item2 == tickPositionInBar)
+                                {
+                                    octaveShift = null;
+                                    endOctaveShiftPos = null;
+                                    evt.EndOctaveShift = true;
+                                }
+                            }
+                            tickPositionInBar += evt.Ticks;
+                        }
+                    }
+                }
+            }
         }
 
         private List<IUniqueDef> GetMeasureDirections(Directions measureDirections)
@@ -683,7 +755,7 @@ namespace Moritz.Symbols
                 {
                     foreach(var note in e.Notes)
                     {
-                        var midiVal = M.MidiPitchDict[note.Pitch];
+                        var midiVal = M.MidiPitchDict[note.SoundingPitch];
                         sum += midiVal;
                         nNotes++;
                     }

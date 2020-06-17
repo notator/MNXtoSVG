@@ -1,12 +1,16 @@
 ﻿using MNX.Globals;
+using System;
+using System.Text;
 using System.Xml;
 
 namespace MNX.Common
 {
     public class Note : IEventComponent
     {
-        // Compulsory Attribute
-        public readonly string Pitch = null; // the musical pitch of this note
+        // Compulsory Attributes
+        // Both of these have the same Regex. 
+        public readonly string SoundingPitch = null; // e.g. "C5" (the value written in MNX-Common)
+        public string NoteheadPitch = null; // e.g. will be changed to "C4" if there is an octava bracket above
         // Optional Attributes
         public readonly string ID = null; // the ID of this note
 
@@ -42,7 +46,8 @@ namespace MNX.Common
                         ID = r.Value;
                         break;
                     case "pitch":
-                        Pitch = r.Value;
+                        SoundingPitch = r.Value;
+                        NoteheadPitch = r.Value; // default is for these to be the same
                         break;
                     case "staff":
                         int s;
@@ -94,6 +99,53 @@ namespace MNX.Common
             //    // r is still pointing at the last attribute
             //    A.Assert(r.Name == "id" || r.Name == "pitch" || r.Name == "staff" || r.Name == "accidental" || r.Name == "value");
             //}
+        }
+
+        internal void ShiftNoteheadPitch(OctaveShiftType octaveShiftType)
+        {
+            GetComponents(NoteheadPitch, out string pitchString, out int octave);
+            switch(octaveShiftType)
+            {
+                case OctaveShiftType.up3Oct:
+                    octave += 3;
+                    break;
+                case OctaveShiftType.up2Oct:
+                    octave += 2;
+                    break;
+                case OctaveShiftType.up1Oct:
+                    octave += 1;
+                    break;
+                case OctaveShiftType.down1Oct:
+                    octave -= 1;
+                    break;
+                case OctaveShiftType.down2Oct:
+                    octave -= 2;
+                    break;
+                case OctaveShiftType.down3Oct:
+                    octave -= 3;
+                    break;
+            }
+            M.Assert(octave > -1 && octave < 10);
+            NoteheadPitch = pitchString + octave.ToString();
+        }
+
+        private void GetComponents(string noteheadPitch, out string pitchString, out int octave)
+        {
+            StringBuilder pitchSB = new StringBuilder();
+            StringBuilder octaveSB = new StringBuilder();
+            foreach(var c in NoteheadPitch)
+            {
+                if(Char.IsDigit(c))
+                {
+                    octaveSB.Append(c);
+                }
+                else
+                {
+                    pitchSB.Append(c);
+                }
+            }
+            pitchString = pitchSB.ToString();
+            int.TryParse(octaveSB.ToString(), out octave);
         }
     }
 }

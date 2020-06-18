@@ -109,10 +109,16 @@ namespace Moritz.Xml
 		beamBlock,      // Used, recorded, not defined. Container:voice
 		beam,           // Used, not recorded. Defined if beamBlock exists. Container:beamBlock
 		opaqueBeam,     // Used, not recorded. Defined if beamBlock exists. Container:beamBlock
-		#endregion
+        #endregion
 
-		#region barlines
-		normalBarline, // always used, recorded and defined. A normal barline and endBarline component. Container:voice
+        #region octavaLines
+        octavaText, // Used, not recorded. Defined if octavaHLine exists. Container:staff
+        octavaHLine,// Used, recorded. Defined if octavaHLine exists. Container:staff
+        octavaVLine,// Used, not recorded. Defined if octavaHLine exists. Container:staff
+        #endregion
+
+        #region barlines
+        normalBarline, // always used, recorded and defined. A normal barline and endBarline component. Container:voice
 		thinBarline, // a double-bar component. Always defined. Container:regionStartbarline etc.
 		thickBarline, // a double-bar component. Always defined. Container:regionStartbarline etc.
 		staffConnectors, // A group of barline (and maybe endBarline) in a system. Never defined. Container:system.

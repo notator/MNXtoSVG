@@ -587,13 +587,19 @@ namespace Moritz.Symbols
                 Notator.CreateMetricsAndJustifySystems(this.Systems);
 
                 CreateTies(this.Systems, PageFormat.GapVBPX);
+                CreateOctavaLines(this.Systems, PageFormat.OctavaLineThickness, PageFormat.OctavaLineStrokeDashArray );
             }
 
             CheckSystems(this.Systems);
         }
 
+        private void CreateOctavaLines(List<SvgSystem> systems, double octavaLineThickness, string octavaLineStrokeDashArray)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
-        /// All the NoteObjects have Metrics, and have been moved to their correct positions.
+        /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
         /// </summary>
         /// <param name="systems"></param>
         private void CreateTies(List<SvgSystem> systems, double gap)

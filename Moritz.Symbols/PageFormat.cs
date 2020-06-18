@@ -26,6 +26,8 @@ namespace Moritz.Symbols
         public List<int> SystemStartBars = null;
 
         public readonly double MillisecondsPerTick = 0;
+        public double OctavaLineThickness { get { return (StafflineStemStrokeWidthVBPX * 2); } }
+        public string OctavaLineStrokeDashArray = "3 2";
         public IReadOnlyList<IReadOnlyList<int>> MIDIChannelsPerStaff = null;
         public IReadOnlyList<int> NumberOfStavesPerPart = null;
 

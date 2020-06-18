@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Sunday 03.05.2020, 21:33:47-->
+<!--file created: Wednesday 17.06.2020, 22:31:43-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
 		width="700"
 		height="350"
-		marginTopPage1="90"
-		marginTopOther="60"
-		marginRight="70"
-		marginBottom="50"
-		marginLeft="70" />
+		marginTopPage1="50"
+		marginTopOther="50"
+		marginRight="30"
+		marginBottom="30"
+		marginLeft="30" />
 	<notation
 		stafflineStemStrokeWidth="1.5"
 		gapSize="10"

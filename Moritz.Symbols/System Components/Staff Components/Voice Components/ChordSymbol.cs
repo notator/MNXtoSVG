@@ -19,6 +19,9 @@ namespace Moritz.Symbols
             IsBeamStart = mnxEventDef.IsBeamStart;
             IsBeamEnd = mnxEventDef.IsBeamEnd;
 
+            OctaveShift = mnxEventDef.OctaveShift;
+            EndOctaveShift = mnxEventDef.EndOctaveShift;
+
             // Beam is currently null. Create when necessary.
         }
 
@@ -457,6 +460,9 @@ namespace Moritz.Symbols
 
         public readonly bool IsBeamStart;
         public readonly bool IsBeamEnd;
+
+        public readonly OctaveShift OctaveShift;
+        public readonly bool EndOctaveShift;
 
         public Stem Stem = null; // defaults
         public BeamBlock BeamBlock = null; // defaults

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Diagnostics;
-
+using MNX.Common;
 using MNX.Globals;
-using Moritz.Xml;
 using Moritz.Spec;
+using Moritz.Xml;
+
 
 namespace Moritz.Symbols
 {
@@ -40,6 +40,11 @@ namespace Moritz.Symbols
             for(var voiceIndex = 0; voiceIndex < Voices.Count; voiceIndex++)
             {
                 Voices[voiceIndex].WriteSVG(w, voiceIndex, carryMsgsPerChannel, graphicsOnly);
+            }
+
+            foreach(var extender in ExtenderMetricsList)
+            {
+                extender.WriteSVG(w);
             }
         }
 
@@ -226,6 +231,89 @@ namespace Moritz.Symbols
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        internal void CreateOctavaLines(double gap, System.Drawing.Graphics graphics)
+        {
+            CreateContinuedOctavaLines(gap, graphics);
+
+            foreach(var voice in Voices)
+            {
+                var noteObjects = voice.NoteObjects;
+                for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
+                {
+                    double yMax = -1;
+                    double yMin = double.MaxValue;
+                    if(noteObjects[noteObjectIndex] is OutputChordSymbol leftChord && leftChord.OctaveShift != null)
+                    {
+                        yMax = (yMax > leftChord.ChordMetrics.Bottom) ? yMax : leftChord.ChordMetrics.Bottom;
+                        yMin = (yMin < leftChord.ChordMetrics.Top) ? yMin : leftChord.ChordMetrics.Top;
+
+                        OctaveShiftExtender octaveShiftExtender = null;
+                        var octaveShift = leftChord.OctaveShift;
+                        for(var rightNOIndex = noteObjectIndex; rightNOIndex < noteObjects.Count; rightNOIndex++)
+                        {
+                            if(noteObjects[rightNOIndex] is OutputChordSymbol rightChord)
+                            {
+                                yMax = (yMax > leftChord.ChordMetrics.Bottom) ? yMax : leftChord.ChordMetrics.Bottom;
+                                yMin = (yMin < leftChord.ChordMetrics.Top) ? yMin : leftChord.ChordMetrics.Top;
+
+                                if(rightChord.EndOctaveShift == leftChord.OctaveShift)
+                                {
+                                    var y = (leftChord.OctaveShift.Orient == Orientation.up) ? yMin : yMax;
+                                    octaveShiftExtender =
+                                        new OctaveShiftExtender(octaveShift, graphics, leftChord.ChordMetrics.Left, rightChord.ChordMetrics.Right, y, gap, true, true);
+                                    break;
+                                }
+                            }
+                        }
+                        if(octaveShiftExtender == null)
+                        {
+                            var y = (leftChord.OctaveShift.Orient == Orientation.up) ? yMin : yMax;
+                            // an octaveShiftExtender, without endmarker, that extends to the right of the system.
+                            octaveShiftExtender =
+                                new OctaveShiftExtender(octaveShift, graphics, leftChord.ChordMetrics.Left, Metrics.Right + (gap * 2), y, gap, true, false);
+                        }
+
+                        this.Metrics.MetricsList.Add(octaveShiftExtender.Metrics); // so that the extender will be moved vertically correctly
+                        this.ExtenderMetricsList.Add(octaveShiftExtender.Metrics); // so that extender.Metrics.WriteSvg(w) will be called correctly
+                    }
+                }
+            }
+        }
+
+        private void CreateContinuedOctavaLines(double gap, System.Drawing.Graphics graphics)
+        {
+            foreach(var voice in Voices)
+            {
+                double yMax = -1;
+                double yMin = double.MaxValue;
+                var noteObjects = voice.NoteObjects;
+                double x1 = -1;
+                for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
+                {
+                    if(noteObjects[noteObjectIndex] is OutputChordSymbol chord )
+                    {
+                        yMax = (yMax > chord.ChordMetrics.Bottom) ? yMax : chord.ChordMetrics.Bottom;
+                        yMin = (yMin < chord.ChordMetrics.Top) ? yMin : chord.ChordMetrics.Top;
+                        x1 = (x1 == -1) ? chord.ChordMetrics.Left : x1;
+
+                        if(chord.OctaveShift != null)
+                        {
+                            break;
+                        }
+                        else if(chord.EndOctaveShift != null)
+                        {
+                            var y = (chord.EndOctaveShift.Orient == Orientation.up) ? yMin : yMax;
+                            OctaveShiftExtender octaveShiftExtender = 
+                                new OctaveShiftExtender(chord.EndOctaveShift, graphics, x1, chord.ChordMetrics.Right, y, gap, false, true);
+
+                            this.Metrics.MetricsList.Add(octaveShiftExtender.Metrics);
+                            break;
+                        }                        
                     }
                 }
             }
@@ -703,6 +791,7 @@ namespace Moritz.Symbols
         internal readonly double StafflineStemStrokeWidth = 0;
         // Empty staves are invisble. Their Metrics attribute remains null.
         internal StaffMetrics Metrics = null;
+        internal List<ExtenderMetrics> ExtenderMetricsList = new List<ExtenderMetrics>();
         #endregion
     }
 }

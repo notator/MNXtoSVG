@@ -111,10 +111,11 @@ namespace Moritz.Xml
 		opaqueBeam,     // Used, not recorded. Defined if beamBlock exists. Container:beamBlock
         #endregion
 
-        #region octavaLines
-        octavaText, // Used, not recorded. Defined if octavaHLine exists. Container:staff
-        octavaHLine,// Used, recorded. Defined if octavaHLine exists. Container:staff
-        octavaVLine,// Used, not recorded. Defined if octavaHLine exists. Container:staff
+        #region extenders
+        octaveShiftExtender,     // Used, recorded, not defined as style. Container:staff
+        octaveShiftExtenderText, // Used, not recorded. Defined if octaveShiftExtender exists. Container:octaveShiftExtender
+        octaveShiftExtenderHLine,// Used, not recorded. Defined if octaveShiftExtender exists. Container:octaveShiftExtender
+        octaveShiftExtenderVLine,// Used, not recorded. Defined if octaveShiftExtender exists. Container:octaveShiftExtender
         #endregion
 
         #region barlines

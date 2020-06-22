@@ -395,14 +395,23 @@ namespace Moritz.Symbols
 				StringBuilder barNumberNumberHeight = TextStyle("." + CSSObjectClass.barNumberNumber.ToString(), "", barNumberNumberFontHeight, "middle");
 				fontStyles.Append(barNumberNumberHeight);
 			}
-			if(usedCSSObjectClasses.Contains(CSSObjectClass.framedRegionInfo))
-			{
-				string regionInfoStringFontHeight = M.DoubleToShortString(pageFormat.RegionInfoStringFontHeight);
-				StringBuilder regionInfoHeight = TextStyle("." + CSSObjectClass.regionInfoString.ToString(), "", regionInfoStringFontHeight, "middle");
-				fontStyles.Append(regionInfoHeight);
-			}
+            if(usedCSSObjectClasses.Contains(CSSObjectClass.framedRegionInfo))
+            {
+                string regionInfoStringFontHeight = M.DoubleToShortString(pageFormat.RegionInfoStringFontHeight);
+                StringBuilder regionInfoHeight = TextStyle("." + CSSObjectClass.regionInfoString.ToString(), "", regionInfoStringFontHeight, "middle");
+                fontStyles.Append(regionInfoHeight);
+            }
+            if(usedCSSObjectClasses.Contains(CSSObjectClass.octaveShiftExtender))
+            {
+                string objectClass = "." + CSSObjectClass.octaveShiftExtenderText.ToString();
+                string fontHeight = M.DoubleToShortString(pageFormat.OctaveShiftExtenderTextFontHeight);
+                string fontWeight = pageFormat.OctaveShiftExtenderTextFontWeight;
+                string fontStyle = pageFormat.OctaveShiftExtenderTextFontStyle;
+                StringBuilder textStyle = TextStyle(objectClass, null, fontHeight, fontWeight, fontStyle, null);
+                fontStyles.Append(textStyle);
+            }
 
-			if(ClefXExists(usedClefIDs))
+            if(ClefXExists(usedClefIDs))
             {
                 string clefXFontHeight = M.DoubleToShortString(pageFormat.ClefXFontHeight);
 				StringBuilder clefXStyle = TextStyle("." + CSSObjectClass.clefX.ToString(), "", clefXFontHeight, "");
@@ -524,14 +533,15 @@ namespace Moritz.Symbols
 
         private StringBuilder GetExistingArialClasses(List<CSSObjectClass> usedCSSClasses, List<ClefID> usedClefIDs)
         {
-			//.timeStamp,
-			//.staffName,
-			//.lyric,
-			//.barNumberNumber, 
-			//.clefX, .smallClefX
+            //.timeStamp,
+            //.staffName,
+            //.lyric,
+            //.barNumberNumber, 
+            //.clefX, .smallClefX
+            //.octaveShiftExtender)
 
-			// timestamp is not recorded, but exists on every page
-			StringBuilder rval = new StringBuilder("." + CSSObjectClass.timeStamp.ToString());
+            // timestamp is not recorded, but exists on every page
+            StringBuilder rval = new StringBuilder("." + CSSObjectClass.timeStamp.ToString());
 
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.staffName);
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.lyric);
@@ -556,6 +566,10 @@ namespace Moritz.Symbols
                 ExtendRval(rval, "." + CSSObjectClass.timeSigNumerator.ToString());
                 ExtendRval(rval, "." + CSSObjectClass.timeSigDenominator.ToString());
             }
+            if(usedCSSClasses.Contains(CSSObjectClass.octaveShiftExtender))
+            {
+                ExtendRval(rval, "." + CSSObjectClass.octaveShiftExtenderText.ToString());
+            }
 
             return rval;
         }
@@ -576,31 +590,56 @@ namespace Moritz.Symbols
             rval.Append(className);
         }
 
-        private StringBuilder TextStyle(string element, string fontFamily, string fontSize, string textAnchor)
+        private StringBuilder TextStyle(string element, string fontFamily,
+            string fontSize, string textAnchor)
+
         {
-            StringBuilder local = new StringBuilder();
+            return (TextStyle(element, fontFamily, fontSize, null, null, textAnchor));
+        }
+
+        private StringBuilder TextStyle(string element, string fontFamily,
+            string fontSize, string fontWeight, string fontStyle, string textAnchor)
+            {
+                StringBuilder local = new StringBuilder();
             if(!String.IsNullOrEmpty(fontFamily))
             {
                 local.Append($@"font-family:{fontFamily}");
-                if(!String.IsNullOrEmpty(fontSize) || !String.IsNullOrEmpty(textAnchor))
-                {
-                    local.Append($@";
+                local.Append($@";
                 ");
-                }
             }
             if(!String.IsNullOrEmpty(fontSize))
             {
                 local.Append($@"font-size:{fontSize}px");
-                if(!String.IsNullOrEmpty(textAnchor))
-                {
-                    local.Append($@";
+                local.Append($@";
                 ");
-                }
+            }
+            if(!String.IsNullOrEmpty(fontWeight))
+            {
+                local.Append($@"font-weight:{fontWeight}");
+                local.Append($@";
+                ");
+            }
+            if(!String.IsNullOrEmpty(fontStyle))
+            {
+                local.Append($@"font-style:{fontStyle}");
+                local.Append($@";
+                ");
             }
             if(!String.IsNullOrEmpty(textAnchor))
             {
                 local.Append($@"text-anchor:{textAnchor}");
+                local.Append($@";
+                ");
             }
+
+            // remove ';' newline and spaces
+            char c = local[local.Length - 1];
+            while(c != ';')
+            {
+                local.Length -= 1;
+                c = local[local.Length - 1];
+            }
+            local.Length -= 1;
 
             StringBuilder rval = new StringBuilder(
             $@"{element}
@@ -763,6 +802,23 @@ namespace Moritz.Symbols
                 stroke:black;
                 stroke-width:{strokeWidth};
                 fill:none                
+            }}
+            ");
+            }
+
+            if(usedCSSClasses.Contains(CSSObjectClass.octaveShiftExtender))
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.OctaveShiftExtenderLineStrokeWidth);
+                lineStyles.Append($@".octaveShiftExtenderHLine, .octaveShiftExtenderVLine
+            {{
+                stroke:black;
+                stroke-width:{strokeWidth}px;
+                fill:none
+            }}
+            ");
+                lineStyles.Append($@".octaveShiftExtenderVLine
+            {{
+                stroke-linecap:square
             }}
             ");
             }

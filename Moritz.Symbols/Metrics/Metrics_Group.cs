@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
-
 using MNX.Globals;
 using Moritz.Xml;
 
@@ -215,51 +211,78 @@ namespace Moritz.Symbols
         public double Gap { get; }
     }
 
-    public class OctavaLineMetrics : GroupMetrics
+    /// <summary>
+    /// An ExtenderMetrics is a textMetrics followed by (possibly dotted) horizontal line with a solid vertical end marker line on its right.
+    /// </summary>
+    public class ExtenderMetrics : GroupMetrics
     {
-        private readonly TextMetrics _textMetrics;
-        private readonly string _text;
-        private readonly double _strokeWidth;
-        private readonly bool _isOver;
+        protected readonly TextMetrics _textMetrics = null;
+        protected readonly string _strokeDashArray = null;
+        protected readonly double _endMarkerHeight = 0;
+        protected readonly bool _displayText = true;
+        protected readonly bool _displayEndMarker = true;
 
-        public OctavaLineMetrics(Graphics graphics, TextInfo textInfo, double x1, double x2, double gap, double strokeWidth, bool isOver)
-            : base(CSSObjectClass.octavaHLine)
+        /// <summary>
+        /// An ExtenderMetrics is a textMetrics followed by (possibly dotted) horizontal line with a solid vertical end marker line on its right.
+        /// </summary>
+        /// <param name="left">The left coordinate of the displayed extender (with or without text)</param>
+        /// <param name="right">The right coordinate of the displayed extender</param>
+        /// <param name="hLineY">The y-coordinate of the horizontal line.</param>
+        /// <param name="strokeDashArray">If null, the line will be solid.</param>
+        /// <param name="endMarkerHeight">Is negative if extender is under its containing staff.</param>
+        public ExtenderMetrics(CSSObjectClass cssObjectClass, TextMetrics textMetrics, double left, double right, double hLineY, string strokeDashArray, double endMarkerHeight,
+            bool displayText, bool displayEndMarker)
+            :base(cssObjectClass)
         {
-            _textMetrics = new TextMetrics(CSSObjectClass.octavaText, graphics, textInfo);
-            _text = textInfo.Text;
-            _strokeWidth = strokeWidth;
-            _isOver = isOver;
+            _left = left;
+            _right = right;
+            _top = hLineY; // the real height of the extender is ignored
+            _bottom = hLineY;
+            _originX = _left;
+            _originY = hLineY;
 
-            _top = 0;
-            _left = x1;
-            _bottom = gap * 1.2;
-            _right = x2;
+            _textMetrics = textMetrics;
+            _strokeDashArray = strokeDashArray;
+            _endMarkerHeight = endMarkerHeight;
+            _displayText = displayText;
+            _displayEndMarker = displayEndMarker;
+
+            MetricsList.Add(textMetrics); // will be moved automatically
         }
 
         public override void Move(double dx, double dy)
         {
             M.Assert(dx == 0);
             base.Move(dx, dy);
-            _textMetrics.Move(dx, dy);
+        }
+    }
+
+    public class OctaveShiftExtenderMetrics : ExtenderMetrics
+    {
+        public OctaveShiftExtenderMetrics(TextMetrics textMetrics, double leftChordLeft, double rightChordRight, double hLineY, string strokeDashArray, double endMarkerHeight,
+            bool displayText, bool displayEndMarker)
+            : base(CSSObjectClass.octaveShiftExtender, textMetrics, leftChordLeft, rightChordRight, hLineY, strokeDashArray, endMarkerHeight, displayText, displayEndMarker)
+        {
         }
 
         public override void WriteSVG(SvgWriter w)
         {
-            var textWidth = _textMetrics.Right - _textMetrics.Left;
-            var lineLeft = Left + textWidth;
-
-            w.SvgStartGroup(CSSObjectClass.ToString());
-            if(_isOver)
+            w.SvgStartGroup(CSSObjectClass.octaveShiftExtender.ToString());
+            if(_displayText)
             {
-                w.SvgText(CSSObjectClass.octavaText, _text, Left, Top);
-                w.SvgLine(CSSObjectClass.octavaHLine, lineLeft, Top, Right, Top);
-                w.SvgLine(CSSObjectClass.octavaVLine, Right, Top - (_strokeWidth / 2), Right, Bottom);
+                _textMetrics.WriteSVG(w);
+                var lineleft = _left + ((_textMetrics.Right - _textMetrics.Left) * 0.85);
+                w.SvgLine(CSSObjectClass.octaveShiftExtenderHLine, lineleft, _originY, _right, _originY, _strokeDashArray);
             }
             else
             {
-                w.SvgText(CSSObjectClass.octavaText, _text, Left, Bottom);
-                w.SvgLine(CSSObjectClass.octavaHLine, lineLeft, Bottom, Right, Bottom);
-                w.SvgLine(CSSObjectClass.octavaVLine, Right, Bottom + (_strokeWidth / 2), Right, Top);
+                w.SvgLine(CSSObjectClass.octaveShiftExtenderHLine, _left, _originY, _right, _originY, _strokeDashArray);
+            }
+
+            if(_displayEndMarker)
+            {
+                // CSSObjectClass.extenderEndMarker has style stroke-linecap:square
+                w.SvgLine(CSSObjectClass.octaveShiftExtenderVLine, _right, _originY, _right, _originY + _endMarkerHeight, null);
             }
             w.SvgEndGroup();
         }

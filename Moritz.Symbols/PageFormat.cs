@@ -26,8 +26,14 @@ namespace Moritz.Symbols
         public List<int> SystemStartBars = null;
 
         public readonly double MillisecondsPerTick = 0;
-        public double OctavaLineThickness { get { return (StafflineStemStrokeWidthVBPX * 2); } }
-        public string OctavaLineStrokeDashArray = "3 2";
+
+        // See OctaveShiftExtender constructor
+        public string OctaveShiftExtenderTextFontFamily { get { return "Arial"; } }
+        public double OctaveShiftExtenderTextFontHeight { get { return (GapVBPX * 1.5); } }
+        public string OctaveShiftExtenderTextFontWeight { get { return "bold"; } }  // SVGFontWeight.bold.ToString()
+        public string OctaveShiftExtenderTextFontStyle { get { return "italic"; } } // SVGFontStyle.italic.ToString()
+        public double OctaveShiftExtenderLineStrokeWidth { get { return (StafflineStemStrokeWidthVBPX * 1.2); } }
+
         public IReadOnlyList<IReadOnlyList<int>> MIDIChannelsPerStaff = null;
         public IReadOnlyList<int> NumberOfStavesPerPart = null;
 
@@ -196,9 +202,11 @@ namespace Moritz.Symbols
         // The opacity of opaque beams
         // (Opaque beams are written between the beam and stafflines to make the stafflines appear grey.)
         public double OpaqueBeamOpacity { get { return 0.65; } }
+
+
         #endregion
 
-  
+
 
 
         #endregion

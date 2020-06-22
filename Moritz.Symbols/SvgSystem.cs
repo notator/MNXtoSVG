@@ -39,11 +39,12 @@ namespace Moritz.Symbols
                 Staves[staffIndex].WriteSVG(w, systemNumber, staffIndex + 1, carryMsgsPerChannel, graphicsOnly);
             }
 
-            w.SvgStartGroup(CSSObjectClass.staffConnectors.ToString());
-
-            WriteConnectors(w, systemNumber, pageFormat);
-
-            w.SvgEndGroup(); // connectors
+            if(Staves.Count > 1)
+            {
+                w.SvgStartGroup(CSSObjectClass.staffConnectors.ToString());
+                WriteConnectors(w, systemNumber, pageFormat);
+                w.SvgEndGroup(); // connectors
+            }
 
             w.SvgEndGroup(); // system
         }
@@ -185,6 +186,11 @@ namespace Moritz.Symbols
             }
             symbolSet.AddNoteheadExtenderLines(Staves, pageFormat.RightMarginPosVBPX, pageFormat.GapVBPX,
                 pageFormat.NoteheadExtenderStrokeWidth, pageFormat.StafflineStemStrokeWidthVBPX, nextSystem);
+
+            foreach(var staff in Staves)
+            {
+                staff.CreateOctavaLines(pageFormat.GapVBPX, graphics);
+            }
 
             SetBarlineVisibility(pageFormat.BarlineContinuesDownList);
 

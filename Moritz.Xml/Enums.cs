@@ -103,7 +103,15 @@ namespace Moritz.Xml
     /// When writing CapXML files, retrieve the field name as a string using
     ///		M.GetEnumDescription()
     /// </summary>
-    public enum TextFrameType { none, rectangle, ellipse, circle };
+    public enum TextFrameType { none, rectangle, ellipse, circle }
+    /// <summary>
+    /// SVG font-style attribute strings
+    /// </summary>
+    public enum SVGFontStyle { normal, italic, oblique }
+    /// <summary>
+    /// SVG font-weight attribute strings
+    /// </summary>
+    public enum SVGFontWeight { normal, bold, bolder, lighter }
     /// <summary>
 	/// CapXML-1.0.8 Type.
 	/// CapXML-1.0.8 Type name: "VerticalDir"

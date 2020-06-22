@@ -92,6 +92,23 @@ namespace MNX.Common
 
             M.Assert(_octaveShiftType != null);
 
+            if(Orient == null)
+            {
+                switch(_octaveShiftType)
+                {
+                    case OctaveShiftType.down1Oct:
+                    case OctaveShiftType.down2Oct:
+                    case OctaveShiftType.down3Oct:
+                        Orient = Orientation.up;
+                        break;
+                    case OctaveShiftType.up1Oct:
+                    case OctaveShiftType.up2Oct:
+                    case OctaveShiftType.up3Oct:
+                        Orient = Orientation.down;
+                        break;
+                }
+            }
+
             // r.Name is now the name of the last octave-shift attribute that has been read.
         }
 

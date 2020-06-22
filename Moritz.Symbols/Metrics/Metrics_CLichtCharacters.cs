@@ -11,11 +11,15 @@ namespace Moritz.Symbols
 {
     public class TextStyle : Metrics
     {
-        public TextStyle(CSSObjectClass cssTextClass, string fontFamily, double fontHeight, TextHorizAlign textAnchor = TextHorizAlign.left, string fill = "black")
+        public TextStyle(CSSObjectClass cssTextClass, string fontFamily, double fontHeight, SVGFontWeight svgFontWeight, SVGFontStyle svgFontStyle,
+            TextHorizAlign textAnchor = TextHorizAlign.left, string fill = "black")
             : base(cssTextClass)
         {
             FontFamily = fontFamily;
             FontHeight = fontHeight;
+            FontWeight = svgFontWeight;
+            FontStyle = svgFontStyle;
+
             switch(textAnchor)
             {
                 case (TextHorizAlign.left):
@@ -51,13 +55,21 @@ namespace Moritz.Symbols
             }
         }
 
+        public TextStyle(CSSObjectClass cssTextClass, string fontFamily, double fontHeight, TextHorizAlign textAnchor = TextHorizAlign.left, string fill = "black")
+            : this(cssTextClass, fontFamily, fontHeight, SVGFontWeight.normal, SVGFontStyle.normal, textAnchor = TextHorizAlign.left, fill = "black")
+        {
+        }
+
         public override void WriteSVG(SvgWriter w)
         {
             throw new NotImplementedException();
         }
 
         public readonly string FontFamily = ""; // "Arial", "CLicht", "Open Sans", "Open Sans Condensed"
-        public readonly double FontHeight = 0;       
+        public readonly double FontHeight = 0;
+        public readonly SVGFontWeight FontWeight = SVGFontWeight.normal;
+        public readonly SVGFontStyle FontStyle = SVGFontStyle.normal;
+
         public readonly string TextAnchor; // "left", "middle", "right"
         public readonly string Fill; // "none", "black", "white", "red", #AAAAAA" etc
     }

@@ -462,7 +462,7 @@ namespace Moritz.Symbols
         public readonly bool IsBeamEnd;
 
         public readonly OctaveShift OctaveShift;
-        public readonly bool EndOctaveShift;
+        public readonly OctaveShift EndOctaveShift;
 
         public Stem Stem = null; // defaults
         public BeamBlock BeamBlock = null; // defaults

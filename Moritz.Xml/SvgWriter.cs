@@ -60,7 +60,8 @@ namespace Moritz.Xml
         /// <param name="y1"></param>
         /// <param name="x2"></param>
         /// <param name="y2"></param>
-        public void SvgLine(CSSObjectClass cssClass, double x1, double y1, double x2, double y2)
+        /// <param name="strokeDashArray"></param>
+        public void SvgLine(CSSObjectClass cssClass, double x1, double y1, double x2, double y2, string strokeDashArray = null)
         {
             _w.WriteStartElement("line");
             _w.WriteAttributeString("class", cssClass.ToString());
@@ -68,6 +69,10 @@ namespace Moritz.Xml
             _w.WriteAttributeString("y1", M.DoubleToShortString(y1));
             _w.WriteAttributeString("x2", M.DoubleToShortString(x2));
             _w.WriteAttributeString("y2", M.DoubleToShortString(y2));
+            if(strokeDashArray != null)
+            {
+                _w.WriteAttributeString("stroke-dasharray", strokeDashArray);
+            }
             _w.WriteEndElement(); //line
         }
 

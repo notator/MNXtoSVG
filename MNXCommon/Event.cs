@@ -139,8 +139,8 @@ namespace MNX.Common
 
         public OctaveShift OctaveShift { get { return _octaveShift; } internal set { _octaveShift = value; } }
         private OctaveShift _octaveShift = null;
-        public bool EndOctaveShift { get { return _endOctaveShift; } set { _endOctaveShift = value; } }
-        private bool _endOctaveShift = false;
+        public OctaveShift EndOctaveShift { get { return _endOctaveShift; } set { _endOctaveShift = value; } }
+        private OctaveShift _endOctaveShift = null;
 
         #endregion IUniqueDef
 

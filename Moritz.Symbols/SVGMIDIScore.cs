@@ -157,9 +157,9 @@ namespace Moritz.Symbols
 
                                 if(endOctaveShiftPos.Item1 == barIndex && endOctaveShiftPos.Item2 == tickPositionInBar)
                                 {
+                                    evt.EndOctaveShift = octaveShift;
                                     octaveShift = null;
                                     endOctaveShiftPos = null;
-                                    evt.EndOctaveShift = true;
                                 }
                             }
                             tickPositionInBar += evt.Ticks;
@@ -587,15 +587,9 @@ namespace Moritz.Symbols
                 Notator.CreateMetricsAndJustifySystems(this.Systems);
 
                 CreateTies(this.Systems, PageFormat.GapVBPX);
-                CreateOctavaLines(this.Systems, PageFormat.OctavaLineThickness, PageFormat.OctavaLineStrokeDashArray );
             }
 
             CheckSystems(this.Systems);
-        }
-
-        private void CreateOctavaLines(List<SvgSystem> systems, double octavaLineThickness, string octavaLineStrokeDashArray)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

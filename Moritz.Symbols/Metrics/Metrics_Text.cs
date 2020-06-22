@@ -12,7 +12,7 @@ namespace Moritz.Symbols
     public class TextMetrics : TextStyle
     {
         public TextMetrics(CSSObjectClass cssClass, Graphics graphics, TextInfo textInfo)
-            : base(cssClass, textInfo.FontFamily, textInfo.FontHeight, textInfo.TextHorizAlign, textInfo.ColorString.String)
+            : base(cssClass, textInfo.FontFamily, textInfo.FontHeight, textInfo.SVGFontWeight, textInfo.SVGFontStyle, textInfo.TextHorizAlign, textInfo.ColorString.String)
         {
             SetDefaultMetrics(graphics, textInfo);
             _textInfo = textInfo;
@@ -22,7 +22,7 @@ namespace Moritz.Symbols
         /// Used by Clone(cssClass)
         /// </summary>
         private TextMetrics(CSSObjectClass cssClass, double top, double right, double bottom, double left, double originX, double originY, TextInfo textInfo)
-            : base(cssClass, textInfo.FontFamily, textInfo.FontHeight, textInfo.TextHorizAlign, textInfo.ColorString.String)
+            : base(cssClass, textInfo.FontFamily, textInfo.FontHeight, textInfo.SVGFontWeight, textInfo.SVGFontStyle, textInfo.TextHorizAlign, textInfo.ColorString.String)
         {
             _top = top;
             _right = right;

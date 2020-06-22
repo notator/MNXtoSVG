@@ -255,6 +255,26 @@ namespace Moritz.Symbols
             M.Assert(dx == 0);
             base.Move(dx, dy);
         }
+
+        protected void WriteSVG(SvgWriter w, CSSObjectClass horizontalLineClass, CSSObjectClass verticalLineClass)
+        {
+            if(_displayText)
+            {
+                _textMetrics.WriteSVG(w);
+                var lineleft = _left + ((_textMetrics.Right - _textMetrics.Left) * 0.85);
+                w.SvgLine(horizontalLineClass, lineleft, _originY, _right, _originY, _strokeDashArray);
+            }
+            else
+            {
+                w.SvgLine(horizontalLineClass, _left, _originY, _right, _originY, _strokeDashArray);
+            }
+
+            if(_displayEndMarker)
+            {
+                // verticalLineClass must have style stroke-linecap:square
+                w.SvgLine(verticalLineClass, _right, _originY, _right, _originY + _endMarkerHeight, null);
+            }
+        }
     }
 
     public class OctaveShiftExtenderMetrics : ExtenderMetrics
@@ -268,22 +288,7 @@ namespace Moritz.Symbols
         public override void WriteSVG(SvgWriter w)
         {
             w.SvgStartGroup(CSSObjectClass.octaveShiftExtender.ToString());
-            if(_displayText)
-            {
-                _textMetrics.WriteSVG(w);
-                var lineleft = _left + ((_textMetrics.Right - _textMetrics.Left) * 0.85);
-                w.SvgLine(CSSObjectClass.octaveShiftExtenderHLine, lineleft, _originY, _right, _originY, _strokeDashArray);
-            }
-            else
-            {
-                w.SvgLine(CSSObjectClass.octaveShiftExtenderHLine, _left, _originY, _right, _originY, _strokeDashArray);
-            }
-
-            if(_displayEndMarker)
-            {
-                // CSSObjectClass.extenderEndMarker has style stroke-linecap:square
-                w.SvgLine(CSSObjectClass.octaveShiftExtenderVLine, _right, _originY, _right, _originY + _endMarkerHeight, null);
-            }
+            base.WriteSVG(w, CSSObjectClass.octaveShiftExtenderHLine, CSSObjectClass.octaveShiftExtenderVLine);
             w.SvgEndGroup();
         }
     }

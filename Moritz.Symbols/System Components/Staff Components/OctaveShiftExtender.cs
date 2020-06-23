@@ -6,10 +6,13 @@ using System.Drawing;
 
 namespace Moritz.Symbols
 {
-    public class OctaveShiftExtender
+    public class Extender
     {
-        public OctaveShiftExtenderMetrics Metrics = null;
+        public ExtenderMetrics Metrics;
+    }
 
+    public class OctaveShiftExtender : Extender
+    {
         public OctaveShiftExtender(OctaveShift octaveShift, Graphics graphics, double leftChordLeft, double rightChordRight, double chordsY, double gap,
             bool displayText, bool displayEndMarker)
         {

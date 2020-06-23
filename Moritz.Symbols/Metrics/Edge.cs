@@ -167,6 +167,11 @@ namespace Moritz.Symbols
 					}
 				}
             }
+
+            foreach(Extender extender in staff.Extenders)
+            {
+                extender.Metrics.AddToEdge(this);
+            }
         }
 
 

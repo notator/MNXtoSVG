@@ -275,6 +275,18 @@ namespace Moritz.Symbols
                 w.SvgLine(verticalLineClass, _right, _originY, _right, _originY + _endMarkerHeight, null);
             }
         }
+
+        internal void AddToEdge(HorizontalEdge horizontalEdge)
+        {
+            if(horizontalEdge is TopEdge topEdge)
+            {
+                topEdge.Add(this);
+            }
+            else if(horizontalEdge is BottomEdge bottomEdge)
+            {
+                bottomEdge.Add(this);
+            }
+        }
     }
 
     public class OctaveShiftExtenderMetrics : ExtenderMetrics

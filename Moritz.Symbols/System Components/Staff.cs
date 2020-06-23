@@ -42,9 +42,9 @@ namespace Moritz.Symbols
                 Voices[voiceIndex].WriteSVG(w, voiceIndex, carryMsgsPerChannel, graphicsOnly);
             }
 
-            foreach(var extender in ExtenderMetricsList)
+            foreach(var extender in Extenders)
             {
-                extender.WriteSVG(w);
+                extender.Metrics.WriteSVG(w);
             }
         }
 
@@ -279,7 +279,7 @@ namespace Moritz.Symbols
                         }
 
                         this.Metrics.MetricsList.Add(octaveShiftExtender.Metrics); // so that the extender will be moved vertically correctly
-                        this.ExtenderMetricsList.Add(octaveShiftExtender.Metrics); // so that extender.Metrics.WriteSvg(w) will be called correctly
+                        this.Extenders.Add(octaveShiftExtender); // so that extender.Metrics.WriteSvg(w) will be called correctly
                     }
                 }
             }
@@ -781,6 +781,13 @@ namespace Moritz.Symbols
         /// Moritz only supports two voices per staff.
         /// </summary>
         public List<Voice> Voices = new List<Voice>(2);
+        /// <summary>
+        /// OctaveShiftExtender is currently the only Extender type.
+        /// TODO: Pedal markings.
+        /// Note that there can be more than one 8va or Ped extender on a single staff.
+        /// </summary>
+        internal List<Extender> Extenders = new List<Extender>();
+
         public readonly string Staffname;
         /// <summary>
         /// This staff's container
@@ -791,7 +798,6 @@ namespace Moritz.Symbols
         internal readonly double StafflineStemStrokeWidth = 0;
         // Empty staves are invisble. Their Metrics attribute remains null.
         internal StaffMetrics Metrics = null;
-        internal List<ExtenderMetrics> ExtenderMetricsList = new List<ExtenderMetrics>();
         #endregion
     }
 }

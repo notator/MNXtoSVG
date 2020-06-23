@@ -245,8 +245,8 @@ namespace Moritz.Symbols
                 var noteObjects = voice.NoteObjects;
                 for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
                 {
-                    double yMax = -1;
-                    double yMin = double.MaxValue;
+                    double yMax = Metrics.StafflinesBottom;
+                    double yMin = Metrics.StafflinesTop;
                     if(noteObjects[noteObjectIndex] is OutputChordSymbol leftChord && leftChord.OctaveShift != null)
                     {
                         yMax = (yMax > leftChord.ChordMetrics.Bottom) ? yMax : leftChord.ChordMetrics.Bottom;

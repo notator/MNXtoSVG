@@ -66,6 +66,8 @@ namespace MNX.Common
 
             M.ReadToXmlElementTag(r, "part-name", "part-abbreviation", "instrument-sound", "measure");
 
+            int measureIndex = 0;
+            int ticksPosInScore = 0;
             while(r.Name == "part-name" || r.Name == "part-abbreviation" || r.Name == "instrument-sound" || r.Name == "measure")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
@@ -82,13 +84,39 @@ namespace MNX.Common
                             InstrumentSound = r.ReadElementContentAsString();
                             break;
                         case "measure":
-                            Measures.Add(new Measure(r, false));
+                            Measure measure = new Measure(r, measureIndex++, ticksPosInScore, false);
+                            ticksPosInScore += measure.TicksDuration;
+                            Measures.Add(measure);
                             break;
                     }
                 }
                 M.ReadToXmlElementTag(r, "part-name", "part-abbreviation", "instrument-sound", "measure", "part");
             }
             M.Assert(r.Name == "part"); // end of part
+
+            SetOctaveShiftExtendersEndTicksPos(Measures);
+        }
+
+        private void SetOctaveShiftExtendersEndTicksPos(List<Measure> measures)
+        {
+            for(var measureIndex = 0; measureIndex < measures.Count; measureIndex++)
+            {
+                var measure = measures[measureIndex];
+                foreach(var sequence in measure.Sequences)
+                {
+                    foreach(var components in sequence.SequenceComponents)
+                    {
+                        if(components is Directions directions && directions.OctaveShift != null)
+                        {
+                            var octaveShift = directions.OctaveShift;
+                            var item1 = octaveShift.EndOctaveShiftPos.Item1;
+                            int endMeasureIndex = (item1 == null) ? measureIndex : (int)item1;
+                            var tickPosInMeasure = octaveShift.EndOctaveShiftPos.Item2;
+                            octaveShift.EndTicksPosInScore = measures[endMeasureIndex].TicksPosInScore + tickPosInMeasure;
+                        }
+                    }
+                }
+            }
         }
     }
 }

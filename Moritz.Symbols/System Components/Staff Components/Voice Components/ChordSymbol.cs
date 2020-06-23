@@ -21,6 +21,8 @@ namespace Moritz.Symbols
 
             OctaveShift = mnxEventDef.OctaveShift;
             EndOctaveShift = mnxEventDef.EndOctaveShift;
+            TicksPosInScore = mnxEventDef.TicksPosInScore;
+            TicksDuration = mnxEventDef.TicksDuration;
 
             // Beam is currently null. Create when necessary.
         }
@@ -463,7 +465,8 @@ namespace Moritz.Symbols
 
         public readonly OctaveShift OctaveShift;
         public readonly OctaveShift EndOctaveShift;
-
+        public readonly int TicksPosInScore;
+        public readonly int TicksDuration;
         public Stem Stem = null; // defaults
         public BeamBlock BeamBlock = null; // defaults
         public List<Head> HeadsTopDown = new List<Head>(); // Heads are in top-down order.

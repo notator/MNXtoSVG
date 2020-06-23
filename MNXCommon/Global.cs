@@ -32,11 +32,13 @@ namespace MNX.Common
 
             M.ReadToXmlElementTag(r, "measure");
 
+            int measureIndex = 0;
             while(r.Name == "measure")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
-                    Measures.Add(new Measure(r, true));
+                    Measure measure = new Measure(r, measureIndex++, -1, true);
+                    Measures.Add(measure);
                 }
                 M.ReadToXmlElementTag(r, "measure", "global");
             }

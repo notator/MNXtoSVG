@@ -12,20 +12,16 @@ namespace MNX.Common
     {
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
-
-        #region IUniqueDef
-        public override string ToString() => $"Grace: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
-
-        #endregion IUniqueDef
+        public override string ToString() => $"Grace: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         /// <summary>
         /// Grace and Event implement Ticks.set so that grace can steal.
         /// </summary>
-        public override int Ticks
+        public override int TicksDuration
         {
             get
             {
-                return base.Ticks; // returns the sum of the inner ticks.
+                return base.TicksDuration; // returns the sum of the inner ticks.
             }
             set
             {
@@ -34,21 +30,23 @@ namespace MNX.Common
                 List<int> innerTicks = new List<int>();
                 foreach(var ev in Events)
                 {
-                    innerTicks.Add(ev.Ticks);
+                    innerTicks.Add(ev.TicksDuration);
                 }
 
                 List<int> newTicks = M.IntDivisionSizes(outerTicks, innerTicks);
 
                 for(var i = 0; i < newTicks.Count; i++)
                 {
-                    events[i].Ticks = newTicks[i];
+                    events[i].TicksDuration = newTicks[i];
                 }
             }
         }
 
-        public Grace(XmlReader r)
+        public Grace(XmlReader r, int ticksPosInScore)
         {            
             M.Assert(r.Name == "grace");
+
+            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -67,7 +65,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "grace", false);
+            SequenceComponents = GetSequenceComponents(r, "grace", ticksPosInScore, false);
 
             SetDefaultTicks(SequenceComponents);
 

@@ -118,6 +118,7 @@ namespace Moritz.Symbols
             return sizeOfString;
         }
 
+        public TextInfo TextInfo { get { return _textInfo; } }
         private readonly TextInfo _textInfo = null;
     }
 

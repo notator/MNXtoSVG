@@ -43,25 +43,26 @@ namespace MNX.Common
         //    2: The Event is contained in a Tuplet nested in a Tuplet.
         //    etc. (This app copes with arbitrarily nested tuplets.)
         public readonly int TupletLevel;
+        public int TicksPosInScore { get; }
 
-        public int Ticks
+        public int TicksDuration
         {
             get
             {
-                if( _ticks == 0)
+                if( _ticksDuration == 0)
                 {
-                    _ticks = MNXDurationSymbol.DefaultTicks;
+                    _ticksDuration = MNXDurationSymbol.DefaultTicks;
                 }
-                return _ticks;
+                return _ticksDuration;
             }
             set
             {
                 // this function should only be used when stealing ticks for Grace.
                 M.Assert(value >= M.MinimumEventTicks);
-                _ticks = value;
+                _ticksDuration = value;
             }
         }
-        private int _ticks = 0;
+        private int _ticksDuration = 0;
 
         public bool IsBeamStart
         {
@@ -88,7 +89,8 @@ namespace MNX.Common
         #endregion runtime properties
 
         #region IUniqueDef
-        public override string ToString() => $"Event: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        
+        public override string ToString() => $"Event: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         /// <summary>
         /// (?) ISeqComponent objects are already unique, so no Clone is required. (?)
@@ -121,6 +123,7 @@ namespace MNX.Common
             }
         }
         private int _msDuration;
+        public int MsPosInScore = -1;
 
         public int MsPositionReFirstUD
         {
@@ -144,11 +147,13 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Event(XmlReader r)
+        public Event(XmlReader r, int ticksPosInScore)
         {
             TupletLevel = C.CurrentTupletLevel;
 
             M.Assert(r.Name == "event");
+
+            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

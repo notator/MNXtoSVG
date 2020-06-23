@@ -45,14 +45,12 @@ namespace MNX.Common
         public readonly int TupletLevel;
         #endregion Runtime property
 
-        #region IUniqueDef
-        public override string ToString() => $"Tuplet: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public override string ToString() => $"Tuplet: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
-        #endregion IUniqueDef
-
-        public Tuplet(XmlReader r)
+        public Tuplet(XmlReader r, int ticksPosInScore)
         {
             TupletLevel = C.CurrentTupletLevel; // top level tuplet has tuplet level 0
+            TicksPosInScore = ticksPosInScore;
 
             C.CurrentTupletLevel++;
 
@@ -95,7 +93,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "tuplet", false);
+            SequenceComponents = GetSequenceComponents(r, "tuplet", ticksPosInScore, false);
 
             if(C.CurrentTupletLevel == 1)
             {
@@ -152,7 +150,7 @@ namespace MNX.Common
                 }
                 else if(component is Grace g)
                 {
-                    ticksInside.Add(g.Ticks);
+                    ticksInside.Add(g.TicksDuration);
                 }
             }
 

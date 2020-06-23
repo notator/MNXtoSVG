@@ -13,15 +13,17 @@ namespace MNX.Common
         public readonly int Line = 0; // 0 means uninitialised. Line must start at 1 (the bottom line of the staff)
         public readonly int Octave = 0; // Default. Octave can be set to any positive or negative integer.
         public readonly ClefType? Sign = null;
+        private readonly int TicksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"Clef: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public override string ToString() => $"Clef: TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         #endregion IUniqueDef
 
-        public Clef(XmlReader r)
+        public Clef(XmlReader r, int ticksPosInScore)
         {
             // https://w3c.github.io/mnx/specification/common/#the-clef-element
             M.Assert(r.Name == "clef");
+            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

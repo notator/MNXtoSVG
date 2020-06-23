@@ -261,7 +261,16 @@ namespace Moritz.Symbols
             if(_displayText)
             {
                 _textMetrics.WriteSVG(w);
-                var lineleft = _left + ((_textMetrics.Right - _textMetrics.Left) * 0.85);
+                double textSpace = _textMetrics.Right - _textMetrics.Left;
+                if(_textMetrics.TextInfo.Text.Length == 3)
+                {
+                    textSpace *= 0.85; 
+                }
+                else if(_textMetrics.TextInfo.Text.Length == 4)
+                {
+                    textSpace *= 0.9;
+                }
+                var lineleft = _left + textSpace;
                 w.SvgLine(horizontalLineClass, lineleft, _originY, _right, _originY, _strokeDashArray);
             }
             else

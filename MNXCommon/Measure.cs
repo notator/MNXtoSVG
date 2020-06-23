@@ -11,31 +11,50 @@ namespace MNX.Common
         /// If null, this value should be set when the whole score has been read
         /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
         /// </summary>
-        public int? Number = null;
+        public int? Number = null;        
+
         /// <summary>
-        /// If null, this value should be set when the whole score has been read
-        /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
+        /// Contrary to https://w3c.github.io/mnx/specification/common/#the-measure-element
+        /// this (0-based) attribute is always set by the constructor.
         /// </summary>
-        public int? Index = null;
+        public readonly int Index = -1;
+        public int TicksPosInScore
+        {
+            get
+            {
+                if(_ticksPosInScore == -1)
+                {
+                    throw new ApplicationException("A Global Measure has no TicksPosInScore");
+                }
+                else
+                {
+                    return _ticksPosInScore;
+                }
+            }
+        }
+        private readonly int _ticksPosInScore;
+
+        public override string ToString() => $"Measure: Index={Index} TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
+
         public readonly BarlineType? Barline = null; // default
 
         public readonly Directions Directions = null;
         public readonly List<Sequence> Sequences = new List<Sequence>();
 
-        public int Ticks
+        public int TicksDuration
         {
             get
             {
-                int ticks = Sequences[0].Ticks;
+                int ticks = Sequences[0].TicksDuration;
                 for(var i = 1; i < Sequences.Count; i++)
                 {
-                    M.Assert(Sequences[i].Ticks == ticks);
+                    M.Assert(Sequences[i].TicksDuration == ticks);
                 }
                 return ticks;
             }
         }
 
-        public Measure(XmlReader r, bool isGlobal)
+        public Measure(XmlReader r, int measureIndex, int ticksPosInScore, bool isGlobal)
         {
             M.Assert(r.Name == "measure");
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
@@ -52,16 +71,20 @@ namespace MNX.Common
                 }
             }
 
+            Index = measureIndex; // ji: 23.06.2020
+            _ticksPosInScore = ticksPosInScore; // ji: 23.06.2020
+
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
             {
                 r.MoveToAttribute(i);
                 switch(r.Name)
                 {
-                    case "index":
-                        Index = Int32.Parse(r.Value);
-                        M.Assert(Index > 0);
-                        break;
+                    // The optional MNX-Common "index" attribute is always ignored.
+                    //case "index":
+                    //    Index = Int32.Parse(r.Value);
+                    //    M.Assert(Index > 0);
+                    //    break;
                     case "number":
                         Number = Int32.Parse(r.Value);
                         M.Assert(Number > 0);
@@ -76,6 +99,8 @@ namespace MNX.Common
 
             M.ReadToXmlElementTag(r, "directions", "sequence");
 
+            int sequenceIndex = 0;
+
             while(r.Name == "directions" || r.Name == "sequence")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
@@ -83,14 +108,15 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "directions":
-                            Directions = new Directions(r, isGlobal);
+                            Directions = new Directions(r, ticksPosInScore, isGlobal);
                             break;
                         case "sequence":
                             if(isGlobal)
                             {
                                 M.ThrowError("Error in input file.");
                             }
-                            Sequences.Add(new Sequence(r, isGlobal));
+                            Sequence sequence = new Sequence(r, measureIndex, ticksPosInScore, sequenceIndex++, isGlobal);
+                            Sequences.Add(sequence);
                             break;
                     }
                 }
@@ -159,21 +185,21 @@ namespace MNX.Common
                         {
                             case GraceType.stealPrevious:
                                 Event previousEvent = FindPreviousEvent(eventsAndEventGroups, graceIndex);
-                                stealableTicks = (previousEvent.Ticks - M.MinimumEventTicks);
-                                if(grace.Ticks > stealableTicks)
+                                stealableTicks = (previousEvent.TicksDuration - M.MinimumEventTicks);
+                                if(grace.TicksDuration > stealableTicks)
                                 {
-                                    grace.Ticks = stealableTicks;
+                                    grace.TicksDuration = stealableTicks;
                                 }
-                                previousEvent.Ticks -= grace.Ticks;
+                                previousEvent.TicksDuration -= grace.TicksDuration;
                                 break;
                             case GraceType.stealFollowing:
                                 Event nextEvent = FindNextEvent(eventsAndEventGroups, graceIndex);
-                                stealableTicks = (nextEvent.Ticks - M.MinimumEventTicks);
-                                if(grace.Ticks > stealableTicks)
+                                stealableTicks = (nextEvent.TicksDuration - M.MinimumEventTicks);
+                                if(grace.TicksDuration > stealableTicks)
                                 {
-                                    grace.Ticks = stealableTicks;
+                                    grace.TicksDuration = stealableTicks;
                                 }
-                                nextEvent.Ticks -= grace.Ticks;
+                                nextEvent.TicksDuration -= grace.TicksDuration;
                                 break;
                             case GraceType.makeTime:
                                 MakeTime(eventsAndEventGroups, grace);
@@ -243,7 +269,7 @@ namespace MNX.Common
                 {
                     break;
                 }
-                graceTicksPostion += obj.Ticks;
+                graceTicksPostion += obj.TicksDuration;
             }
             foreach(var sequence in this.Sequences)
             {
@@ -259,7 +285,7 @@ namespace MNX.Common
                         break;
                     }
                     insertTicksPos = ticksPos;
-                    ticksPos += eegs[index].Ticks;              
+                    ticksPos += eegs[index].TicksDuration;              
                 }
                 var eeg = eegs[eegIndex];
                 if(eeg is EventGroup eg)
@@ -269,12 +295,12 @@ namespace MNX.Common
                     {
                         if(insertTicksPos >= graceTicksPostion || i == (events.Count - 1))
                         {
-                            events[i].Ticks += grace.Ticks;
+                            events[i].TicksDuration += grace.TicksDuration;
                             break;
                         }
                     }
                 }
-                else ((Event)eeg).Ticks += grace.Ticks;                
+                else ((Event)eeg).TicksDuration += grace.TicksDuration;                
             }
         }
     }

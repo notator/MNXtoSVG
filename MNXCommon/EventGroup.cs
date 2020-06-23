@@ -38,6 +38,7 @@ namespace MNX.Common
             }
         }
         private int _msDuration;
+        public int MsPosInScore = -1;
 
         public int MsPositionReFirstUD
         {
@@ -102,7 +103,7 @@ namespace MNX.Common
             }
         }
 
-        public virtual int Ticks
+        public virtual int TicksDuration
         {
             get
             {
@@ -110,7 +111,7 @@ namespace MNX.Common
                 int rval = 0;
                 foreach(var e in eventList)
                 {
-                    rval += e.Ticks;
+                    rval += e.TicksDuration;
                 }
                 return rval;
             }
@@ -122,6 +123,7 @@ namespace MNX.Common
                 M.ThrowError("Application Error: This function should never be called.");       
             }
         }
+        public int TicksPosInScore { get; protected set; }
 
         /// <summary>
         /// This function is called after getting the class specific attributes
@@ -132,7 +134,7 @@ namespace MNX.Common
         /// "directions occurring within sequence content must omit this ("location") attribute as their
         /// location is determined during the procedure of sequencing the content."
         /// </summary>
-        protected static List<ISeqComponent> GetSequenceComponents(XmlReader r, string caller, bool isGlobal)
+        protected static List<ISeqComponent> GetSequenceComponents(XmlReader r, string caller, int seqTicksPosInScore, bool isGlobal)
         {
             /// local function, called below.
             /// The spec says:
@@ -146,6 +148,8 @@ namespace MNX.Common
             }
 
             List<ISeqComponent> content = new List<ISeqComponent>();
+
+            int ticksPosInScore = seqTicksPosInScore;
 
             // Read to the first element inside the caller element.
             // These are all the elements that can occur inside sequence-like elements. (Some of them nest.)
@@ -163,24 +167,32 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "directions":
-                            content.Add(new Directions(r, isGlobal));
+                            content.Add(new Directions(r, ticksPosInScore, isGlobal));
                             break;
                         case "event":
-                            Event e = new Event(r);
+                            Event e = new Event(r, ticksPosInScore);
+                            ticksPosInScore += e.TicksDuration;
                             content.Add(e);
                             break;
                         case "grace":
-                            Grace g = new Grace(r);
-                            content.Add(g);
+                            Grace grace = new Grace(r, ticksPosInScore);
+                            ticksPosInScore += grace.TicksDuration;
+                            content.Add(grace);
                             break;
                         case "beamed":
-                            content.Add(new Beamed(r));
+                            Beamed beamed = new Beamed(r, ticksPosInScore);
+                            ticksPosInScore += beamed.TicksDuration;
+                            content.Add(beamed);
                             break;
                         case "tuplet":
-                            content.Add(new Tuplet(r));
+                            Tuplet tuplet = new Tuplet(r, ticksPosInScore);
+                            ticksPosInScore += tuplet.TicksDuration;
+                            content.Add(tuplet);
                             break;
                         case "forward":
-                            content.Add(new Forward(r));
+                            Forward forward = new Forward(r, ticksPosInScore);
+                            ticksPosInScore += forward.TicksDuration;
+                            content.Add(forward);
                             break;
                     }
                 }

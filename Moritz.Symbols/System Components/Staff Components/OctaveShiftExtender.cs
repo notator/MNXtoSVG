@@ -43,16 +43,16 @@ namespace Moritz.Symbols
             double textY = 0;
 
             double textFontHeight = gap * 1.5; // == PageFormat.OctaveShiftExtenderTextFontHeight { get { return (GapVBPX * 1.5); } }
-            double endMarkerHeight = gap;
+            double endMarkerHeight = gap *0.8;
             if(octaveShift.Orient == MNX.Common.Orientation.up)
             {
-                hLineY = chordsY - (gap * 2);
+                hLineY = chordsY - gap;
                 textY = hLineY + (textFontHeight * 0.6);
             }
             else
             {
-                hLineY = chordsY + (gap * 2);
-                textY = hLineY;
+                hLineY = chordsY + (gap * 1.2);
+                textY = hLineY + (gap * 0.1);
                 endMarkerHeight *= -1;
             }
 

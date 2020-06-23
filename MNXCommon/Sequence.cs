@@ -12,6 +12,9 @@ namespace MNX.Common
         public readonly Orientation? Orient = null; // default
         public readonly int? StaffIndex = null; // default
         public readonly string VoiceID = null; // default
+        public readonly int Index = -1; // 0-based, always set by ctor.
+
+        public override string ToString() => $"Sequence: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         /// <summary>
         /// This value is set by the Part constructor, once the Part as a whole has been read.
@@ -20,9 +23,14 @@ namespace MNX.Common
         /// </summary>
         public int IndexID;
 
-        public Sequence(XmlReader r, bool isGlobal)
+        public int MsPositionInScore { get; private set; }
+
+        public Sequence(XmlReader r, int measureindex, int ticksPosInScore, int sequenceIndex, bool isGlobal)
         {
             M.Assert(r.Name == "sequence");
+
+            Index = sequenceIndex;
+            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -47,7 +55,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "sequence", isGlobal);
+            SequenceComponents = GetSequenceComponents(r, "sequence", ticksPosInScore, isGlobal);
 
             M.Assert(r.Name == "sequence");
         }
@@ -67,17 +75,19 @@ namespace MNX.Common
                     {
                         break;
                     }
-                    rval += tObj.Ticks;
+                    rval += tObj.TicksDuration;
                 }
             }
 
             return rval;
         }
 
-        public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(double millisecondsPerTick)
+        public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(int seqMsPositionInScore, double millisecondsPerTick)
         {
             List<Event> events = this.Events;
-            SetMsDurationPerEvent(events, millisecondsPerTick);
+            MsPositionInScore = seqMsPositionInScore;
+
+            SetMsDurations(seqMsPositionInScore, events, millisecondsPerTick);
 
             var rval = new List<IUniqueDef>();
             OctaveShift octaveShift = null;
@@ -158,14 +168,14 @@ namespace MNX.Common
             return rval;
         }
 
-        private void SetMsDurationPerEvent(List<Event> events, double millisecondsPerTick)
+        private void SetMsDurations(int seqMsPositionInScore, List<Event> events, double millisecondsPerTick)
         {
             var tickPositions = new List<int>();
             int currentTickPosition = 0;
             foreach(var evt in Events)
             {
                 tickPositions.Add(currentTickPosition);
-                currentTickPosition += evt.Ticks;
+                currentTickPosition += evt.TicksDuration;
             }
             tickPositions.Add(currentTickPosition);
 
@@ -175,11 +185,18 @@ namespace MNX.Common
                 msPositions.Add((int)Math.Round(tickPosition * millisecondsPerTick));
             }
 
+            int seqMsDuration = 0;
+            int evtMsPositionInScore = seqMsPositionInScore;
             for(var i = 1; i < msPositions.Count; i++)
             {
                 int msDuration = msPositions[i] - msPositions[i - 1];
                 events[i - 1].MsDuration = msDuration;
+                events[i - 1].MsPosInScore = evtMsPositionInScore;
+                evtMsPositionInScore += msDuration;
+                seqMsDuration += msDuration;
             }
+
+            MsDuration = seqMsDuration;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Moritz.Symbols
             var midiChannelsPerStaff = PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;
 
-            var absSeqMsPosition = 0;
+            var seqMsPositionInScore = 0;
             for(var measureIndex = 0; measureIndex < globalDirectionsPerMeasure.Count; measureIndex++)
             {
                 var midiChannelIndexPerOutputVoice = new List<int>();
@@ -76,7 +76,7 @@ namespace Moritz.Symbols
                         for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
                         {
                             Sequence sequence = measure.Sequences[voiceIndex];
-                            List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(PageFormat.MillisecondsPerTick);
+                            List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, PageFormat.MillisecondsPerTick);
 
                             InsertDirectionsInSeqIUDs(seqIUDs, measureDirections, globalDirections);
 
@@ -88,10 +88,10 @@ namespace Moritz.Symbols
                         systemStaffIndex++;
                     }
                 }
-                Seq seq = new Seq(absSeqMsPosition, trks, midiChannelIndexPerOutputVoice);
+                Seq seq = new Seq(seqMsPositionInScore, trks, midiChannelIndexPerOutputVoice);
                 Bar bar = new Bar(seq);
                 bars.Add(bar);
-                absSeqMsPosition += seq.MsDuration;
+                seqMsPositionInScore += seq.MsDuration;
             }
 
             AdjustNoteheadPitchesForOctaveShifts(bars);
@@ -162,7 +162,7 @@ namespace Moritz.Symbols
                                     endOctaveShiftPos = null;
                                 }
                             }
-                            tickPositionInBar += evt.Ticks;
+                            tickPositionInBar += evt.TicksDuration;
                         }
                     }
                 }

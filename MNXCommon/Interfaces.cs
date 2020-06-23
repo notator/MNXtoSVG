@@ -53,7 +53,8 @@ namespace MNX.Common
     /// </summary>
     public interface IHasTicks
     {
-        int Ticks { get; }
+        int TicksDuration { get; }
+        int TicksPosInScore { get; }
     }
 
     /// <summary>

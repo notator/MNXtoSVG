@@ -9,9 +9,10 @@ namespace MNX.Common
     {
         public readonly string Signature;
         public readonly string Measure;
+        private readonly int TicksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"TimeSignature: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public override string ToString() => $"TimeSignature: TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -47,9 +48,10 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public TimeSignature(XmlReader r)
+        public TimeSignature(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "time");
+            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

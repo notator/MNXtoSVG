@@ -258,10 +258,10 @@ namespace Moritz.Symbols
                         {
                             if(noteObjects[rightNOIndex] is OutputChordSymbol rightChord)
                             {
-                                yMax = (yMax > leftChord.ChordMetrics.Bottom) ? yMax : leftChord.ChordMetrics.Bottom;
-                                yMin = (yMin < leftChord.ChordMetrics.Top) ? yMin : leftChord.ChordMetrics.Top;
+                                yMax = (yMax > rightChord.ChordMetrics.Bottom) ? yMax : rightChord.ChordMetrics.Bottom;
+                                yMin = (yMin < rightChord.ChordMetrics.Top) ? yMin : rightChord.ChordMetrics.Top;
 
-                                if(rightChord.EndOctaveShift == leftChord.OctaveShift)
+                                if(rightChord.TicksPosInScore == leftChord.OctaveShift.EndTicksPosInScore)
                                 {
                                     var y = (leftChord.OctaveShift.Orient == Orientation.up) ? yMin : yMax;
                                     octaveShiftExtender =
@@ -289,8 +289,8 @@ namespace Moritz.Symbols
         {
             foreach(var voice in Voices)
             {
-                double yMax = -1;
-                double yMin = double.MaxValue;
+                double yMax = Metrics.StafflinesBottom;
+                double yMin = Metrics.StafflinesTop;
                 var noteObjects = voice.NoteObjects;
                 double x1 = -1;
                 for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)

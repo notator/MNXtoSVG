@@ -16,8 +16,11 @@ namespace MNX.Common
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
 
+        public readonly int TicksPosInScore = -1; // set in ctor
+        public const int TicksDuration = 0; // all directions have 0 ticks.
+
         #region IUniqueDef
-        public override string ToString() => $"Directions: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public override string ToString() => $"Directions: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
 
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
@@ -54,9 +57,11 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Directions(XmlReader r, bool isGlobal)
+        public Directions(XmlReader r, int ticksPosInScore, bool isGlobal)
         {
             M.Assert(r.Name == "directions");
+
+            TicksPosInScore = ticksPosInScore;
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
@@ -74,17 +79,17 @@ namespace MNX.Common
                             {
                                 M.ThrowError("Error: the time element must be global in standard mnx-common.");
                             }
-                            TimeSignature = new TimeSignature(r);
+                            TimeSignature = new TimeSignature(r, ticksPosInScore);
                             break;
                         case "clef":
-                            Clef = new Clef(r);
+                            Clef = new Clef(r, ticksPosInScore);
                             break;
                         case "key":
                             // https://w3c.github.io/mnx/specification/common/#the-key-element
-                            KeySignature = new KeySignature(r);
+                            KeySignature = new KeySignature(r, ticksPosInScore);
                             break;
                         case "octave-shift":
-                            OctaveShift = new OctaveShift(r);
+                            OctaveShift = new OctaveShift(r, ticksPosInScore);
                             break;
                     }
                 }

@@ -12,15 +12,14 @@ namespace MNX.Common
         public readonly MNXDurationSymbol Duration = null;
         public readonly string Continue = null;
         public readonly string ID = null;
+        public override string ToString() => $"Beamed: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
-        #region IUniqueDef
-        public override string ToString() => $"Beamed: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
-        #endregion IUniqueDef
-
-        public Beamed(XmlReader r)
+        public Beamed(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "beamed");
             // https://w3c.github.io/mnx/specification/common/#the-beamed-element
+
+            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -42,7 +41,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "beamed", false);
+            SequenceComponents = GetSequenceComponents(r, "beamed", ticksPosInScore, false);
 
             M.Assert(r.Name == "beamed"); // end of (nested) beamed
         }

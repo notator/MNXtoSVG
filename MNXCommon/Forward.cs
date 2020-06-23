@@ -22,13 +22,14 @@ namespace MNX.Common
         //    2: The Forward is contained in a Tuplet nested in a Tuplet.
         //    etc. (This app copes with arbitrarily nested tuplets.)
         public readonly int TupletLevel;
-        public int Ticks { get { return DSymbol.DefaultTicks; } }
 
+        public int TicksDuration { get { return DSymbol.DefaultTicks; } }
+        public int TicksPosInScore { get; }
+        public int MsPosInScore = -1;
+        public override string ToString() => $"Forward: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
         #endregion runtime properties
 
         #region IUniqueDef
-        public override string ToString() => $"Event: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
-
         /// <summary>
         /// (?) ISeqComponent objects are already unique, so no Clone is required. (?)
         /// </summary>
@@ -74,14 +75,16 @@ namespace MNX.Common
                 _msPositionReFirstIUD = value;
             }
         }
+
         private int _msPositionReFirstIUD = 0;
 
 
         #endregion IUniqueDef
 
-        public Forward(XmlReader r)
+        public Forward(XmlReader r, int ticksPosInScore)
         {
             TupletLevel = C.CurrentTupletLevel;
+            TicksPosInScore = ticksPosInScore;
 
             M.Assert(r.Name == "forward");
 

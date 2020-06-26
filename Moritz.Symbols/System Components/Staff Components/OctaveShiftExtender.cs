@@ -1,3 +1,4 @@
+using MNX.Globals;
 using MNX.Common;
 using Moritz.Spec;
 using Moritz.Xml;
@@ -42,8 +43,11 @@ namespace Moritz.Symbols
             double hLineY = 0;
             double textY = 0;
 
-            double textFontHeight = gap * 1.5; // == PageFormat.OctaveShiftExtenderTextFontHeight { get { return (GapVBPX * 1.5); } }
-            double endMarkerHeight = gap *0.8;
+            
+            //double textFontHeight = gap * 1.5; // == PageFormat.OctaveShiftExtenderTextFontHeight { get { return (GapVBPX * 1.5); } }
+
+            double textFontHeight = M.PageFormat.OctaveShiftExtenderTextFontHeight;
+            double endMarkerHeight = gap * 0.8;
             if(octaveShift.Orient == MNX.Common.Orientation.up)
             {
                 hLineY = chordsY - gap;

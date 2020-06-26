@@ -64,7 +64,6 @@
     <Compile Include="Metrics\SystemMetrics.cs" />
     <Compile Include="Metrics\KeySignatureMetrics.cs" />
     <Compile Include="Metrics\TimeSignatureMetrics.cs" />
-    <Compile Include="PageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionDef.cs" />
     <Compile Include="ScoreData.cs" />

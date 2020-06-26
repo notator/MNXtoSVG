@@ -53,6 +53,8 @@ namespace MNX.Globals
         public static CultureInfo ci = new CultureInfo("en-US", false);
         public static NumberFormatInfo En_USNumberFormat = ci.NumberFormat;
 
+        public static PageFormat PageFormat = null;
+
         #region ticks
 
         /// <summary>

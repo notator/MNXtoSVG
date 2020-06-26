@@ -1,8 +1,7 @@
 ﻿
 using System.Collections.Generic;
-using MNX.Globals;
 
-namespace Moritz.Symbols
+namespace MNX.Globals
 {
     /// <summary>
     /// Public values are in viewbox pixel units.

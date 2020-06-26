@@ -45,6 +45,7 @@
     <Compile Include="Form1StringClasses.cs" />
     <Compile Include="Form1StringData.cs" />
     <Compile Include="Form1Data.cs" />
+    <Compile Include="PageFormat.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

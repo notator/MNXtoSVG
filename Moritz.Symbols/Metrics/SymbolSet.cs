@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Collections.Generic;
 
+using MNX.Globals;
 using Moritz.Xml;
 using Moritz.Spec;
 

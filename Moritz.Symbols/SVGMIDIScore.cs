@@ -23,7 +23,8 @@ namespace Moritz.Symbols
             };
 
             PageFormat = new PageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
-            M.PageFormat = PageFormat;
+
+            M.SetPageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
 
             Notator = new Notator(PageFormat);
 

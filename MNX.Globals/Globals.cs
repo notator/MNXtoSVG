@@ -39,6 +39,7 @@ namespace MNX.Globals
 
             return directory;
         }
+
         private static readonly string mnxMain_Folder = GetMNX_MainFolder();
 
         public static readonly string OptionsForWriteAll_Path = mnxMain_Folder + @"\OptionsForWriteAll.f1d";
@@ -53,7 +54,18 @@ namespace MNX.Globals
         public static CultureInfo ci = new CultureInfo("en-US", false);
         public static NumberFormatInfo En_USNumberFormat = ci.NumberFormat;
 
-        public static PageFormat PageFormat = null;
+        public static void SetPageFormat(Form1Data form1Data, List<List<int>> voicesPerStaffPerPart)
+        {
+            if(PageFormat == null)
+            {
+                PageFormat = new PageFormat(form1Data, voicesPerStaffPerPart);
+            }
+            else
+            {
+                throw new ApplicationException("PageFormat can only be set once.");
+            }
+        }
+        public static PageFormat PageFormat { get; private set; }
 
         #region ticks
 

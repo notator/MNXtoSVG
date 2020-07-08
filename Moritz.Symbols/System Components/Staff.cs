@@ -573,7 +573,7 @@ namespace Moritz.Symbols
         {
             double deltaX = 0;
             double iota = 0.001; // tolerance for double comparisons
-            double stemThickness = SVGSystem.Score.PageFormat.StafflineStemStrokeWidthVBPX;
+            double stemThickness = M.PageFormat.StafflineStemStrokeWidthVBPX;
             double upperHeadRightStemX = upperHM[upperHM.Count - 1].RightStemX;
             double lowerHeadLeftStemX = lowerHM[0].LeftStemX;
             double verticalChordOverlap = upperHM[upperHM.Count - 1].Top - lowerHM[0].Top + Gap;

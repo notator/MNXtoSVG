@@ -23,7 +23,6 @@ namespace Moritz.Symbols
         #endregion constructor
 
         #region subclass constructor
-        public PageFormat PageFormat = null;
         public MetadataWithDate MetadataWithDate = null;
         #endregion
 
@@ -59,7 +58,7 @@ namespace Moritz.Symbols
         {
             if(printTitleAndAuthorOnPage1)
             {
-                PageFormat.TopMarginPage1VBPX = PageFormat.TopMarginOtherPagesVBPX;
+                M.PageFormat.TopMarginPage1VBPX = M.PageFormat.TopMarginOtherPagesVBPX;
             }
             List<string> svgPagenames = SaveSVGPages(graphicsOnly, printTitleAndAuthorOnPage1);
 
@@ -87,7 +86,7 @@ namespace Moritz.Symbols
                 w.WriteStartElement("body");
                 w.WriteStartElement("div");
                 string styleString = "position:relative; text-align: left; top: 0px; padding-top: 0px; margin-top: 0px; width: " +
-                    PageFormat.BottomVBPX.ToString();
+                    M.PageFormat.BottomVBPX.ToString();
                 w.WriteAttributeString("style", styleString);
 
                 w.WriteStartElement("div");
@@ -100,8 +99,8 @@ namespace Moritz.Symbols
                     w.WriteAttributeString("src", svgPagename);
                     w.WriteAttributeString("content-type", "image/svg+xml");
                     w.WriteAttributeString("class", "svgPage");
-                    w.WriteAttributeString("width", M.DoubleToShortString(PageFormat.RightVBPX / PageFormat.ViewBoxMagnification));
-                    w.WriteAttributeString("height", M.DoubleToShortString(PageFormat.BottomVBPX / PageFormat.ViewBoxMagnification));
+                    w.WriteAttributeString("width", M.DoubleToShortString(M.PageFormat.RightVBPX / M.PageFormat.ViewBoxMagnification));
+                    w.WriteAttributeString("height", M.DoubleToShortString(M.PageFormat.BottomVBPX / M.PageFormat.ViewBoxMagnification));
                     w.WriteEndElement();
                     w.WriteStartElement("br");
                     w.WriteEndElement();
@@ -215,13 +214,13 @@ namespace Moritz.Symbols
             M.Assert(Notator != null);
 			w.SvgStartDefs(null);
 			WriteStyle(w, pageNumber);
-			Notator.SymbolSet.WriteSymbolDefinitions(w, PageFormat);
+			Notator.SymbolSet.WriteSymbolDefinitions(w, M.PageFormat);
 			w.SvgEndDefs(); // end of defs
 		}
 
 		private void WriteStyle(SvgWriter w, int pageNumber)
 		{
-            StringBuilder css = GetStyles(PageFormat, pageNumber);
+            StringBuilder css = GetStyles(M.PageFormat, pageNumber);
 
             w.WriteStartElement("style");
 			w.WriteAttributeString("type", "text/css");
@@ -926,14 +925,14 @@ namespace Moritz.Symbols
 		{
             if(printTitleAndAuthorOnPage1)
             {
-                PageFormat.TopMarginPage1VBPX = PageFormat.TopMarginOtherPagesVBPX;
+                M.PageFormat.TopMarginPage1VBPX = M.PageFormat.TopMarginOtherPagesVBPX;
             }
 
             string filePath = GetSVGFilePath(0);
 
             TextInfo infoTextInfo = GetInfoTextAtTopOfPage(filePath);
 
-            SvgPage singlePage = new SvgPage(this, PageFormat, 0, infoTextInfo, this.Systems, true);
+            SvgPage singlePage = new SvgPage(this, M.PageFormat, 0, infoTextInfo, this.Systems, true);
 
 			SaveSVGPage(filePath, singlePage, MetadataWithDate, true, graphicsOnly, printTitleAndAuthorOnPage1);
 
@@ -982,7 +981,7 @@ namespace Moritz.Symbols
                     {
                         if(noteObject is Barline firstBarline && !String.IsNullOrEmpty(staff.Staffname))
                         {
-                            double fontHeight = PageFormat.StaffNameFontHeight;
+                            double fontHeight = M.PageFormat.StaffNameFontHeight;
 							StaffNameText staffNameText = new StaffNameText(firstBarline, staff.Staffname, fontHeight);
                             firstBarline.DrawObjects.Add(staffNameText);
                             break;
@@ -1075,7 +1074,7 @@ namespace Moritz.Symbols
                 while(barNumber <= Systems.Count)
                 {
                     barNumbers.Add(barNumber);
-                    barNumber += PageFormat.DefaultNumberOfBarsPerSystem;
+                    barNumber += M.PageFormat.DefaultNumberOfBarsPerSystem;
                 }
             }
 
@@ -1334,9 +1333,9 @@ namespace Moritz.Symbols
 
             AddNormalBarlines(); // 1. add a NormalBarline at the end of each system=bar,
 
-			ReplaceConsecutiveRestsInBars(PageFormat.MinimumCrotchetDuration);
+			ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
 
-            SetSystemsToBeginAtBars(PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
+            SetSystemsToBeginAtBars(M.PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
 
 			SetSystemAbsEndMsPositions();
 
@@ -1606,9 +1605,9 @@ namespace Moritz.Symbols
             double systemHeight = 0;
             double frameHeight;
             if(pageNumber == 1)
-                frameHeight = PageFormat.FirstPageFrameHeight;
+                frameHeight = M.PageFormat.FirstPageFrameHeight;
             else
-                frameHeight = PageFormat.OtherPagesFrameHeight;
+                frameHeight = M.PageFormat.OtherPagesFrameHeight;
 
             double systemHeightsTotal = 0;
             while(systemIndex < Systems.Count)
@@ -1625,14 +1624,14 @@ namespace Moritz.Symbols
                     break;
                 }
 
-                systemHeightsTotal += PageFormat.DefaultDistanceBetweenSystemsVBPX;
+                systemHeightsTotal += M.PageFormat.DefaultDistanceBetweenSystemsVBPX;
 
                 systemsOnPage.Add(Systems[systemIndex]);
 
                 systemIndex++;
             }
 
-            return new SvgPage(this, PageFormat, pageNumber, infoTextInfo, systemsOnPage, lastPage);
+            return new SvgPage(this, M.PageFormat, pageNumber, infoTextInfo, systemsOnPage, lastPage);
         }
 
         private TextInfo GetInfoTextAtTopOfPage(string filePath)
@@ -1642,7 +1641,7 @@ namespace Moritz.Symbols
             if(MetadataWithDate != null)
                 infoString += (", " + MetadataWithDate.Date);
 
-            return new TextInfo(infoString, "Arial", PageFormat.TimeStampFontHeight, TextHorizAlign.left);
+            return new TextInfo(infoString, "Arial", M.PageFormat.TimeStampFontHeight, TextHorizAlign.left);
         }
 
 
@@ -1681,7 +1680,7 @@ namespace Moritz.Symbols
                     {
                         if(isFirstBarline && system != Systems[0])
                         {
-                            FramedBarNumberText framedBarNumber = new FramedBarNumberText(this, barNumber.ToString(), PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
+                            FramedBarNumberText framedBarNumber = new FramedBarNumberText(this, barNumber.ToString(), M.PageFormat.GapVBPX, M.PageFormat.StafflineStemStrokeWidthVBPX);
 
                             barline.DrawObjects.Add(framedBarNumber);
                             isFirstBarline = false;
@@ -1722,7 +1721,7 @@ namespace Moritz.Symbols
 				{
 					if(regionStartDataBarIndices.Contains(barlineIndex))
 					{
-						FramedRegionStartText frst = new FramedRegionStartText(this, regionStartData[barlineIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
+						FramedRegionStartText frst = new FramedRegionStartText(this, regionStartData[barlineIndex], M.PageFormat.GapVBPX, M.PageFormat.StafflineStemStrokeWidthVBPX);
 						barline.DrawObjects.Add(frst);
 					}
 					barlineIndex++;
@@ -1770,7 +1769,7 @@ namespace Moritz.Symbols
 				{
 					if(regionEndDataBarIndices.Contains(barlineIndex))
 					{
-						FramedRegionEndText fret = new FramedRegionEndText(this, regionEndData[barlineIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
+						FramedRegionEndText fret = new FramedRegionEndText(this, regionEndData[barlineIndex], M.PageFormat.GapVBPX, M.PageFormat.StafflineStemStrokeWidthVBPX);
 						barline.DrawObjects.Add(fret);
 					}
 					barlineIndex++;

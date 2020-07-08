@@ -22,11 +22,9 @@ namespace Moritz.Symbols
                 Date = M.NowString
             };
 
-            PageFormat = new PageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
+            M.PageFormat = new PageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
 
-            M.SetPageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
-
-            Notator = new Notator(PageFormat);
+            Notator = new Notator(M.PageFormat);
 
             List<Bar> bars = GetBars(mnxCommon);
 
@@ -37,8 +35,8 @@ namespace Moritz.Symbols
             string filePath = null;
             if(form1Data.Options.WriteScrollScore)
             {
-                PageFormat.BottomVBPX = GetNewBottomVBPX(Systems);
-                PageFormat.BottomMarginPosVBPX = (int)(PageFormat.BottomVBPX - PageFormat.DefaultDistanceBetweenSystemsVBPX);
+                M.PageFormat.BottomVBPX = GetNewBottomVBPX(Systems);
+                M.PageFormat.BottomMarginPosVBPX = (int)(M.PageFormat.BottomVBPX - M.PageFormat.DefaultDistanceBetweenSystemsVBPX);
                 filePath = SaveSVGScrollScore(!form1Data.Options.IncludeMIDIData, form1Data.Options.WritePage1Titles);
             }
             else
@@ -55,7 +53,7 @@ namespace Moritz.Symbols
         {
             var bars = new List<Bar>();
             List<List<IUniqueDef>> globalDirectionsPerMeasure = mnxCommon.Global.GetGlobalDirectionsPerMeasure();
-            var midiChannelsPerStaff = PageFormat.MIDIChannelsPerStaff;
+            var midiChannelsPerStaff = M.PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;
 
             var seqMsPositionInScore = 0;
@@ -79,7 +77,7 @@ namespace Moritz.Symbols
                         for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
                         {
                             Sequence sequence = measure.Sequences[voiceIndex];
-                            List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, PageFormat.MillisecondsPerTick);
+                            List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, M.PageFormat.MillisecondsPerTick);
 
                             InsertDirectionsInSeqIUDs(seqIUDs, measureDirections, globalDirections);
 
@@ -545,11 +543,11 @@ namespace Moritz.Symbols
 
         private int GetNewBottomVBPX(List<SvgSystem> Systems)
         {
-            int frameHeight = PageFormat.TopMarginPage1VBPX + 20;
+            int frameHeight = M.PageFormat.TopMarginPage1VBPX + 20;
             foreach(SvgSystem system in Systems)
             {
                 SystemMetrics sm = system.Metrics;
-                frameHeight += (int)((sm.Bottom - sm.Top) + PageFormat.DefaultDistanceBetweenSystemsVBPX);
+                frameHeight += (int)((sm.Bottom - sm.Top) + M.PageFormat.DefaultDistanceBetweenSystemsVBPX);
             }
 
             return frameHeight;
@@ -564,7 +562,7 @@ namespace Moritz.Symbols
             //} 
 
             /**********************************************************************/
-            List<int> nVoicesPerStaff = GetNVoicesPerStaff(PageFormat.MIDIChannelsPerStaff);
+            List<int> nVoicesPerStaff = GetNVoicesPerStaff(M.PageFormat.MIDIChannelsPerStaff);
             List<List<List<VoiceDef>>> voiceDefsPerStaffPerBar = GetVoiceDefsPerStaffPerBar(bars, nVoicesPerStaff);
 
             // If a staff has two voices (parallel sequences) then the first must be higher than the second.
@@ -578,7 +576,7 @@ namespace Moritz.Symbols
 
             CreateEmptySystems(voiceDefsPerStaffPerBar); // one system per bar
 
-            if(PageFormat.ChordSymbolType != "none") // set by AudioButtonsControl
+            if(M.PageFormat.ChordSymbolType != "none") // set by AudioButtonsControl
             {
                 Notator.ConvertVoiceDefsToNoteObjects(this.Systems);
 
@@ -589,7 +587,7 @@ namespace Moritz.Symbols
                 /// both horizontally and vertically.
                 Notator.CreateMetricsAndJustifySystems(this.Systems);
 
-                CreateTies(this.Systems, PageFormat.GapVBPX);
+                CreateTies(this.Systems, M.PageFormat.GapVBPX);
             }
 
             CheckSystems(this.Systems);
@@ -1104,7 +1102,7 @@ namespace Moritz.Symbols
 			List<int> lowerVoiceIndices = new List<int>();
 			int voiceIndex = 0;
 			
-			IReadOnlyList<IReadOnlyList<int>> outputChPerStaff = PageFormat.MIDIChannelsPerStaff;
+			IReadOnlyList<IReadOnlyList<int>> outputChPerStaff = M.PageFormat.MIDIChannelsPerStaff;
 
 			for(int staffIndex = 0; staffIndex < outputChPerStaff.Count; ++staffIndex)
 			{
@@ -1205,10 +1203,10 @@ namespace Moritz.Symbols
                 for(var staffIndex = 0; staffIndex < nStaves; staffIndex++)
                 {
                     string staffname = StaffName(systemIndex, staffIndex);
-                    OutputStaff outputStaff = new OutputStaff(system, staffname, PageFormat.StafflinesPerStaff[staffIndex], PageFormat.GapVBPX, PageFormat.StafflineStemStrokeWidthVBPX);
+                    OutputStaff outputStaff = new OutputStaff(system, staffname, M.PageFormat.StafflinesPerStaff[staffIndex], M.PageFormat.GapVBPX, M.PageFormat.StafflineStemStrokeWidthVBPX);
 
                     var staffVoiceDefs = voiceDefsPerStaff[staffIndex];
-                    var staffMidiChannels = PageFormat.MIDIChannelsPerStaff[staffIndex];
+                    var staffMidiChannels = M.PageFormat.MIDIChannelsPerStaff[staffIndex];
                     M.Assert(staffVoiceDefs.Count == staffMidiChannels.Count);
                     for(int ovIndex = 0; ovIndex < staffVoiceDefs.Count; ++ovIndex)
                     {
@@ -1230,11 +1228,11 @@ namespace Moritz.Symbols
         {
             if(systemIndex == 0)
             {
-                return PageFormat.LongStaffNames[staffIndex];
+                return M.PageFormat.LongStaffNames[staffIndex];
             }
             else
             {
-                return PageFormat.ShortStaffNames[staffIndex];
+                return M.PageFormat.ShortStaffNames[staffIndex];
             }
         }
 

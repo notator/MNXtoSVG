@@ -54,18 +54,7 @@ namespace MNX.Globals
         public static CultureInfo ci = new CultureInfo("en-US", false);
         public static NumberFormatInfo En_USNumberFormat = ci.NumberFormat;
 
-        public static void SetPageFormat(Form1Data form1Data, List<List<int>> voicesPerStaffPerPart)
-        {
-            if(PageFormat == null)
-            {
-                PageFormat = new PageFormat(form1Data, voicesPerStaffPerPart);
-            }
-            else
-            {
-                throw new ApplicationException("PageFormat can only be set once.");
-            }
-        }
-        public static PageFormat PageFormat { get; private set; }
+        public static PageFormat PageFormat { get; set; }
 
         #region ticks
 

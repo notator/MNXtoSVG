@@ -690,7 +690,7 @@ namespace Moritz.Symbols
                         if(voiceStemDirection == VerticalDir.none || voiceStemDirection == VerticalDir.down)
                         {
                             // the lyrics are below the staff
-                            double lyricMinTop = staff.Metrics.StafflinesBottom + (staff.SVGSystem.Score.PageFormat.GapVBPX * 1.5F);
+                            double lyricMinTop = staff.Metrics.StafflinesBottom + (M.PageFormat.GapVBPX * 1.5F);
                             lyricMaxTop = lyricMaxTop > lyricMinTop ? lyricMaxTop : lyricMinTop;
                         }
                         foreach(ChordSymbol chordSymbol in staff.Voices[voiceIndex].ChordSymbols)
@@ -794,9 +794,8 @@ namespace Moritz.Symbols
 				// This voice has no further chords or rests,
 				// so draw extenders to the right margin.
 				// extend to the right margin
-				PageFormat pageFormat = cautionaryChordSymbol1.Voice.Staff.SVGSystem.Score.PageFormat;
-				double rightMarginPos = pageFormat.RightMarginPosVBPX;
-				double gap = pageFormat.GapVBPX;
+				double rightMarginPos = M.PageFormat.RightMarginPosVBPX;
+				double gap = M.PageFormat.GapVBPX;
 				x2s = GetEqualFloats(rightMarginPos + gap, ys.Count);
 			}
 			return x2s;

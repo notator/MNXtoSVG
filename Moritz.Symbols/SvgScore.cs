@@ -1065,9 +1065,11 @@ namespace Moritz.Symbols
         /// Barnumber 1 must be present. No barNumbers may be repeated.
         /// barNumbers beyond the end of the score are silently ignored.
         /// </summary>
-        public void SetSystemsToBeginAtBars(List<int> barNumbers)
+        public void SetSystemsToBeginAtBars(IReadOnlyList<int> globalBarNumbers)
         {
-			M.Assert(barNumbers != null);
+            List<int> barNumbers = new List<int>(globalBarNumbers);
+
+            M.Assert(barNumbers != null);
             if(barNumbers.Count == 0)
             {
                 int barNumber = 1;

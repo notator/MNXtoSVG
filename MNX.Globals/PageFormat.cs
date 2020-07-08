@@ -8,33 +8,34 @@ namespace MNX.Globals
     /// </summary>
     public class PageFormat
     {
+        #region constants
         public readonly int ViewBoxMagnification = 10;
 
+        // The relatve size of cautionary and small objects
+        public double SmallSizeFactor { get { return 0.8; } }
+        // The opacity of opaque beams
+        // (Opaque beams are written between the beam and stafflines to make the stafflines appear grey.)
+        public double OpaqueBeamOpacity { get { return 0.65; } }
+
+        public int DefaultNumberOfBarsPerSystem { get { return 5; } }
+        #endregion
+
         #region Attributes set by constructor
-        public int RightVBPX = 0;
-        public int BottomVBPX = 0;
-        public int TopMarginPage1VBPX;
-        public int TopMarginOtherPagesVBPX;
-        public int RightMarginPosVBPX;
-        public int LeftMarginPosVBPX;
-        public int BottomMarginPosVBPX;
-        public double StafflineStemStrokeWidthVBPX;
-        public double GapVBPX;
-        public double DefaultDistanceBetweenStavesVBPX; // The distance between staves when they are not vertically justified.
-        public double DefaultDistanceBetweenSystemsVBPX; // The view box pixel distance between systems when they are not vertically justified.
-        public List<int> SystemStartBars = null;
-
+        public readonly int RightVBPX = 0;
+        public int BottomVBPX = 0; // is reset for scroll scores
+        public int TopMarginPage1VBPX; // is reset for scroll scores
+        public readonly int TopMarginOtherPagesVBPX;
+        public readonly int RightMarginPosVBPX;
+        public readonly int LeftMarginPosVBPX;
+        public int BottomMarginPosVBPX; // is reset for scroll scores
+        public readonly double StafflineStemStrokeWidthVBPX;
+        public readonly double GapVBPX;
+        public readonly double DefaultDistanceBetweenStavesVBPX; // The distance between staves when they are not vertically justified.
+        public readonly double DefaultDistanceBetweenSystemsVBPX; // The view box pixel distance between systems when they are not vertically justified.
         public readonly double MillisecondsPerTick = 0;
-
-        // See OctaveShiftExtender constructor
-        public string OctaveShiftExtenderTextFontFamily { get { return "Arial"; } }
-        public double OctaveShiftExtenderTextFontHeight { get { return (GapVBPX * 1.5); } }
-        public string OctaveShiftExtenderTextFontWeight { get { return "bold"; } }  // SVGFontWeight.bold.ToString()
-        public string OctaveShiftExtenderTextFontStyle { get { return "italic"; } } // SVGFontStyle.italic.ToString()
-        public double OctaveShiftExtenderLineStrokeWidth { get { return (StafflineStemStrokeWidthVBPX * 1.2); } }
-
-        public IReadOnlyList<IReadOnlyList<int>> MIDIChannelsPerStaff = null;
-        public IReadOnlyList<int> NumberOfStavesPerPart = null;
+        public readonly IReadOnlyList<int> SystemStartBars = null;
+        public readonly IReadOnlyList<IReadOnlyList<int>> MIDIChannelsPerStaff = null;
+        public readonly IReadOnlyList<int> NumberOfStavesPerPart = null;
 
         #endregion Attributes set by contructor
 
@@ -60,16 +61,20 @@ namespace MNX.Globals
         #endregion
 
         #region stroke widths
-
         public double NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 2; } }
         public double ThinBarlineStrokeWidth { get { return NormalBarlineStrokeWidth / 2; } } // a component of double barlines.
         public double ThickBarlineStrokeWidth { get { return NormalBarlineStrokeWidth * 2; } } // a component of double barlines.
         public double NoteheadExtenderStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 3.4; } }
         public double BarNumberFrameStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 1.2; } }
         public double RegionInfoFrameStrokeWidth { get { return BarNumberFrameStrokeWidth * 1.5; } }
+        public double BeamThickness { get { return GapVBPX * 0.42; } }
         #endregion
 
-        public double BeamThickness { get { return GapVBPX * 0.42; } }
+        #region frame
+        public double LeftScreenMarginPos { get { return LeftMarginPosVBPX / ViewBoxMagnification; } }
+        public int FirstPageFrameHeight { get { return BottomMarginPosVBPX - TopMarginPage1VBPX; } }
+        public int OtherPagesFrameHeight { get { return BottomMarginPosVBPX - TopMarginOtherPagesVBPX; } }
+        #endregion
 
         /// <summary>
         /// A list having one value per staff in the system
@@ -94,23 +99,35 @@ namespace MNX.Globals
 
         #region other attributes
         #region page 1 titles
-        public double Page1TitleHeightVBPX;
-        public double Page1AuthorHeightVBPX;
-        public double Page1TitleYVBPX;
+        public readonly double Page1TitleHeightVBPX;
+        public readonly double Page1AuthorHeightVBPX;
+        public readonly double Page1TitleYVBPX;
         #endregion
-        public List<string> LongStaffNames = new List<string>();
-        public List<string> ShortStaffNames = new List<string>();
-        public List<int> StafflinesPerStaff = new List<int>();
+        public readonly IReadOnlyList<string> LongStaffNames = null;
+        public readonly IReadOnlyList<string> ShortStaffNames = null;
+        public readonly IReadOnlyList<int> StafflinesPerStaff = null;
 
         /// <summary>
-        /// All written scores set the ChordSymbolType to one of the values in M.ChordTypes.
-        /// M.ChordTypes does not include "none", because it is used to populate ComboBoxes.
-        /// The value "none" is used to signal that there is no written score. It is used by
-        /// AudioButtonsControl inside palettes, just to play a sound.
+        /// (Moritz' other types are not used)
         /// </summary>
-        public string ChordSymbolType = "standard"; // see Notator constructor
+        public string ChordSymbolType { get { return "standard"; } }
+
+        // See OctaveShiftExtender constructor
+        public string OctaveShiftExtenderTextFontFamily { get { return "Arial"; } }
+        public double OctaveShiftExtenderTextFontHeight { get { return (GapVBPX * 1.5); } }
+        public string OctaveShiftExtenderTextFontWeight { get { return "bold"; } }  // SVGFontWeight.bold.ToString()
+        public string OctaveShiftExtenderTextFontStyle { get { return "italic"; } } // SVGFontStyle.italic.ToString()
+        public double OctaveShiftExtenderLineStrokeWidth { get { return (StafflineStemStrokeWidthVBPX * 1.2); } }
 
         #endregion other attributes
+
+        #region unused Moritz option
+        /// <summary>
+        /// Moritz uses this value to decide the duration class of a DurationSymbol.
+        /// MNXtoSVG uses XML to construct duration classes... and then sets Ticks...
+        /// </summary>
+        public int MinimumCrotchetDuration;
+        #endregion
 
         public PageFormat(Form1Data form1Data, IReadOnlyList<IReadOnlyList<int>> voicesPerStaffPerPart)
         {
@@ -158,56 +175,18 @@ namespace MNX.Globals
             MIDIChannelsPerStaff = midiChannelsPerStaff;
 
             int nStaves = MIDIChannelsPerStaff.Count;
+            var longStaffNames = new List<string>();
+            var shortStaffNames = new List<string>();
+            var stafflinesPerStaff = new List<int>();
             for(var i = 0; i < nStaves; i++)
             {
-                LongStaffNames.Add("");
-                ShortStaffNames.Add("");
-                StafflinesPerStaff.Add(5);
+                longStaffNames.Add("");
+                shortStaffNames.Add("");
+                stafflinesPerStaff.Add(5);
             }
+            LongStaffNames = (IReadOnlyList<string>)longStaffNames;
+            ShortStaffNames = (IReadOnlyList<string>)shortStaffNames;
+            StafflinesPerStaff = (IReadOnlyList<int>)stafflinesPerStaff;
         }
-
-        #region frame
-        public double LeftScreenMarginPos { get { return LeftMarginPosVBPX / ViewBoxMagnification; } }
-        public int FirstPageFrameHeight { get { return BottomMarginPosVBPX - TopMarginPage1VBPX; } }
-        public int OtherPagesFrameHeight { get { return BottomMarginPosVBPX - TopMarginOtherPagesVBPX; } }
-
-        #endregion
-
-        #region notation
-
-        #region standard chord notation options
-        /// <summary>
-        /// Moritz uses this value to decide the duration class of a DurationSymbol
-        /// </summary>
-        public int MinimumCrotchetDuration;
-        public bool BeamsCrossBarlines;
-        #endregion
-
-
-        
-		public List<string> ClefPerStaff = null;
-
-        public List<int> StaffGroups = null;
-
-
-
-        public int DefaultNumberOfBarsPerSystem { get { return 5; } }
-
-        
-
-        #region constants
-        // The relatve size of cautionary and small objects
-        public double SmallSizeFactor { get { return 0.8; } }
-        // The opacity of opaque beams
-        // (Opaque beams are written between the beam and stafflines to make the stafflines appear grey.)
-        public double OpaqueBeamOpacity { get { return 0.65; } }
-
-
-        #endregion
-
-
-
-
-        #endregion
     }
 }

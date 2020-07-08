@@ -62,7 +62,7 @@ namespace Moritz.Symbols
 
             string dashArrayString = (gap / 2).ToString(); // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
 
-            TextInfo textInfo = new TextInfo(text, "Arial", textFontHeight, SVGFontWeight.bold, SVGFontStyle.italic, TextHorizAlign.left);
+            TextInfo textInfo = new TextInfo(text, M.PageFormat.OctaveShiftExtenderTextFontFamily, textFontHeight, SVGFontWeight.bold, SVGFontStyle.italic, TextHorizAlign.left);
             TextMetrics textMetrics = new TextMetrics(CSSObjectClass.octaveShiftExtenderText, graphics, textInfo);
             textMetrics.Move(leftChordLeft - textMetrics.Left, textY - textMetrics.OriginY);
 

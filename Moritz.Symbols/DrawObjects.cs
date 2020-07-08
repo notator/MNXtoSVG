@@ -109,14 +109,19 @@ namespace Moritz.Symbols
 	internal class FramedBarNumberText : Text
 	{
 		public FramedBarNumberText(object container, string text, double gap, double stafflinethickness)
-			: base(container, text, "Arial", (gap * 2F), TextHorizAlign.center)
+			: base(container, text, "Arial", (gap * 2), TextHorizAlign.center)
 		{
-			double paddingX = 22;
-			if(text.Length > 1)
-				paddingX = 10;
-			double paddingY = 22;
+            //double paddingX = 22;
+            //if(text.Length > 1)
+            //    paddingX = 10;
+            //double paddingY = 22;
 
-			double strokeWidth = stafflinethickness * 1.2;
+            double paddingX = 60;
+            if(text.Length > 1)
+                paddingX = 28;
+            double paddingY = 60;
+
+            double strokeWidth = stafflinethickness * 1.2;
 
 			_frameInfo = new FramePadding(TextFrameType.rectangle, paddingY, paddingX, paddingY, paddingX);
 		}
@@ -135,7 +140,7 @@ namespace Moritz.Symbols
 		{
 			foreach(string textString in textStrings)
 			{
-				this.Texts.Add(new Text(container, textString, "Arial", (gap * 2.5F), hAlign));
+				this.Texts.Add(new Text(container, textString, "Arial", (gap * 2.5), hAlign));
 			}
 		}
 
@@ -263,7 +268,7 @@ namespace Moritz.Symbols
 	internal class LyricText : Text
 	{
 		public LyricText(object container, string text, double chordFontHeight)
-			: base(container, text, "Arial", (chordFontHeight / 2F), TextHorizAlign.center)
+			: base(container, text, "Arial", (chordFontHeight / 2), TextHorizAlign.center)
 		{
 		}
 

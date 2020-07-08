@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--file created: Wednesday 08.07.2020, 13:11:25-->
+<form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
+	<page
+		width="400"
+		height="100"
+		marginTopPage1="30"
+		marginTopOther="30"
+		marginRight="30"
+		marginBottom="30"
+		marginLeft="30" />
+	<notation
+		stafflineStemStrokeWidth="1.5"
+		gapSize="10"
+		minGapsBetweenStaves="8"
+		minGapsBetweenSystems="3"
+		systemStartBars="1"
+		crotchetsPerMinute="60" />
+	<metadata
+		title="beams"
+		author="MNX by Example"
+		comment="See https://w3c.github.io/mnx/by-example/" />
+	<options
+		writePage1Titles="false"
+		writeScrollScore="true"
+		includeMIDIData="false" />
+</form1Data>

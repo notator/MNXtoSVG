@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mnx xmlns="http://www.w3.org/mnx>">
+    <score>
+        <mnx-common profile="standard">
+            <global>
+                <measure>
+                    <directions>
+                        <time signature="4/4"/>
+                    </directions>
+                </measure>
+                <measure>
+                    <directions>
+                        <segno/>
+                    </directions>
+                </measure>
+                <measure>
+                    <directions>
+                        <fine/>
+                    </directions>
+                </measure>
+                <measure/>
+                <measure>
+                    <directions>
+                        <jump type="dsalfine"/>
+                    </directions>
+                </measure>
+            </global>
+            <part>
+                <part-name>Music</part-name>
+                <measure>
+                    <directions>
+                        <clef sign="G" line="2"/>
+                    </directions>
+                    <sequence>
+                        <event value="/1">
+                            <note pitch="C5"/>
+                        </event>
+                    </sequence>
+                </measure>
+                <measure>
+                    <sequence>
+                        <event value="/1">
+                            <note pitch="E5"/>
+                        </event>
+                    </sequence>
+                </measure>
+                <measure>
+                    <sequence>
+                        <event value="/1">
+                            <note pitch="C5"/>
+                        </event>
+                    </sequence>
+                </measure>
+                <measure>
+                    <sequence>
+                        <event value="/1">
+                            <note pitch="F5"/>
+                        </event>
+                    </sequence>
+                </measure>
+                <measure>
+                    <sequence>
+                        <event value="/1">
+                            <note pitch="C5"/>
+                        </event>
+                    </sequence>
+                </measure>
+            </part>
+        </mnx-common>
+    </score>
+</mnx>

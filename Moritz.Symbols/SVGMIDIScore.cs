@@ -24,7 +24,7 @@ namespace Moritz.Symbols
 
             M.PageFormat = new PageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
 
-            Notator = new Notator(M.PageFormat);
+            Notator = new Notator();
 
             List<Bar> bars = GetBars(mnxCommon);
 

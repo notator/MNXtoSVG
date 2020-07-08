@@ -12,11 +12,10 @@ namespace Moritz.Symbols
 {
 	public class Notator
     {
-        public Notator(PageFormat pageFormat)
+        public Notator()
         {
-            _pageFormat = pageFormat;
             bool error = false;
-            switch(pageFormat.ChordSymbolType)
+            switch(M.PageFormat.ChordSymbolType)
             {
                 case "standard":
                     SymbolSet = new StandardSymbolSet(false); // _coloredVelocities = false;
@@ -74,7 +73,7 @@ namespace Moritz.Symbols
                             int absMsPosition = systemAbsMsPos + msPositionReVoiceDef;
 
                             NoteObject noteObject =
-                                SymbolSet.GetNoteObject(voice, absMsPosition, iud, iudIndex, ref currentChannelVelocities[staffIndex], _pageFormat);
+                                SymbolSet.GetNoteObject(voice, absMsPosition, iud, iudIndex, ref currentChannelVelocities[staffIndex]);
 
 							if(noteObject is SmallClef smallClef)
 							{
@@ -208,15 +207,15 @@ namespace Moritz.Symbols
             {
                 using(Graphics graphics = Graphics.FromImage(image)) // used for measuring strings
                 {
-                    double system1LeftMarginPos = GetLeftMarginPos(systems[0], graphics, _pageFormat);
+                    double system1LeftMarginPos = GetLeftMarginPos(systems[0], graphics, M.PageFormat);
                     double otherSystemsLeftMarginPos = 0;
                     if(systems.Count > 1)
-                        otherSystemsLeftMarginPos = GetLeftMarginPos(systems[1], graphics, _pageFormat);
+                        otherSystemsLeftMarginPos = GetLeftMarginPos(systems[1], graphics, M.PageFormat);
 
                     for(int sysIndex = 0; sysIndex < systems.Count; ++sysIndex)
                     {
                         double leftMargin = (sysIndex == 0) ? system1LeftMarginPos : otherSystemsLeftMarginPos;
-                        overlaps = systems[sysIndex].MakeGraphics(graphics, sysIndex + 1, _pageFormat, leftMargin);
+                        overlaps = systems[sysIndex].MakeGraphics(graphics, sysIndex + 1, M.PageFormat, leftMargin);
 						foreach(Tuple<int, int, string> overlap in overlaps)
 						{
 							allOverlaps.Add(overlap);
@@ -283,7 +282,6 @@ namespace Moritz.Symbols
         }
 
         #region properties
-        protected readonly PageFormat _pageFormat;
 
         public SymbolSet SymbolSet = null;
 

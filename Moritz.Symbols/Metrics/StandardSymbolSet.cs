@@ -506,9 +506,10 @@ namespace Moritz.Symbols
             return clefID;
         }
 
-        public override NoteObject GetNoteObject(Voice voice, int absMsPosition, IUniqueDef iud, int iudIndex,
-            ref byte currentVelocity, PageFormat pageFormat)
+        public override NoteObject GetNoteObject(Voice voice, int absMsPosition, IUniqueDef iud, int iudIndex, ref byte currentVelocity)
         {
+            var pageFormat = M.PageFormat;
+
             NoteObject noteObject = null;
             CautionaryChordDef cautionaryChordDef = iud as CautionaryChordDef;
             MidiChordDef midiChordDef = iud as MidiChordDef;

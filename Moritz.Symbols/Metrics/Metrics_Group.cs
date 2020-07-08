@@ -118,7 +118,7 @@ namespace Moritz.Symbols
                 double width = tm.Right - tm.Left;
                 maxWidth = (maxWidth > width) ? maxWidth : width;
                 tm.Move(0, nextTop);
-                nextTop = tm.Top + ((tm.Bottom - tm.Top) * 1.7F);
+                nextTop = tm.Top + ((tm.Bottom - tm.Top) * 1.7);
 
                 _textMetrics.Add(tm);
                 _textStrings.Add(text.TextInfo.Text);
@@ -182,8 +182,8 @@ namespace Moritz.Symbols
         /// <param name="framedRegionInfoMetrics"></param>
         internal void MoveAbove(FramedRegionInfoMetrics framedRegionInfoMetrics)
         {
-            double verticalOverlap = this.OverlapHeight(framedRegionInfoMetrics, -1F);
-            if(verticalOverlap > 0F)
+            double verticalOverlap = this.OverlapHeight(framedRegionInfoMetrics, -1);
+            if(verticalOverlap > 0)
             {
                 this.Move(0, Bottom - (verticalOverlap - (2 * Gap)));
             }

@@ -197,32 +197,27 @@ namespace Moritz.Symbols
         /// The systems do not yet contain Metrics info.
         /// Puts up a Warning Message Box if there are overlapping symbols after the score has been justified horizontally.
         /// </summary>
-        public void CreateMetricsAndJustifySystemsHorizontally(List<SvgSystem> systems)
+        public void CreateMetricsAndJustifySystemsHorizontally(Graphics graphics, List<SvgSystem> systems)
         {
 			// set when there are overlaps...
 			List<Tuple<int, int, string>> overlaps;
 			List<Tuple<int, int, string>> allOverlaps = new List<Tuple<int, int, string>>();
 
-			using(Image image = new Bitmap(1, 1))
-            {
-                using(Graphics graphics = Graphics.FromImage(image)) // used for measuring strings
-                {
-                    double system1LeftMarginPos = GetLeftMarginPos(systems[0], graphics, M.PageFormat);
-                    double otherSystemsLeftMarginPos = 0;
-                    if(systems.Count > 1)
-                        otherSystemsLeftMarginPos = GetLeftMarginPos(systems[1], graphics, M.PageFormat);
+            double system1LeftMarginPos = GetLeftMarginPos(systems[0], graphics, M.PageFormat);
+            double otherSystemsLeftMarginPos = 0;
+            if(systems.Count > 1)
+                otherSystemsLeftMarginPos = GetLeftMarginPos(systems[1], graphics, M.PageFormat);
 
-                    for(int sysIndex = 0; sysIndex < systems.Count; ++sysIndex)
-                    {
-                        double leftMargin = (sysIndex == 0) ? system1LeftMarginPos : otherSystemsLeftMarginPos;
-                        overlaps = systems[sysIndex].MakeGraphics(graphics, sysIndex + 1, M.PageFormat, leftMargin);
-						foreach(Tuple<int, int, string> overlap in overlaps)
-						{
-							allOverlaps.Add(overlap);
-						}
-                    }
-                }
+            for(int sysIndex = 0; sysIndex < systems.Count; ++sysIndex)
+            {
+                double leftMargin = (sysIndex == 0) ? system1LeftMarginPos : otherSystemsLeftMarginPos;
+                overlaps = systems[sysIndex].MakeGraphics(graphics, sysIndex + 1, M.PageFormat, leftMargin);
+				foreach(Tuple<int, int, string> overlap in overlaps)
+				{
+					allOverlaps.Add(overlap);
+				}
             }
+
 			if(allOverlaps.Count > 0)
 			{
 				WarnAboutOverlaps(allOverlaps);

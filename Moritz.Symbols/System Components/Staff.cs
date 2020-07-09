@@ -236,87 +236,115 @@ namespace Moritz.Symbols
             }
         }
 
-        internal void CreateOctavaLines(double gap, System.Drawing.Graphics graphics)
+        internal OctaveShift CreateOctaveShiftExtenders(System.Drawing.Graphics graphics, OctaveShift firstExtenderIsContinuation)
         {
-            CreateContinuedOctavaLines(gap, graphics);
+            double gap = M.PageFormat.GapVBPX;
+            OctaveShift extenderContinuesOnNextSystem = null;
 
-            foreach(var voice in Voices)
+            if(firstExtenderIsContinuation != null)
             {
-                var noteObjects = voice.NoteObjects;
-                for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
+                extenderContinuesOnNextSystem = CreateContinuedOctavaLine(firstExtenderIsContinuation, gap, graphics);
+            }
+
+            if(extenderContinuesOnNextSystem == null)
+            {
+                foreach(var voice in Voices)
                 {
-                    double yMax = Metrics.StafflinesBottom;
-                    double yMin = Metrics.StafflinesTop;
-                    if(noteObjects[noteObjectIndex] is OutputChordSymbol leftChord && leftChord.OctaveShift != null)
+                    var noteObjects = voice.NoteObjects;
+                    for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
                     {
-                        yMax = (yMax > leftChord.ChordMetrics.Bottom) ? yMax : leftChord.ChordMetrics.Bottom;
-                        yMin = (yMin < leftChord.ChordMetrics.Top) ? yMin : leftChord.ChordMetrics.Top;
-
-                        OctaveShiftExtender octaveShiftExtender = null;
-                        var octaveShift = leftChord.OctaveShift;
-                        for(var rightNOIndex = noteObjectIndex; rightNOIndex < noteObjects.Count; rightNOIndex++)
+                        double yMax = Metrics.StafflinesBottom;
+                        double yMin = Metrics.StafflinesTop;
+                        if(noteObjects[noteObjectIndex] is OutputChordSymbol leftChord && leftChord.OctaveShift != null)
                         {
-                            if(noteObjects[rightNOIndex] is OutputChordSymbol rightChord)
-                            {
-                                yMax = (yMax > rightChord.ChordMetrics.Bottom) ? yMax : rightChord.ChordMetrics.Bottom;
-                                yMin = (yMin < rightChord.ChordMetrics.Top) ? yMin : rightChord.ChordMetrics.Top;
+                            yMax = (yMax > leftChord.ChordMetrics.Bottom) ? yMax : leftChord.ChordMetrics.Bottom;
+                            yMin = (yMin < leftChord.ChordMetrics.Top) ? yMin : leftChord.ChordMetrics.Top;
 
-                                if(rightChord.TicksPosInScore == leftChord.OctaveShift.EndTicksPosInScore)
+                            OctaveShiftExtender octaveShiftExtender = null;
+                            var octaveShift = leftChord.OctaveShift;
+                            for(var rightNOIndex = noteObjectIndex; rightNOIndex < noteObjects.Count; rightNOIndex++)
+                            {
+                                if(noteObjects[rightNOIndex] is OutputChordSymbol rightChord)
                                 {
-                                    var y = (leftChord.OctaveShift.Orient == Orientation.up) ? yMin : yMax;
-                                    octaveShiftExtender =
-                                        new OctaveShiftExtender(octaveShift, graphics, leftChord.ChordMetrics.Left, rightChord.ChordMetrics.Right, y, gap, true, true);
-                                    break;
+                                    yMax = (yMax > rightChord.ChordMetrics.Bottom) ? yMax : rightChord.ChordMetrics.Bottom;
+                                    yMin = (yMin < rightChord.ChordMetrics.Top) ? yMin : rightChord.ChordMetrics.Top;
+
+                                    if(rightChord.TicksPosInScore == leftChord.OctaveShift.EndTicksPosInScore)
+                                    {
+                                        var y = (leftChord.OctaveShift.Orient == Orientation.up) ? yMin : yMax;
+                                        // an octaveShiftExtender with endmarker, that ends in this voice.
+                                        octaveShiftExtender =
+                                            new OctaveShiftExtender(octaveShift, graphics, leftChord.ChordMetrics.Left, rightChord.ChordMetrics.Right, y, gap, false, true);
+                                        extenderContinuesOnNextSystem = leftChord.OctaveShift;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if(octaveShiftExtender == null)
-                        {
-                            var y = (leftChord.OctaveShift.Orient == Orientation.up) ? yMin : yMax;
-                            // an octaveShiftExtender, without endmarker, that extends to the right of the system.
-                            octaveShiftExtender =
-                                new OctaveShiftExtender(octaveShift, graphics, leftChord.ChordMetrics.Left, Metrics.Right + (gap * 2), y, gap, true, false);
-                        }
+                            if(octaveShiftExtender == null)
+                            {
+                                var y = (leftChord.OctaveShift.Orient == Orientation.up) ? yMin : yMax;
+                                // an octaveShiftExtender, without endmarker, that extends to the right of the system.
+                                octaveShiftExtender =
+                                    new OctaveShiftExtender(octaveShift, graphics, leftChord.ChordMetrics.Left, Metrics.Right + (gap * 1.1), y, gap, false, false);
+                                extenderContinuesOnNextSystem = leftChord.OctaveShift;
+                            }
 
-                        this.Metrics.MetricsList.Add(octaveShiftExtender.Metrics); // so that the extender will be moved vertically correctly
-                        this.Extenders.Add(octaveShiftExtender); // so that extender.Metrics.WriteSvg(w) will be called correctly
+                            this.Metrics.MetricsList.Add(octaveShiftExtender.Metrics); // so that the extender will be moved vertically correctly
+                            this.Extenders.Add(octaveShiftExtender); // so that extender.Metrics.WriteSvg(w) will be called correctly
+                        }
                     }
                 }
             }
+            return extenderContinuesOnNextSystem;
         }
 
-        private void CreateContinuedOctavaLines(double gap, System.Drawing.Graphics graphics)
+        private OctaveShift CreateContinuedOctavaLine(OctaveShift octaveShift, double gap, System.Drawing.Graphics graphics)
         {
+            OctaveShift continuedOctaveShiftContinues = null;
+            OctaveShiftExtender octaveShiftExtender = null;
+
             foreach(var voice in Voices)
             {
                 double yMax = Metrics.StafflinesBottom;
                 double yMin = Metrics.StafflinesTop;
                 var noteObjects = voice.NoteObjects;
-                double x1 = -1;
                 for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
                 {
                     if(noteObjects[noteObjectIndex] is OutputChordSymbol chord )
                     {
                         yMax = (yMax > chord.ChordMetrics.Bottom) ? yMax : chord.ChordMetrics.Bottom;
                         yMin = (yMin < chord.ChordMetrics.Top) ? yMin : chord.ChordMetrics.Top;
-                        x1 = (x1 == -1) ? chord.ChordMetrics.Left : x1;
 
-                        if(chord.OctaveShift != null)
+                        if(chord.EndOctaveShift != null)
                         {
-                            break;
-                        }
-                        else if(chord.EndOctaveShift != null)
-                        {
+                            // a continuation octaveShiftExtender with endmarker in this staff (= voice).
                             var y = (chord.EndOctaveShift.Orient == Orientation.up) ? yMin : yMax;
-                            OctaveShiftExtender octaveShiftExtender = 
-                                new OctaveShiftExtender(chord.EndOctaveShift, graphics, x1, chord.ChordMetrics.Right, y, gap, false, true);
+                            octaveShiftExtender = 
+                                new OctaveShiftExtender(chord.EndOctaveShift, graphics, this.Metrics.Left, chord.ChordMetrics.Right, y, gap, true, true);
 
                             this.Metrics.MetricsList.Add(octaveShiftExtender.Metrics);
+                            this.Extenders.Add(octaveShiftExtender); // so that extender.Metrics.WriteSvg(w) will be called correctly
+
+                            continuedOctaveShiftContinues = null;
                             break;
-                        }                        
+                        }
                     }
                 }
+
+                if(octaveShiftExtender == null)
+                {
+                    // a continuation octaveShiftExtender, with no endmarker, that continues beyond the end of this staff (= voice).
+                    var y = (octaveShift.Orient == Orientation.up) ? yMin : yMax;
+                    octaveShiftExtender =
+                        new OctaveShiftExtender(null, graphics, this.Metrics.Left, Metrics.Right + (gap * 1.1), y, gap, true, false);
+
+                    this.Metrics.MetricsList.Add(octaveShiftExtender.Metrics);
+                    this.Extenders.Add(octaveShiftExtender); // so that extender.Metrics.WriteSvg(w) will be called correctly
+
+                    continuedOctaveShiftContinues = octaveShift;
+                }
             }
+            return continuedOctaveShiftContinues;
         }
 
         private double DurationClassDeltaAbove(DurationClass durationClass, double gap)
@@ -507,6 +535,30 @@ namespace Moritz.Symbols
                     // fix stem and beam
                     if(chordSymbol.BeamBlock != null)
                         chordSymbol.BeamBlock.ShiftStemsForOtherVoice(Voices[otherVoiceIndex]);
+                }
+            }
+        }
+
+        internal void MoveBarnumberAboveExtenders()
+        {
+            foreach(var m in this.Metrics.MetricsList)
+            {
+                if(m is BarnumberMetrics bnMetrics)
+                {
+                    foreach(var ext in this.Metrics.MetricsList )
+                    {
+                        if(ext is ExtenderMetrics extMetrics)
+                        {
+                            var padding = (M.PageFormat.GapVBPX * 0.7);
+                            if((bnMetrics.Bottom > (extMetrics.Top - padding))
+                                && ((bnMetrics.Left >= extMetrics.Left && bnMetrics.Left <= extMetrics.Right)
+                                || (bnMetrics.Right >= extMetrics.Left && bnMetrics.Right <= extMetrics.Right)))
+                            {
+                                bnMetrics.Move(0, extMetrics.Top - bnMetrics.Bottom - padding);
+                            }
+                        }
+                    }
+                    break;
                 }
             }
         }

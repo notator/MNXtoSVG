@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using MNX.Common;
+using MNX.Globals;
 using Moritz.Spec;
 using Moritz.Xml;
-using MNX.Globals;
-using MNX.Common;
-using System.IO;
 
 namespace Moritz.Symbols
 {
-	public class SVGMIDIScore : SvgScore
+    public class SVGMIDIScore : SvgScore
     {
         public SVGMIDIScore(string targetFolder, MNXCommon mnxCommon, Form1Data form1Data)
             : base(targetFolder, form1Data.FileNameWithoutExtension, form1Data.Options)
@@ -583,14 +583,46 @@ namespace Moritz.Symbols
                 FinalizeSystemStructure(); // adds barlines, joins bars to create systems, etc.
 
                 /// The systems do not yet contain Metrics info.
-                /// The systems are given Metrics inside the following function then justified internally,
-                /// both horizontally and vertically.
-                Notator.CreateMetricsAndJustifySystems(this.Systems);
+                /// The systems are given Metrics inside the following function then justified horizontally.
+                Notator.CreateMetricsAndJustifySystemsHorizontally(this.Systems);
 
                 CreateTies(this.Systems, M.PageFormat.GapVBPX);
+
+                CreateExtendersAndJustifySystemsVertically();
             }
 
             CheckSystems(this.Systems);
+        }
+
+        private void CreateExtendersAndJustifySystemsVertically()
+        {
+            /// graphics are required for creating text metrics...
+            using(Image image = new Bitmap(1, 1))
+            {
+                using(Graphics graphics = Graphics.FromImage(image)) // used for measuring text strings
+                {
+                    List<OctaveShift> firstOctaveShiftExtenderIsContinuationPerStaff = new List<OctaveShift>();
+                    foreach(var staff in Systems[0].Staves)
+                    {
+                        firstOctaveShiftExtenderIsContinuationPerStaff.Add(null);
+                    }
+                    foreach(var system in Systems)
+                    {
+                        for(var staffIndex = 0; staffIndex < system.Staves.Count; staffIndex++)
+                        {
+                            var staff = system.Staves[staffIndex];
+
+                            firstOctaveShiftExtenderIsContinuationPerStaff[staffIndex] =
+                                staff.CreateOctaveShiftExtenders(graphics, firstOctaveShiftExtenderIsContinuationPerStaff[staffIndex]);
+
+                            // do the same for AccelRitExtenders, PedalExtenders etc. here.
+
+                            staff.MoveBarnumberAboveExtenders();
+                        }
+                        system.JustifyVertically(M.PageFormat.RightVBPX, M.PageFormat.GapVBPX);
+                    }
+                }
+            }
         }
 
         /// <summary>

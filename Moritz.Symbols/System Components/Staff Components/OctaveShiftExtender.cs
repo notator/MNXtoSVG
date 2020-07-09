@@ -15,7 +15,7 @@ namespace Moritz.Symbols
     public class OctaveShiftExtender : Extender
     {
         public OctaveShiftExtender(OctaveShift octaveShift, Graphics graphics, double leftChordLeft, double rightChordRight, double chordsY, double gap,
-            bool displayText, bool displayEndMarker)
+            bool isContinuation, bool displayEndMarker)
         {
             string text = null;
             switch(octaveShift.Type)
@@ -42,15 +42,11 @@ namespace Moritz.Symbols
 
             double hLineY = 0;
             double textY = 0;
-
-            
-            //double textFontHeight = gap * 1.5; // == PageFormat.OctaveShiftExtenderTextFontHeight { get { return (GapVBPX * 1.5); } }
-
             double textFontHeight = M.PageFormat.OctaveShiftExtenderTextFontHeight;
             double endMarkerHeight = gap * 0.8;
             if(octaveShift.Orient == MNX.Common.Orientation.up)
             {
-                hLineY = chordsY - gap;
+                hLineY = chordsY - (gap * 1.3);
                 textY = hLineY + (textFontHeight * 0.6);
             }
             else
@@ -62,11 +58,20 @@ namespace Moritz.Symbols
 
             string dashArrayString = (gap / 2).ToString(); // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
 
-            TextInfo textInfo = new TextInfo(text, M.PageFormat.OctaveShiftExtenderTextFontFamily, textFontHeight, SVGFontWeight.bold, SVGFontStyle.italic, TextHorizAlign.left);
+            TextInfo textInfo = null;
+            if(isContinuation)
+            {
+                text = "(" + text + ")";
+                textInfo = new TextInfo(text, M.PageFormat.OctaveShiftExtenderTextFontFamily, textFontHeight * 0.9, SVGFontWeight.normal, SVGFontStyle.italic, TextHorizAlign.left);
+            }
+            else
+            {
+                textInfo = new TextInfo(text, M.PageFormat.OctaveShiftExtenderTextFontFamily, textFontHeight, SVGFontWeight.bold, SVGFontStyle.italic, TextHorizAlign.left);
+            }
             TextMetrics textMetrics = new TextMetrics(CSSObjectClass.octaveShiftExtenderText, graphics, textInfo);
             textMetrics.Move(leftChordLeft - textMetrics.Left, textY - textMetrics.OriginY);
 
-            Metrics = new OctaveShiftExtenderMetrics(textMetrics, leftChordLeft, rightChordRight, hLineY, dashArrayString, endMarkerHeight, displayText, displayEndMarker);
+            Metrics = new OctaveShiftExtenderMetrics(textMetrics, leftChordLeft, rightChordRight, hLineY, dashArrayString, endMarkerHeight, displayEndMarker);
         }
     }
 

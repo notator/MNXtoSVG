@@ -219,7 +219,6 @@ namespace Moritz.Symbols
         protected readonly TextMetrics _textMetrics = null;
         protected readonly string _strokeDashArray = null;
         protected readonly double _endMarkerHeight = 0;
-        protected readonly bool _displayText = true;
         protected readonly bool _displayEndMarker = true;
 
         /// <summary>
@@ -231,7 +230,7 @@ namespace Moritz.Symbols
         /// <param name="strokeDashArray">If null, the line will be solid.</param>
         /// <param name="endMarkerHeight">Is negative if extender is under its containing staff.</param>
         public ExtenderMetrics(CSSObjectClass cssObjectClass, TextMetrics textMetrics, double left, double right, double hLineY, string strokeDashArray, double endMarkerHeight,
-            bool displayText, bool displayEndMarker)
+            bool displayEndMarker)
             :base(cssObjectClass)
         {
             _left = left;
@@ -244,7 +243,6 @@ namespace Moritz.Symbols
             _textMetrics = textMetrics;
             _strokeDashArray = strokeDashArray;
             _endMarkerHeight = endMarkerHeight;
-            _displayText = displayText;
             _displayEndMarker = displayEndMarker;
 
             MetricsList.Add(textMetrics); // will be moved automatically
@@ -258,25 +256,18 @@ namespace Moritz.Symbols
 
         protected void WriteSVG(SvgWriter w, CSSObjectClass horizontalLineClass, CSSObjectClass verticalLineClass)
         {
-            if(_displayText)
+            _textMetrics.WriteSVG(w);
+            double textSpace = _textMetrics.Right - _textMetrics.Left;
+            if(_textMetrics.TextInfo.Text.Length == 3)
             {
-                _textMetrics.WriteSVG(w);
-                double textSpace = _textMetrics.Right - _textMetrics.Left;
-                if(_textMetrics.TextInfo.Text.Length == 3)
-                {
-                    textSpace *= 0.85; 
-                }
-                else if(_textMetrics.TextInfo.Text.Length == 4)
-                {
-                    textSpace *= 0.9;
-                }
-                var lineleft = _left + textSpace;
-                w.SvgLine(horizontalLineClass, lineleft, _originY, _right, _originY, _strokeDashArray);
+                textSpace *= 0.85; 
             }
-            else
+            else if(_textMetrics.TextInfo.Text.Length == 4)
             {
-                w.SvgLine(horizontalLineClass, _left, _originY, _right, _originY, _strokeDashArray);
+                textSpace *= 0.9;
             }
+            var lineleft = _left + textSpace;
+            w.SvgLine(horizontalLineClass, lineleft, _originY, _right, _originY, _strokeDashArray);
 
             if(_displayEndMarker)
             {
@@ -301,8 +292,8 @@ namespace Moritz.Symbols
     public class OctaveShiftExtenderMetrics : ExtenderMetrics
     {
         public OctaveShiftExtenderMetrics(TextMetrics textMetrics, double leftChordLeft, double rightChordRight, double hLineY, string strokeDashArray, double endMarkerHeight,
-            bool displayText, bool displayEndMarker)
-            : base(CSSObjectClass.octaveShiftExtender, textMetrics, leftChordLeft, rightChordRight, hLineY, strokeDashArray, endMarkerHeight, displayText, displayEndMarker)
+            bool displayEndMarker)
+            : base(CSSObjectClass.octaveShiftExtender, textMetrics, leftChordLeft, rightChordRight, hLineY, strokeDashArray, endMarkerHeight, displayEndMarker)
         {
         }
 

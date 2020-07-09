@@ -197,7 +197,7 @@ namespace Moritz.Symbols
         /// The systems do not yet contain Metrics info.
         /// Puts up a Warning Message Box if there are overlapping symbols after the score has been justified horizontally.
         /// </summary>
-        public void CreateMetricsAndJustifySystems(List<SvgSystem> systems)
+        public void CreateMetricsAndJustifySystemsHorizontally(List<SvgSystem> systems)
         {
 			// set when there are overlaps...
 			List<Tuple<int, int, string>> overlaps;

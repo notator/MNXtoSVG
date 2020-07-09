@@ -187,18 +187,11 @@ namespace Moritz.Symbols
             symbolSet.AddNoteheadExtenderLines(Staves, pageFormat.RightMarginPosVBPX, pageFormat.GapVBPX,
                 pageFormat.NoteheadExtenderStrokeWidth, pageFormat.StafflineStemStrokeWidthVBPX, nextSystem);
 
-            foreach(var staff in Staves)
-            {
-                staff.CreateOctavaLines(pageFormat.GapVBPX, graphics);
-            }
-
             SetBarlineVisibility(pageFormat.BarlineContinuesDownList);
 
 			SetBarlineFramedTextsMetricsPosition();
 			AlignStaffnamesInLeftMargin(leftMargin, pageFormat.GapVBPX);
 			ResetStaffMetricsBoundaries();
-
-			JustifyVertically(pageFormat.RightVBPX, pageFormat.GapVBPX);
 
 			return overlapsInfoList;
         }
@@ -1022,7 +1015,7 @@ namespace Moritz.Symbols
 				}
             }
         }
-        private void JustifyVertically(double pageWidth, double gap)
+        public void JustifyVertically(double pageWidth, double gap)
         {
             double stafflinesTop = Staves[0].Metrics.StafflinesTop;
             if(stafflinesTop != 0)

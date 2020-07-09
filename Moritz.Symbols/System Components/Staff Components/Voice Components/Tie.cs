@@ -179,7 +179,10 @@ namespace Moritz.Symbols
             var augDotMetricsTopDown = leftChord.ChordMetrics.AugDotMetricsTopDown;
             var stemMetrics = leftChord.ChordMetrics.StemMetrics;
             var nHeads = leftChord.HeadsTopDown.Count;
-            M.Assert(tieIsOverList.Count == nHeads && tieIsOverList.Count == rightChord.HeadsTopDown.Count);
+            if(rightChord != null)
+            {
+                M.Assert(tieIsOverList.Count == nHeads && tieIsOverList.Count == rightChord.HeadsTopDown.Count);
+            }
 
             for(var j = 0; j < nHeads; j++)
             {

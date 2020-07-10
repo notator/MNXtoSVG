@@ -200,6 +200,26 @@ namespace Moritz.Symbols
             w.SvgEndGroup(); // "chord"
         }
 
+        internal void AddTies(List<Tuple<double, double, double, bool, string>> tiesData, double leftTieX = -1)
+        {
+            foreach(var tieData in tiesData)
+            {
+                var tieOriginX = (leftTieX == -1) ? tieData.Item1 : leftTieX;
+                var tieOriginY = tieData.Item2;
+                var tieRightX = tieData.Item3;
+                var tieIsOver = tieData.Item4;
+                var tieTargetHeadID = tieData.Item5;
+
+                Tie tie = new Tie(tieOriginX, tieOriginY, tieRightX, M.PageFormat.GapVBPX, tieIsOver);
+                if(ChordMetrics.Ties == null)
+                {
+                    ChordMetrics.Ties = new List<Tie>();
+                }
+                ChordMetrics.Ties.Add(tie); // So that the tie will be written to SVG.
+                ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)tie.Metrics); // So that the tie will be moved vertically with the system.
+            }
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

@@ -632,27 +632,30 @@ namespace Moritz.Symbols
         /// <param name="systems"></param>
         private void CreateTies(List<SvgSystem> systems, double gap)
         {
-            List<string> HeadIDsTiedToPreviousSystem = new List<string>();
+            var noteObjects = systems[0].Staves[0].Voices[0].NoteObjects;
+            var systemsRightX = noteObjects[noteObjects.Count - 1].Metrics.OriginX;
+            List<string> headIDsTiedToPreviousSystem = new List<string>();
+
             foreach(var system in systems)
             {
-                if(HeadIDsTiedToPreviousSystem.Count > 0)
+                if(headIDsTiedToPreviousSystem.Count > 0)
                 {
                     foreach(var staff in system.Staves)
                     {
                         foreach(var voice in staff.Voices)
                         {
-                            // This function removes each ID from the list as it is used.
-                            Tie.TieFirstHeads(voice, HeadIDsTiedToPreviousSystem);
+                            Tie.TieFirstHeads(voice, headIDsTiedToPreviousSystem);
                         }
                     }
                 }
-                M.Assert(HeadIDsTiedToPreviousSystem.Count == 0);
+                M.Assert(headIDsTiedToPreviousSystem.Count == 0);
 
                 foreach(var staff in system.Staves)
                 {
                     foreach(var voice in staff.Voices)
                     {
-                        var noteObjects = voice.NoteObjects;
+                        noteObjects = voice.NoteObjects;
+                        
                         for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
                         {
                             if(noteObjects[noteObjectIndex] is OutputChordSymbol leftChord)
@@ -660,35 +663,19 @@ namespace Moritz.Symbols
                                 if(leftChord.HeadsTopDown[0].Tied != null)
                                 {
                                     OutputChordSymbol rightChord = FindNextChord(voice, noteObjectIndex); // returns null if there is no OutputChordSymbol to the right.
-                                    double tieOriginX = 0;
-                                    double tieOriginY = 0;
-                                    double tieRightX = 0;
-                                    bool tieIsOver = true;
-                                    string tieTargetHeadID = null;
 
                                     // Each Tuple contains tieOriginX, tieOriginY, tieRightX, tieIsOver, tieTargetHeadID 
-                                    List<Tuple<double, double, double, bool, string>> tiesData = Tie.GetTiesData(leftChord, rightChord, gap, system.Metrics.Right);
+                                    List<Tuple<double, double, double, bool, string>> tiesData = Tie.GetTiesData(leftChord, rightChord, systemsRightX);
 
-                                    foreach(var tieData in tiesData)
+                                    leftChord.AddTies(tiesData);
+
+                                    if(tiesData[0].Item3 > systemsRightX)
                                     {
-                                        tieOriginX = tieData.Item1;
-                                        tieOriginY = tieData.Item2;
-                                        tieRightX = tieData.Item3;
-                                        tieIsOver = tieData.Item4;
-                                        tieTargetHeadID = tieData.Item5;
-
-                                        if(tieRightX > system.Metrics.Right) // same as if(rightChord == null)
+                                        foreach(var tieData in tiesData)
                                         {
-                                            HeadIDsTiedToPreviousSystem.Add(tieTargetHeadID);
+                                            headIDsTiedToPreviousSystem.Add(tieData.Item5);
                                         }
-
-                                        Tie tie = new Tie(tieOriginX, tieOriginY, tieRightX, gap, tieIsOver);
-                                        if(leftChord.ChordMetrics.Ties == null)
-                                        {
-                                            leftChord.ChordMetrics.Ties = new List<Tie>();
-                                        }
-                                        leftChord.ChordMetrics.Ties.Add(tie); // So that the tie will be written to SVG.
-                                        leftChord.ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)tie.Metrics); // So that the tie will be moved vertically with the system.
+                                        break;
                                     }
                                 }
                             }

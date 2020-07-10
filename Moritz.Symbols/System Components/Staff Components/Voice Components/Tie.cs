@@ -141,16 +141,22 @@ namespace Moritz.Symbols
         }
 
         /// <summary>
-        /// If the first DurationSymbol in the voice is an OutputChordSymbol (not an OutputRestSymbol):
-        /// foreach( tiedHead in the OutputChordSymbol heads) if a Head.Tied value matches a string in
-        /// headIDsTiedToPreviousSystem, create a tie before the head then remove the head.tied string
-        /// from headIDsTiedToPreviousSystem. 
+        /// Add a tie to each Head in the first OutputChordSymbol in the voice, starting the tie before the first barline: 
         /// </summary>
         /// <param name="voice"></param>
-        /// <param name="headIDsTiedToPreviousSystem"></param>
         internal static void TieFirstHeads(Voice voice, List<string> headIDsTiedToPreviousSystem)
         {
-            throw new NotImplementedException();
+            var firstBarline = voice.NoteObjects.Find(obj => obj is Barline);
+            var rightChord = voice.NoteObjects.Find(obj => obj is OutputChordSymbol) as OutputChordSymbol;
+            var tiesData = GetTiesData(null, rightChord);
+
+            foreach(var head in rightChord.HeadsTopDown)
+            {
+                M.Assert(headIDsTiedToPreviousSystem.Contains(head.ID));
+                headIDsTiedToPreviousSystem.Remove(head.ID);
+            }
+
+            rightChord.AddTies(tiesData, firstBarline.Metrics.OriginX - M.PageFormat.GapVBPX);
         }
 
         /// <summary>
@@ -158,13 +164,17 @@ namespace Moritz.Symbols
         /// If the rightChord argument is null, the tie is to a notehead on the following system,
         /// tieRightX will be returned greater than systemRight, and Item5 will contains the
         /// ID of the tied notehead on the next system.
+        /// If the leftChord argument is null, the tie is to a notehead on the previous system,
+        /// tieOriginX will be returned 0.
         /// </summary>
         /// <param name="leftChord"></param>
         /// <param name="rightChord">If this is null, use systemRight</param>
         /// <param name="systemRight">Only use this if rightChord is null</param>
         /// <returns>A list of quintuples having Item1=tieOriginX, Item2=tieOriginY, Item3=tieRightX, Item4=tieIsOver, Item5=tieTargetHeadID</returns>
-        internal static List<Tuple<double, double, double, bool, string>> GetTiesData(OutputChordSymbol leftChord, OutputChordSymbol rightChord, double gap, double systemRight)
+        internal static List<Tuple<double, double, double, bool, string>> GetTiesData(OutputChordSymbol leftChord, OutputChordSymbol rightChord, double systemRight = 0)
         {
+            double gap = M.PageFormat.GapVBPX;
+
             List<Tuple<double, double, double, bool, string>> returnList = new List<Tuple<double, double, double, bool, string>>();
 
             double tieOriginX = 0;
@@ -172,14 +182,19 @@ namespace Moritz.Symbols
             double tieRightX = 0;
             bool tieIsOver = true;
             string tieTargetHeadID = null;
-            var headsMetricsTopDown = leftChord.ChordMetrics.HeadsMetricsTopDown;
 
-            List<bool> tieIsOverList = GetTieIsOverList(leftChord, headsMetricsTopDown);
+            var anchorChord = (leftChord != null) ? leftChord : rightChord;
+            M.Assert(anchorChord != null);
 
-            var augDotMetricsTopDown = leftChord.ChordMetrics.AugDotMetricsTopDown;
-            var stemMetrics = leftChord.ChordMetrics.StemMetrics;
-            var nHeads = leftChord.HeadsTopDown.Count;
-            if(rightChord != null)
+            var headsMetricsTopDown = anchorChord.ChordMetrics.HeadsMetricsTopDown;
+
+            List<bool> tieIsOverList = GetTieIsOverList(anchorChord, headsMetricsTopDown);
+
+            var augDotMetricsTopDown = anchorChord.ChordMetrics.AugDotMetricsTopDown;
+            var stemMetrics = anchorChord.ChordMetrics.StemMetrics;
+            var nHeads = anchorChord.HeadsTopDown.Count;
+
+            if(leftChord != null && rightChord != null)
             {
                 M.Assert(tieIsOverList.Count == nHeads && tieIsOverList.Count == rightChord.HeadsTopDown.Count);
             }
@@ -189,26 +204,38 @@ namespace Moritz.Symbols
                 tieIsOver = tieIsOverList[j];
 
                 bool isOuterHead = (j == 0 | j == (nHeads - 1));
-                tieOriginX = GetTieOriginX(j, headsMetricsTopDown, augDotMetricsTopDown, stemMetrics, isOuterHead);
 
-                HeadMetrics leftHeadMetrics = headsMetricsTopDown[j];
-                tieOriginY = (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2;
-
-                if(rightChord == null)
+                if(leftChord != null) // otherwise tieOriginX stays 0.
                 {
-                    tieRightX = systemRight + (gap * 1.5);
+                    tieOriginX = GetTieOriginX(j, headsMetricsTopDown, augDotMetricsTopDown, stemMetrics, isOuterHead);
                 }
-                else
+
+                HeadMetrics headMetrics = headsMetricsTopDown[j];
+                tieOriginY = (headMetrics.Top + headMetrics.Bottom) / 2;
+
+                if(leftChord != null && rightChord != null)
                 {
                     Head leftHead = leftChord.HeadsTopDown[j];
                     Head rightHead = rightChord.HeadsTopDown[j];
                     M.Assert(leftHead.Tied.Target == rightHead.ID);
+                }
+
+                if(rightChord != null)
+                {
+                    Head rightHead = rightChord.HeadsTopDown[j];
                     tieTargetHeadID = rightHead.ID;
                     HeadMetrics rightHeadMetrics = rightChord.ChordMetrics.HeadsMetricsTopDown[j];
                     tieRightX = (rightHeadMetrics.Left + rightHeadMetrics.Right) / 2;
                 }
+                else // leftChord != null && rightChord == null;
+                {
+                    Head leftHead = leftChord.HeadsTopDown[j];
+                    tieTargetHeadID = leftHead.Tied.Target;
+                    tieRightX = systemRight + (gap * 1.2);
+                }
 
                 var tieData = new Tuple<double, double, double, bool, string>(tieOriginX, tieOriginY, tieRightX, tieIsOver, tieTargetHeadID);
+
                 returnList.Add(tieData);
             }
             return returnList;

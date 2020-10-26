@@ -1,7 +1,7 @@
 ﻿namespace MNX.Globals
 {
-    public enum MNXProfile
-    {
-        MNXCommonStandard
-    }
+    //public enum MNXProfile
+    //{
+    //    MNXCommonStandard
+    //}
 }

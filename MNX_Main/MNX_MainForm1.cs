@@ -52,8 +52,8 @@ namespace MNX.Main
             var form1StringData = new Form1StringData(form1DataPath);
             var form1Data = new Form1Data(form1StringData);
 
-            var mnx = new MNX(mnxDataPath);
-            SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnx.Score.MNXCommon, form1Data);
+            var mnx = new MNX.Common.MNX(mnxDataPath);
+            SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnx, form1Data);
         }
 
         private void MNXSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -66,9 +66,9 @@ namespace MNX.Main
 
         private void LoadSettings(int mnxSelectedIndex)
         {
-            var mnx = new MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1);
+            var mnx = new MNX.Common.MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1);
 
-            _numberOfMeasures = mnx.Score.MNXCommon.NumberOfMeasures;
+            _numberOfMeasures = mnx.NumberOfMeasures;
 
             var form1DataPath = _MNX_Form1Data_Paths[mnxSelectedIndex].Item2;
             var svgds = new Form1StringData(form1DataPath);

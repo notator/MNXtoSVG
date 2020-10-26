@@ -96,9 +96,6 @@ namespace MNX.Globals
 
         #endregion MNX application constants
 
-        // Set for the score currently being constructed.
-        public static MNXProfile? Profile = null;
-
         #region Form1
 
         /// <summary>

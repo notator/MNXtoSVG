@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using MNX;
 using MNX.Common;
 using MNX.Globals;
 using Moritz.Spec;
@@ -10,7 +11,7 @@ namespace Moritz.Symbols
 {
     public class SVGMIDIScore : SvgScore
     {
-        public SVGMIDIScore(string targetFolder, MNXCommon mnxCommon, Form1Data form1Data)
+        public SVGMIDIScore(string targetFolder, MNX.Common.MNX mnx, Form1Data form1Data)
             : base(targetFolder, form1Data.FileNameWithoutExtension, form1Data.Options)
         {
             this.MetadataWithDate = new MetadataWithDate()
@@ -22,11 +23,11 @@ namespace Moritz.Symbols
                 Date = M.NowString
             };
 
-            M.PageFormat = new PageFormat(form1Data, mnxCommon.VoicesPerStaffPerPart);
+            M.PageFormat = new PageFormat(form1Data, mnx.VoicesPerStaffPerPart);
 
             Notator = new Notator();
 
-            List<Bar> bars = GetBars(mnxCommon);
+            List<Bar> bars = GetBars(mnx);
 
             CheckBars(bars);
 
@@ -49,7 +50,7 @@ namespace Moritz.Symbols
 
         }
 
-        private List<Bar> GetBars(MNXCommon mnxCommon)
+        private List<Bar> GetBars(MNX.Common.MNX mnxCommon)
         {
             var bars = new List<Bar>();
             List<List<IUniqueDef>> globalDirectionsPerMeasure = mnxCommon.Global.GetGlobalDirectionsPerMeasure();

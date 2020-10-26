@@ -170,7 +170,7 @@ namespace MNX.Common
             return rval;
         }
 
-        internal void AdjustForGraceNotes()
+        public void AdjustForGraceNotes()
         {
             for(var sequenceIndex = 0; sequenceIndex < Sequences.Count; sequenceIndex++)
             {

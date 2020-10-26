@@ -51,7 +51,7 @@
     <Compile Include="Grace.cs" />
     <Compile Include="KeySignature.cs" />
     <Compile Include="Measure.cs" />
-    <Compile Include="MNXCommon.cs" />
+    <Compile Include="MNX.cs" />
     <Compile Include="MNXCommonData.cs" />
     <Compile Include="MNXDurationSymbol.cs" />
     <Compile Include="PositionInMeasure.cs" />

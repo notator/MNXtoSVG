@@ -45,9 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collection.cs" />
-    <Compile Include="Head.cs" />
-    <Compile Include="MNX.cs" />
     <Compile Include="MNX_MainForm1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -56,7 +53,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Score.cs" />
     <EmbeddedResource Include="MNX_MainForm1.resx">
       <DependentUpon>MNX_MainForm1.cs</DependentUpon>
     </EmbeddedResource>

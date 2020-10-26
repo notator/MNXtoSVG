@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D8562620-7
 	ProjectSection(SolutionItems) = preProject
 		elementDefs.txt = elementDefs.txt
 		docs\index.html = docs\index.html
-		docs\mnx-common.xml = docs\mnx-common.xml
+		docs\mnx.xml = docs\mnx.xml
 	EndProjectSection
 EndProject
 Global

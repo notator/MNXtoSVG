@@ -75,7 +75,7 @@ namespace MNX.Common
                     {
                         case "time":
                             // https://w3c.github.io/mnx/specification/common/#the-time-element
-                            if(M.Profile == MNXProfile.MNXCommonStandard && isGlobal == false)
+                            if(isGlobal == false)
                             {
                                 M.ThrowError("Error: the time element must be global in standard mnx-common.");
                             }

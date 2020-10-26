@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet href="../../fontsStyleSheet.css" type="text/css"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-	width="500"
-	height="208"
-	viewBox="0 0 5000 2088">
+	width="450"
+	height="148"
+	viewBox="0 0 4500 1488">
 	<defs>
 		<style
 			type="text/css"><![CDATA[
@@ -51,11 +51,11 @@
                 font-size:0px;
                 text-anchor:end
             }
-            .notehead, .clef
+            .rest, .notehead, .accidental, .clef
             {
                 font-family:CLicht
             }
-            .notehead, .augDot, .clef
+            .rest, .notehead, .accidental, .augDot, .clef
             {
                 font-size:392px
             }
@@ -75,7 +75,7 @@
             {
                 fill:white                
             }
-            .staffline, .stem, .flag
+            .staffline, .ledgerline, .stem, .flag
             {
                 stroke:black;
                 stroke-width:15px;
@@ -107,6 +107,55 @@
 				d="M 0,0 0,-47.4163 124.6913,-96.7064 Q 117.208,-78.4 124.6913,-49.2744" />
 		</g>
 		<g
+			id="keySig_4s">
+			<text
+				class="accidental"
+				x="0"
+				y="0">#</text>
+			<text
+				class="accidental"
+				x="96.7332"
+				y="150">#</text>
+			<text
+				class="accidental"
+				x="193.4663"
+				y="-50">#</text>
+			<text
+				class="accidental"
+				x="290.1995"
+				y="100">#</text>
+		</g>
+		<g
+			id="keySig_4f">
+			<text
+				class="accidental"
+				x="0"
+				y="200">b</text>
+			<text
+				class="accidental"
+				x="85.0585"
+				y="50">b</text>
+			<text
+				class="accidental"
+				x="170.1169"
+				y="250">b</text>
+			<text
+				class="accidental"
+				x="255.1754"
+				y="100">b</text>
+		</g>
+		<g
+			id="keySig_2f">
+			<text
+				class="accidental"
+				x="0"
+				y="200">b</text>
+			<text
+				class="accidental"
+				x="85.0585"
+				y="50">b</text>
+		</g>
+		<g
 			id="timeSig_4/4">
 			<text
 				class="timeSigNumerator"
@@ -117,19 +166,30 @@
 				x="0"
 				y="303.2">4</text>
 		</g>
+		<g
+			id="timeSig_2/4">
+			<text
+				class="timeSigNumerator"
+				x="0"
+				y="0">2</text>
+			<text
+				class="timeSigDenominator"
+				x="0"
+				y="303.2">4</text>
+		</g>
 	</defs>
 	<rect
 		class="backgroundFill"
 		x="0"
 		y="0"
-		width="5000"
-		height="2088" />
+		width="4500"
+		height="1488" />
 	<g
 		class="systems">
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">__7_dots (graphics only).svg, Tuesday 12.05.2020, 21:40:54</text>
+			y="150">__7_dots (graphics only).svg, Monday 26.10.2020, 11:55:14</text>
 		<g
 			class="system">
 			<g
@@ -139,79 +199,79 @@
 					class="stafflines">
 					<line
 						class="staffline"
-						x1="700"
-						y1="1100"
-						x2="4300"
-						y2="1100" />
+						x1="300"
+						y1="500"
+						x2="4200"
+						y2="500" />
 					<line
 						class="staffline"
-						x1="700"
-						y1="1200"
-						x2="4300"
-						y2="1200" />
+						x1="300"
+						y1="600"
+						x2="4200"
+						y2="600" />
 					<line
 						class="staffline"
-						x1="700"
-						y1="1300"
-						x2="4300"
-						y2="1300" />
+						x1="300"
+						y1="700"
+						x2="4200"
+						y2="700" />
 					<line
 						class="staffline"
-						x1="700"
-						y1="1400"
-						x2="4300"
-						y2="1400" />
+						x1="300"
+						y1="800"
+						x2="4200"
+						y2="800" />
 					<line
 						class="staffline"
-						x1="700"
-						y1="1500"
-						x2="4300"
-						y2="1500" />
+						x1="300"
+						y1="900"
+						x2="4200"
+						y2="900" />
 				</g>
 				<g
 					class="voice">
 					<use
 						class="clef"
 						href="#trebleClef"
-						x="700"
-						y="1400" />
+						x="300"
+						y="800" />
 					<line
 						class="normalBarline"
-						x1="1025"
-						y1="1100"
-						x2="1025"
-						y2="1500" />
+						x1="625"
+						y1="500"
+						x2="625"
+						y2="900" />
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="1090"
-						y="1300" />
+						x="673.3333"
+						y="700" />
 					<g
 						class="chord">
 						<g
 							class="graphics">
 							<line
 								class="stem"
-								x1="1524.899"
-								y1="890"
-								x2="1524.899"
-								y2="1388.45" />
+								x1="1108.232"
+								y1="290"
+								x2="1108.232"
+								y2="788.4501" />
 							<text
 								class="notehead"
-								x="1417.32"
-								y="1250">œ</text>
+								x="1000.653"
+								y="650">œ</text>
 							<text
 								class="notehead"
-								x="1417.32"
-								y="1400">œ</text>
+								x="1000.653"
+								y="800">œ</text>
 							<text
 								class="augDot"
-								x="1578.899"
-								y="1266.603">.</text>
+								x="1162.233"
+								y="666.603">.</text>
 							<text
 								class="augDot"
-								x="1578.899"
-								y="1366.603">.</text>
+								x="1162.233"
+								y="766.603">.</text>
 						</g>
 					</g>
 					<g
@@ -220,19 +280,19 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2444.873"
-								y1="1161.55"
-								x2="2444.873"
-								y2="1526.706" />
+								x1="2135.706"
+								y1="561.5499"
+								x2="2135.706"
+								y2="926.7064" />
 							<use
 								class="flag"
 								href="#left1Flag"
-								x="2444.873"
-								y="1526.706" />
+								x="2135.706"
+								y="926.7064" />
 							<text
 								class="notehead"
-								x="2437.373"
-								y="1150">œ</text>
+								x="2128.206"
+								y="550">œ</text>
 						</g>
 					</g>
 					<g
@@ -241,26 +301,26 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2884.969"
-								y1="840"
-								x2="2884.969"
-								y2="1438.45" />
+								x1="2611.636"
+								y1="240"
+								x2="2611.636"
+								y2="838.4501" />
 							<text
 								class="notehead"
-								x="2777.39"
-								y="1200">œ</text>
+								x="2504.057"
+								y="600">œ</text>
 							<text
 								class="notehead"
-								x="2777.39"
-								y="1450">œ</text>
+								x="2504.057"
+								y="850">œ</text>
 							<text
 								class="augDot"
-								x="2938.969"
-								y="1166.603">.</text>
+								x="2665.636"
+								y="566.603">.</text>
 							<text
 								class="augDot"
-								x="2938.969"
-								y="1466.603">.</text>
+								x="2665.636"
+								y="866.603">.</text>
 						</g>
 					</g>
 					<g
@@ -269,40 +329,38 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="3804.943"
-								y1="1111.55"
-								x2="3804.943"
-								y2="1476.706" />
+								x1="3639.11"
+								y1="511.5499"
+								x2="3639.11"
+								y2="876.7064" />
 							<use
 								class="flag"
 								href="#left1Flag"
-								x="3804.943"
-								y="1476.706" />
+								x="3639.11"
+								y="876.7064" />
 							<text
 								class="notehead"
-								x="3797.443"
-								y="1100">œ</text>
+								x="3631.61"
+								y="500">œ</text>
 						</g>
 					</g>
 					<g
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="4210"
-							y1="1092.5"
-							x2="4210"
-							y2="1507.5" />
+							x1="4080"
+							y1="492.5"
+							x2="4080"
+							y2="907.5" />
 						<line
 							class="thickBarline"
-							x1="4300"
-							y1="1092.5"
-							x2="4300"
-							y2="1507.5" />
+							x1="4170"
+							y1="492.5"
+							x2="4170"
+							y2="907.5" />
 					</g>
 				</g>
 			</g>
-			<g
-				class="staffConnectors" />
 		</g>
 	</g>
 	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->

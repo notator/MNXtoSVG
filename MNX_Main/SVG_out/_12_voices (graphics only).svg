@@ -51,11 +51,11 @@
                 font-size:0px;
                 text-anchor:end
             }
-            .rest, .notehead, .accidental, .clef
+            .notehead, .clef
             {
                 font-family:CLicht
             }
-            .rest, .notehead, .accidental, .augDot, .clef
+            .notehead, .clef
             {
                 font-size:392px
             }
@@ -75,7 +75,7 @@
             {
                 fill:white                
             }
-            .staffline, .ledgerline, .stem, .beam, .flag
+            .staffline, .ledgerline, .stem
             {
                 stroke:black;
                 stroke-width:15px;
@@ -95,13 +95,6 @@
                 stroke:black;
                 stroke-width:60px
             }
-            .opaqueBeam
-            {
-                stroke:white;
-                stroke-width:15px;
-                fill:white;
-                opacity:0.65                
-            }
             ]]></style>
 		<g
 			id="trebleClef">
@@ -109,76 +102,11 @@
 				class="clef">&amp;</text>
 		</g>
 		<g
-			id="left1Flag">
-			<path
-				d="M 0,0 0,-47.4163 124.6913,-96.7064 Q 117.208,-78.4 124.6913,-49.2744" />
-		</g>
-		<g
-			id="keySig_4s">
-			<text
-				class="accidental"
-				x="0"
-				y="0">#</text>
-			<text
-				class="accidental"
-				x="96.7332"
-				y="150">#</text>
-			<text
-				class="accidental"
-				x="193.4663"
-				y="-50">#</text>
-			<text
-				class="accidental"
-				x="290.1995"
-				y="100">#</text>
-		</g>
-		<g
-			id="keySig_4f">
-			<text
-				class="accidental"
-				x="0"
-				y="200">b</text>
-			<text
-				class="accidental"
-				x="85.0585"
-				y="50">b</text>
-			<text
-				class="accidental"
-				x="170.1169"
-				y="250">b</text>
-			<text
-				class="accidental"
-				x="255.1754"
-				y="100">b</text>
-		</g>
-		<g
-			id="keySig_2f">
-			<text
-				class="accidental"
-				x="0"
-				y="200">b</text>
-			<text
-				class="accidental"
-				x="85.0585"
-				y="50">b</text>
-		</g>
-		<g
 			id="timeSig_4/4">
 			<text
 				class="timeSigNumerator"
 				x="0"
 				y="0">4</text>
-			<text
-				class="timeSigDenominator"
-				x="0"
-				y="303.2">4</text>
-		</g>
-		<g
-			id="timeSig_2/4">
-			<text
-				class="timeSigNumerator"
-				x="0"
-				y="0">2</text>
 			<text
 				class="timeSigDenominator"
 				x="0"
@@ -196,7 +124,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">_12_voices (graphics only).svg, Friday 22.05.2020, 16:16:23</text>
+			y="150">_12_voices (graphics only).svg, Monday 26.10.2020, 11:57:29</text>
 		<g
 			class="system">
 			<g
@@ -251,7 +179,7 @@
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="690"
+						x="673.3333"
 						y="1000" />
 					<g
 						class="chord">
@@ -259,13 +187,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1124.899"
+								x1="1150.092"
 								y1="490"
-								x2="1124.899"
+								x2="1150.092"
 								y2="838.4501" />
 							<text
 								class="notehead"
-								x="1017.32"
+								x="1042.513"
 								y="850">œ</text>
 						</g>
 					</g>
@@ -275,13 +203,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1792.014"
+								x1="1795.8"
 								y1="440"
-								x2="1792.014"
+								x2="1795.8"
 								y2="788.4501" />
 							<text
 								class="notehead"
-								x="1684.435"
+								x="1688.221"
 								y="800">œ</text>
 						</g>
 					</g>
@@ -291,13 +219,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2459.129"
+								x1="2441.508"
 								y1="390"
-								x2="2459.129"
+								x2="2441.508"
 								y2="738.4501" />
 							<text
 								class="notehead"
-								x="2351.55"
+								x="2333.929"
 								y="750">œ</text>
 						</g>
 					</g>
@@ -307,21 +235,21 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="3126.244"
+								x1="3087.216"
 								y1="640"
-								x2="3126.244"
+								x2="3087.216"
 								y2="988.4501" />
 							<text
 								class="notehead"
-								x="3018.665"
+								x="2979.637"
 								y="1000">œ</text>
 						</g>
 					</g>
 					<line
 						class="normalBarline"
-						x1="3758.32"
+						x1="3697.885"
 						y1="800"
-						x2="3758.32"
+						x2="3697.885"
 						y2="1200" />
 					<g
 						class="chord">
@@ -329,13 +257,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="3976.579"
+								x1="4032.207"
 								y1="540"
-								x2="3976.579"
+								x2="4032.207"
 								y2="888.4501" />
 							<text
 								class="notehead"
-								x="3869"
+								x="3924.628"
 								y="900">œ</text>
 						</g>
 					</g>
@@ -345,13 +273,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="4643.694"
+								x1="4677.916"
 								y1="590"
-								x2="4643.694"
+								x2="4677.916"
 								y2="938.4501" />
 							<text
 								class="notehead"
-								x="4536.115"
+								x="4570.336"
 								y="950">œ</text>
 						</g>
 					</g>
@@ -361,27 +289,27 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="5310.809"
+								x1="5323.624"
 								y1="240"
-								x2="5310.809"
+								x2="5323.624"
 								y2="588.4501" />
 							<text
 								class="notehead"
-								x="5203.23"
+								x="5216.044"
 								y="600">˙</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="5160.69"
+									x1="5173.505"
 									y1="600"
-									x2="5360.849"
+									x2="5373.663"
 									y2="600" />
 								<line
 									class="ledgerline"
-									x1="5160.69"
+									x1="5173.505"
 									y1="700"
-									x2="5360.849"
+									x2="5373.663"
 									y2="700" />
 							</g>
 						</g>
@@ -390,15 +318,15 @@
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="6610"
+							x1="6580"
 							y1="792.5"
-							x2="6610"
+							x2="6580"
 							y2="1207.5" />
 						<line
 							class="thickBarline"
-							x1="6700"
+							x1="6670"
 							y1="792.5"
-							x2="6700"
+							x2="6670"
 							y2="1207.5" />
 					</g>
 				</g>
@@ -410,21 +338,21 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1024.82"
+								x1="1050.013"
 								y1="1311.55"
-								x2="1024.82"
+								x2="1050.013"
 								y2="1660" />
 							<text
 								class="notehead"
-								x="1017.32"
+								x="1042.513"
 								y="1300">˙</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="974.7805"
+									x1="999.9733"
 									y1="1300"
-									x2="1174.939"
+									x2="1200.131"
 									y2="1300" />
 							</g>
 						</g>
@@ -435,27 +363,27 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2359.05"
+								x1="2341.429"
 								y1="1461.55"
-								x2="2359.05"
+								x2="2341.429"
 								y2="1810" />
 							<text
 								class="notehead"
-								x="2351.55"
+								x="2333.929"
 								y="1450">˙</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="2309.011"
+									x1="2291.389"
 									y1="1300"
-									x2="2509.169"
+									x2="2491.548"
 									y2="1300" />
 								<line
 									class="ledgerline"
-									x1="2309.011"
+									x1="2291.389"
 									y1="1400"
-									x2="2509.169"
+									x2="2491.548"
 									y2="1400" />
 							</g>
 						</g>
@@ -466,23 +394,21 @@
 							class="graphics">
 							<text
 								class="notehead"
-								x="3841.898"
+								x="3897.526"
 								y="1300">w</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="3772.257"
+									x1="3827.885"
 									y1="1300"
-									x2="4080.823"
+									x2="4136.451"
 									y2="1300" />
 							</g>
 						</g>
 					</g>
 				</g>
 			</g>
-			<g
-				class="staffConnectors" />
 		</g>
 	</g>
 	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->

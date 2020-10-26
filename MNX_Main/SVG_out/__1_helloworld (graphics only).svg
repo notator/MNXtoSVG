@@ -120,7 +120,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">__1_helloworld (graphics only).svg, Wednesday 06.05.2020, 19:55:20</text>
+			y="150">__1_helloworld (graphics only).svg, Monday 26.10.2020, 12:25:51</text>
 		<g
 			class="system">
 			<g
@@ -175,7 +175,7 @@
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="690"
+						x="673.3333"
 						y="700" />
 					<g
 						class="chord">
@@ -183,15 +183,15 @@
 							class="graphics">
 							<text
 								class="notehead"
-								x="1086.281"
+								x="1069.615"
 								y="1000">w</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="1016.64"
+									x1="999.9733"
 									y1="1000"
-									x2="1325.206"
+									x2="1308.539"
 									y2="1000" />
 							</g>
 						</g>
@@ -200,21 +200,19 @@
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="3110"
+							x1="3080"
 							y1="492.5"
-							x2="3110"
+							x2="3080"
 							y2="907.5" />
 						<line
 							class="thickBarline"
-							x1="3200"
+							x1="3170"
 							y1="492.5"
-							x2="3200"
+							x2="3170"
 							y2="907.5" />
 					</g>
 				</g>
 			</g>
-			<g
-				class="staffConnectors" />
 		</g>
 	</g>
 	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->

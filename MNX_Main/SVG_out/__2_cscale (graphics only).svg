@@ -124,7 +124,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">__2_cscale (graphics only).svg, Wednesday 06.05.2020, 19:56:58</text>
+			y="150">__2_cscale (graphics only).svg, Monday 26.10.2020, 11:52:38</text>
 		<g
 			class="system">
 			<g
@@ -179,7 +179,7 @@
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="690"
+						x="673.3333"
 						y="700" />
 					<g
 						class="chord">
@@ -187,21 +187,21 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1166.759"
+								x1="1150.092"
 								y1="640"
-								x2="1166.759"
+								x2="1150.092"
 								y2="988.4501" />
 							<text
 								class="notehead"
-								x="1059.18"
+								x="1042.513"
 								y="1000">œ</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="1016.64"
+									x1="999.9733"
 									y1="1000"
-									x2="1216.798"
+									x2="1200.131"
 									y2="1000" />
 							</g>
 						</g>
@@ -212,13 +212,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1578.641"
+								x1="1557.808"
 								y1="590"
-								x2="1578.641"
+								x2="1557.808"
 								y2="938.4501" />
 							<text
 								class="notehead"
-								x="1471.062"
+								x="1450.229"
 								y="950">œ</text>
 						</g>
 					</g>
@@ -228,13 +228,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1990.524"
+								x1="1965.524"
 								y1="540"
-								x2="1990.524"
+								x2="1965.524"
 								y2="888.4501" />
 							<text
 								class="notehead"
-								x="1882.945"
+								x="1857.945"
 								y="900">œ</text>
 						</g>
 					</g>
@@ -244,21 +244,21 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2402.407"
+								x1="2373.24"
 								y1="490"
-								x2="2402.407"
+								x2="2373.24"
 								y2="838.4501" />
 							<text
 								class="notehead"
-								x="2294.828"
+								x="2265.661"
 								y="850">œ</text>
 						</g>
 					</g>
 					<line
 						class="normalBarline"
-						x1="2779.25"
+						x1="2745.917"
 						y1="500"
-						x2="2779.25"
+						x2="2745.917"
 						y2="900" />
 					<g
 						class="chord">
@@ -266,13 +266,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2997.509"
+								x1="2984.176"
 								y1="440"
-								x2="2997.509"
+								x2="2984.176"
 								y2="788.4501" />
 							<text
 								class="notehead"
-								x="2889.93"
+								x="2876.596"
 								y="800">œ</text>
 						</g>
 					</g>
@@ -282,13 +282,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="3409.392"
+								x1="3391.892"
 								y1="390"
-								x2="3409.392"
+								x2="3391.892"
 								y2="738.4501" />
 							<text
 								class="notehead"
-								x="3301.813"
+								x="3284.313"
 								y="750">œ</text>
 						</g>
 					</g>
@@ -298,13 +298,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="3721.195"
+								x1="3699.529"
 								y1="711.5499"
-								x2="3721.195"
+								x2="3699.529"
 								y2="1060" />
 							<text
 								class="notehead"
-								x="3713.695"
+								x="3692.029"
 								y="700">œ</text>
 						</g>
 					</g>
@@ -314,13 +314,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="4133.078"
+								x1="4107.245"
 								y1="661.5499"
-								x2="4133.078"
+								x2="4107.245"
 								y2="1010" />
 							<text
 								class="notehead"
-								x="4125.578"
+								x="4099.745"
 								y="650">œ</text>
 						</g>
 					</g>
@@ -328,21 +328,19 @@
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="4610"
+							x1="4580"
 							y1="492.5"
-							x2="4610"
+							x2="4580"
 							y2="907.5" />
 						<line
 							class="thickBarline"
-							x1="4700"
+							x1="4670"
 							y1="492.5"
-							x2="4700"
+							x2="4670"
 							y2="907.5" />
 					</g>
 				</g>
 			</g>
-			<g
-				class="staffConnectors" />
 		</g>
 	</g>
 	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->

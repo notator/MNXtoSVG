@@ -173,7 +173,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">__5_keysigs (graphics only).svg, Wednesday 06.05.2020, 19:57:21</text>
+			y="150">__5_keysigs (graphics only).svg, Monday 26.10.2020, 11:54:22</text>
 		<g
 			class="system">
 			<g
@@ -222,18 +222,18 @@
 					<use
 						class="keySig"
 						href="#keySig_4s"
-						x="680"
+						x="610"
 						y="500" />
 					<line
 						class="normalBarline"
-						x1="625"
+						x1="1070.756"
 						y1="500"
-						x2="625"
+						x2="1070.756"
 						y2="900" />
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="1125.756"
+						x="1119.089"
 						y="700" />
 					<g
 						class="chord">
@@ -241,13 +241,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1460.576"
+								x1="1453.91"
 								y1="561.5499"
-								x2="1460.576"
+								x2="1453.91"
 								y2="910" />
 							<text
 								class="notehead"
-								x="1453.076"
+								x="1446.41"
 								y="550">œ</text>
 						</g>
 					</g>
@@ -257,13 +257,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1780.668"
+								x1="1767.334"
 								y1="511.5499"
-								x2="1780.668"
+								x2="1767.334"
 								y2="860" />
 							<text
 								class="notehead"
-								x="1773.168"
+								x="1759.834"
 								y="500">œ</text>
 						</g>
 					</g>
@@ -273,13 +273,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2100.759"
+								x1="2080.759"
 								y1="461.5499"
-								x2="2100.759"
+								x2="2080.759"
 								y2="810" />
 							<text
 								class="notehead"
-								x="2093.259"
+								x="2073.259"
 								y="450">œ</text>
 						</g>
 					</g>
@@ -289,21 +289,21 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="2420.851"
+								x1="2394.184"
 								y1="561.5499"
-								x2="2420.851"
+								x2="2394.184"
 								y2="910" />
 							<text
 								class="notehead"
-								x="2413.351"
+								x="2386.684"
 								y="550">œ</text>
 						</g>
 					</g>
 					<line
 						class="normalBarline"
-						x1="2805.982"
+						x1="2772.648"
 						y1="500"
-						x2="2805.982"
+						x2="2772.648"
 						y2="900" />
 					<g
 						class="chord">
@@ -311,20 +311,20 @@
 							class="graphics">
 							<text
 								class="notehead"
-								x="2916.662"
+								x="2903.328"
 								y="450">w</text>
 						</g>
 					</g>
 					<line
 						class="normalBarline"
-						x1="4296.669"
+						x1="4256.669"
 						y1="500"
-						x2="4296.669"
+						x2="4256.669"
 						y2="900" />
 					<use
 						class="keySig"
 						href="#keySig_4f"
-						x="4351.669"
+						x="4321.669"
 						y="500" />
 					<g
 						class="chord">
@@ -332,13 +332,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="4873.986"
+								x1="4877.319"
 								y1="390"
-								x2="4873.986"
+								x2="4877.319"
 								y2="738.4501" />
 							<text
 								class="notehead"
-								x="4766.407"
+								x="4769.74"
 								y="750">œ</text>
 						</g>
 					</g>
@@ -348,13 +348,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="5093.999"
+								x1="5090.665"
 								y1="711.5499"
-								x2="5093.999"
+								x2="5090.665"
 								y2="1060" />
 							<text
 								class="notehead"
-								x="5086.499"
+								x="5083.165"
 								y="700">œ</text>
 						</g>
 					</g>
@@ -364,13 +364,13 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="5414.09"
+								x1="5404.09"
 								y1="661.5499"
-								x2="5414.09"
+								x2="5404.09"
 								y2="1010" />
 							<text
 								class="notehead"
-								x="5406.59"
+								x="5396.59"
 								y="650">œ</text>
 						</g>
 					</g>
@@ -380,21 +380,21 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="5834.26"
+								x1="5817.594"
 								y1="390"
-								x2="5834.26"
+								x2="5817.594"
 								y2="738.4501" />
 							<text
 								class="notehead"
-								x="5726.681"
+								x="5710.015"
 								y="750">œ</text>
 						</g>
 					</g>
 					<line
 						class="normalBarline"
-						x1="6119.313"
+						x1="6095.979"
 						y1="500"
-						x2="6119.313"
+						x2="6095.979"
 						y2="900" />
 					<g
 						class="chord">
@@ -402,7 +402,7 @@
 							class="graphics">
 							<text
 								class="notehead"
-								x="6229.992"
+								x="6226.659"
 								y="650">w</text>
 						</g>
 					</g>
@@ -410,21 +410,19 @@
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="7610"
+							x1="7580"
 							y1="492.5"
-							x2="7610"
+							x2="7580"
 							y2="907.5" />
 						<line
 							class="thickBarline"
-							x1="7700"
+							x1="7670"
 							y1="492.5"
-							x2="7700"
+							x2="7670"
 							y2="907.5" />
 					</g>
 				</g>
 			</g>
-			<g
-				class="staffConnectors" />
 		</g>
 	</g>
 	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->

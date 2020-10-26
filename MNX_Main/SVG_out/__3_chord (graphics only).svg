@@ -124,7 +124,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">__3_chord (graphics only).svg, Wednesday 06.05.2020, 19:57:05</text>
+			y="150">__3_chord (graphics only).svg, Monday 26.10.2020, 11:53:20</text>
 		<g
 			class="system">
 			<g
@@ -179,7 +179,7 @@
 					<use
 						class="timeSig"
 						href="#timeSig_4/4"
-						x="690"
+						x="673.3333"
 						y="700" />
 					<g
 						class="chord">
@@ -187,29 +187,29 @@
 							class="graphics">
 							<line
 								class="stem"
-								x1="1166.759"
+								x1="1150.092"
 								y1="440"
-								x2="1166.759"
+								x2="1150.092"
 								y2="988.4501" />
 							<text
 								class="notehead"
-								x="1059.18"
+								x="1042.513"
 								y="800">˙</text>
 							<text
 								class="notehead"
-								x="1059.18"
+								x="1042.513"
 								y="900">˙</text>
 							<text
 								class="notehead"
-								x="1059.18"
+								x="1042.513"
 								y="1000">˙</text>
 							<g
 								class="ledgerlines">
 								<line
 									class="ledgerline"
-									x1="1016.64"
+									x1="999.9733"
 									y1="1000"
-									x2="1216.798"
+									x2="1200.131"
 									y2="1000" />
 							</g>
 						</g>
@@ -220,7 +220,7 @@
 							class="graphics">
 							<text
 								class="rest"
-								x="2049.393"
+								x="2026.061"
 								y="700">Ó</text>
 						</g>
 					</g>
@@ -228,21 +228,19 @@
 						class="endOfScoreBarline">
 						<line
 							class="normalBarline"
-							x1="3110"
+							x1="3080"
 							y1="492.5"
-							x2="3110"
+							x2="3080"
 							y2="907.5" />
 						<line
 							class="thickBarline"
-							x1="3200"
+							x1="3170"
 							y1="492.5"
-							x2="3200"
+							x2="3170"
 							y2="907.5" />
 					</g>
 				</g>
 			</g>
-			<g
-				class="staffConnectors" />
 		</g>
 	</g>
 	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->

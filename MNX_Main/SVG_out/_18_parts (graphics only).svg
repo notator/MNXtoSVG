@@ -59,7 +59,7 @@
             {
                 font-size:392px
             }
-            .timeStamp, .timeSigNumerator, .timeSigDenominator
+            .timeStamp, .timeSigNumerator, .timeSigDenominator, .octaveShiftExtenderText
             {
                 font-family:Arial
             }
@@ -71,11 +71,17 @@
             {
                 font-size:420px
             }
+            .octaveShiftExtenderText
+            {
+                font-size:150px;
+                font-weight:bold;
+                font-style:italic
+            }
             .backgroundFill
             {
                 fill:white                
             }
-            .staffline, .ledgerline, .stem, .beam
+            .staffline, .ledgerline, .stem, .flag
             {
                 stroke:black;
                 stroke-width:15px;
@@ -95,18 +101,26 @@
                 stroke:black;
                 stroke-width:60px
             }
-            .opaqueBeam
+            .octaveShiftExtenderHLine, .octaveShiftExtenderVLine
             {
-                stroke:white;
-                stroke-width:15px;
-                fill:white;
-                opacity:0.65                
+                stroke:black;
+                stroke-width:18px;
+                fill:none
+            }
+            .octaveShiftExtenderVLine
+            {
+                stroke-linecap:square
             }
             ]]></style>
 		<g
 			id="trebleClef">
 			<text
 				class="clef">&amp;</text>
+		</g>
+		<g
+			id="left1Flag">
+			<path
+				d="M 0,0 0,-47.4163 124.6913,-96.7064 Q 117.208,-78.4 124.6913,-49.2744" />
 		</g>
 		<g
 			id="timeSig_4/4">
@@ -131,7 +145,7 @@
 		<text
 			class="timeStamp"
 			x="32"
-			y="150">_18_parts (graphics only).svg, Monday 25.05.2020, 16:08:46</text>
+			y="150">_18_parts (graphics only).svg, Monday 26.10.2020, 11:59:16</text>
 		<g
 			class="system">
 			<g
@@ -404,12 +418,6 @@
 						</g>
 					</g>
 					<g
-						class="beamBlock">
-						<path
-							class="beam"
-							d="M 2334.05 1900 L 3328.473 1883.333 3328.473 1925.333 2334.05 1942 z" />
-					</g>
-					<g
 						class="chord">
 						<g
 							class="graphics">
@@ -418,7 +426,12 @@
 								x1="2334.05"
 								y1="1561.55"
 								x2="2334.05"
-								y2="1900" />
+								y2="1926.706" />
+							<use
+								class="flag"
+								href="#left1Flag"
+								x="2334.05"
+								y="1926.706" />
 							<text
 								class="notehead"
 								x="2326.55"
@@ -434,7 +447,12 @@
 								x1="2665.524"
 								y1="1511.55"
 								x2="2665.524"
-								y2="1894.444" />
+								y2="1876.706" />
+							<use
+								class="flag"
+								href="#left1Flag"
+								x="2665.524"
+								y="1876.706" />
 							<text
 								class="notehead"
 								x="2658.024"
@@ -450,7 +468,12 @@
 								x1="2996.999"
 								y1="1461.55"
 								x2="2996.999"
-								y2="1888.889" />
+								y2="1826.706" />
+							<use
+								class="flag"
+								href="#left1Flag"
+								x="2996.999"
+								y="1826.706" />
 							<text
 								class="notehead"
 								x="2989.499"
@@ -466,7 +489,12 @@
 								x1="3328.473"
 								y1="1511.55"
 								x2="3328.473"
-								y2="1883.333" />
+								y2="1876.706" />
+							<use
+								class="flag"
+								href="#left1Flag"
+								x="3328.473"
+								y="1876.706" />
 							<text
 								class="notehead"
 								x="3320.973"

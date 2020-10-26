@@ -180,6 +180,7 @@
     <Content Include="MNX_in\png\__9_beams.png" />
     <Content Include="SVG_out\_12_voices %28graphics only%29.svg" />
     <Content Include="SVG_out\_13_octaves %28graphics only%29 - two systems.svg" />
+    <Content Include="SVG_out\_13_octaves %28graphics only%29.svg" />
     <Content Include="SVG_out\_18_parts %28graphics only%29.svg" />
     <Content Include="SVG_out\__1_helloworld %28graphics only%29.svg" />
     <Content Include="SVG_out\__2_cscale %28graphics only%29.svg" />

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<mnx-common>
+<mnx>
     <!-- like the globals defined in §6.1.7 in the current spec -->
     <globals>
         <global>...</global>
@@ -58,5 +58,5 @@
         <score name="Flute 3 part">...</score>
         <!-- etc., all the part "scores" (booklets) -->
     </scores>
-</mnx-common>
+</mnx>
 

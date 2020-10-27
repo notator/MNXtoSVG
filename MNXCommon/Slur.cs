@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using MNX.Globals;
 
 namespace MNX.Common

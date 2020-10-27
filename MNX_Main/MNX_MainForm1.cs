@@ -1,5 +1,4 @@
-﻿using MNX.Common;
-using MNX.Globals;
+﻿using MNX.Globals;
 using Moritz.Symbols;
 using System;
 using System.Collections.Generic;

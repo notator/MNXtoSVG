@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using MNX;
 using MNX.Common;
 using MNX.Globals;
 using Moritz.Spec;
 using Moritz.Xml;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace Moritz.Symbols
 {
@@ -591,7 +590,7 @@ namespace Moritz.Symbols
                         /// The systems are given Metrics inside the following function then justified horizontally.
                         Notator.CreateMetricsAndJustifySystemsHorizontally(graphics, this.Systems);
 
-                        CreateTies(this.Systems, M.PageFormat.GapVBPX);
+                        CreateSlursAndTies(this.Systems, M.PageFormat.GapVBPX);
 
                         CreateExtendersAndJustifySystemsVertically(graphics);
                     }
@@ -631,10 +630,12 @@ namespace Moritz.Symbols
         /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
         /// </summary>
         /// <param name="systems"></param>
-        private void CreateTies(List<SvgSystem> systems, double gap)
+        private void CreateSlursAndTies(List<SvgSystem> systems, double gap)
         {
             var noteObjects = systems[0].Staves[0].Voices[0].NoteObjects;
-            var systemsRightX = noteObjects[noteObjects.Count - 1].Metrics.OriginX;
+            var slurTieLeftLimit = noteObjects.Find(obj => obj is Barline).Metrics.OriginX - M.PageFormat.GapVBPX;
+            var slurTieRightLimit = noteObjects[noteObjects.Count - 1].Metrics.OriginX + M.PageFormat.GapVBPX;
+            List<(string, bool)> headIDsSlurredToPreviousSystem = new List<(string, bool)>();
             List<string> headIDsTiedToPreviousSystem = new List<string>();
 
             foreach(var system in systems)
@@ -645,11 +646,23 @@ namespace Moritz.Symbols
                     {
                         foreach(var voice in staff.Voices)
                         {
-                            Tie.TieFirstHeads(voice, headIDsTiedToPreviousSystem);
+                            Tie.TieFirstHeads(voice, headIDsTiedToPreviousSystem, slurTieLeftLimit);
                         }
                     }
                 }
                 M.Assert(headIDsTiedToPreviousSystem.Count == 0);
+
+                if(headIDsSlurredToPreviousSystem.Count > 0)
+                {
+                    foreach(var staff in system.Staves)
+                    {
+                        foreach(var voice in staff.Voices)
+                        {
+                            AddSlurTemplatesToFirstHeads(voice, headIDsSlurredToPreviousSystem, slurTieLeftLimit);
+                        }
+                    }
+                }
+                M.Assert(headIDsSlurredToPreviousSystem.Count == 0);
 
                 foreach(var staff in system.Staves)
                 {
@@ -666,17 +679,34 @@ namespace Moritz.Symbols
                                     OutputChordSymbol rightChord = FindNextChord(voice, noteObjectIndex); // returns null if there is no OutputChordSymbol to the right.
 
                                     // Each Tuple contains tieOriginX, tieOriginY, tieRightX, tieIsOver, tieTargetHeadID 
-                                    List<Tuple<double, double, double, bool, string>> tiesData = Tie.GetTiesData(leftChord, rightChord, systemsRightX);
+                                    List<Tuple<double, double, double, bool, string>> tiesData = Tie.GetTiesData(leftChord, rightChord, slurTieRightLimit);
 
                                     leftChord.AddTies(tiesData);
 
-                                    if(tiesData[0].Item3 > systemsRightX)
+                                    if(tiesData[0].Item3 > slurTieRightLimit)
                                     {
                                         foreach(var tieData in tiesData)
                                         {
                                             headIDsTiedToPreviousSystem.Add(tieData.Item5);
                                         }
-                                        break;
+                                    }
+                                }
+
+                                if(leftChord.Slurs != null && leftChord.Slurs.Count > 0)
+                                {
+                                    foreach(var slurDef in leftChord.Slurs)
+                                    {                                        
+                                        (Head startNote, Head endNote, string targetHeadID) = FindSlurHeads(slurDef, voice, noteObjectIndex, slurTieRightLimit);
+                                        // endNote is null if not on this system.
+ 
+                                        (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) = GetSlurData(startNote, endNote, slurTieRightLimit);
+
+                                        leftChord.AddSlurTemplate(slurBeginX, slurBeginY, slurEndX, slurEndY, isOver);
+
+                                        if(endNote == null)
+                                        {
+                                            headIDsSlurredToPreviousSystem.Add((targetHeadID, isOver));
+                                        }
                                     }
                                 }
                             }
@@ -684,6 +714,25 @@ namespace Moritz.Symbols
                     }
                 }                
             }
+        }
+
+        private void AddSlurTemplatesToFirstHeads(Voice voice, List<(string headID, bool isOver)> headIDsSlurredToPreviousSystem, double slurTieLeftLimit)
+        {
+            throw new NotImplementedException();
+        }
+
+        private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) GetSlurData(Head startNote, Head endNote, double slurTieRightLimit)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// If slurDef.endNote is not in this Voice, the returned endNote will be null.
+        /// </summary>
+        /// <returns></returns>
+        private (Head startNote, Head endNote, string targetHeadID) FindSlurHeads(Slur slurDef, Voice voice, int noteObjectIndex, double systemsRightX)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

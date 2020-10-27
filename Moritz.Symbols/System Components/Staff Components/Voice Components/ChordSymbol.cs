@@ -468,6 +468,7 @@ namespace Moritz.Symbols
         public Stem Stem = null; // defaults
         public BeamBlock BeamBlock = null; // defaults
         public List<Head> HeadsTopDown = new List<Head>(); // Heads are in top-down order.
+        public List<Slur> Slurs = null;
 
         public int? MsDurationToNextBarline { get { return _msDurationToNextBarline; } }
         protected int? _msDurationToNextBarline = null;

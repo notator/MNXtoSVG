@@ -144,7 +144,7 @@ namespace Moritz.Symbols
         /// Add a tie to each Head in the first OutputChordSymbol in the voice, starting the tie before the first barline: 
         /// </summary>
         /// <param name="voice"></param>
-        internal static void TieFirstHeads(Voice voice, List<string> headIDsTiedToPreviousSystem)
+        internal static void TieFirstHeads(Voice voice, List<string> headIDsTiedToPreviousSystem, double slurTieLeftlimit)
         {
             var firstBarline = voice.NoteObjects.Find(obj => obj is Barline);
             var rightChord = voice.NoteObjects.Find(obj => obj is OutputChordSymbol) as OutputChordSymbol;
@@ -156,7 +156,7 @@ namespace Moritz.Symbols
                 headIDsTiedToPreviousSystem.Remove(head.ID);
             }
 
-            rightChord.AddTies(tiesData, firstBarline.Metrics.OriginX - M.PageFormat.GapVBPX);
+            rightChord.AddTies(tiesData, slurTieLeftlimit);
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace Moritz.Symbols
             : base(voice, mnxEventDef.MsDuration, absMsPosition, mnxEventDef, pageFormat.MusicFontHeight, true)
         {
             SetHeads(mnxEventDef);
+            Slurs = mnxEventDef.Slurs; // can be null
         }
 
         private void SetHeads(Event mnxEventDef)
@@ -230,5 +231,10 @@ namespace Moritz.Symbols
 
         public MidiChordDef MidiChordDef { get { return _midiChordDef; } }
         protected MidiChordDef _midiChordDef = null;
+
+        internal void AddSlurTemplate(double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

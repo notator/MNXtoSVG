@@ -11,11 +11,11 @@ namespace MNX.Common
         public override int StaffIndex { get; }
         public override Orientation? Orient { get; }
         // Span attribute
-        public override string Target { get; }
+        public override string TargetEventID { get; }
         public override PositionInMeasure End { get; }
 
         #region IUniqueDef
-        public override string ToString() => $"Tied: Target={Target} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public override string ToString() => $"Tied: Target={TargetEventID} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         #endregion IUniqueDef
 
         public Tied(XmlReader r)
@@ -30,7 +30,7 @@ namespace MNX.Common
                 {
                     // Span attribute
                     case "target":
-                        Target = r.Value;
+                        TargetEventID = r.Value;
                         break;
                     case "end":
                         End = new PositionInMeasure(r.Value);

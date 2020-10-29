@@ -77,6 +77,20 @@ namespace Moritz.Xml
         }
 
         /// <summary>
+        /// Writes an SVG "path" element (such as a slurTemplate)
+        /// See also the other SvgPath(...) function, currently used for ties
+        /// </summary>
+        /// <param name="cssClass">the path's CSS style name</param>
+        /// <param name="cssClass">the path's d-attribute string</param>
+        public void SvgPath(CSSObjectClass cssClass, string dString)
+        {
+            _w.WriteStartElement("path");
+            _w.WriteAttributeString("class", cssClass.ToString());
+            _w.WriteAttributeString("d", dString);
+            _w.WriteEndElement(); //path
+        }
+
+        /// <summary>
         /// Writes an SVG "path" element (such as a slur or tie)
         /// </summary>
         /// <param name="cssClass">the line's CSS style name</param>
@@ -84,7 +98,7 @@ namespace Moritz.Xml
         /// <param name="originY"></param>
         /// <param name="scaleX"></param>
         /// <param name="scaleY"></param>
-        public void SvgPath(CSSObjectClass cssClass, string dString, double originX, double originY, double scaleX=1, double scaleY=1)
+        public void SvgPath(CSSObjectClass cssClass, string dString, double originX, double originY, double scaleX = 1, double scaleY = 1)
         {
             string transformStr = $"translate({M.DoubleToShortString(originX)},{M.DoubleToShortString(originY)})";
             if(scaleX != 1 || scaleY != 1)
@@ -95,7 +109,7 @@ namespace Moritz.Xml
             _w.WriteAttributeString("class", cssClass.ToString());
             _w.WriteAttributeString("d", dString);
             _w.WriteAttributeString("transform", transformStr);
-            _w.WriteEndElement(); //line
+            _w.WriteEndElement(); //path
         }
 
         /// <summary>

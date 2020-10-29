@@ -846,29 +846,34 @@ namespace Moritz.Symbols
             ");
             }
 
-            StringBuilder slurTieSB = new StringBuilder();
-            if(usedCSSClasses.Contains(CSSObjectClass.slur))
+            if(usedCSSClasses.Contains(CSSObjectClass.slurTemplate))
             {
-                if(usedCSSClasses.Contains(CSSObjectClass.tie))
-                {
-                    slurTieSB.Append(".slur, .tie");
-                }
-                else
-                {
-                    slurTieSB.Append(".slur");
-                }
-            }
-            else if(usedCSSClasses.Contains(CSSObjectClass.tie))
-            {
-                slurTieSB.Append(".tie");
-            }
-            if(slurTieSB.Length > 0)
-            {
-                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX / 4);
-                lineStyles.Append($@"{slurTieSB.ToString()}
+                strokeWidth = M.DoubleToShortString(pageFormat.GapVBPX / 2);
+                lineStyles.Append($@".slurTemplate
             {{
                 stroke:black;
-                stroke-width:{strokeWidth}px;               
+                stroke-width:{strokeWidth}px;
+                fill:none
+            }}
+            ");
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX / 3);
+                lineStyles.Append($@".slur
+            {{
+                stroke:black;
+                stroke-width:{strokeWidth}px;
+                stroke-linejoin:round
+            }}
+            ");
+            }
+
+            if(usedCSSClasses.Contains(CSSObjectClass.tie))
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX / 3);
+                lineStyles.Append($@".tie
+            {{
+                stroke:black;
+                stroke-width:{strokeWidth}px;
+                stroke-linejoin:round
             }}
             ");
             }

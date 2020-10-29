@@ -75,7 +75,7 @@ namespace Moritz.Xml
 							// recorded and used if regionInfo exists
 		#endregion regionInfo
 
-        slur,
+        slurTemplate,
         tie,
 
 		#endregion drawObjects

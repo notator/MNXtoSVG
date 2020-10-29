@@ -590,7 +590,7 @@ namespace Moritz.Symbols
                         /// The systems are given Metrics inside the following function then justified horizontally.
                         Notator.CreateMetricsAndJustifySystemsHorizontally(graphics, this.Systems);
 
-                        CreateSlursAndTies(this.Systems, M.PageFormat.GapVBPX);
+                        CreateSlursAndTies(Systems, M.PageFormat.GapVBPX);
 
                         CreateExtendersAndJustifySystemsVertically(graphics);
                     }
@@ -741,7 +741,7 @@ namespace Moritz.Symbols
             double dy = gap * 0.75;
 
             var beginCentreX = ((startHeadMetrics.Right + startHeadMetrics.Left) / 2);
-            var beginCentreY = ((startHeadMetrics.Right + startHeadMetrics.Left) / 2);
+            var beginCentreY = ((startHeadMetrics.Top + startHeadMetrics.Bottom) / 2);
             var slurBeginX = beginCentreX + dx;
             var slurBeginY = (isOver) ? beginCentreY - dy : beginCentreY + dy;
 
@@ -750,7 +750,7 @@ namespace Moritz.Symbols
             if(endHeadMetrics != null)
             {
                 var endCentreX = ((endHeadMetrics.Right + endHeadMetrics.Left) / 2);
-                var endCentreY = ((endHeadMetrics.Right + endHeadMetrics.Left) / 2);
+                var endCentreY = ((endHeadMetrics.Top + endHeadMetrics.Bottom) / 2);
                 slurEndX = endCentreX - dx;
                 slurEndY = (isOver) ? endCentreY - dy : endCentreY + dy;
             }

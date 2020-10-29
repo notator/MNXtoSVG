@@ -1,6 +1,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using MNX.Globals;
 using Moritz.Spec;
 using Moritz.Xml;
@@ -222,10 +223,29 @@ namespace Moritz.Symbols
 
         internal void AddSlurTemplate(double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, double gap, bool isOver)
         {
-            //ChordMetrics.Ties.Add(tie); // So that the tie will be written to SVG.
-            //ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)tie.Metrics); // So that the tie will be moved vertically with the system.
+            // The SVG scale is such that there is no problem using integers here.
+            int dxControl = (int)(gap * 4);
+            int dyControl = dxControl;
 
-            throw new NotImplementedException();
+            int x1 = (int)slurBeginX;
+            int y1 = (int)slurBeginY;
+            int x4 = (int)slurEndX;
+            int y4 = (int)slurEndY;
+
+            // standard Bezier points
+            var p1 = new Point(x1, y1);
+            var p2 = (isOver) ? new Point(x1 + dxControl, y1 - dyControl) : new Point(x1 + dxControl, y1 + dyControl);
+            var p4 = new Point(x4, y4);
+            var p3 = (isOver) ? new Point(x4 - dxControl, y4 - dyControl) : new Point(x4 - dxControl, y4 + dyControl);
+
+            var slurTemplate = new SlurTemplate(p1, p2, p3, p4, gap, isOver);
+
+            if(ChordMetrics.SlurTemplates == null)
+            {
+                ChordMetrics.SlurTemplates = new List<SlurTemplate>();
+            }
+            ChordMetrics.SlurTemplates.Add(slurTemplate); // So that the slurTemplate will be written to SVG.
+            ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)slurTemplate.Metrics); // So that the tie will be moved vertically with the system.
         }
 
         public override string ToString()

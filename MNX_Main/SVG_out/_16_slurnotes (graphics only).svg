@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="168" viewBox="0 0 5000 1688"><rect id="svgEditorBackground" x="0" y="0" width="5000" height="1688" style="fill:none;stroke:none;"/>
+	<defs>
+		<style type="text/css"><![CDATA[
+			@font-face
+			{
+				font-family: 'CLicht';
+				src: url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.eot');
+				src: url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.eot?#iefix') format('embedded-opentype'),
+				url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.woff') format('woff'),
+				url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.ttf') format('truetype'),
+				url('https://github.com/notator/MNXtoSVG/fonts/clicht_plain-webfont.svg#webfontl9D2oOyX') format('svg');
+				font-weight: normal;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Arial';
+				src: url('https://github.com/notator/MNXtoSVG/fonts/arial.ttf') format('truetype');
+				font-weight:400;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Open Sans';
+				src: url('https://github.com/notator/MNXtoSVG/fonts/OpenSans-Regular.ttf') format('truetype');
+				font-weight:400;
+				font-style: normal;
+			}
+			@font-face
+			{
+				font-family: 'Open Sans Condensed';
+				src: url('https://github.com/notator/MNXtoSVG/fonts/OpenSans-CondBold.ttf') format('truetype');
+				font-weight:600;
+				font-style: normal;
+			}
+		    .mainTitle
+            {
+                font-family:"Open Sans";
+                font-size:0px;
+                text-anchor:middle
+            }
+            .author
+            {
+                font-family:"Open Sans";
+                font-size:0px;
+                text-anchor:end
+            }
+            .notehead, .clef
+            {
+                font-family:CLicht
+            }
+            .notehead, .clef
+            {
+                font-size:392px
+            }
+            .timeStamp, .timeSigNumerator, .timeSigDenominator
+            {
+                font-family:Arial
+            }
+            .timeStamp
+            {
+                font-size:150px
+            }
+            .timeSigNumerator, .timeSigDenominator
+            {
+                font-size:420px
+            }
+            .backgroundFill
+            {
+                fill:white                
+            }
+            .staffline, .ledgerline, .stem
+            {
+                stroke:black;
+                stroke-width:15px;
+                fill:black
+            }
+            .stem
+            {
+                stroke-linecap:round                
+            }
+            .normalBarline
+            {
+                stroke:black;
+                stroke-width:30px
+            }
+            .thickBarline
+            {
+                stroke:black;
+                stroke-width:60px
+            }
+            .slurTemplate
+            {
+                stroke:black;
+                stroke-width:50px;
+                fill:none
+            }
+            .slur
+            {
+                stroke:black;
+                stroke-width:5px;
+                stroke-linejoin:round
+            }
+            ]]></style>
+		<g id="trebleClef">
+			<text class="clef">&amp;</text>
+		</g>
+		<g id="timeSig_4/4">
+			<text class="timeSigNumerator" x="0" y="0">4</text>
+			<text class="timeSigDenominator" x="0" y="303.2">4</text>
+		</g>
+	</defs>
+	<rect class="backgroundFill" x="0" y="0" width="5000" height="1688"/>
+	<g class="systems">
+		<text class="timeStamp" x="32" y="150">_16_slurnotes (graphics only).svg, Thursday 29.10.2020, 22:31:13</text>
+		<g class="system">
+			<g class="staff" staffName="">
+				<g class="stafflines">
+					<line class="staffline" x1="400" y1="700" x2="4400" y2="700"/>
+					<line class="staffline" x1="400" y1="800" x2="4400" y2="800"/>
+					<line class="staffline" x1="400" y1="900" x2="4400" y2="900"/>
+					<line class="staffline" x1="400" y1="1000" x2="4400" y2="1000"/>
+					<line class="staffline" x1="400" y1="1100" x2="4400" y2="1100"/>
+				</g>
+				<g class="voice">
+					<use class="clef" href="#trebleClef" x="400" y="1000"/>
+					<line class="normalBarline" x1="725" y1="700" x2="725" y2="1100"/>
+					<use class="timeSig" href="#timeSig_4/4" x="773.3333" y="900"/>
+					<g class="chord">
+						<g class="graphics">
+							<line class="stem" x1="1108.153" y1="661.5499" x2="1108.153" y2="1210"/>
+							<text class="notehead" x="1100.653" y="650">˙</text>
+							<text class="notehead" x="1100.653" y="750">˙</text>
+							<text class="notehead" x="1100.653" y="850">˙</text>
+							<path class="slur" d="M1187.3,929.2C1326.5,1114,2395.1,1161.8,2619.4,966.7C2442.8,1214,1274.3,1161.8,1187.3,929.2z"/>
+							<path class="slur" d="M1253.8,675C1382.6,508.8,2430.5,469.6,2623.5,749.9C2382.5,521.4,1434.4,556.8,1253.8,675z"/>
+							<path class="slur" d="M1233,575C1400.2,370.3,2460.7,374.7,2648.5,633.3C2410.5,424.5,1450,420.5,1233,575z"/>
+						</g>
+					</g>
+					<g class="chord">
+						<g class="graphics">
+							<line class="stem" x1="2661.557" y1="711.5499" x2="2661.557" y2="1260"/>
+							<text class="notehead" x="2654.057" y="700">˙</text>
+							<text class="notehead" x="2654.057" y="800">˙</text>
+							<text class="notehead" x="2654.057" y="900">˙</text>
+						</g>
+					</g>
+					<g class="endOfScoreBarline">
+						<line class="normalBarline" x1="4280" y1="692.5" x2="4280" y2="1107.5"/>
+						<line class="thickBarline" x1="4370" y1="692.5" x2="4370" y2="1107.5"/>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+	<!-- Annotations that are added here will be ignored by the AssistantPerformer. -->
+</svg>

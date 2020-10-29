@@ -28,7 +28,7 @@ namespace Moritz.Symbols
         public Tie(double originX, double originY, double rightX, double gap, bool tieOver)
         {
             SetPathAttributes(originX, originY, rightX, gap, tieOver);
-            Metrics = new SlurTieMetrics(CSSObjectClass.tie, gap, originX, originY, tieOver);            
+            Metrics = new SlurTieMetrics(CSSObjectClass.tie, gap, originX, originY, rightX, tieOver);            
         }
 
          /// <summary>
@@ -326,11 +326,11 @@ namespace Moritz.Symbols
     /// </summary>
     class SlurTieMetrics : Metrics
     {
-        internal SlurTieMetrics(CSSObjectClass slurOrTie, double gap, double originX, double originY, bool slurTieOver)
-            :base(slurOrTie)
+        internal SlurTieMetrics(CSSObjectClass slurOrTie, double gap, double originX, double originY, double rightX, bool slurTieOver)
+            : base(slurOrTie)
         {
             _left = originX; // never changes
-            _right = 0; // never used
+            _right = rightX; // never changes
             _originX = originX; // never changes
 
             _originY = originY;

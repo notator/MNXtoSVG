@@ -1199,11 +1199,11 @@ namespace Moritz.Symbols
                 foreach(Tie tie in Ties)
                     tie.WriteSVG(w);
             }
-            //if(Slurs != null)
-            //{
-            //    foreach(Slur slur in Slurs)
-            //        slur.WriteSVG(w);
-            //}
+            if(SlurTemplates != null)
+            {
+                foreach(var slurTemplate in SlurTemplates)
+                    slurTemplate.WriteSVG(w);
+            }
         }
 
         public override void Move(double dx, double dy)
@@ -1268,6 +1268,10 @@ namespace Moritz.Symbols
                 foreach(var slurTieMetrics in _slurTieMetrics)
                 {
                     slurTieMetrics.Move(dx, dy);
+                }
+                foreach(var slurTemplate in SlurTemplates)
+                {
+                    slurTemplate.Move(dy);
                 }
             }
 
@@ -1500,7 +1504,7 @@ namespace Moritz.Symbols
         public List<NoteheadExtenderMetrics> NoteheadExtendersMetricsBefore = null;
 
         public List<Tie> Ties = null;        
-        //public List<Slur> Slurs = null;
+        public List<SlurTemplate> SlurTemplates = null;
 
         /// <summary>
         /// Returns null or a clone of the _stemMetrics

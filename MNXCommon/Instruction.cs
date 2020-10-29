@@ -70,7 +70,7 @@ namespace MNX.Common
         public override string ToString() => $"Span: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         #endregion IUniqueDef
 
-        public abstract string TargetEventID { get; }
+        public abstract string Target { get; }
         public abstract PositionInMeasure End { get; }
     }
 }

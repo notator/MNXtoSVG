@@ -217,7 +217,7 @@ namespace Moritz.Symbols
                 {
                     Head leftHead = leftChord.HeadsTopDown[j];
                     Head rightHead = rightChord.HeadsTopDown[j];
-                    M.Assert(leftHead.Tied.TargetEventID == rightHead.ID);
+                    M.Assert(leftHead.Tied.Target == rightHead.ID);
                 }
 
                 if(rightChord != null)
@@ -230,7 +230,7 @@ namespace Moritz.Symbols
                 else // leftChord != null && rightChord == null;
                 {
                     Head leftHead = leftChord.HeadsTopDown[j];
-                    tieTargetHeadID = leftHead.Tied.TargetEventID;
+                    tieTargetHeadID = leftHead.Tied.Target;
                     tieRightX = systemRight + (gap * 1.2);
                 }
 

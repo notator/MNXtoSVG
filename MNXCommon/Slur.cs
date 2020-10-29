@@ -11,12 +11,12 @@ namespace MNX.Common
         public override int StaffIndex { get; }
         public override Orientation? Orient { get; }
         // Span attributes
-        public override string TargetEventID { get; }
+        public override string Target { get; }
         public override PositionInMeasure End { get; }
 
         // Other attributes
-        public readonly string StartNoteID = null; // an ID
-        public readonly string EndNoteID = null; // an ID
+        public readonly string StartNote = null; // an ID
+        public readonly string EndNote = null; // an ID
         public readonly LineType LineType = LineType.solid;
         public readonly Orientation? Side = null;
         public readonly Orientation? SideEnd = null;
@@ -33,10 +33,10 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "start-note":
-                        StartNoteID = r.Value;
+                        StartNote = r.Value;
                         break;
                     case "end-note":
-                        EndNoteID = r.Value;
+                        EndNote = r.Value;
                         break;
                     case "line-type":
                         LineType = GetLineType(r.Value);
@@ -55,7 +55,7 @@ namespace MNX.Common
                         break;
                     // Span attribute
                     case "target":
-                        TargetEventID = r.Value;
+                        Target = r.Value;
                         break;
                     case "end":
                         End = new PositionInMeasure(r.Value);

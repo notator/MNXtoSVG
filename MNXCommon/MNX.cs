@@ -1,5 +1,4 @@
 ﻿using MNX.Globals;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
@@ -56,49 +55,6 @@ namespace MNX.Common
                 M.Assert(Parts.Count > 0);
                 M.Assert(ScoreAudios.Count >= 0);
             }
-        }
-
-        /// <summary>
-        /// Returns partIndex, measureIndex, sequenceIndex, eventIndex
-        /// </summary>
-        //public Tuple<int, int, int, int> EventAddress(string eventID)
-        public (int partIndex, int measureIndex, int sequenceIndex, int eventIndex) EventAddress(string eventID)
-        {
-            var partIndex = -1;
-            var measureIndex = -1;
-            var sequenceIndex = -1;
-            var eventIndex = -1;
-            var found = false;
-
-            for(var pIndex = 0; pIndex < Parts.Count; ++pIndex)
-            {
-                var part = Parts[pIndex];
-                for(var mIndex = 0; mIndex < part.Measures.Count; ++mIndex)
-                {
-                    var measure = part.Measures[mIndex];
-                    for(var sIndex = 0; sIndex < measure.Sequences.Count; ++sIndex)
-                    {
-                        var sequence = measure.Sequences[sIndex];
-                        for(var eIndex = 0; eIndex < sequence.Events.Count; ++eIndex)
-                        {
-                            var evt = sequence.Events[eIndex];
-                            if(eventID.Equals(evt.ID))
-                            {
-                                partIndex = pIndex;
-                                measureIndex = mIndex;
-                                sequenceIndex = sIndex;
-                                eventIndex = eIndex;
-                                break;                            
-                            }
-                        }
-                        if(found) break;
-                    }
-                    if(found) break;
-                }
-                if(found) break;
-            }
-
-            return (partIndex, measureIndex, sequenceIndex, eventIndex);
         }
 
         private void AdjustForGraceNotes()

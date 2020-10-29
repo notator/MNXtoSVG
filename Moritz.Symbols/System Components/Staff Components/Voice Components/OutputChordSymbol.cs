@@ -15,7 +15,6 @@ namespace Moritz.Symbols
             : base(voice, mnxEventDef.MsDuration, absMsPosition, mnxEventDef, pageFormat.MusicFontHeight, true)
         {
             SetHeads(mnxEventDef);
-            Slurs = mnxEventDef.Slurs; // can be null
         }
 
         private void SetHeads(Event mnxEventDef)

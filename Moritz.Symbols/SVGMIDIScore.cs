@@ -694,11 +694,13 @@ namespace Moritz.Symbols
 
                                 if(leftChord.Slurs != null && leftChord.Slurs.Count > 0)
                                 {
+                                    var headsTopDown = leftChord.HeadsTopDown;
+
                                     foreach(var slurDef in leftChord.Slurs)
                                     {                                        
-                                        (Head startNote, Head endNote, string targetHeadID) = FindSlurHeads(slurDef, voice, noteObjectIndex, slurTieRightLimit);
-                                        // endNote is null if not on this system.
- 
+                                        (Head startNote, Head endNote, string targetEventID, string targetHeadID) = FindSlurHeads(headsTopDown, slurDef, voice, noteObjectIndex, slurTieRightLimit);
+                                        // endNote and targetHeadID are null if the target is not on this system.
+
                                         (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) = GetSlurData(startNote, endNote, slurTieRightLimit);
 
                                         leftChord.AddSlurTemplate(slurBeginX, slurBeginY, slurEndX, slurEndY, isOver);
@@ -727,12 +729,36 @@ namespace Moritz.Symbols
         }
 
         /// <summary>
-        /// If slurDef.endNote is not in this Voice, the returned endNote will be null.
+        /// If slurDef.endNote is not in this Voice, the returned endHead and targetHeadID will be null.
         /// </summary>
         /// <returns></returns>
-        private (Head startNote, Head endNote, string targetHeadID) FindSlurHeads(Slur slurDef, Voice voice, int noteObjectIndex, double systemsRightX)
+        private (Head startHead, Head endHead, string targetEventID, string targetHeadID) FindSlurHeads(List<Head> startHeadsTopDown, Slur slurDef, Voice voice, int noteObjectIndex, double systemsRightX)
         {
-            throw new NotImplementedException();
+            Head startHead = null;
+            Head endHead = null;
+            string targetEventID = slurDef.TargetEventID;
+            string targetHeadID = slurDef.EndNoteID; // can be null
+
+            var startHeadID = slurDef.StartNoteID;
+            if(startHeadID == null)
+            {
+                startHead = (slurDef.Orient == Orientation.up) ? startHeadsTopDown[0] : startHeadsTopDown[startHeadsTopDown.Count -1];
+            }
+            else
+            {
+                startHead = startHeadsTopDown.Find(head => head.ID.Equals(startHeadID));
+            }            
+
+            for(var noIndex = noteObjectIndex; noIndex <= voice.NoteObjects.Count; ++noIndex)
+            {
+                var outputChordSymbol = voice.NoteObjects[noIndex] as OutputChordSymbol;
+                if(outputChordSymbol != null && outputChordSymbol.EventID.Equals(targetEventID))
+                {
+
+                }
+            }
+
+            return (startHead, endHead, targetEventID, targetHeadID);
         }
 
         /// <summary>

@@ -220,6 +220,14 @@ namespace Moritz.Symbols
             }
         }
 
+        internal void AddSlurTemplate(double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, double gap, bool isOver)
+        {
+            //ChordMetrics.Ties.Add(tie); // So that the tie will be written to SVG.
+            //ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)tie.Metrics); // So that the tie will be moved vertically with the system.
+
+            throw new NotImplementedException();
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -230,10 +238,5 @@ namespace Moritz.Symbols
 
         public MidiChordDef MidiChordDef { get { return _midiChordDef; } }
         protected MidiChordDef _midiChordDef = null;
-
-        internal void AddSlurTemplate(double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

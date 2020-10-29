@@ -635,7 +635,7 @@ namespace Moritz.Symbols
             var noteObjects = systems[0].Staves[0].Voices[0].NoteObjects;
             var slurTieLeftLimit = noteObjects.Find(obj => obj is Barline).Metrics.OriginX - M.PageFormat.GapVBPX;
             var slurTieRightLimit = noteObjects[noteObjects.Count - 1].Metrics.OriginX + M.PageFormat.GapVBPX;
-            List<(string, bool)> headIDsSlurredToPreviousSystem = new List<(string, bool)>();
+            var firstSlurInfos = new List<(string, string, bool)>();
             List<string> headIDsTiedToPreviousSystem = new List<string>();
 
             foreach(var system in systems)
@@ -652,17 +652,17 @@ namespace Moritz.Symbols
                 }
                 M.Assert(headIDsTiedToPreviousSystem.Count == 0);
 
-                if(headIDsSlurredToPreviousSystem.Count > 0)
+                if(firstSlurInfos.Count > 0)
                 {
                     foreach(var staff in system.Staves)
                     {
                         foreach(var voice in staff.Voices)
                         {
-                            AddSlurTemplatesToFirstHeads(voice, headIDsSlurredToPreviousSystem, slurTieLeftLimit);
+                            AddSlurTemplatesToFirstHeads(voice, firstSlurInfos, slurTieLeftLimit);
                         }
                     }
                 }
-                M.Assert(headIDsSlurredToPreviousSystem.Count == 0);
+                M.Assert(firstSlurInfos.Count == 0);
 
                 foreach(var staff in system.Staves)
                 {
@@ -676,7 +676,7 @@ namespace Moritz.Symbols
                             {
                                 if(leftChord.HeadsTopDown[0].Tied != null)
                                 {
-                                    OutputChordSymbol rightChord = FindNextChord(voice, noteObjectIndex); // returns null if there is no OutputChordSymbol to the right.
+                                    OutputChordSymbol rightChord = FindNextChord(voice, noteObjectIndex, false); // returns null if there is no OutputChordSymbol to the right.
 
                                     // Each Tuple contains tieOriginX, tieOriginY, tieRightX, tieIsOver, tieTargetHeadID 
                                     List<Tuple<double, double, double, bool, string>> tiesData = Tie.GetTiesData(leftChord, rightChord, slurTieRightLimit);
@@ -695,19 +695,22 @@ namespace Moritz.Symbols
                                 if(leftChord.Slurs != null && leftChord.Slurs.Count > 0)
                                 {
                                     var headsTopDown = leftChord.HeadsTopDown;
+                                    var headsMetricsTopDown = ((ChordMetrics)leftChord.Metrics).HeadsMetricsTopDown;
 
                                     foreach(var slurDef in leftChord.Slurs)
-                                    {                                        
-                                        (Head startNote, Head endNote, string targetEventID, string targetHeadID) = FindSlurHeads(headsTopDown, slurDef, voice, noteObjectIndex, slurTieRightLimit);
+                                    {
+                                        (HeadMetrics startNoteMetrics, HeadMetrics endNoteMetrics, string targetEventID, string targetHeadID) = 
+                                            FindSlurHeadMetrics(headsTopDown, headsMetricsTopDown, slurDef, voice, noteObjectIndex);
                                         // endNote and targetHeadID are null if the target is not on this system.
 
-                                        (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) = GetSlurData(startNote, endNote, slurTieRightLimit);
+                                        (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) = 
+                                            GetSlurCoordinates(startNoteMetrics, endNoteMetrics, slurTieRightLimit);
 
-                                        leftChord.AddSlurTemplate(slurBeginX, slurBeginY, slurEndX, slurEndY, isOver);
+                                        leftChord.AddSlurTemplate(slurBeginX, slurBeginY, slurEndX, slurEndY, M.PageFormat.GapVBPX, isOver);
 
-                                        if(endNote == null)
+                                        if(endNoteMetrics == null)
                                         {
-                                            headIDsSlurredToPreviousSystem.Add((targetHeadID, isOver));
+                                            firstSlurInfos.Add((targetEventID, targetHeadID, slurDef.Side == Orientation.up));
                                         }
                                     }
                                 }
@@ -718,62 +721,90 @@ namespace Moritz.Symbols
             }
         }
 
-        private void AddSlurTemplatesToFirstHeads(Voice voice, List<(string headID, bool isOver)> headIDsSlurredToPreviousSystem, double slurTieLeftLimit)
+        private void AddSlurTemplatesToFirstHeads(Voice voice, List<(string, string, bool)> firstSlurInfos, double slurTieLeftLimit)
         {
-            throw new NotImplementedException();
+            foreach(var slurInfo in firstSlurInfos)
+            {
+                var targetEventID = slurInfo.Item1;
+                var targetHeadID = slurInfo.Item2;
+                bool isOver = slurInfo.Item3;
+            }
         }
 
-        private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) GetSlurData(Head startNote, Head endNote, double slurTieRightLimit)
+        private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) 
+            GetSlurCoordinates(HeadMetrics startNoteMetrics, HeadMetrics endNoteMetrics, double slurTieRightLimit)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// If slurDef.endNote is not in this Voice, the returned endHead and targetHeadID will be null.
+        /// If slurDef.endNote is not in this Voice, the returned endHeadMetrics and targetHeadID will be null.
         /// </summary>
         /// <returns></returns>
-        private (Head startHead, Head endHead, string targetEventID, string targetHeadID) FindSlurHeads(List<Head> startHeadsTopDown, Slur slurDef, Voice voice, int noteObjectIndex, double systemsRightX)
+        private (HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, string targetEventID, string targetHeadID)
+            FindSlurHeadMetrics(List<Head> startHeadsTopDown, IReadOnlyList<HeadMetrics> startHeadsMetricsTopDown, Slur slurDef, Voice voice, int noteObjectIndex)
         {
             Head startHead = null;
+            HeadMetrics startHeadMetrics = null;
             Head endHead = null;
+            HeadMetrics endHeadMetrics = null;
             string targetEventID = slurDef.TargetEventID;
             string targetHeadID = slurDef.EndNoteID; // can be null
 
             var startHeadID = slurDef.StartNoteID;
             if(startHeadID == null)
             {
-                startHead = (slurDef.Orient == Orientation.up) ? startHeadsTopDown[0] : startHeadsTopDown[startHeadsTopDown.Count -1];
+                startHead = (slurDef.Side == Orientation.up) ? startHeadsTopDown[0] : startHeadsTopDown[startHeadsTopDown.Count -1];
             }
             else
             {
                 startHead = startHeadsTopDown.Find(head => head.ID.Equals(startHeadID));
-            }            
-
-            for(var noIndex = noteObjectIndex; noIndex <= voice.NoteObjects.Count; ++noIndex)
-            {
-                var outputChordSymbol = voice.NoteObjects[noIndex] as OutputChordSymbol;
-                if(outputChordSymbol != null && outputChordSymbol.EventID.Equals(targetEventID))
-                {
-
-                }
             }
 
-            return (startHead, endHead, targetEventID, targetHeadID);
+            startHeadMetrics = startHeadsMetricsTopDown[startHeadsTopDown.FindIndex(head => head == startHead)];
+
+            var outputChordSymbol = FindNextChord(voice, noteObjectIndex++, true);
+            while(outputChordSymbol != null)
+            { 
+                if(outputChordSymbol.EventID.Equals(targetEventID))
+                {
+                    var headsTopDown = outputChordSymbol.HeadsTopDown;
+                    var headsMetricsTopDown = ((ChordMetrics)outputChordSymbol.Metrics).HeadsMetricsTopDown;
+                    if(targetHeadID == null)
+                    {
+                        endHead = (slurDef.Side == Orientation.up) ? headsTopDown[0] : headsTopDown[headsTopDown.Count - 1];
+                    }
+                    else
+                    {
+                        endHead = headsTopDown.Find(head => head.ID.Equals(targetHeadID));
+                    }
+                    endHeadMetrics = headsMetricsTopDown[headsTopDown.FindIndex(head => head == endHead)];
+                    break;
+                }
+                outputChordSymbol = FindNextChord(voice, noteObjectIndex++, true);
+            }
+
+            return (startHeadMetrics, endHeadMetrics, targetEventID, targetHeadID);
         }
 
         /// <summary>
-        /// returns null if there is no OutputChordSymbol to the right of the one at noteObjectIndex.
+        /// Returns null or the next OutputChordSymbol in the voice.
+        /// null is returned if there is no next OutputChordSymbol in the voice, or ignoreRests is false and
+        /// an OutputRestSymbol occurs before the next OutputChordSymbol. 
         /// </summary>
         /// <param name="voice"></param>
         /// <param name="noteObjectIndex"></param>
         /// <returns></returns>
-        private OutputChordSymbol FindNextChord(Voice voice, int noteObjectIndex)
+        private OutputChordSymbol FindNextChord(Voice voice, int noteObjectIndex, bool ignoreRests)
         {
             OutputChordSymbol rval = null;
             var noteObjects = voice.NoteObjects;
             for(var i = noteObjectIndex + 1; i < noteObjects.Count; i++)
             {
-                M.Assert(!(noteObjects[i] is OutputRestSymbol));
+                if(noteObjects[i] is OutputRestSymbol && ignoreRests == false)
+                {
+                    break;
+                }
                 if(noteObjects[i] is OutputChordSymbol ocs)
                 {
                     rval = ocs;

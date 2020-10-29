@@ -703,10 +703,12 @@ namespace Moritz.Symbols
                                             FindSlurHeadMetrics(headsTopDown, headsMetricsTopDown, slurDef, voice, noteObjectIndex);
                                         // endNote and targetHeadID are null if the target is not on this system.
 
-                                        (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) = 
-                                            GetSlurCoordinates(startNoteMetrics, endNoteMetrics, slurTieRightLimit);
+                                        bool isOver = (slurDef.Side == Orientation.up);
 
-                                        leftChord.AddSlurTemplate(slurBeginX, slurBeginY, slurEndX, slurEndY, M.PageFormat.GapVBPX, isOver);
+                                        (double slurTemplateBeginX, double slurTemplateBeginY, double slurTemplateEndX, double slurTemplateEndY) = 
+                                            GetSlurTemplateCoordinates(startNoteMetrics, endNoteMetrics, gap, isOver, slurTieRightLimit);
+
+                                        leftChord.AddSlurTemplate(slurTemplateBeginX, slurTemplateBeginY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
 
                                         if(endNoteMetrics == null)
                                         {
@@ -731,10 +733,34 @@ namespace Moritz.Symbols
             }
         }
 
-        private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, bool isOver) 
-            GetSlurCoordinates(HeadMetrics startNoteMetrics, HeadMetrics endNoteMetrics, double slurTieRightLimit)
+        private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY) 
+            GetSlurTemplateCoordinates(HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, double gap, bool isOver, double slurTieRightLimit)
         {
-            throw new NotImplementedException();
+            // dx an dy will be wrt centre of notehead
+            double dx = gap * 0.75; //
+            double dy = gap * 0.75;
+
+            var beginCentreX = ((startHeadMetrics.Right + startHeadMetrics.Left) / 2);
+            var beginCentreY = ((startHeadMetrics.Right + startHeadMetrics.Left) / 2);
+            var slurBeginX = beginCentreX + dx;
+            var slurBeginY = (isOver) ? beginCentreY - dy : beginCentreY + dy;
+
+            double slurEndX = 0;
+            double slurEndY = 0;
+            if(endHeadMetrics != null)
+            {
+                var endCentreX = ((endHeadMetrics.Right + endHeadMetrics.Left) / 2);
+                var endCentreY = ((endHeadMetrics.Right + endHeadMetrics.Left) / 2);
+                slurEndX = endCentreX - dx;
+                slurEndY = (isOver) ? endCentreY - dy : endCentreY + dy;
+            }
+            else
+            {
+                slurEndX = slurTieRightLimit;
+                slurEndY = slurBeginY;
+            }
+
+            return (slurBeginX, slurBeginY, slurEndX, slurEndY);
         }
 
         /// <summary>

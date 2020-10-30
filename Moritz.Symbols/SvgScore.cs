@@ -848,14 +848,6 @@ namespace Moritz.Symbols
 
             if(usedCSSClasses.Contains(CSSObjectClass.slurTemplate))
             {
-                strokeWidth = M.DoubleToShortString(pageFormat.GapVBPX / 2);
-                lineStyles.Append($@".slurTemplate
-            {{
-                stroke:black;
-                stroke-width:{strokeWidth}px;
-                fill:none
-            }}
-            ");
                 strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX / 3);
                 lineStyles.Append($@".slur
             {{

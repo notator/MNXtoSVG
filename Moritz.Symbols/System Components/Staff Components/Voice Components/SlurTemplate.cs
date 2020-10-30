@@ -87,7 +87,11 @@ namespace Moritz.Symbols
                 dString = $"M{_p1.X},{_p1.Y}C{_c1.X},{_c1.Y},{_c2.X},{_c2.Y},{_p2.X},{_p2.Y}S{_c3.X},{_c3.Y},{_p3.X},{_p3.Y}";
             }
 
-            w.SvgPath(CSSObjectClass.slurTemplate, dString);
+            string stroke = "#0000AA"; // a dark blue
+            string strokeWidth = "50px";
+            string fill = "none";
+
+            w.SvgTemplatePath(CSSObjectClass.slurTemplate, dString, stroke, strokeWidth, fill);
         }
 
         internal void Move(double dy)

@@ -77,16 +77,16 @@ namespace Moritz.Xml
         }
 
         /// <summary>
-        /// Writes an SVG "path" element (such as a slurTemplate)
-        /// See also the other SvgPath(...) function, currently used for ties
+        /// Writes an SVG "path" element having no global css style (such as a slurTemplate or tieTemplate)
         /// </summary>
-        /// <param name="cssClass">the path's CSS style name</param>
-        /// <param name="cssClass">the path's d-attribute string</param>
-        public void SvgPath(CSSObjectClass cssClass, string dString)
+        public void SvgTemplatePath(CSSObjectClass cssClass, string dString, string stroke, string strokeWidth, string fill)
         {
             _w.WriteStartElement("path");
             _w.WriteAttributeString("class", cssClass.ToString());
             _w.WriteAttributeString("d", dString);
+            _w.WriteAttributeString("stroke", stroke);
+            _w.WriteAttributeString("stroke-width", strokeWidth);
+            _w.WriteAttributeString("fill", fill);
             _w.WriteEndElement(); //path
         }
 

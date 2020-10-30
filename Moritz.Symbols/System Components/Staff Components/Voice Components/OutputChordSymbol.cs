@@ -232,13 +232,31 @@ namespace Moritz.Symbols
             int x4 = (int)slurEndX;
             int y4 = (int)slurEndY;
 
-            // standard Bezier points
-            var p1 = new Point(x1, y1);
-            var p2 = (isOver) ? new Point(x1 + dxControl, y1 - dyControl) : new Point(x1 + dxControl, y1 + dyControl);
-            var p4 = new Point(x4, y4);
-            var p3 = (isOver) ? new Point(x4 - dxControl, y4 - dyControl) : new Point(x4 - dxControl, y4 + dyControl);
+            SlurTemplate slurTemplate = null;
+            int shortSlurMaxWidth = (int)gap * 20; // 5 staff heights
+            if((x4 - x1) <= shortSlurMaxWidth)
+            {
+                // short (=two-point) slur template
+                // standard Bezier points
+                var p1 = new Point(x1, y1);
+                var p2 = (isOver) ? new Point(x1 + dxControl, y1 - dyControl) : new Point(x1 + dxControl, y1 + dyControl);
+                var p4 = new Point(x4, y4);
+                var p3 = (isOver) ? new Point(x4 - dxControl, y4 - dyControl) : new Point(x4 - dxControl, y4 + dyControl);
 
-            var slurTemplate = new SlurTemplate(p1, p2, p3, p4, gap, isOver);
+                slurTemplate = new SlurTemplate(p1, p2, p3, p4, gap, isOver);
+            }
+            else
+            {
+                // long (=three-point) slur template
+                var p1 = new Point(x1, y1);
+                var c1 = (isOver) ? new Point(x1 + dxControl, y1 - dyControl) : new Point(x1 + dxControl, y1 + dyControl);
+                var p3 = new Point(x4, y4);
+                var c3 = (isOver) ? new Point(x4 - dxControl, y4 - dyControl) : new Point(x4 - dxControl, y4 + dyControl);
+                var p2 = new Point((x1 + x4) / 2, (y1 + c1.Y) / 2);
+                var c2 = new Point((p1.X + p2.X) / 2, p2.Y);
+
+                slurTemplate = new SlurTemplate(p1, c1, c2, p2, c3, p3, gap, isOver);
+            }
 
             if(ChordMetrics.SlurTemplates == null)
             {

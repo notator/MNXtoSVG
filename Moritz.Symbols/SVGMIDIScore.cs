@@ -737,8 +737,9 @@ namespace Moritz.Symbols
             GetSlurTemplateCoordinates(HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, double gap, bool isOver, double slurTieRightLimit)
         {
             // dx an dy will be wrt centre of notehead
-            double dx = gap * 0.75; //
+
             double dy = gap * 0.75;
+            double dx = dy / 1.5; // The same angle as the control line (arcTan(3/2))
 
             var beginCentreX = ((startHeadMetrics.Right + startHeadMetrics.Left) / 2);
             var beginCentreY = ((startHeadMetrics.Top + startHeadMetrics.Bottom) / 2);

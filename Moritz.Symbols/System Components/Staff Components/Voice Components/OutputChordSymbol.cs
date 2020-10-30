@@ -224,8 +224,9 @@ namespace Moritz.Symbols
         internal void AddSlurTemplate(double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, double gap, bool isOver)
         {
             // The SVG scale is such that there is no problem using integers here.
-            int dxControl = (int)(gap * 4);
-            int dyControl = dxControl;
+
+            int dyControl = (int)(gap * 3);
+            int dxControl = (int)(gap * 2);
 
             int x1 = (int)slurBeginX;
             int y1 = (int)slurBeginY;

@@ -628,6 +628,7 @@ namespace Moritz.Symbols
 
         /// <summary>
         /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
+        /// Staves have not yet been moved from their original position (so have their top staffline at y-coordinate = 0).
         /// </summary>
         /// <param name="systems"></param>
         private void CreateSlursAndTies(List<SvgSystem> systems, double gap)
@@ -635,7 +636,7 @@ namespace Moritz.Symbols
             var noteObjects = systems[0].Staves[0].Voices[0].NoteObjects;
             var slurTieLeftLimit = noteObjects.Find(obj => obj is Barline).Metrics.OriginX - M.PageFormat.GapVBPX;
             var slurTieRightLimit = noteObjects[noteObjects.Count - 1].Metrics.OriginX + M.PageFormat.GapVBPX;
-            var firstSlurInfos = new List<(string, string, bool)>();
+            var firstSlurInfosPerVoice = new List<List<(string, string, bool, double)>>();
             List<string> headIDsTiedToPreviousSystem = new List<string>();
 
             foreach(var system in systems)
@@ -652,22 +653,31 @@ namespace Moritz.Symbols
                 }
                 M.Assert(headIDsTiedToPreviousSystem.Count == 0);
 
-                if(firstSlurInfos.Count > 0)
+                int voiceIndex = 0;
+                if(firstSlurInfosPerVoice.Count > 0)
                 {
                     foreach(var staff in system.Staves)
                     {
                         foreach(var voice in staff.Voices)
                         {
-                            AddSlurTemplatesToFirstHeads(voice, firstSlurInfos, slurTieLeftLimit);
+                            var firstSlurInfos = firstSlurInfosPerVoice[voiceIndex++];
+                            if(firstSlurInfos.Count > 0)
+                            {
+                                AddVoiceStartSlurTemplates(voice, firstSlurInfos, slurTieLeftLimit);
+                            }
                         }
                     }
                 }
-                M.Assert(firstSlurInfos.Count == 0);
+                firstSlurInfosPerVoice.Clear();
 
+                voiceIndex = 0;
                 foreach(var staff in system.Staves)
                 {
                     foreach(var voice in staff.Voices)
                     {
+                        var firstSlurInfos = new List<(string, string, bool, double)>();
+                        firstSlurInfosPerVoice.Add(firstSlurInfos);
+
                         noteObjects = voice.NoteObjects;
                         
                         for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
@@ -712,7 +722,11 @@ namespace Moritz.Symbols
 
                                         if(endNoteMetrics == null)
                                         {
-                                            firstSlurInfos.Add((targetEventID, targetHeadID, slurDef.Side == Orientation.up));
+                                            // Note that staves have not yet been moved vertically, so all their top stafflines are at y-coordinate = 0.
+                                            // I could therefore have used slurTemplateBeginY directly here, rather than converting it to an offset.
+                                            // I'm using beginYOffset here as a precautionary measure in case the situation changes... 
+                                            double beginYOffset = slurTemplateBeginY - voice.Staff.Metrics.StafflinesTop;
+                                            firstSlurInfos.Add((targetEventID, targetHeadID, slurDef.Side == Orientation.up, beginYOffset));
                                         }
                                     }
                                 }
@@ -723,14 +737,58 @@ namespace Moritz.Symbols
             }
         }
 
-        private void AddSlurTemplatesToFirstHeads(Voice voice, List<(string, string, bool)> firstSlurInfos, double slurTieLeftLimit)
+        private void AddVoiceStartSlurTemplates(Voice voice, List<(string, string, bool, double)> firstSlurInfos, double slurTieLeftLimit)
         {
+            var gap = M.PageFormat.GapVBPX;
+
             foreach(var slurInfo in firstSlurInfos)
             {
                 var targetEventID = slurInfo.Item1;
                 var targetHeadID = slurInfo.Item2;
                 bool isOver = slurInfo.Item3;
+                double slurTemplateLeftY = voice.Staff.Metrics.StafflinesTop + slurInfo.Item4;
+
+                var targetChord = voice.NoteObjects.Find(chord => chord is OutputChordSymbol outputChord && outputChord.EventID.Equals(targetEventID)) as OutputChordSymbol;
+                M.Assert(targetChord != null, "The target chord must be in this voice. (Slurs cannot currently span more than one system break.)");
+
+                var headsTopDown = targetChord.HeadsTopDown;
+                var headsMetricsTopDown = ((ChordMetrics)targetChord.Metrics).HeadsMetricsTopDown;
+
+                HeadMetrics headMetrics = FindTargetHeadMetrics(headsTopDown, headsMetricsTopDown, targetHeadID, isOver);
+                (double slurTemplateEndX, double slurTemplateEndY) = GetStartSlurTemplateEndCoordinates(headMetrics, gap, isOver);
+
+                targetChord.AddSlurTemplate(slurTieLeftLimit, slurTemplateLeftY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
             }
+        }
+
+        private HeadMetrics FindTargetHeadMetrics(List<Head> headsTopDown, IReadOnlyList<HeadMetrics> headsMetricsTopDown, string targetHeadID, bool isOver)
+        {
+            HeadMetrics headMetrics = null;
+            if(targetHeadID == null)
+            {
+                headMetrics = (isOver) ? headsMetricsTopDown[0] : headsMetricsTopDown[headsMetricsTopDown.Count - 1];
+            }
+            else
+            {
+                var head = headsTopDown.Find(h => h.ID == targetHeadID);
+                headMetrics = headsMetricsTopDown[headsTopDown.FindIndex(h => h == head)];
+            }
+            M.Assert(headMetrics != null);
+
+            return headMetrics;
+        }
+
+        private (double slurTemplateEndX, double slurTemplateEndY) GetStartSlurTemplateEndCoordinates(HeadMetrics headMetrics, double gap, bool isOver)
+        {
+            double dy = gap * 0.75;
+            double dx = dy / 1.5; // The same angle as the control line (arcTan(3/2))
+
+            var endCentreX = ((headMetrics.Right + headMetrics.Left) / 2);
+            var endCentreY = ((headMetrics.Top + headMetrics.Bottom) / 2);
+            var slurEndX = endCentreX - dx;
+            var slurEndY = (isOver) ? endCentreY - dy : endCentreY + dy;
+
+            return (slurEndX, slurEndY);
         }
 
         private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY) 
@@ -771,7 +829,6 @@ namespace Moritz.Symbols
         private (HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, string targetEventID, string targetHeadID)
             FindSlurHeadMetrics(List<Head> startHeadsTopDown, IReadOnlyList<HeadMetrics> startHeadsMetricsTopDown, Slur slurDef, Voice voice, int noteObjectIndex)
         {
-            Head startHead = null;
             HeadMetrics startHeadMetrics = null;
             Head endHead = null;
             HeadMetrics endHeadMetrics = null;
@@ -781,15 +838,14 @@ namespace Moritz.Symbols
             var startHeadID = slurDef.StartNoteID;
             if(startHeadID == null)
             {
-                startHead = (slurDef.Side == Orientation.up) ? startHeadsTopDown[0] : startHeadsTopDown[startHeadsTopDown.Count -1];
+                startHeadMetrics = (slurDef.Side == Orientation.up) ? startHeadsMetricsTopDown[0] : startHeadsMetricsTopDown[startHeadsMetricsTopDown.Count -1];
             }
             else
             {
-                startHead = startHeadsTopDown.Find(head => head.ID.Equals(startHeadID));
+                var startHead = startHeadsTopDown.Find(head => head.ID.Equals(startHeadID));
+                startHeadMetrics = startHeadsMetricsTopDown[startHeadsTopDown.FindIndex(head => head == startHead)];
             }
-
-            startHeadMetrics = startHeadsMetricsTopDown[startHeadsTopDown.FindIndex(head => head == startHead)];
-
+                      
             var outputChordSymbol = FindNextChord(voice, noteObjectIndex++, true);
             while(outputChordSymbol != null)
             { 

@@ -70,6 +70,7 @@
     </Compile>
     <None Include="MNX_in\form1Data\_10_beamhooks.f1d" />
     <None Include="MNX_in\form1Data\_11_tuplets.f1d" />
+    <None Include="MNX_in\form1Data\_14a_crossBarlineSlurs.f1d" />
     <None Include="MNX_in\form1Data\_18_parts.f1d" />
     <None Include="MNX_in\form1Data\_12_voices.f1d" />
     <None Include="MNX_in\form1Data\_13_octaves.f1d" />
@@ -97,6 +98,9 @@
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
     <None Include="MNX_in\mnx\_12_voices.mnx" />
     <None Include="MNX_in\mnx\_13_octaves.mnx" />
+    <None Include="MNX_in\mnx\_14a_crossBarlineSlurs.mnx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MNX_in\mnx\_14_slurs.mnx">
       <SubType>Designer</SubType>
     </None>

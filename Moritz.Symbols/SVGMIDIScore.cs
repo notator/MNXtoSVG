@@ -590,7 +590,8 @@ namespace Moritz.Symbols
                         /// The systems are given Metrics inside the following function then justified horizontally.
                         Notator.CreateMetricsAndJustifySystemsHorizontally(graphics, this.Systems);
 
-                        CreateSlursAndTies(Systems, M.PageFormat.GapVBPX);
+                        CreateTies(Systems, M.PageFormat.GapVBPX);
+                        CreateSlurTemplates(Systems, M.PageFormat.GapVBPX);
 
                         CreateExtendersAndJustifySystemsVertically(graphics);
                     }
@@ -630,271 +631,45 @@ namespace Moritz.Symbols
         /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
         /// Staves have not yet been moved from their original position (so have their top staffline at y-coordinate = 0).
         /// </summary>
-        /// <param name="systems"></param>
-        private void CreateSlursAndTies(List<SvgSystem> systems, double gap)
+        private void CreateTies(List<SvgSystem> systems, double gapVBPX)
+        {
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
+        /// Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
+        /// </summary>
+        private void CreateSlurTemplates(List<SvgSystem> systems, double gap)
         {
             var noteObjects = systems[0].Staves[0].Voices[0].NoteObjects;
-            var slurTieLeftLimit = noteObjects.Find(obj => obj is Barline).Metrics.OriginX - M.PageFormat.GapVBPX;
-            var slurTieRightLimit = noteObjects[noteObjects.Count - 1].Metrics.OriginX + M.PageFormat.GapVBPX;
-            var firstSlurInfosPerVoice = new List<List<(string, string, bool, double)>>();
-            List<string> headIDsTiedToPreviousSystem = new List<string>();
+            var slurLeftLimit = noteObjects.Find(obj => obj is Barline).Metrics.OriginX - gap;
+            var slurRightLimit = noteObjects[noteObjects.Count - 1].Metrics.OriginX + gap;
+            var firstSlurInfos = new List<(string, string, bool, double)>();
+            var voiceListList = new List<List<Voice>>();
 
-            foreach(var system in systems)
+            foreach(var system in Systems)
             {
-                if(headIDsTiedToPreviousSystem.Count > 0)
-                {
-                    foreach(var staff in system.Staves)
-                    {
-                        foreach(var voice in staff.Voices)
-                        {
-                            Tie.TieFirstHeads(voice, headIDsTiedToPreviousSystem, slurTieLeftLimit);
-                        }
-                    }
-                }
-                M.Assert(headIDsTiedToPreviousSystem.Count == 0);
-
-                int voiceIndex = 0;
-                if(firstSlurInfosPerVoice.Count > 0)
-                {
-                    foreach(var staff in system.Staves)
-                    {
-                        foreach(var voice in staff.Voices)
-                        {
-                            var firstSlurInfos = firstSlurInfosPerVoice[voiceIndex++];
-                            if(firstSlurInfos.Count > 0)
-                            {
-                                AddVoiceStartSlurTemplates(voice, firstSlurInfos, slurTieLeftLimit);
-                            }
-                        }
-                    }
-                }
-                firstSlurInfosPerVoice.Clear();
-
-                voiceIndex = 0;
+                var voiceListIndex = 0;
                 foreach(var staff in system.Staves)
                 {
                     foreach(var voice in staff.Voices)
                     {
-                        var firstSlurInfos = new List<(string, string, bool, double)>();
-                        firstSlurInfosPerVoice.Add(firstSlurInfos);
-
-                        noteObjects = voice.NoteObjects;
-                        
-                        for(var noteObjectIndex = 0; noteObjectIndex < noteObjects.Count; noteObjectIndex++)
+                        if(voiceListList.Count <= voiceListIndex)
                         {
-                            if(noteObjects[noteObjectIndex] is OutputChordSymbol leftChord)
-                            {
-                                if(leftChord.HeadsTopDown[0].Tied != null)
-                                {
-                                    OutputChordSymbol rightChord = FindNextChord(voice, noteObjectIndex, false); // returns null if there is no OutputChordSymbol to the right.
-
-                                    // Each Tuple contains tieOriginX, tieOriginY, tieRightX, tieIsOver, tieTargetHeadID 
-                                    List<Tuple<double, double, double, bool, string>> tiesData = Tie.GetTiesData(leftChord, rightChord, slurTieRightLimit);
-
-                                    leftChord.AddTies(tiesData);
-
-                                    if(tiesData[0].Item3 > slurTieRightLimit)
-                                    {
-                                        foreach(var tieData in tiesData)
-                                        {
-                                            headIDsTiedToPreviousSystem.Add(tieData.Item5);
-                                        }
-                                    }
-                                }
-
-                                if(leftChord.Slurs != null && leftChord.Slurs.Count > 0)
-                                {
-                                    var headsTopDown = leftChord.HeadsTopDown;
-                                    var headsMetricsTopDown = ((ChordMetrics)leftChord.Metrics).HeadsMetricsTopDown;
-
-                                    foreach(var slurDef in leftChord.Slurs)
-                                    {
-                                        (HeadMetrics startNoteMetrics, HeadMetrics endNoteMetrics, string targetEventID, string targetHeadID) = 
-                                            FindSlurHeadMetrics(headsTopDown, headsMetricsTopDown, slurDef, voice, noteObjectIndex);
-                                        // endNote and targetHeadID are null if the target is not on this system.
-
-                                        bool isOver = (slurDef.Side == Orientation.up);
-
-                                        (double slurTemplateBeginX, double slurTemplateBeginY, double slurTemplateEndX, double slurTemplateEndY) = 
-                                            GetSlurTemplateCoordinates(startNoteMetrics, endNoteMetrics, gap, isOver, slurTieRightLimit);
-
-                                        leftChord.AddSlurTemplate(slurTemplateBeginX, slurTemplateBeginY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
-
-                                        if(endNoteMetrics == null)
-                                        {
-                                            // Note that staves have not yet been moved vertically, so all their top stafflines are at y-coordinate = 0.
-                                            // I could therefore have used slurTemplateBeginY directly here, rather than converting it to an offset.
-                                            // I'm using beginYOffset here as a precautionary measure in case the situation changes... 
-                                            double beginYOffset = slurTemplateBeginY - voice.Staff.Metrics.StafflinesTop;
-                                            firstSlurInfos.Add((targetEventID, targetHeadID, slurDef.Side == Orientation.up, beginYOffset));
-                                        }
-                                    }
-                                }
-                            }
+                            voiceListList.Add(new List<Voice>());
                         }
+                        voiceListList[voiceListIndex++].Add(voice);
                     }
-                }                
+                }                       
             }
-        }
-
-        private void AddVoiceStartSlurTemplates(Voice voice, List<(string, string, bool, double)> firstSlurInfos, double slurTieLeftLimit)
-        {
-            var gap = M.PageFormat.GapVBPX;
-
-            foreach(var slurInfo in firstSlurInfos)
+            foreach(var voiceList in voiceListList)
             {
-                var targetEventID = slurInfo.Item1;
-                var targetHeadID = slurInfo.Item2;
-                bool isOver = slurInfo.Item3;
-                double slurTemplateLeftY = voice.Staff.Metrics.StafflinesTop + slurInfo.Item4;
-
-                var targetChord = voice.NoteObjects.Find(chord => chord is OutputChordSymbol outputChord && outputChord.EventID.Equals(targetEventID)) as OutputChordSymbol;
-                M.Assert(targetChord != null, "The target chord must be in this voice. (Slurs cannot currently span more than one system break.)");
-
-                var headsTopDown = targetChord.HeadsTopDown;
-                var headsMetricsTopDown = ((ChordMetrics)targetChord.Metrics).HeadsMetricsTopDown;
-
-                HeadMetrics headMetrics = FindTargetHeadMetrics(headsTopDown, headsMetricsTopDown, targetHeadID, isOver);
-                (double slurTemplateEndX, double slurTemplateEndY) = GetStartSlurTemplateEndCoordinates(headMetrics, gap, isOver);
-
-                targetChord.AddSlurTemplate(slurTieLeftLimit, slurTemplateLeftY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
-            }
-        }
-
-        private HeadMetrics FindTargetHeadMetrics(List<Head> headsTopDown, IReadOnlyList<HeadMetrics> headsMetricsTopDown, string targetHeadID, bool isOver)
-        {
-            HeadMetrics headMetrics = null;
-            if(targetHeadID == null)
-            {
-                headMetrics = (isOver) ? headsMetricsTopDown[0] : headsMetricsTopDown[headsMetricsTopDown.Count - 1];
-            }
-            else
-            {
-                var head = headsTopDown.Find(h => h.ID == targetHeadID);
-                headMetrics = headsMetricsTopDown[headsTopDown.FindIndex(h => h == head)];
-            }
-            M.Assert(headMetrics != null);
-
-            return headMetrics;
-        }
-
-        private (double slurTemplateEndX, double slurTemplateEndY) GetStartSlurTemplateEndCoordinates(HeadMetrics headMetrics, double gap, bool isOver)
-        {
-            double dy = gap * 0.75;
-            double dx = dy / 1.5; // The same angle as the control line (arcTan(3/2))
-
-            var endCentreX = ((headMetrics.Right + headMetrics.Left) / 2);
-            var endCentreY = ((headMetrics.Top + headMetrics.Bottom) / 2);
-            var slurEndX = endCentreX - dx;
-            var slurEndY = (isOver) ? endCentreY - dy : endCentreY + dy;
-
-            return (slurEndX, slurEndY);
-        }
-
-        private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY) 
-            GetSlurTemplateCoordinates(HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, double gap, bool isOver, double slurTieRightLimit)
-        {
-            // dx an dy will be wrt centre of notehead
-
-            double dy = gap * 0.75;
-            double dx = dy / 1.5; // The same angle as the control line (arcTan(3/2))
-
-            var beginCentreX = ((startHeadMetrics.Right + startHeadMetrics.Left) / 2);
-            var beginCentreY = ((startHeadMetrics.Top + startHeadMetrics.Bottom) / 2);
-            var slurBeginX = beginCentreX + dx;
-            var slurBeginY = (isOver) ? beginCentreY - dy : beginCentreY + dy;
-
-            double slurEndX = 0;
-            double slurEndY = 0;
-            if(endHeadMetrics != null)
-            {
-                var endCentreX = ((endHeadMetrics.Right + endHeadMetrics.Left) / 2);
-                var endCentreY = ((endHeadMetrics.Top + endHeadMetrics.Bottom) / 2);
-                slurEndX = endCentreX - dx;
-                slurEndY = (isOver) ? endCentreY - dy : endCentreY + dy;
-            }
-            else
-            {
-                slurEndX = slurTieRightLimit;
-                slurEndY = slurBeginY;
-            }
-
-            return (slurBeginX, slurBeginY, slurEndX, slurEndY);
-        }
-
-        /// <summary>
-        /// If slurDef.endNote is not in this Voice, the returned endHeadMetrics and targetHeadID will be null.
-        /// </summary>
-        /// <returns></returns>
-        private (HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, string targetEventID, string targetHeadID)
-            FindSlurHeadMetrics(List<Head> startHeadsTopDown, IReadOnlyList<HeadMetrics> startHeadsMetricsTopDown, Slur slurDef, Voice voice, int noteObjectIndex)
-        {
-            HeadMetrics startHeadMetrics = null;
-            Head endHead = null;
-            HeadMetrics endHeadMetrics = null;
-            string targetEventID = slurDef.TargetEventID;
-            string targetHeadID = slurDef.EndNoteID; // can be null
-
-            var startHeadID = slurDef.StartNoteID;
-            if(startHeadID == null)
-            {
-                startHeadMetrics = (slurDef.Side == Orientation.up) ? startHeadsMetricsTopDown[0] : startHeadsMetricsTopDown[startHeadsMetricsTopDown.Count -1];
-            }
-            else
-            {
-                var startHead = startHeadsTopDown.Find(head => head.ID.Equals(startHeadID));
-                startHeadMetrics = startHeadsMetricsTopDown[startHeadsTopDown.FindIndex(head => head == startHead)];
-            }
-                      
-            var outputChordSymbol = FindNextChord(voice, noteObjectIndex++, true);
-            while(outputChordSymbol != null)
-            { 
-                if(outputChordSymbol.EventID.Equals(targetEventID))
+                foreach(var voice in voiceList)
                 {
-                    var headsTopDown = outputChordSymbol.HeadsTopDown;
-                    var headsMetricsTopDown = ((ChordMetrics)outputChordSymbol.Metrics).HeadsMetricsTopDown;
-                    if(targetHeadID == null)
-                    {
-                        endHead = (slurDef.Side == Orientation.up) ? headsTopDown[0] : headsTopDown[headsTopDown.Count - 1];
-                    }
-                    else
-                    {
-                        endHead = headsTopDown.Find(head => head.ID.Equals(targetHeadID));
-                    }
-                    endHeadMetrics = headsMetricsTopDown[headsTopDown.FindIndex(head => head == endHead)];
-                    break;
-                }
-                outputChordSymbol = FindNextChord(voice, noteObjectIndex++, true);
-            }
-
-            return (startHeadMetrics, endHeadMetrics, targetEventID, targetHeadID);
-        }
-
-        /// <summary>
-        /// Returns null or the next OutputChordSymbol in the voice.
-        /// null is returned if there is no next OutputChordSymbol in the voice, or ignoreRests is false and
-        /// an OutputRestSymbol occurs before the next OutputChordSymbol. 
-        /// </summary>
-        /// <param name="voice"></param>
-        /// <param name="noteObjectIndex"></param>
-        /// <returns></returns>
-        private OutputChordSymbol FindNextChord(Voice voice, int noteObjectIndex, bool ignoreRests)
-        {
-            OutputChordSymbol rval = null;
-            var noteObjects = voice.NoteObjects;
-            for(var i = noteObjectIndex + 1; i < noteObjects.Count; i++)
-            {
-                if(noteObjects[i] is OutputRestSymbol && ignoreRests == false)
-                {
-                    break;
-                }
-                if(noteObjects[i] is OutputChordSymbol ocs)
-                {
-                    rval = ocs;
-                    break;
+                    firstSlurInfos = voice.AddSlurTemplates(firstSlurInfos, gap, slurLeftLimit, slurRightLimit);
                 }
             }
-            return rval;
         }
 
         private List<int> GetNVoicesPerStaff(IReadOnlyList<IReadOnlyList<int>> midiChannelsPerStaff)

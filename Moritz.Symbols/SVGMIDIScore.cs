@@ -590,7 +590,6 @@ namespace Moritz.Symbols
                         /// The systems are given Metrics inside the following function then justified horizontally.
                         Notator.CreateMetricsAndJustifySystemsHorizontally(graphics, this.Systems);
 
-                        CreateTies(Systems, M.PageFormat.GapVBPX);
                         CreateSlurAndTieTemplates(Systems, M.PageFormat.GapVBPX);
 
                         CreateExtendersAndJustifySystemsVertically(graphics);

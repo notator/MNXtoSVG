@@ -267,6 +267,11 @@ namespace Moritz.Symbols
             ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)slurTemplate.Metrics); // So that the tie will be moved vertically with the system.
         }
 
+        internal void AddTieTemplate(double tieBeginX, double tieBeginY, double tieEndX, double tieEndY, double gap, bool isOver)
+        {
+            throw new NotImplementedException();
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

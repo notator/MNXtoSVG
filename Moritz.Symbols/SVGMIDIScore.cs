@@ -591,7 +591,7 @@ namespace Moritz.Symbols
                         Notator.CreateMetricsAndJustifySystemsHorizontally(graphics, this.Systems);
 
                         CreateTies(Systems, M.PageFormat.GapVBPX);
-                        CreateSlurTemplates(Systems, M.PageFormat.GapVBPX);
+                        CreateSlurAndTieTemplates(Systems, M.PageFormat.GapVBPX);
 
                         CreateExtendersAndJustifySystemsVertically(graphics);
                     }
@@ -629,18 +629,9 @@ namespace Moritz.Symbols
 
         /// <summary>
         /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
-        /// Staves have not yet been moved from their original position (so have their top staffline at y-coordinate = 0).
-        /// </summary>
-        private void CreateTies(List<SvgSystem> systems, double gapVBPX)
-        {
-            //throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
         /// Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
         /// </summary>
-        private void CreateSlurTemplates(List<SvgSystem> systems, double gap)
+        private void CreateSlurAndTieTemplates(List<SvgSystem> systems, double gap)
         {
             var noteObjects = systems[0].Staves[0].Voices[0].NoteObjects;
             var slurLeftLimit = noteObjects.Find(obj => obj is Barline).Metrics.OriginX - gap;
@@ -662,6 +653,13 @@ namespace Moritz.Symbols
                         voiceListList[voiceListIndex++].Add(voice);
                     }
                 }                       
+            }
+            foreach(var voiceList in voiceListList)
+            {
+                foreach(var voice in voiceList)
+                {
+                    firstSlurInfos = voice.AddTieTemplates(firstSlurInfos, gap, slurLeftLimit, slurRightLimit);
+                }
             }
             foreach(var voiceList in voiceListList)
             {

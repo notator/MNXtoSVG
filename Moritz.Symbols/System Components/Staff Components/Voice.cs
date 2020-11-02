@@ -698,6 +698,11 @@ namespace Moritz.Symbols
             throw new NotImplementedException();
         }
 
+        private (double tieTemplateBeginX, double tieTemplateBeginY, double tieTemplateEndX, double tieTemplateEndY) GetTieTemplateCoordinates(HeadMetrics leftHeadMetrics, HeadMetrics rightHeadMetrics, double gap, bool isOver, double tieRightLimit)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// 
         /// </summary>

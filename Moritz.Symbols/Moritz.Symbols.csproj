@@ -58,6 +58,7 @@
     <Compile Include="Metrics\ClefMetrics.cs" />
     <Compile Include="Metrics\Metrics.cs" />
     <Compile Include="Metrics\Notator.cs" />
+    <Compile Include="Metrics\SlurTieMetrics.cs" />
     <Compile Include="Metrics\StandardSymbolSet.cs" />
     <Compile Include="Metrics\SymbolSet.cs" />
     <Compile Include="Metrics\StaffMetrics.cs" />

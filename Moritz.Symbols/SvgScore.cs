@@ -858,7 +858,7 @@ namespace Moritz.Symbols
             ");
             }
 
-            if(usedCSSClasses.Contains(CSSObjectClass.tie))
+            if(usedCSSClasses.Contains(CSSObjectClass.tieTemplate))
             {
                 strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX / 3);
                 lineStyles.Append($@".tie

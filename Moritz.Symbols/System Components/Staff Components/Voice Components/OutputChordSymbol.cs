@@ -259,7 +259,6 @@ namespace Moritz.Symbols
         /// <param name="isOver"></param>
         internal void AddTieTemplate(double tieBeginX, double tieBeginY, double tieEndX, double tieEndY, double gap, bool isOver)
         {
-            *** TODO ***
             // The SVG scale is such that there is no problem using integers here.
 
             int dyControl = (int)(gap * 3);

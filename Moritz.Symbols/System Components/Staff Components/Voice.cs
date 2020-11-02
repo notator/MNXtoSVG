@@ -441,12 +441,12 @@ namespace Moritz.Symbols
             {
                 if(NoteObjects[noteObjectIndex] is OutputChordSymbol leftChord)
                 {
-                    if(leftChord.Slurs != null && leftChord.Slurs.Count > 0)
+                    if(leftChord.SlurDefs != null && leftChord.SlurDefs.Count > 0)
                     {
                         var headsTopDown = leftChord.HeadsTopDown;
                         var headsMetricsTopDown = ((ChordMetrics)leftChord.Metrics).HeadsMetricsTopDown;
 
-                        foreach(var slurDef in leftChord.Slurs)
+                        foreach(var slurDef in leftChord.SlurDefs)
                         {
                             (HeadMetrics startNoteMetrics, HeadMetrics endNoteMetrics, string targetEventID, string targetHeadID) =
                                 FindSlurHeadMetrics(headsTopDown, headsMetricsTopDown, slurDef, noteObjectIndex);
@@ -473,6 +473,36 @@ namespace Moritz.Symbols
 
             return firstSlurInfos;
         }
+
+        private void AddVoiceStartSlurTemplates(List<(string, string, bool, double)> firstSlurInfos, double slurTieLeftLimit)
+        {
+            var gap = M.PageFormat.GapVBPX;
+
+            // All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
+            // Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
+            // This means that slurTemplateLeftY can be set below to the value of slurInfo.item4 set in this voice in the previous system.
+            M.Assert(Staff.Metrics.StafflinesTop == 0);
+
+            foreach(var slurTieInfo in firstSlurInfos)
+            {
+                var targetEventID = slurTieInfo.Item1;
+                var targetHeadID = slurTieInfo.Item2;
+                bool isOver = slurTieInfo.Item3;
+                double slurTemplateLeftY = slurTieInfo.Item4;
+
+                var targetChord = NoteObjects.Find(chord => chord is OutputChordSymbol outputChord && outputChord.EventID.Equals(targetEventID)) as OutputChordSymbol;
+                M.Assert(targetChord != null, "The target chord must be in this voice. (Neither slurs nor ties can currently span more than one system break.)");
+
+                var headsTopDown = targetChord.HeadsTopDown;
+                var headsMetricsTopDown = ((ChordMetrics)targetChord.Metrics).HeadsMetricsTopDown;
+
+                HeadMetrics headMetrics = FindTargetHeadMetrics(headsTopDown, headsMetricsTopDown, targetHeadID, isOver);
+
+                (double slurTemplateEndX, double slurTemplateEndY) = GetStartSlurTieTemplateEndCoordinates(true, headMetrics, gap, isOver);
+                targetChord.AddSlurTemplate(slurTieLeftLimit, slurTemplateLeftY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
+            }
+        }
+
 
         /// <summary>
         /// If slurDef.endNote is not in this Voice, the returned endHeadMetrics and targetHeadID will be null.
@@ -548,35 +578,6 @@ namespace Moritz.Symbols
             return rval;
         }
 
-        private void AddVoiceStartSlurTemplates(List<(string, string, bool, double)> firstSlurInfos, double slurTieLeftLimit)
-        {
-            var gap = M.PageFormat.GapVBPX;
-
-            // All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
-            // Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
-            // This means that slurTemplateLeftY can be set below to the value of slurInfo.item4 set in this voice in the previous system.
-            M.Assert(Staff.Metrics.StafflinesTop == 0);
-
-            foreach(var slurInfo in firstSlurInfos)
-            {
-                var targetEventID = slurInfo.Item1;
-                var targetHeadID = slurInfo.Item2;
-                bool isOver = slurInfo.Item3;
-                double slurTemplateLeftY = slurInfo.Item4;
-
-                var targetChord = NoteObjects.Find(chord => chord is OutputChordSymbol outputChord && outputChord.EventID.Equals(targetEventID)) as OutputChordSymbol;
-                M.Assert(targetChord != null, "The target chord must be in this voice. (Slurs cannot currently span more than one system break.)");
-
-                var headsTopDown = targetChord.HeadsTopDown;
-                var headsMetricsTopDown = ((ChordMetrics)targetChord.Metrics).HeadsMetricsTopDown;
-
-                HeadMetrics headMetrics = FindTargetHeadMetrics(headsTopDown, headsMetricsTopDown, targetHeadID, isOver);
-                (double slurTemplateEndX, double slurTemplateEndY) = GetStartSlurTemplateEndCoordinates(headMetrics, gap, isOver);
-
-                targetChord.AddSlurTemplate(slurTieLeftLimit, slurTemplateLeftY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
-            }
-        }
-
         private HeadMetrics FindTargetHeadMetrics(List<Head> headsTopDown, IReadOnlyList<HeadMetrics> headsMetricsTopDown, string targetHeadID, bool isOver)
         {
             HeadMetrics headMetrics = null;
@@ -592,19 +593,6 @@ namespace Moritz.Symbols
             M.Assert(headMetrics != null);
 
             return headMetrics;
-        }
-
-        private (double slurTemplateEndX, double slurTemplateEndY) GetStartSlurTemplateEndCoordinates(HeadMetrics headMetrics, double gap, bool isOver)
-        {
-            double dy = gap * 0.75;
-            double dx = dy / 1.5; // The same angle as the control line (arcTan(3/2))
-
-            var endCentreX = ((headMetrics.Right + headMetrics.Left) / 2);
-            var endCentreY = ((headMetrics.Top + headMetrics.Bottom) / 2);
-            var slurEndX = endCentreX - dx;
-            var slurEndY = (isOver) ? endCentreY - dy : endCentreY + dy;
-
-            return (slurEndX, slurEndY);
         }
 
         private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY)
@@ -647,56 +635,131 @@ namespace Moritz.Symbols
         /// Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
         /// first
         /// </summary>
-        /// <param name="firstSlurInfos">List<(targetEventID, targetHeadID, slurIsOver, slurTemplateBeginY)></param>
+        /// <param name="firstTieInfos">List<(targetEventID, targetHeadID, slurIsOver, slurTemplateBeginY)></param>
         /// <param name="gap">The distance between two stafflines</param>
-        /// <param name="slurLeftLimit">The start-x position of a slur that ends on the first chord in the voice</param>
-        /// <param name="slurRightLimit">The end-x position of a slur that ends after the final barline in the voice</param>
+        /// <param name="tieLeftLimit">The start-x position of a tie that ends on the first chord in the voice</param>
+        /// <param name="tieRightLimit">The end-x position of a tie that ends after the final barline in the voice</param>
         /// <returns>The first parameter, changed to contain new values.</returns>
-        internal List<(string, string, bool, double)> AddTieTemplates(List<(string, string, bool, double)> firstSlurInfos, double gap, double slurLeftLimit, double slurRightLimit)
+        internal List<(string, Head, HeadMetrics, bool)> AddTieTemplates(List<(string, Head, HeadMetrics, bool)> firstTieInfos, double gap, double tieLeftLimit, double tieRightLimit)
         {
-            if(firstSlurInfos.Count > 0)
+            if(firstTieInfos.Count > 0)
             {
-                AddVoiceStartSlurTemplates(firstSlurInfos, slurLeftLimit);
+                AddVoiceStartTieTemplates(firstTieInfos, tieLeftLimit);
             }
-            firstSlurInfos.Clear();
-
+            firstTieInfos.Clear();
 
             for(var noteObjectIndex = 0; noteObjectIndex < NoteObjects.Count; noteObjectIndex++)
             {
                 if(NoteObjects[noteObjectIndex] is OutputChordSymbol leftChord)
                 {
-                    if(leftChord.Slurs != null && leftChord.Slurs.Count > 0)
+                    var leftHeadsTopDown = leftChord.HeadsTopDown;
+                    var leftHeadsMetricsTopDown = ((ChordMetrics)leftChord.Metrics).HeadsMetricsTopDown;
+
+                    for(var headIndex = 0; headIndex < leftHeadsTopDown.Count; ++headIndex)
                     {
-                        var headsTopDown = leftChord.HeadsTopDown;
-                        var headsMetricsTopDown = ((ChordMetrics)leftChord.Metrics).HeadsMetricsTopDown;
-
-                        foreach(var slurDef in leftChord.Slurs)
+                        var leftHead = leftHeadsTopDown[headIndex];
+                        var leftHeadMetrics = leftHeadsMetricsTopDown[headIndex];
+                        var tied = leftHead.Tied;
+                        if(tied != null)
                         {
-                            (HeadMetrics startNoteMetrics, HeadMetrics endNoteMetrics, string targetEventID, string targetHeadID) =
-                                FindSlurHeadMetrics(headsTopDown, headsMetricsTopDown, slurDef, noteObjectIndex);
-                            // endNote and targetHeadID are null if the target is not on this system.
-
-                            bool isOver = (slurDef.Side == Orientation.up);
-
-                            (double slurTemplateBeginX, double slurTemplateBeginY, double slurTemplateEndX, double slurTemplateEndY) =
-                                GetSlurTemplateCoordinates(startNoteMetrics, endNoteMetrics, gap, isOver, slurRightLimit);
-
-                            leftChord.AddSlurTemplate(slurTemplateBeginX, slurTemplateBeginY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
-
-                            if(endNoteMetrics == null)
+                            bool isOver = (tied.Orient == Orientation.up);
+                            var nextChord = FindNextChord(noteObjectIndex, false);
+                            if(nextChord == null)
                             {
                                 // All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
-                                // Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
+                                // Staves have not yet been moved from their original vertical position
+                                // (so leftHeadMetrics.top, .centreY and .bottom are valid in the next system too.
                                 M.Assert(Staff.Metrics.StafflinesTop == 0);
-                                firstSlurInfos.Add((targetEventID, targetHeadID, slurDef.Side == Orientation.up, slurTemplateBeginY));
+
+                                firstTieInfos.Add((tied.TargetEventID, leftHead, leftHeadMetrics, isOver));
                             }
+
+                            HeadMetrics rightHeadMetrics = null;
+                            if(nextChord != null)
+                            {
+                                M.Assert(nextChord.EventID == tied.TargetEventID);
+                                rightHeadMetrics = FindRightHeadMetrics(leftHead, leftHeadMetrics, nextChord);                            }
+                            
+                            // rightHeadMetrics is null if the tie is to next system (i.e. ends at tieRightLimit)
+                            (double tieTemplateBeginX, double tieTemplateBeginY, double tieTemplateEndX, double tieTemplateEndY) =
+                                GetTieTemplateCoordinates(leftHeadMetrics, rightHeadMetrics, gap, isOver, tieRightLimit);
+
+                            leftChord.AddTieTemplate(tieTemplateBeginX, tieTemplateBeginY, tieTemplateEndX, tieTemplateEndY, gap, isOver);
                         }
                     }
                 }
             }
 
-            return firstSlurInfos;
+            return firstTieInfos;
         }
+
+        private HeadMetrics FindRightHeadMetrics(Head leftHead, HeadMetrics leftHeadMetrics, OutputChordSymbol nextChord)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="firstTieInfos">List<(string targetEventID, Head leftHead, HeadMetrics leftHeadMetrics, bool tieIsOver)></param>
+        /// <param name="tieLeftLimit"></param>
+        private void AddVoiceStartTieTemplates(List<(string, Head, HeadMetrics, bool)> firstTieInfos, double tieLeftLimit)
+        {
+            var gap = M.PageFormat.GapVBPX;
+
+            // All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
+            // Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
+            // This means that slurTemplateLeftY can be set below to the value of slurInfo.item4 set in this voice in the previous system.
+            M.Assert(Staff.Metrics.StafflinesTop == 0);
+
+            foreach(var firstTieInfo in firstTieInfos)
+            {
+                string targetEventID = firstTieInfo.Item1;
+                Head leftHead = firstTieInfo.Item2;
+                HeadMetrics leftHeadMetrics = firstTieInfo.Item3;
+                bool isOver = firstTieInfo.Item4;
+
+                var targetChord = NoteObjects.Find(chord => chord is OutputChordSymbol outputChord && outputChord.EventID.Equals(targetEventID)) as OutputChordSymbol;
+                M.Assert(targetChord != null, "The target chord must be in this voice. (Neither slurs nor ties can currently span more than one system break.)");
+
+                var targetHeadsTopDown = targetChord.HeadsTopDown;
+                var targetHeadsMetricsTopDown = ((ChordMetrics)targetChord.Metrics).HeadsMetricsTopDown;
+
+                HeadMetrics targetHeadMetrics = FindRightHeadMetrics(leftHead, leftHeadMetrics, targetChord);
+
+                (double tieTemplateEndX, double tieTemplateEndY) = GetStartSlurTieTemplateEndCoordinates(false, targetHeadMetrics, gap, isOver);
+                targetChord.AddTieTemplate(tieLeftLimit, tieTemplateEndY, tieTemplateEndX, tieTemplateEndY, gap, isOver);
+            }
+        }
+
         #endregion add tie templates
+
+        #region  functions used for both slurs and ties
+
+        private (double endX, double endY) GetStartSlurTieTemplateEndCoordinates(bool isSlur, HeadMetrics headMetrics, double gap, bool isOver)
+        {
+            double dx;
+            double dy;
+
+            if(isSlur)
+            {
+                dy = gap * 0.75;
+                dx = dy / 1.5; // The same angle as the control line (arcTan(3/2))
+            }
+            else // is tie
+            {
+                dx = gap * 0.65;
+                dy = dx;
+            }
+
+            var endCentreX = ((headMetrics.Right + headMetrics.Left) / 2);
+            var endCentreY = ((headMetrics.Top + headMetrics.Bottom) / 2);
+            var endX = endCentreX - dx;
+            var endY = (isOver) ? endCentreY - dy : endCentreY + dy;
+
+            return (endX, endY);
+        }
+
+        #endregion functions used for both slurs and ties
     }
 }

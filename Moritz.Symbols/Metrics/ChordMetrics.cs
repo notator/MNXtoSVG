@@ -1194,10 +1194,10 @@ namespace Moritz.Symbols
                 foreach(NoteheadExtenderMetrics nem in NoteheadExtendersMetrics)
                     nem.WriteSVG(w);
             }
-            if(Ties != null)
+            if(TieTemplates != null)
             {
-                foreach(Tie tie in Ties)
-                    tie.WriteSVG(w);
+                foreach(TieTemplate tieTemplate in TieTemplates)
+                    tieTemplate.WriteSVG(w);
             }
             if(SlurTemplates != null)
             {
@@ -1503,7 +1503,7 @@ namespace Moritz.Symbols
         public List<NoteheadExtenderMetrics> NoteheadExtendersMetrics = null;
         public List<NoteheadExtenderMetrics> NoteheadExtendersMetricsBefore = null;
 
-        public List<Tie> Ties = null;        
+        public List<TieTemplate> TieTemplates = null;        
         public List<SlurTemplate> SlurTemplates = null;
 
         /// <summary>

@@ -201,26 +201,6 @@ namespace Moritz.Symbols
             w.SvgEndGroup(); // "chord"
         }
 
-        internal void AddTies(List<Tuple<double, double, double, bool, string>> tiesData, double leftTieX = -1)
-        {
-            foreach(var tieData in tiesData)
-            {
-                var tieOriginX = (leftTieX == -1) ? tieData.Item1 : leftTieX;
-                var tieOriginY = tieData.Item2;
-                var tieRightX = tieData.Item3;
-                var tieIsOver = tieData.Item4;
-                var tieTargetHeadID = tieData.Item5;
-
-                Tie tie = new Tie(tieOriginX, tieOriginY, tieRightX, M.PageFormat.GapVBPX, tieIsOver);
-                if(ChordMetrics.Ties == null)
-                {
-                    ChordMetrics.Ties = new List<Tie>();
-                }
-                ChordMetrics.Ties.Add(tie); // So that the tie will be written to SVG.
-                ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)tie.Metrics); // So that the tie will be moved vertically with the system.
-            }
-        }
-
         internal void AddSlurTemplate(double slurBeginX, double slurBeginY, double slurEndX, double slurEndY, double gap, bool isOver)
         {
             // The SVG scale is such that there is no problem using integers here.
@@ -267,9 +247,61 @@ namespace Moritz.Symbols
             ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)slurTemplate.Metrics); // So that the tie will be moved vertically with the system.
         }
 
+        /// <summary>
+        /// Tie templates have the same point and control point structure as a slurs, except that they are both horizontal and symmetric.
+        /// Another difference is that the maximum width of a short tie is twice the width of a tie hook.
+        /// </summary>
+        /// <param name="tieBeginX"></param>
+        /// <param name="tieBeginY"></param>
+        /// <param name="tieEndX"></param>
+        /// <param name="tieEndY"></param>
+        /// <param name="gap"></param>
+        /// <param name="isOver"></param>
         internal void AddTieTemplate(double tieBeginX, double tieBeginY, double tieEndX, double tieEndY, double gap, bool isOver)
         {
-            throw new NotImplementedException();
+            *** TODO ***
+            // The SVG scale is such that there is no problem using integers here.
+
+            int dyControl = (int)(gap * 3);
+            int dxControl = (int)(gap * 2);
+
+            int x1 = (int)tieBeginX;
+            int y1 = (int)tieBeginY;
+            int x4 = (int)tieEndX;
+            int y4 = (int)tieEndY;
+
+            SlurTemplate slurTemplate = null;
+            int shortSlurMaxWidth = (int)gap * 20; // 5 staff heights
+            if((x4 - x1) <= shortSlurMaxWidth)
+            {
+                // short (=two-point) slur template
+                // standard Bezier points
+                var p1 = new Point(x1, y1);
+                var p2 = (isOver) ? new Point(x1 + dxControl, y1 - dyControl) : new Point(x1 + dxControl, y1 + dyControl);
+                var p4 = new Point(x4, y4);
+                var p3 = (isOver) ? new Point(x4 - dxControl, y4 - dyControl) : new Point(x4 - dxControl, y4 + dyControl);
+
+                slurTemplate = new SlurTemplate(p1, p2, p3, p4, gap, isOver);
+            }
+            else
+            {
+                // long (=three-point) slur template
+                var p1 = new Point(x1, y1);
+                var c1 = (isOver) ? new Point(x1 + dxControl, y1 - dyControl) : new Point(x1 + dxControl, y1 + dyControl);
+                var p3 = new Point(x4, y4);
+                var c3 = (isOver) ? new Point(x4 - dxControl, y4 - dyControl) : new Point(x4 - dxControl, y4 + dyControl);
+                var p2 = new Point((x1 + x4) / 2, (y1 + c1.Y) / 2);
+                var c2 = new Point((p1.X + p2.X) / 2, p2.Y);
+
+                slurTemplate = new SlurTemplate(p1, c1, c2, p2, c3, p3, gap, isOver);
+            }
+
+            if(ChordMetrics.SlurTemplates == null)
+            {
+                ChordMetrics.SlurTemplates = new List<SlurTemplate>();
+            }
+            ChordMetrics.SlurTemplates.Add(slurTemplate); // So that the slurTemplate will be written to SVG.
+            ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)slurTemplate.Metrics); // So that the tie will be moved vertically with the system.
         }
 
         public override string ToString()

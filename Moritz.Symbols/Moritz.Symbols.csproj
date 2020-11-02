@@ -85,6 +85,7 @@
     <Compile Include="System Components\Staff Components\Voice Components\Chord Components\Stem.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\ChordSymbol.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\KeySignature.cs" />
+    <Compile Include="System Components\Staff Components\Voice Components\TieTemplate.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\SlurTemplate.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\TimeSignature.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\Clef.cs" />
@@ -95,7 +96,6 @@
     <Compile Include="System Components\Staff Components\Voice Components\RestSymbol.cs" />
     <Compile Include="System Components\Staff Components\Voice.cs" />
     <Compile Include="System Components\Staff.cs" />
-    <Compile Include="System Components\Staff Components\Voice Components\Tie.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MNX.Globals\MNX.Globals.csproj">

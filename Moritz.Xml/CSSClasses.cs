@@ -76,7 +76,7 @@ namespace Moritz.Xml
 		#endregion regionInfo
 
         slurTemplate,
-        tie,
+        tieTemplate,
 
 		#endregion drawObjects
 

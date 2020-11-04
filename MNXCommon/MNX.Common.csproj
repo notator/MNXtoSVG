@@ -40,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accidental.cs" />
-    <Compile Include="Beamed.cs" />
     <Compile Include="Clef.cs" />
     <Compile Include="Forward.cs" />
     <Compile Include="EventGroup.cs" />

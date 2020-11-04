@@ -179,11 +179,6 @@ namespace MNX.Common
                             ticksPosInScore += grace.TicksDuration;
                             content.Add(grace);
                             break;
-                        case "beamed":
-                            Beamed beamed = new Beamed(r, ticksPosInScore);
-                            ticksPosInScore += beamed.TicksDuration;
-                            content.Add(beamed);
-                            break;
                         case "tuplet":
                             Tuplet tuplet = new Tuplet(r, ticksPosInScore);
                             ticksPosInScore += tuplet.TicksDuration;

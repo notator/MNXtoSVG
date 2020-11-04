@@ -113,25 +113,6 @@ namespace MNX.Common
                         octaveShift = d.OctaveShift; // set as Event or Grace attribute below
                     }
                 }
-                else if(seqObj is Beamed beamed)
-                {
-                    M.Assert(beamed.Events.Count > 1);
-                    int maxIndex = beamed.Events.Count - 1;
-                    for(var i = 0; i < beamed.Events.Count; i++)
-                    {
-                        var evt = beamed.Events[i];
-                        if(i == 0)
-                        {
-                            evt.IsBeamStart = true;
-                        }
-                        else if( i == maxIndex)
-                        {
-                            evt.IsBeamEnd = true;
-                        }
-
-                        rval.Add(evt as IUniqueDef);
-                    }
-                }
                 else if(seqObj is Event evt)
                 {
                     evt.OctaveShift = octaveShift;

@@ -154,24 +154,11 @@ namespace MNX.Common
                 }
             }
 
-            // Get 1. the outer ticks of Events and Tuplets at this tuplet level (which may be inside a "beamed")
+            // Get 1. the outer ticks of Events and Tuplets at this tuplet level
             // and 2. a list of nested tuplets
-            foreach(var s in SequenceComponents)
+            foreach(var component in SequenceComponents)
             {
-                if(s is Beamed beamed)
-                {
-                    for(var i = 0; i < beamed.SequenceComponents.Count; i++)
-                    {
-                        if(beamed.SequenceComponents[i] is ISeqComponent component)
-                        {
-                            GetObject(component);
-                        }
-                    }
-                }
-                else if(s is ISeqComponent component)
-                {
-                    GetObject(component);
-                }
+                GetObject(component);
             }
 
             List<int> innerTicks = M.IntDivisionSizes(outerTicks, ticksInside);

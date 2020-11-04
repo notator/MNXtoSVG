@@ -9,9 +9,9 @@ namespace MNX.Common
     }
 
     /// <summary>
-    /// TimeSignature.
+    /// TimeSignature, Clef, KeySignature, OctaveShift.
     /// </summary>
-    public interface IGlobalDirectionsComponent
+    public interface IDirectionsComponent
     {
     }
 

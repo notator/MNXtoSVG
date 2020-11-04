@@ -662,7 +662,7 @@ namespace Moritz.Symbols
                         var tied = leftHead.Tied;
                         if(tied != null)
                         {
-                            bool isOver = (tied.Orient == Orientation.up);
+                            bool isOver = (tied.Side == Orientation.up);
                             var nextChord = FindNextChord(noteObjectIndex, false);
                             if(nextChord == null)
                             {

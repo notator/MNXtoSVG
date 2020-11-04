@@ -19,7 +19,7 @@
                 </event>
                 <event value="/4">
                     <note pitch="E5">
-                        <tied target="note3"/>
+                        <tied side="up" target="note3"/>
                     </note>
                 </event>
                 <event value="/4">
@@ -27,7 +27,7 @@
                 </event>
                 <event value="/4">
                     <note pitch="C5">
-                        <tied target="note5"/>
+                        <tied side="up" target="note5"/>
                     </note>
                 </event>
             </sequence>
@@ -36,7 +36,7 @@
             <sequence>
                 <event value="/2">
                     <note pitch="C5" id="note5">
-                        <tied target="note6"/>
+                        <tied side="down" target="note6"/>
                     </note>
                 </event>
                 <event value="/2">

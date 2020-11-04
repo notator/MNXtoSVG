@@ -6,13 +6,15 @@ namespace MNX.Common
     // https://w3c.github.io/mnx/specification/common/#the-tied-element
     public class Tied : Span, INoteComponent
     {
-        // Instruction attributes
+        // DirectionComponent attributes
         public override PositionInMeasure Location { get; }
         public override int StaffIndex { get; }
         public override Orientation? Orient { get; }
         // Span attribute
         public override string TargetID { get; }
         public override PositionInMeasure End { get; }
+        // New attribute (like Slur) -- ji 04.11.2020
+        public readonly Orientation? Side = null;
 
         #region IUniqueDef
         public override string ToString() => $"Tied: Target={TargetID} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
@@ -44,14 +46,14 @@ namespace MNX.Common
                         int.TryParse(r.Value, out staffIndex);
                         StaffIndex = staffIndex;
                         break;
-                    case "orient":
+                    case "side":
                         switch(r.Value)
                         {
                             case "up":
-                                Orient = Orientation.up;
+                                Side = Orientation.up;
                                 break;
                             case "down":
-                                Orient = Orientation.down;
+                                Side = Orientation.down;
                                 break;
                         }                        
                         break;

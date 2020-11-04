@@ -6,7 +6,7 @@ namespace MNX.Common
 {
     public class Slur : Span, IEventComponent
     {
-        // Instruction attributes
+        // DirectionComponent attributes
         public override PositionInMeasure Location { get; }
         public override int StaffIndex { get; }
         public override Orientation? Orient { get; }

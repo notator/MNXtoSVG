@@ -7,7 +7,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#common-direction-attributes
     /// </summary>
-    public abstract class DirectionsComponent : IUniqueDef
+    public abstract class DirectionsComponent : IDirectionsComponent
     {
         /// <summary>
         /// https://w3c.github.io/mnx/specification/common/#measure-location

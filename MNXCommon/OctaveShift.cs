@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Xml;
 using MNX.Globals;
+using Moritz.Spec;
 
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-octave-shift-element
-    public class OctaveShift : Span, ISeqComponent
+    public class OctaveShift : Span, IDirectionsComponent, IUniqueDef
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }

@@ -43,7 +43,7 @@
     <Compile Include="Clef.cs" />
     <Compile Include="Forward.cs" />
     <Compile Include="EventGroup.cs" />
-    <Compile Include="Instruction.cs" />
+    <Compile Include="DirectionsComponent.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Global.cs" />

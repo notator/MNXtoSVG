@@ -1,4 +1,5 @@
 ﻿using MNX.Globals;
+using Moritz.Spec;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -8,7 +9,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-event-element
     /// </summary>
-    public class Event : IHasTicks, ISeqComponent
+    public class Event : IHasTicks, ISeqComponent, IUniqueDef
     {
         #region MNX file attributes
         // Compulsory Attribute         

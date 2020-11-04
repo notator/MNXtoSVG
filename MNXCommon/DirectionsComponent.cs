@@ -6,13 +6,8 @@ namespace MNX.Common
 {
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#common-direction-attributes
-    /// Contrary to the spec (which I find very confusing), I am calling this
-    /// object type an Instruction, rather than a "Direction".
-    /// The spec (and I) use "Directions" for the high level container class.
-    /// An Instruction is an object like a Clef or KeySignature.
-    /// A Span is an object like a Slur, Tie or OctaveShift.
     /// </summary>
-    public abstract class Instruction : IUniqueDef
+    public abstract class DirectionsComponent : IUniqueDef
     {
         /// <summary>
         /// https://w3c.github.io/mnx/specification/common/#measure-location
@@ -64,7 +59,10 @@ namespace MNX.Common
         #endregion IUniqueDef
     }
 
-    public abstract class Span : Instruction
+    /// <summary>
+    /// A Span is an object like a Slur, Tie or OctaveShift.
+    /// </summary>
+    public abstract class Span : DirectionsComponent
     {
         #region IUniqueDef
         public override string ToString() => $"Span: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";

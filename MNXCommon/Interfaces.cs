@@ -1,6 +1,4 @@
-﻿using Moritz.Spec;
-
-
+﻿
 namespace MNX.Common
 {
     /// <summary>
@@ -25,10 +23,9 @@ namespace MNX.Common
     }
 
     /// <summary>
-    /// Directions,
-    /// Tuplet, Beamed, Grace, Event, Forward 
+    /// MNX Objects: Directions, Tuplet, Grace, Event, Forward  
     /// </summary>
-    public interface ISeqComponent : IUniqueDef
+    public interface ISeqComponent
     {
     }
 
@@ -55,14 +52,6 @@ namespace MNX.Common
     {
         int TicksDuration { get; }
         int TicksPosInScore { get; }
-    }
-
-    /// <summary>
-    /// Can be Global or Part Directions.
-    /// Currently implemented by KeySignature, Clef
-    /// </summary>
-    internal interface IDirectionsComponent : IUniqueDef
-    {
     }
 }
 

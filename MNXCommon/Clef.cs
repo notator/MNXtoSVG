@@ -1,9 +1,10 @@
 ﻿using MNX.Globals;
+using Moritz.Spec;
 using System.Xml;
 
 namespace MNX.Common
 {
-    public class Clef : Instruction, IDirectionsComponent, ISeqComponent
+    public class Clef : DirectionsComponent, IUniqueDef
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }

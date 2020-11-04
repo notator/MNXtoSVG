@@ -1,10 +1,11 @@
 ﻿using MNX.Globals;
+using Moritz.Spec;
 using System.Xml;
 
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-key-element
-    public class KeySignature : Instruction, IDirectionsComponent, ISeqComponent
+    public class KeySignature : DirectionsComponent, IUniqueDef
     {
         // Instruction attributes
         public override PositionInMeasure Location => new PositionInMeasure("0");

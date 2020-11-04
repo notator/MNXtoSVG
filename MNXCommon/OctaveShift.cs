@@ -12,7 +12,7 @@ namespace MNX.Common
         public override int StaffIndex { get; }
         public override Orientation? Orient { get; }
         // Span attributes
-        public override string TargetEventID { get; }
+        public override string TargetID { get; }
         public override PositionInMeasure End { get; }
         /// <summary>
         /// returns measureIndex (base 0), tickPositionInMeasure
@@ -62,7 +62,7 @@ namespace MNX.Common
                         break;
                     // Span attribute
                     case "target":
-                        TargetEventID = r.Value;
+                        TargetID = r.Value;
                         break;
                     case "end":
                         End = new PositionInMeasure(r.Value);

@@ -514,7 +514,7 @@ namespace Moritz.Symbols
             HeadMetrics startHeadMetrics = null;
             Head endHead = null;
             HeadMetrics endHeadMetrics = null;
-            string targetEventID = slurDef.TargetEventID;
+            string targetEventID = slurDef.TargetID;
             string targetHeadID = slurDef.EndNoteID; // can be null
 
             var startHeadID = slurDef.StartNoteID;
@@ -635,12 +635,12 @@ namespace Moritz.Symbols
         /// Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
         /// first
         /// </summary>
-        /// <param name="firstTieInfos">List<(targetEventID, targetHeadID, slurIsOver, slurTemplateBeginY)></param>
+        /// <param name="firstTieInfos">List<(targetEventID, isOver)></param>
         /// <param name="gap">The distance between two stafflines</param>
         /// <param name="tieLeftLimit">The start-x position of a tie that ends on the first chord in the voice</param>
         /// <param name="tieRightLimit">The end-x position of a tie that ends after the final barline in the voice</param>
         /// <returns>The first parameter, changed to contain new values.</returns>
-        internal List<(string, Head, HeadMetrics, bool)> AddTieTemplates(List<(string, Head, HeadMetrics, bool)> firstTieInfos, double gap, double tieLeftLimit, double tieRightLimit)
+        internal List<(string, bool)> AddTieTemplates(List<(string, bool)> firstTieInfos, double gap, double tieLeftLimit, double tieRightLimit)
         {
             if(firstTieInfos.Count > 0)
             {
@@ -671,20 +671,20 @@ namespace Moritz.Symbols
                                 // (so leftHeadMetrics.top, .centreY and .bottom are valid in the next system too.
                                 M.Assert(Staff.Metrics.StafflinesTop == 0);
 
-                                firstTieInfos.Add((tied.TargetEventID, leftHead, leftHeadMetrics, isOver));
+                                firstTieInfos.Add((tied.TargetID, isOver));
                             }
 
                             HeadMetrics rightHeadMetrics = null;
                             if(nextChord != null)
                             {
-                                M.Assert(nextChord.EventID == tied.TargetEventID);
-                                rightHeadMetrics = FindRightHeadMetrics(leftHead, leftHeadMetrics, nextChord);                            }
+                                rightHeadMetrics = FindRightHeadMetrics(tied.TargetID, nextChord);
+                            }
                             
-                            // rightHeadMetrics is null if the tie is to next system (i.e. ends at tieRightLimit)
-                            (double tieTemplateBeginX, double tieTemplateBeginY, double tieTemplateEndX, double tieTemplateEndY) =
-                                GetTieTemplateCoordinates(leftHeadMetrics, rightHeadMetrics, gap, isOver, tieRightLimit);
+                            // rightHeadMetrics is still null if the tie is to next system (i.e. ends at tieRightLimit)
+                            (double tieTemplateBeginX, double tieTemplateEndX, double templateY) =
+                                GetTieTemplateCoordinates(leftHeadMetrics, rightHeadMetrics, gap, isOver, tieLeftLimit, tieRightLimit);
 
-                            leftChord.AddTieTemplate(tieTemplateBeginX, tieTemplateBeginY, tieTemplateEndX, tieTemplateEndY, gap, isOver);
+                            leftChord.AddTieTemplate(tieTemplateBeginX, tieTemplateEndX, templateY, gap, isOver);
                         }
                     }
                 }
@@ -693,14 +693,38 @@ namespace Moritz.Symbols
             return firstTieInfos;
         }
 
-        private HeadMetrics FindRightHeadMetrics(Head leftHead, HeadMetrics leftHeadMetrics, OutputChordSymbol nextChord)
+        private HeadMetrics FindRightHeadMetrics(string targetNoteID, OutputChordSymbol nextChord)
         {
-            throw new NotImplementedException();
+            HeadMetrics rval = null;
+
+            var headsTopDown = nextChord.HeadsTopDown;
+            var headMetricsTopDown = ((ChordMetrics)nextChord.Metrics).HeadsMetricsTopDown;
+
+            for(int i = 0; i < headsTopDown.Count; ++i)
+            {
+                if(headsTopDown[i].ID.Equals(targetNoteID))
+                {
+                    rval = headMetricsTopDown[i];
+                    break;
+                }
+            }
+
+            return rval;
         }
 
-        private (double tieTemplateBeginX, double tieTemplateBeginY, double tieTemplateEndX, double tieTemplateEndY) GetTieTemplateCoordinates(HeadMetrics leftHeadMetrics, HeadMetrics rightHeadMetrics, double gap, bool isOver, double tieRightLimit)
+        private (double tieTemplateBeginX, double tieTemplateEndX, double templateY)
+            GetTieTemplateCoordinates(HeadMetrics leftHeadMetrics, HeadMetrics rightHeadMetrics, double gap, bool isOver, double tieLeftlimit, double tieRightLimit)
         {
-            throw new NotImplementedException();
+            M.Assert(leftHeadMetrics != null | rightHeadMetrics != null);
+
+            double dx = gap * 0.6;
+            double dy = (isOver) ? -dx : dx;
+
+            double tieTemplateBeginX = (leftHeadMetrics == null) ? tieLeftlimit : leftHeadMetrics.OriginX + dx;
+            double tieTemplateEndX = (rightHeadMetrics == null) ? tieRightLimit : rightHeadMetrics.OriginX - dx;
+            double templateY = (leftHeadMetrics == null) ? rightHeadMetrics.OriginY + dy: leftHeadMetrics.OriginY + dy;
+
+            return (tieTemplateBeginX, tieTemplateEndX, templateY);
         }
 
         /// <summary>
@@ -708,7 +732,7 @@ namespace Moritz.Symbols
         /// </summary>
         /// <param name="firstTieInfos">List<(string targetEventID, Head leftHead, HeadMetrics leftHeadMetrics, bool tieIsOver)></param>
         /// <param name="tieLeftLimit"></param>
-        private void AddVoiceStartTieTemplates(List<(string, Head, HeadMetrics, bool)> firstTieInfos, double tieLeftLimit)
+        private void AddVoiceStartTieTemplates(List<(string, bool)> firstTieInfos, double tieLeftLimit)
         {
             var gap = M.PageFormat.GapVBPX;
 
@@ -719,21 +743,16 @@ namespace Moritz.Symbols
 
             foreach(var firstTieInfo in firstTieInfos)
             {
-                string targetEventID = firstTieInfo.Item1;
-                Head leftHead = firstTieInfo.Item2;
-                HeadMetrics leftHeadMetrics = firstTieInfo.Item3;
-                bool isOver = firstTieInfo.Item4;
+                string targetNoteID = firstTieInfo.Item1;
+                bool isOver = firstTieInfo.Item2;
 
-                var targetChord = NoteObjects.Find(chord => chord is OutputChordSymbol outputChord && outputChord.EventID.Equals(targetEventID)) as OutputChordSymbol;
+                var targetChord = NoteObjects.Find(chord => chord is OutputChordSymbol outputChord && outputChord.EventID.Equals(targetNoteID)) as OutputChordSymbol;
                 M.Assert(targetChord != null, "The target chord must be in this voice. (Neither slurs nor ties can currently span more than one system break.)");
 
-                var targetHeadsTopDown = targetChord.HeadsTopDown;
-                var targetHeadsMetricsTopDown = ((ChordMetrics)targetChord.Metrics).HeadsMetricsTopDown;
-
-                HeadMetrics targetHeadMetrics = FindRightHeadMetrics(leftHead, leftHeadMetrics, targetChord);
+                HeadMetrics targetHeadMetrics = FindRightHeadMetrics(targetNoteID, targetChord);
 
                 (double tieTemplateEndX, double tieTemplateEndY) = GetStartSlurTieTemplateEndCoordinates(false, targetHeadMetrics, gap, isOver);
-                targetChord.AddTieTemplate(tieLeftLimit, tieTemplateEndY, tieTemplateEndX, tieTemplateEndY, gap, isOver);
+                targetChord.AddTieTemplate(tieLeftLimit, tieTemplateEndX, tieTemplateEndY, gap, isOver);
             }
         }
 

@@ -239,68 +239,67 @@ namespace Moritz.Symbols
                 slurTemplate = new SlurTemplate(p1, c1, c2, p2, c3, p3, gap, isOver);
             }
 
-            if(ChordMetrics.SlurTemplates == null)
-            {
-                ChordMetrics.SlurTemplates = new List<SlurTemplate>();
-            }
             ChordMetrics.SlurTemplates.Add(slurTemplate); // So that the slurTemplate will be written to SVG.
             ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)slurTemplate.Metrics); // So that the tie will be moved vertically with the system.
         }
 
         /// <summary>
-        /// Tie templates have the same point and control point structure as a slurs, except that they are both horizontal and symmetric.
-        /// Another difference is that the maximum width of a short tie is twice the width of a tie hook.
+        /// Tie templates have similar point and control point structures as a slurs, except that
+        /// 1. they are both horizontal and symmetric.
+        /// 2. the maximum width of a short tie is twice the width of a tie hook.
+        /// 3. long slurs have three points on the slur, long ties have four points on the tie.
         /// </summary>
-        /// <param name="tieBeginX"></param>
+        /// <param name="tieTemplateBeginX"></param>
         /// <param name="tieBeginY"></param>
-        /// <param name="tieEndX"></param>
-        /// <param name="tieEndY"></param>
+        /// <param name="tieTemplateEndX"></param>
+        /// <param name="tieTemplateY"></param>
         /// <param name="gap"></param>
         /// <param name="isOver"></param>
-        internal void AddTieTemplate(double tieBeginX, double tieBeginY, double tieEndX, double tieEndY, double gap, bool isOver)
+        internal void AddTieTemplate(double tieTemplateBeginX, double tieTemplateEndX, double tieTemplateY, double gap, bool isOver)
         {
-            // The SVG scale is such that there is no problem using integers here.
+            // The SVG scale is such that there should be no problem using integers here.
+            int dyControl = (int)(gap * 1.5); // TODO: set this correctly
+            int dxHookControl = (int)(gap * 1.5); // TODO: set this correctly
+            int dxHorizControl = (int)(dxHookControl * 0.1); // TODO: set this correctly
 
-            int dyControl = (int)(gap * 3);
-            int dxControl = (int)(gap * 2);
+            int x1 = (int)tieTemplateBeginX;
+            int y1 = (int)tieTemplateY;
+            int x4 = (int)tieTemplateEndX;
+            int y4 = (int)tieTemplateY;
 
-            int x1 = (int)tieBeginX;
-            int y1 = (int)tieBeginY;
-            int x4 = (int)tieEndX;
-            int y4 = (int)tieEndY;
-
-            SlurTemplate slurTemplate = null;
-            int shortSlurMaxWidth = (int)gap * 20; // 5 staff heights
-            if((x4 - x1) <= shortSlurMaxWidth)
+            TieTemplate tieTemplate = null;
+            int hookWidth = (int)(gap * 4); // TODO: set this correctly
+            int shortTieMaxWidth = hookWidth * 2;
+            if((x4 - x1) <= shortTieMaxWidth)
             {
-                // short (=two-point) slur template
+                // short (=two-point) tie template
                 // standard Bezier points
                 var p1 = new Point(x1, y1);
-                var p2 = (isOver) ? new Point(x1 + dxControl, y1 - dyControl) : new Point(x1 + dxControl, y1 + dyControl);
-                var p4 = new Point(x4, y4);
-                var p3 = (isOver) ? new Point(x4 - dxControl, y4 - dyControl) : new Point(x4 - dxControl, y4 + dyControl);
+                var c1 = (isOver) ? new Point(x1 + dxHookControl, y1 - dyControl) : new Point(x1 + dxHookControl, y1 + dyControl);
+                var p2 = new Point(x4, y4);
+                var c2 = (isOver) ? new Point(x4 - dxHookControl, y4 - dyControl) : new Point(x4 - dxHookControl, y4 + dyControl);
 
-                slurTemplate = new SlurTemplate(p1, p2, p3, p4, gap, isOver);
+                tieTemplate = new TieTemplate(p1, c1, c2, p2, gap, isOver);
             }
             else
             {
-                // long (=three-point) slur template
+                // long (=four-point) tie template
                 var p1 = new Point(x1, y1);
-                var c1 = (isOver) ? new Point(x1 + dxControl, y1 - dyControl) : new Point(x1 + dxControl, y1 + dyControl);
-                var p3 = new Point(x4, y4);
-                var c3 = (isOver) ? new Point(x4 - dxControl, y4 - dyControl) : new Point(x4 - dxControl, y4 + dyControl);
-                var p2 = new Point((x1 + x4) / 2, (y1 + c1.Y) / 2);
-                var c2 = new Point((p1.X + p2.X) / 2, p2.Y);
+                var c1 = (isOver) ? new Point(x1 + dxHookControl, y1 - dyControl) : new Point(x1 + dxHookControl, y1 + dyControl);
 
-                slurTemplate = new SlurTemplate(p1, c1, c2, p2, c3, p3, gap, isOver);
+                var p4 = new Point(x4, y4);
+                var c4 = (isOver) ? new Point(x4 - dxHookControl, y4 - dyControl) : new Point(x4 - dxHookControl, y4 + dyControl);
+
+                var p2 = new Point(p1.X + hookWidth, c1.Y);
+                var c2 = new Point(p2.X + dxHorizControl, c1.Y);
+                var p3 = new Point(p4.X - hookWidth, c1.Y);
+                var c3 = new Point(p3.X - dxHorizControl, c1.Y);
+
+                tieTemplate = new TieTemplate(p1, c1, c2, p2, c3, p3, c4, p4, gap, isOver);
             }
 
-            if(ChordMetrics.SlurTemplates == null)
-            {
-                ChordMetrics.SlurTemplates = new List<SlurTemplate>();
-            }
-            ChordMetrics.SlurTemplates.Add(slurTemplate); // So that the slurTemplate will be written to SVG.
-            ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)slurTemplate.Metrics); // So that the tie will be moved vertically with the system.
+            ChordMetrics.TieTemplates.Add(tieTemplate); // So that the slurTemplate will be written to SVG.
+            ChordMetrics.AddSlurTieMetrics((SlurTieMetrics)tieTemplate.Metrics); // So that the tie will be moved vertically with the system.
         }
 
         public override string ToString()

@@ -1194,15 +1194,14 @@ namespace Moritz.Symbols
                 foreach(NoteheadExtenderMetrics nem in NoteheadExtendersMetrics)
                     nem.WriteSVG(w);
             }
-            if(TieTemplates != null)
+
+            foreach(var slurTemplate in SlurTemplates)
             {
-                foreach(TieTemplate tieTemplate in TieTemplates)
-                    tieTemplate.WriteSVG(w);
+                slurTemplate.WriteSVG(w);
             }
-            if(SlurTemplates != null)
-            {
-                foreach(var slurTemplate in SlurTemplates)
-                    slurTemplate.WriteSVG(w);
+            foreach(TieTemplate tieTemplate in TieTemplates)
+            { 
+                tieTemplate.WriteSVG(w);
             }
         }
 
@@ -1269,9 +1268,15 @@ namespace Moritz.Symbols
                 {
                     slurTieMetrics.Move(dx, dy);
                 }
+
                 foreach(var slurTemplate in SlurTemplates)
                 {
                     slurTemplate.Move(dy);
+                }
+
+                foreach(var tieTemplate in TieTemplates)
+                {
+                    tieTemplate.Move(dy);
                 }
             }
 
@@ -1503,8 +1508,8 @@ namespace Moritz.Symbols
         public List<NoteheadExtenderMetrics> NoteheadExtendersMetrics = null;
         public List<NoteheadExtenderMetrics> NoteheadExtendersMetricsBefore = null;
 
-        public List<TieTemplate> TieTemplates = null;        
-        public List<SlurTemplate> SlurTemplates = null;
+        public List<TieTemplate> TieTemplates = new List<TieTemplate>();        
+        public List<SlurTemplate> SlurTemplates = new List<SlurTemplate>();
 
         /// <summary>
         /// Returns null or a clone of the _stemMetrics

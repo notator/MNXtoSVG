@@ -633,9 +633,9 @@ namespace Moritz.Symbols
         private void CreateSlurAndTieTemplates(List<SvgSystem> systems, double gap)
         {
             var noteObjects = systems[0].Staves[0].Voices[0].NoteObjects;
-            var slurLeftLimit = noteObjects.Find(obj => obj is Barline).Metrics.OriginX - gap;
-            var slurRightLimit = noteObjects[noteObjects.Count - 1].Metrics.OriginX + gap;
-            var firstTieInfos = new List<(string, Head, HeadMetrics, bool)>();
+            var slurTieLeftLimit = noteObjects.Find(obj => obj is Barline).Metrics.OriginX - gap;
+            var slurTieRightLimit = noteObjects[noteObjects.Count - 1].Metrics.OriginX + gap;
+            var firstTieInfos = new List<(string, bool)>();
             var firstSlurInfos = new List<(string, string, bool, double)>();
             var voiceListList = new List<List<Voice>>();
 
@@ -658,14 +658,14 @@ namespace Moritz.Symbols
             {
                 foreach(var voice in voiceList)
                 {
-                    firstTieInfos = voice.AddTieTemplates(firstTieInfos, gap, slurLeftLimit, slurRightLimit);
+                    firstTieInfos = voice.AddTieTemplates(firstTieInfos, gap, slurTieLeftLimit, slurTieRightLimit);
                 }
             }
             foreach(var voiceList in voiceListList)
             {
                 foreach(var voice in voiceList)
                 {
-                    firstSlurInfos = voice.AddSlurTemplates(firstSlurInfos, gap, slurLeftLimit, slurRightLimit);
+                    firstSlurInfos = voice.AddSlurTemplates(firstSlurInfos, gap, slurTieLeftLimit, slurTieRightLimit);
                 }
             }
         }

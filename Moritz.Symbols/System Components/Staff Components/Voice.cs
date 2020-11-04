@@ -430,9 +430,11 @@ namespace Moritz.Symbols
         /// <returns>The first parameter, changed to contain new values.</returns>
         internal List<(string, string, bool, double)> AddSlurTemplates(List<(string, string, bool, double)> firstSlurInfos, double gap, double slurLeftLimit, double slurRightLimit)
         {
+            double endAngle = Math.PI / 3; // 60°
+
             if(firstSlurInfos.Count > 0)
             {
-                AddVoiceStartSlurTemplates(firstSlurInfos, slurLeftLimit);
+                AddVoiceStartSlurTemplates(firstSlurInfos, endAngle, slurLeftLimit);
             }
             firstSlurInfos.Clear();
 
@@ -455,9 +457,9 @@ namespace Moritz.Symbols
                             bool isOver = (slurDef.Side == Orientation.up);
 
                             (double slurTemplateBeginX, double slurTemplateBeginY, double slurTemplateEndX, double slurTemplateEndY) =
-                                GetSlurTemplateCoordinates(startNoteMetrics, endNoteMetrics, gap, isOver, slurRightLimit);
+                                GetSlurTemplateCoordinates(startNoteMetrics, endNoteMetrics, gap, isOver, endAngle, slurRightLimit);
 
-                            leftChord.AddSlurTemplate(slurTemplateBeginX, slurTemplateBeginY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
+                            leftChord.AddSlurTemplate(slurTemplateBeginX, slurTemplateBeginY, slurTemplateEndX, slurTemplateEndY, gap, isOver, endAngle);
 
                             if(endNoteMetrics == null)
                             {
@@ -474,7 +476,7 @@ namespace Moritz.Symbols
             return firstSlurInfos;
         }
 
-        private void AddVoiceStartSlurTemplates(List<(string, string, bool, double)> firstSlurInfos, double slurTieLeftLimit)
+        private void AddVoiceStartSlurTemplates(List<(string, string, bool, double)> firstSlurInfos, double endAngle, double slurTieLeftLimit)
         {
             var gap = M.PageFormat.GapVBPX;
 
@@ -499,7 +501,7 @@ namespace Moritz.Symbols
                 HeadMetrics headMetrics = FindTargetHeadMetrics(headsTopDown, headsMetricsTopDown, targetHeadID, isOver);
 
                 (double slurTemplateEndX, double slurTemplateEndY) = GetStartSlurTieTemplateEndCoordinates(true, headMetrics, gap, isOver);
-                targetChord.AddSlurTemplate(slurTieLeftLimit, slurTemplateLeftY, slurTemplateEndX, slurTemplateEndY, gap, isOver);
+                targetChord.AddSlurTemplate(slurTieLeftLimit, slurTemplateLeftY, slurTemplateEndX, slurTemplateEndY, gap, isOver, endAngle);
             }
         }
 
@@ -596,12 +598,12 @@ namespace Moritz.Symbols
         }
 
         private (double slurBeginX, double slurBeginY, double slurEndX, double slurEndY)
-            GetSlurTemplateCoordinates(HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, double gap, bool isOver, double slurTieRightLimit)
+            GetSlurTemplateCoordinates(HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, double gap, bool isOver, double endAngle, double slurTieRightLimit)
         {
             // dx an dy will be wrt centre of notehead
 
-            double dy = gap * 0.75;
-            double dx = dy / 1.5; // The same angle as the control line (arcTan(3/2))
+            double dy = gap * 0.8;
+            double dx = dy / Math.Tan(endAngle); // same angle as end control points in template
 
             var beginCentreX = ((startHeadMetrics.Right + startHeadMetrics.Left) / 2);
             var beginCentreY = ((startHeadMetrics.Top + startHeadMetrics.Bottom) / 2);
@@ -662,6 +664,7 @@ namespace Moritz.Symbols
                         var tied = leftHead.Tied;
                         if(tied != null)
                         {
+                            HeadMetrics rightHeadMetrics = null;
                             bool isOver = (tied.Side == Orientation.up);
                             var nextChord = FindNextChord(noteObjectIndex, false);
                             if(nextChord == null)
@@ -673,14 +676,12 @@ namespace Moritz.Symbols
 
                                 firstTieInfos.Add((tied.TargetID, isOver));
                             }
-
-                            HeadMetrics rightHeadMetrics = null;
-                            if(nextChord != null)
+                            else
                             {
                                 rightHeadMetrics = FindRightHeadMetrics(tied.TargetID, nextChord);
                             }
                             
-                            // rightHeadMetrics is still null if the tie is to next system (i.e. ends at tieRightLimit)
+                            // rightHeadMetrics is null if the tie is to next system (i.e. ends at tieRightLimit)
                             (double tieTemplateBeginX, double tieTemplateEndX, double templateY) =
                                 GetTieTemplateCoordinates(leftHeadMetrics, rightHeadMetrics, gap, isOver, tieLeftLimit, tieRightLimit);
 
@@ -715,14 +716,19 @@ namespace Moritz.Symbols
         private (double tieTemplateBeginX, double tieTemplateEndX, double templateY)
             GetTieTemplateCoordinates(HeadMetrics leftHeadMetrics, HeadMetrics rightHeadMetrics, double gap, bool isOver, double tieLeftlimit, double tieRightLimit)
         {
-            M.Assert(leftHeadMetrics != null | rightHeadMetrics != null);
+            M.Assert(leftHeadMetrics != null || rightHeadMetrics != null);
 
-            double dx = gap * 0.6;
+            double dx = gap * 0.65;
             double dy = (isOver) ? -dx : dx;
 
-            double tieTemplateBeginX = (leftHeadMetrics == null) ? tieLeftlimit : leftHeadMetrics.OriginX + dx;
-            double tieTemplateEndX = (rightHeadMetrics == null) ? tieRightLimit : rightHeadMetrics.OriginX - dx;
-            double templateY = (leftHeadMetrics == null) ? rightHeadMetrics.OriginY + dy: leftHeadMetrics.OriginY + dy;
+            double leftHeadCentreX = (leftHeadMetrics != null) ? (leftHeadMetrics.Left + leftHeadMetrics.Right) / 2 : 0;
+            double leftHeadCentreY = (leftHeadMetrics != null) ? (leftHeadMetrics.Top + leftHeadMetrics.Bottom) / 2 : 0;
+            double rightHeadCentreX = (rightHeadMetrics != null) ? (rightHeadMetrics.Left + rightHeadMetrics.Right) / 2 : 0;
+            double rightHeadCentreY = (rightHeadMetrics != null) ? (rightHeadMetrics.Top + rightHeadMetrics.Bottom) / 2 : 0;
+
+            double tieTemplateBeginX = (leftHeadMetrics == null) ? tieLeftlimit : leftHeadCentreX + dx;
+            double tieTemplateEndX = (rightHeadMetrics == null) ? tieRightLimit : rightHeadCentreX - dx;
+            double templateY = (leftHeadMetrics == null) ? rightHeadCentreY + dy: leftHeadCentreY + dy;
 
             return (tieTemplateBeginX, tieTemplateEndX, templateY);
         }

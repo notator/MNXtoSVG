@@ -90,7 +90,7 @@ namespace Moritz.Symbols
                 // A four-point template path has the form:
                 // <path class="slurTemplate" d="M p1x, p1y C c1x, c1y, c2x, c2y, p2x, p2y, c3x, c3y, p3x, p3y S c4x, c4y, p4x, p4y" />
                 // Where the "p" components are points on the line, and the "c" components are their respective controls
-                dString = $"M{_p1.X},{_p1.Y}C{_c1.X},{_c1.Y},{_c2.X},{_c2.Y},{_p2.X},{_p2.Y},{_c3.X},{_c3.Y},{_p3.X},{_p3.Y}S{_c4.X},{_c4.Y},{_p4.X},{_p4.Y}";
+                dString = $"M{_p1.X},{_p1.Y}C{_c1.X},{_c1.Y},{_c2.X},{_c2.Y},{_p2.X},{_p2.Y}S{_c3.X},{_c3.Y},{_p3.X},{_p3.Y}S{_c4.X},{_c4.Y},{_p4.X},{_p4.Y}";
             }
 
             string stroke = "#AA0000"; // a dark red

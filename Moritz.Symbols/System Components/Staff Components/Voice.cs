@@ -752,7 +752,7 @@ namespace Moritz.Symbols
                 string targetNoteID = firstTieInfo.Item1;
                 bool isOver = firstTieInfo.Item2;
 
-                var targetChord = NoteObjects.Find(chord => chord is OutputChordSymbol outputChord && outputChord.EventID.Equals(targetNoteID)) as OutputChordSymbol;
+                var targetChord = NoteObjects.Find(chord => chord is OutputChordSymbol) as OutputChordSymbol;
                 M.Assert(targetChord != null, "The target chord must be in this voice. (Neither slurs nor ties can currently span more than one system break.)");
 
                 HeadMetrics targetHeadMetrics = FindRightHeadMetrics(targetNoteID, targetChord);

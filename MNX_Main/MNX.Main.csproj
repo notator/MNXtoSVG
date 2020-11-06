@@ -91,6 +91,7 @@
     <None Include="MNX_in\form1Data\__5_keysigs.f1d" />
     <None Include="MNX_in\form1Data\__6_accidentals.f1d" />
     <None Include="MNX_in\form1Data\__7_dots.f1d" />
+    <None Include="MNX_in\form1Data\__8a_crossSystemTies.f1d" />
     <None Include="MNX_in\form1Data\__8_ties.f1d" />
     <None Include="MNX_in\form1Data\_19_repeats.f1d" />
     <None Include="MNX_in\form1Data\__9_beams.f1d" />
@@ -122,6 +123,7 @@
     <None Include="MNX_in\mnx\__5_keysigs.mnx" />
     <None Include="MNX_in\mnx\__6_accidentals.mnx" />
     <None Include="MNX_in\mnx\__7_dots.mnx" />
+    <None Include="MNX_in\mnx\__8a_crossSystemTies.mnx" />
     <None Include="MNX_in\mnx\__8_ties.mnx" />
     <None Include="MNX_in\mnx\__9_beams.mnx" />
     <None Include="packages.config" />

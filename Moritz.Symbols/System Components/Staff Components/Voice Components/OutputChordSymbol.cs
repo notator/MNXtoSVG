@@ -215,9 +215,16 @@ namespace Moritz.Symbols
 
             SlurTemplate slurTemplate = null;
             double shortSlurMaxWidth = gap * 20; // 5 staff heights
+            double shortSlurMinWidth = gap * 9.5; // 4.4 is shortTieMaxWidth
             double width = x4 - x1;
             if(width <= shortSlurMaxWidth)
             {
+                if(width <= shortSlurMinWidth)
+                {
+                    double factor = width / shortSlurMinWidth;
+                    dxControl *= factor;
+                    dyControl *= factor;
+                }
                 // short (=two-point) slur template
                 // standard Bezier points
                 var p1 = new Point((int)x1, (int)y1);

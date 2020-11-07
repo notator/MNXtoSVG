@@ -2,7 +2,7 @@
 This is a desktop application, written in C#, that converts MNX files to SVG (and embedded MIDI data).
 
 MNX is a set of emerging music notation standards being developed by the [W3C Music Notation Community Group](https://www.w3.org/community/music-notation/).<br />
-The MNCG is currently concentrating on the definition of a format that is intended to supercede the latest version of [<i><b>MusicXML</b></i>](https://www.musicxml.com/).
+The MNCG is currently concentrating on the definition of a format that is a successor to the latest version of [<i><b>MusicXML</b></i>](https://www.musicxml.com/).
 
 This application has been created because I think that the only way to understand and develop such standards effectively is to actually parse the proposed XML, and use it to create <i>instantiations</i>. Abstract discussion of the [Draft Spec](https://w3c.github.io/mnx/specification/common/) is not going to get us much further.
 Insights gained from looking at real code should, however, provide invaluable feedback and promote useful debate.

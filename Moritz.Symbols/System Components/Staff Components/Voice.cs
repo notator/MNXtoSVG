@@ -718,7 +718,7 @@ namespace Moritz.Symbols
         {
             M.Assert(leftHeadMetrics != null || rightHeadMetrics != null);
 
-            double dx = gap * 0.65;
+            double dx = gap * 0.7;
             double dy = (isOver) ? -dx : dx;
 
             double leftHeadCentreX = (leftHeadMetrics != null) ? (leftHeadMetrics.Left + leftHeadMetrics.Right) / 2 : 0;

@@ -19,6 +19,7 @@ namespace Moritz.Symbols
         private Point _c1;
         private Point _c2;
         private Point _c3;
+        private double _gap;
         private readonly string type;
 
         /// <summary>
@@ -36,6 +37,8 @@ namespace Moritz.Symbols
             _p2 = p2;
             _p3 = p3;
             _p4 = p4;
+
+            _gap = gap;
 
             type = "short";
 
@@ -64,6 +67,8 @@ namespace Moritz.Symbols
             _c2 = c2;
             _c3 = c3;
 
+            _gap = gap;
+
             type = "long";
 
             Metrics = new SlurTieMetrics(CSSObjectClass.slurTemplate, gap, p1.X, p1.Y, p3.X, isOver);
@@ -88,7 +93,7 @@ namespace Moritz.Symbols
             }
 
             string stroke = "#0000AA"; // a dark blue
-            string strokeWidth = "50px";
+            string strokeWidth = $"{((int)(_gap / 2.2)).ToString(M.En_USNumberFormat)}px";
             string fill = "none";
 
             w.SvgTemplatePath(CSSObjectClass.slurTemplate, dString, stroke, strokeWidth, fill);

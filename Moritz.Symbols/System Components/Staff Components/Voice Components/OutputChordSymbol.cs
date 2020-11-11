@@ -266,54 +266,55 @@ namespace Moritz.Symbols
         internal void AddTieTemplate(double tieTemplateBeginX, double tieTemplateEndX, double tieTemplateY, double gap, bool isOver)
         {
             // The SVG scale is such that there should be no problem using integers here.
-            double dyControl = gap * 1.15; // TODO: set this correctly
-            double dxHookControl = dyControl; // TODO: set this correctly
-            double dxHorizControl = dxHookControl * 0.1; // TODO: set this correctly
-            
-            double x1 = tieTemplateBeginX;
-            double y1 = tieTemplateY;
-            double x4 = tieTemplateEndX;
-            double y4 = tieTemplateY;
-
             TieTemplate tieTemplate = null;
-            double hookWidth = gap * 2.2; // TODO: set this correctly
-            double shortTieMaxWidth = hookWidth * 2;
-            double width = x4 - x1;
+
+            double p1x = tieTemplateBeginX;
+            double p1y = tieTemplateY;
+            double p2x = tieTemplateEndX;
+            double p2y = tieTemplateY;
+
+            double shortTieMaxWidth = gap * 5;
+            double veryShortTieMaxWidth = gap * 3.45;
+            double minWidth = gap;
+            double width = p2x - p1x;
+
+            double deltaControl; // the x and y distance between a point on the template and its related control point.
+
             if(width <= shortTieMaxWidth)
             {
-                double factor = width / shortTieMaxWidth;
-                dxHookControl *= factor;
-                dyControl *= factor;
-                y1 *= factor;
-                y4 *= factor;
-                // short (=two-point) tie template
-                // standard Bezier points
-                var p1 = new Point((int)x1, (int)y1);
-                var c1 = (isOver) ? new Point((int)(x1 + dxHookControl), (int)(y1 - dyControl)) : new Point((int)(x1 + dxHookControl), (int)(y1 + dyControl));
-                var p2 = new Point((int)x4, (int)y4);
-                var c2 = (isOver) ? new Point((int)(x4 - dxHookControl), (int)(y4 - dyControl)) : new Point((int)(x4 - dxHookControl), (int)(y4 + dyControl));
+                if(width <= veryShortTieMaxWidth)
+                {
+                    width = (width < minWidth) ? minWidth : width;
+                    double deltaWidth = (veryShortTieMaxWidth - width) / 2 *  0.7 * (veryShortTieMaxWidth / width);
+                    p1x -= deltaWidth;
+                    p2x += deltaWidth;
+                    deltaControl = width / 3;
+                }
+                else
+                {
+                    deltaControl = gap * 1.15;
+                }
 
-                tieTemplate = new TieTemplate(p1, c1, c2, p2, gap, isOver);
+                var p1 = new Point((int)p1x, (int)p1y);
+                var c1 = (isOver) ? new Point((int)(p1x + deltaControl), (int)(p1y - deltaControl)) : new Point((int)(p1x + deltaControl), (int)(p1y + deltaControl));
+                var p2 = new Point((int)p2x, (int)p2y);
+                var c2 = (isOver) ? new Point((int)(p2x - deltaControl), (int)(p2y - deltaControl)) : new Point((int)(p2x - deltaControl), (int)(p2y + deltaControl));
+
+                tieTemplate = new ShortTieTemplate(p1, c1, c2, p2, gap, isOver);
             }
             else
             {
-                dyControl = (int)(gap * 0.85);
-                dxHookControl = dyControl;
-                dxHorizControl = 0; // (int)(dxHookControl * 0.1); // TODO: set this correctly
+                deltaControl = (gap * 0.85);
 
-                // long (=four-point) tie template
-                var p1 = new Point((int)x1, (int)y1);
-                var c1 = (isOver) ? new Point((int)(x1 + dxHookControl), (int)(y1 - dyControl)) : new Point((int)(x1 + dxHookControl), (int)(y1 + dyControl));
+                // long tie template
+                var p1 = new Point((int)p1x, (int)p1y);
+                var c1 = (isOver) ? new Point((int)(p1x + deltaControl), (int)(p1y - deltaControl)) : new Point((int)(p1x + deltaControl), (int)(p1y + deltaControl));
+                var tc = new Point(c1.X + (int)(deltaControl / 2), c1.Y);
+                var tp = new Point((int)(p1x + (p2x - p1x) / 2), c1.Y);                
+                var c2 = (isOver) ? new Point((int)(p2x - deltaControl), (int)(p2y - deltaControl)) : new Point((int)(p2x - deltaControl), (int)(p2y + deltaControl));
+                var p2 = new Point((int)p2x, (int)p2y);
 
-                var p4 = new Point((int)x4, (int)y4);
-                var c4 = (isOver) ? new Point((int)(x4 - dxHookControl), (int)(y4 - dyControl)) : new Point((int)(x4 - dxHookControl), (int)(y4 + dyControl));
-
-                var p2 = new Point(p1.X + (int)hookWidth, c1.Y);
-                var c2 = new Point(p2.X - (int)dxHorizControl, c1.Y);
-                var p3 = new Point(p4.X - (int)hookWidth, c1.Y);
-                var c3 = new Point(p3.X - (int)dxHorizControl, c1.Y);
-
-                tieTemplate = new TieTemplate(p1, c1, c2, p2, c3, p3, c4, p4, gap, isOver);
+                tieTemplate = new LongTieTemplate(p1, c1, tc, tp, c2, p2, gap, isOver);
             }
 
             ChordMetrics.TieTemplates.Add(tieTemplate); // So that the slurTemplate will be written to SVG.

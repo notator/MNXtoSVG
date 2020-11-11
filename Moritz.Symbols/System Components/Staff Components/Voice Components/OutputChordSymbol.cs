@@ -275,20 +275,20 @@ namespace Moritz.Symbols
 
             double shortTieMaxWidth = gap * 5;
             double veryShortTieMaxWidth = gap * 3.45;
-            double minWidth = gap;
             double width = p2x - p1x;
 
-            double deltaControl; // the x and y distance between a point on the template and its related control point.
+            double deltaControl; // the x and y distance between an end-point on the template and its related control point.
 
             if(width <= shortTieMaxWidth)
             {
                 if(width <= veryShortTieMaxWidth)
-                {
-                    width = (width < minWidth) ? minWidth : width;
-                    double deltaWidth = (veryShortTieMaxWidth - width) / 2 *  0.7 * (veryShortTieMaxWidth / width);
+                {                    
+                    deltaControl = width / 3;
+                    // widen the tie
+                    width = (width < gap) ? gap : width; // just to guard against divide by zero error in next line
+                    double deltaWidth = (veryShortTieMaxWidth - width) * 0.35 * (veryShortTieMaxWidth / width);
                     p1x -= deltaWidth;
                     p2x += deltaWidth;
-                    deltaControl = width / 3;
                 }
                 else
                 {

@@ -273,7 +273,7 @@ namespace Moritz.Symbols
             double p2x = tieTemplateEndX;
             double p2y = tieTemplateY;
 
-            double shortTieMaxWidth = gap * 5;
+            double shortTieMaxWidth = gap * 10;
             double veryShortTieMaxWidth = gap * 3.45;
             double width = p2x - p1x;
 

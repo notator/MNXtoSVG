@@ -32,7 +32,6 @@ namespace MNX.Common
         public readonly DurationSymbolType? DurationSymbolTyp = null;
         public readonly int? NAugmentationDots = null;
         public readonly int Tupletlevel = -1;
-        public readonly int DefaultTicks = 0;
 
         // MNXDurationSymbol is not an ITicks object, its an implementation detail of ITicks objects.
         // ITicks objects, except Event and Grace, do not implement Ticks.set.
@@ -40,10 +39,6 @@ namespace MNX.Common
         {
             get
             {
-                if(_ticks == 0)
-                {
-                    _ticks = DefaultTicks;
-                }
                 return _ticks;
             }
             set
@@ -72,12 +67,9 @@ namespace MNX.Common
             DurationSymbolTyp = analysis.Item2;
             NAugmentationDots = analysis.Item3;
 
-            if(DefaultTicks == 0)
-            {
-                DefaultTicks = GetDefaultTicks();
-            }
+            Ticks = GetDefaultTicks();
 
-            M.Assert(DefaultTicks >= M.MinimumEventTicks);
+            M.Assert(Ticks >= M.MinimumEventTicks);
         }
 
         /// <summary>

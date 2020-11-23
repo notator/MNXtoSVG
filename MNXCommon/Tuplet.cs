@@ -170,12 +170,12 @@ namespace MNX.Common
                 if(component is Tuplet tuplet)
                 {
                     tuplet.OuterDuration.Ticks = ticks;
-                    tuplet.SetTicksInContent(tuplet.OuterDuration.DefaultTicks, tuplet.TupletLevel + 1);
+                    tuplet.SetTicksInContent(tuplet.OuterDuration.Ticks, tuplet.TupletLevel + 1);
                 }
                 else
                 {
                     Event evnt = component as Event;
-                    evnt.MNXDurationSymbol.Ticks = ticks;
+                    evnt.TicksDuration = ticks;
                 }
             }
         }

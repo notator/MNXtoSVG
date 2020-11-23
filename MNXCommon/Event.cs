@@ -50,20 +50,15 @@ namespace MNX.Common
         {
             get
             {
-                if( _ticksDuration == 0)
-                {
-                    _ticksDuration = MNXDurationSymbol.DefaultTicks;
-                }
-                return _ticksDuration;
+                return MNXDurationSymbol.Ticks;
             }
             set
             {
-                // this function should only be used when stealing ticks for Grace.
+                // this function is used when setting tuplet event ticks and when stealing ticks for Grace.
                 M.Assert(value >= M.MinimumEventTicks);
-                _ticksDuration = value;
+                MNXDurationSymbol.Ticks = value;
             }
         }
-        private int _ticksDuration = 0;
 
         public bool IsBeamStart
         {

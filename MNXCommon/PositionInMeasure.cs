@@ -40,7 +40,7 @@ namespace MNX.Common
         {
             get
             {
-                int rval = (Position == null) ? 0 : Position.DefaultTicks;
+                int rval = (Position == null) ? 0 : Position.Ticks;
                 return rval;
             }
         }

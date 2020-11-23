@@ -23,7 +23,7 @@ namespace MNX.Common
         //    etc. (This app copes with arbitrarily nested tuplets.)
         public readonly int TupletLevel;
 
-        public int TicksDuration { get { return DSymbol.DefaultTicks; } }
+        public int TicksDuration { get { return DSymbol.Ticks; } }
         public int TicksPosInScore { get; }
         public int MsPosInScore = -1;
         public override string ToString() => $"Forward: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";

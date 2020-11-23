@@ -140,6 +140,27 @@ namespace MNX.Common
                         }
                     }
                 }
+                else if(seqObj is Tuplet t)
+                {
+                    var tupletComponents = t.SequenceComponents;
+                    foreach(var tupletCompt in tupletComponents)
+                    {
+                        // Assuming that tuplets can only contain Events and Directions...
+                        if(tupletCompt is Event tupletEvt)
+                        {
+                            tupletEvt.OctaveShift = octaveShift;
+                            octaveShift = null;
+                            rval.Add(tupletEvt as IUniqueDef);
+                        }
+                        if(tupletCompt is Directions tupletDir)
+                        {
+                            if(tupletDir.OctaveShift != null)
+                            {
+                                octaveShift = tupletDir.OctaveShift;
+                            }
+                        }
+                    }
+                }
                 else
                 {
                     throw new ApplicationException("unhandled SequenceComponent type.");

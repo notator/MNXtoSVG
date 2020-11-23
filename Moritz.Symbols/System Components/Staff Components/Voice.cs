@@ -37,49 +37,49 @@ namespace Moritz.Symbols
         {
             for(int i = 0; i < NoteObjects.Count; ++i)
             {
-				NoteObject noteObject = NoteObjects[i];
-				if(noteObject is Barline barline && voiceIndex == 0)
-				{
-					bool isLastNoteObject = (i == (NoteObjects.Count - 1));
-					double top = Staff.Metrics.StafflinesTop;
-					double bottom = Staff.Metrics.StafflinesBottom;
-					if(barline.IsVisible)
-					{
-						barline.WriteSVG(w, top, bottom, isLastNoteObject);
-					}
-					barline.WriteDrawObjectsSVG(w); 
-				}
-				if(noteObject is CautionaryChordSymbol cautionaryChordSymbol)
-				{
-					cautionaryChordSymbol.WriteSVG(w);
-				}
-				if(noteObject is OutputChordSymbol outputChordSymbol)
-				{
-					M.Assert(carryMsgsPerChannel != null);
-					outputChordSymbol.WriteSVG(w, this.MidiChannel, carryMsgsPerChannel[this.MidiChannel], graphicsOnly);
-				}
-				if(noteObject is OutputRestSymbol outputRestSymbol)
-				{
-					M.Assert(carryMsgsPerChannel != null);
-					outputRestSymbol.WriteSVG(w, this.MidiChannel, carryMsgsPerChannel[this.MidiChannel], graphicsOnly);
-				}
-				if(noteObject is Clef clef && voiceIndex == 0)
-				{
-					if(clef.Metrics != null)
-					{
-						// if this is the first barline, the staff name and (maybe) barnumber will be written.
-						ClefMetrics cm = clef.Metrics as ClefMetrics;
-						clef.WriteSVG(w, cm.ClefID, cm.OriginX, cm.OriginY);
-					}
-				}
-				if(noteObject is SmallClef smallClef && voiceIndex == 0)
-				{
-					if(smallClef.Metrics != null)
-					{
-						SmallClefMetrics scm = smallClef.Metrics as SmallClefMetrics;
-						smallClef.WriteSVG(w, scm.ClefID, scm.OriginX, scm.OriginY);
-					}
-				}
+                NoteObject noteObject = NoteObjects[i];
+                if(noteObject is Barline barline && voiceIndex == 0)
+                {
+                    bool isLastNoteObject = (i == (NoteObjects.Count - 1));
+                    double top = Staff.Metrics.StafflinesTop;
+                    double bottom = Staff.Metrics.StafflinesBottom;
+                    if(barline.IsVisible)
+                    {
+                        barline.WriteSVG(w, top, bottom, isLastNoteObject);
+                    }
+                    barline.WriteDrawObjectsSVG(w);
+                }
+                if(noteObject is CautionaryChordSymbol cautionaryChordSymbol)
+                {
+                    cautionaryChordSymbol.WriteSVG(w);
+                }
+                if(noteObject is OutputChordSymbol outputChordSymbol)
+                {
+                    M.Assert(carryMsgsPerChannel != null);
+                    outputChordSymbol.WriteSVG(w, this.MidiChannel, carryMsgsPerChannel[this.MidiChannel], graphicsOnly);
+                }
+                if(noteObject is OutputRestSymbol outputRestSymbol)
+                {
+                    M.Assert(carryMsgsPerChannel != null);
+                    outputRestSymbol.WriteSVG(w, this.MidiChannel, carryMsgsPerChannel[this.MidiChannel], graphicsOnly);
+                }
+                if(noteObject is Clef clef && voiceIndex == 0)
+                {
+                    if(clef.Metrics != null)
+                    {
+                        // if this is the first barline, the staff name and (maybe) barnumber will be written.
+                        ClefMetrics cm = clef.Metrics as ClefMetrics;
+                        clef.WriteSVG(w, cm.ClefID, cm.OriginX, cm.OriginY);
+                    }
+                }
+                if(noteObject is SmallClef smallClef && voiceIndex == 0)
+                {
+                    if(smallClef.Metrics != null)
+                    {
+                        SmallClefMetrics scm = smallClef.Metrics as SmallClefMetrics;
+                        smallClef.WriteSVG(w, scm.ClefID, scm.OriginX, scm.OriginY);
+                    }
+                }
                 if(noteObject is KeySignature keySignature && voiceIndex == 0)
                 {
                     keySignature.WriteSVG(w, keySignature.Fifths.ToString(), keySignature.Metrics.OriginX, keySignature.Metrics.OriginY);
@@ -88,25 +88,25 @@ namespace Moritz.Symbols
                 {
                     timeSignature.WriteSVG(w, timeSignature.Signature, timeSignature.Metrics.OriginX, timeSignature.Metrics.OriginY);
                 }
-			}
-		}
+            }
+        }
 
-		public bool ContainsAChordSymbol
-		{
-			get
-			{
-				bool containsAChordSymbol = false;
-				foreach(NoteObject noteObject in NoteObjects)
-				{
-					if(noteObject is ChordSymbol)
-					{
-						containsAChordSymbol = true;
-						break;
-					}
-				}
-				return containsAChordSymbol;
-			}
-		}
+        public bool ContainsAChordSymbol
+        {
+            get
+            {
+                bool containsAChordSymbol = false;
+                foreach(NoteObject noteObject in NoteObjects)
+                {
+                    if(noteObject is ChordSymbol)
+                    {
+                        containsAChordSymbol = true;
+                        break;
+                    }
+                }
+                return containsAChordSymbol;
+            }
+        }
 
         /// <summary>
         /// Returns the first barline to occur before any durationSymbols, or null if no such barline exists.
@@ -319,9 +319,9 @@ namespace Moritz.Symbols
             {
                 foreach(NoteObject noteObject in NoteObjects)
                 {
-					if(noteObject is AnchorageSymbol iHasDrawObjects)
-						yield return iHasDrawObjects;
-				}
+                    if(noteObject is AnchorageSymbol iHasDrawObjects)
+                        yield return iHasDrawObjects;
+                }
             }
         }
         public IEnumerable DurationSymbols
@@ -330,9 +330,9 @@ namespace Moritz.Symbols
             {
                 foreach(NoteObject noteObject in NoteObjects)
                 {
-					if(noteObject is DurationSymbol durationSymbol)
-						yield return durationSymbol;
-				}
+                    if(noteObject is DurationSymbol durationSymbol)
+                        yield return durationSymbol;
+                }
             }
         }
         public IEnumerable ChordSymbols
@@ -341,9 +341,9 @@ namespace Moritz.Symbols
             {
                 foreach(NoteObject noteObject in NoteObjects)
                 {
-					if(noteObject is ChordSymbol chordSymbol)
-						yield return chordSymbol;
-				}
+                    if(noteObject is ChordSymbol chordSymbol)
+                        yield return chordSymbol;
+                }
             }
         }
         public IEnumerable RestSymbols
@@ -352,9 +352,9 @@ namespace Moritz.Symbols
             {
                 foreach(NoteObject noteObject in NoteObjects)
                 {
-					if(noteObject is RestSymbol restSymbol)
-						yield return restSymbol;
-				}
+                    if(noteObject is RestSymbol restSymbol)
+                        yield return restSymbol;
+                }
             }
         }
 
@@ -399,19 +399,19 @@ namespace Moritz.Symbols
         #endregion
 
         private int _midiChannel = int.MaxValue;
-		/// <summary>
-		/// A MidiChannel attribute is always written for every OutputVoice in the first system in a score.
-		/// No other OutputVoice MidiChannels are written.
-		/// </summary>
-		public int MidiChannel
-		{ 
-			get { return _midiChannel; } 
-			set
-			{
-				M.Assert(value >= 0 && value <= 15);
-				_midiChannel = value;
-			}
-		}
+        /// <summary>
+        /// A MidiChannel attribute is always written for every OutputVoice in the first system in a score.
+        /// No other OutputVoice MidiChannels are written.
+        /// </summary>
+        public int MidiChannel
+        {
+            get { return _midiChannel; }
+            set
+            {
+                M.Assert(value >= 0 && value <= 15);
+                _midiChannel = value;
+            }
+        }
 
         public VoiceDef VoiceDef = null;
 
@@ -656,6 +656,7 @@ namespace Moritz.Symbols
                 {
                     var leftHeadsTopDown = leftChord.HeadsTopDown;
                     var leftHeadsMetricsTopDown = ((ChordMetrics)leftChord.Metrics).HeadsMetricsTopDown;
+                    var leftStemDir = ((ChordMetrics)leftChord.Metrics).StemMetrics.VerticalDir;
 
                     for(var headIndex = 0; headIndex < leftHeadsTopDown.Count; ++headIndex)
                     {
@@ -665,7 +666,7 @@ namespace Moritz.Symbols
                         if(tied != null)
                         {
                             HeadMetrics rightHeadMetrics = null;
-                            bool isOver = (tied.Side == Orientation.up);
+                            bool isOver = GetTieIsOver(tied, leftHeadsMetricsTopDown, leftStemDir, headIndex);
                             var nextChord = FindNextChord(noteObjectIndex, false);
                             if(nextChord == null)
                             {
@@ -680,7 +681,7 @@ namespace Moritz.Symbols
                             {
                                 rightHeadMetrics = FindRightHeadMetrics(leftHead.Pitch, nextChord);
                             }
-                            
+
                             // rightHeadMetrics is null if the tie is to next system (i.e. ends at tieRightLimit)
                             (double tieTemplateBeginX, double tieTemplateEndX, double templateY) =
                                 GetTieTemplateCoordinates(leftHeadMetrics, rightHeadMetrics, gap, isOver, tieLeftLimit, tieRightLimit);
@@ -692,6 +693,39 @@ namespace Moritz.Symbols
             }
 
             return firstTieInfos;
+        }
+
+        /// <summary>
+        /// This algorithm currently ignores
+        /// 1. chords with noteheads on both sides of the stem.
+        /// 2. the height wrt staff of stemless, single note chords. (?)
+        /// </summary>
+        /// <param name="tied"></param>
+        /// <param name="leftHeadsMetricsTopDown"></param>
+        /// <param name="leftStemDir"></param>
+        /// <param name="headIndex"></param>
+        /// <returns></returns>
+        private bool GetTieIsOver(Tied tied, IReadOnlyList<HeadMetrics> leftHeadsMetricsTopDown, VerticalDir leftStemDir, int headIndex)
+        {
+            bool isOver;
+
+            if(tied.Side != null)
+            {
+                isOver = (tied.Side == Orientation.up) ;
+            }
+            else
+            {
+                if(leftStemDir == VerticalDir.none || (leftHeadsMetricsTopDown.Count > 1))
+                {
+                    isOver = (headIndex <= leftHeadsMetricsTopDown.Count / 2);
+                }
+                else // leftHeadsMetricsTopDown.Count == 1
+                {
+                    isOver = (leftStemDir == VerticalDir.down);
+                }
+            }
+
+            return isOver;
         }
 
         private HeadMetrics FindRightHeadMetrics(string targetPitch, OutputChordSymbol nextChord)
@@ -728,7 +762,7 @@ namespace Moritz.Symbols
 
             double tieTemplateBeginX = (leftHeadMetrics == null) ? tieLeftlimit : leftHeadCentreX + dx;
             double tieTemplateEndX = (rightHeadMetrics == null) ? tieRightLimit : rightHeadCentreX - dx;
-            double templateY = (leftHeadMetrics == null) ? rightHeadCentreY + dy: leftHeadCentreY + dy;
+            double templateY = (leftHeadMetrics == null) ? rightHeadCentreY + dy : leftHeadCentreY + dy;
 
             return (tieTemplateBeginX, tieTemplateEndX, templateY);
         }

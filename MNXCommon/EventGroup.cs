@@ -136,16 +136,6 @@ namespace MNX.Common
         /// </summary>
         protected static List<ISeqComponent> GetSequenceComponents(XmlReader r, string caller, int seqTicksPosInScore, bool isGlobal)
         {
-            /// local function, called below.
-            /// The spec says:
-            /// "directions occurring within sequence content (i.e.when isGlobal is false) must omit
-            /// this ("location") attribute as their location is determined during the procedure of
-            /// sequencing the content."
-            /// If found, write a message to the console, explaining that such data is ignored.
-            void CheckDirectionContent(List<ISeqComponent> seq)
-            {
-                bool global = isGlobal; // isGlobal is from the outer scope                
-            }
 
             List<ISeqComponent> content = new List<ISeqComponent>();
 
@@ -153,10 +143,10 @@ namespace MNX.Common
 
             // Read to the first element inside the caller element.
             // These are all the elements that can occur inside sequence-like elements. (Some of them nest.)
-            M.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "forward");
+            M.ReadToXmlElementTag(r, "directions", "event", "grace", "tuplet", "forward");
 
-            while(r.Name == "directions" || r.Name == "event" || r.Name == "grace"
-                || r.Name == "beamed" || r.Name == "tuplet" || r.Name == "forward" || r.Name == "sequence")
+            while(r.Name == "directions" || r.Name == "event" || r.Name == "grace" ||
+                r.Name == "tuplet" || r.Name == "forward" || r.Name == "sequence")
             {
                 if(r.Name == caller && r.NodeType == XmlNodeType.EndElement)
                 {
@@ -192,14 +182,24 @@ namespace MNX.Common
                     }
                 }
 
-                M.ReadToXmlElementTag(r, "directions", "event", "grace", "beamed", "tuplet", "forward", "sequence");
+                M.ReadToXmlElementTag(r, "directions", "event", "grace", "tuplet", "forward", "sequence");
             }
 
-            CheckDirectionContent(content);
+            CheckDirectionContent(content, isGlobal);
 
             M.Assert(r.Name == caller); // end of sequence content
 
             return content;
+        }
+
+        /// The spec says:
+        /// "directions occurring within sequence content (i.e.when isGlobal is false) must omit
+        /// this ("location") attribute as their location is determined during the procedure of
+        /// sequencing the content."
+        /// If found, write a message to the console, explaining that such data is ignored.
+        private static void CheckDirectionContent(List<ISeqComponent> seq, bool isGlobal)
+        {
+            bool global = isGlobal; // isGlobal is from the outer scope                
         }
     }
 }

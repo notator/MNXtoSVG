@@ -24,7 +24,8 @@ namespace Moritz.Symbols
             TicksPosInScore = mnxEventDef.TicksPosInScore;
             TicksDuration = mnxEventDef.TicksDuration;
 
-            SlurDefs = mnxEventDef.Slurs; // can be null
+            SlurDefs = mnxEventDef.SlurDefs; // can be null
+            TupletDefs = mnxEventDef.TupletDefs; // can be null
             EventID = mnxEventDef.ID;
 
             // Beam is currently null. Create when necessary.
@@ -471,7 +472,7 @@ namespace Moritz.Symbols
         public Stem Stem = null; // defaults
         public BeamBlock BeamBlock = null; // defaults
         public List<Head> HeadsTopDown = new List<Head>(); // Heads are in top-down order.
-        public List<Slur> SlurDefs = null; // definitions from MNX file
+        public List<SlurDef> SlurDefs = null; // definitions from MNX file
         public readonly string EventID = null;  // ID from MNX file
 
         public int? MsDurationToNextBarline { get { return _msDurationToNextBarline; } }

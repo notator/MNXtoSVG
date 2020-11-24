@@ -6,15 +6,16 @@ using MNX.Globals;
 using Moritz.Xml;
 using Moritz.Spec;
 using MNX.Common;
+using System.Collections.Generic;
 
 namespace Moritz.Symbols
 {
 	internal abstract class RestSymbol : DurationSymbol
 	{
-        public RestSymbol(Voice voice, int msDuration, int absMsPosition, MNXDurationSymbol mnxDurationSymbol, double fontSize)
-            : base(voice, msDuration, absMsPosition, mnxDurationSymbol, fontSize)
+        public RestSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.Event mnxEventDef, double fontSize)
+            : base(voice, msDuration, absMsPosition, mnxEventDef.MNXDurationSymbol, fontSize)
         {
-
+            TupletDefs = mnxEventDef.TupletDefs; // can be null
         }
 
         /// <summary>
@@ -65,5 +66,5 @@ namespace Moritz.Symbols
             get { return _msDuration; }
             set { _msDuration = value; } 
         }
-	}
+    }
 }

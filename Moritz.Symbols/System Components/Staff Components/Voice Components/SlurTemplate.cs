@@ -96,7 +96,7 @@ namespace Moritz.Symbols
             string strokeWidth = $"{((int)(_gap / 2.2)).ToString(M.En_USNumberFormat)}px";
             string fill = "none";
 
-            w.SvgTemplatePath(CSSObjectClass.slurTemplate, dString, stroke, strokeWidth, fill);
+            w.SvgPath(CSSObjectClass.slurTemplate, dString, stroke, strokeWidth, fill);
         }
 
         internal void Move(double dy)

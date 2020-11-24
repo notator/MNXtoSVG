@@ -79,36 +79,23 @@ namespace Moritz.Xml
         /// <summary>
         /// Writes an SVG "path" element having no global css style (such as a slurTemplate or tieTemplate)
         /// </summary>
-        public void SvgTemplatePath(CSSObjectClass cssClass, string dString, string stroke, string strokeWidth, string fill)
+        public void SvgPath(CSSObjectClass cssClass, string dString, string stroke, string strokeWidth, string fill)
         {
             _w.WriteStartElement("path");
             _w.WriteAttributeString("class", cssClass.ToString());
             _w.WriteAttributeString("d", dString);
-            _w.WriteAttributeString("stroke", stroke);
-            _w.WriteAttributeString("stroke-width", strokeWidth);
-            _w.WriteAttributeString("fill", fill);
-            _w.WriteEndElement(); //path
-        }
-
-        /// <summary>
-        /// Writes an SVG "path" element (such as a slur or tie)
-        /// </summary>
-        /// <param name="cssClass">the line's CSS style name</param>
-        /// <param name="originX"></param>
-        /// <param name="originY"></param>
-        /// <param name="scaleX"></param>
-        /// <param name="scaleY"></param>
-        public void SvgPath(CSSObjectClass cssClass, string dString, double originX, double originY, double scaleX = 1, double scaleY = 1)
-        {
-            string transformStr = $"translate({M.DoubleToShortString(originX)},{M.DoubleToShortString(originY)})";
-            if(scaleX != 1 || scaleY != 1)
+            if(string.IsNullOrEmpty(stroke) == false)
             {
-                transformStr += $" scale({M.DoubleToShortString(scaleX)},{M.DoubleToShortString(scaleY)})";
+                _w.WriteAttributeString("stroke", stroke);
             }
-            _w.WriteStartElement("path");
-            _w.WriteAttributeString("class", cssClass.ToString());
-            _w.WriteAttributeString("d", dString);
-            _w.WriteAttributeString("transform", transformStr);
+            if(string.IsNullOrEmpty(strokeWidth) == false)
+            {
+                _w.WriteAttributeString("stroke-width", strokeWidth);
+            }
+            if(string.IsNullOrEmpty(fill) == false)
+            {
+                _w.WriteAttributeString("fill", fill);
+            }
             _w.WriteEndElement(); //path
         }
 

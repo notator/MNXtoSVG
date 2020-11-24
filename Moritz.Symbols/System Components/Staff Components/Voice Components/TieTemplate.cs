@@ -66,7 +66,7 @@ namespace Moritz.Symbols
         {
             string dString = $"M{_p1.X},{_p1.Y}C{_c1.X},{_c1.Y},{_c2.X},{_c2.Y},{_p2.X},{_p2.Y}";
 
-            w.SvgTemplatePath(CSSObjectClass.tieTemplate, dString, stroke, strokeWidth, fill);
+            w.SvgPath(CSSObjectClass.tieTemplate, dString, stroke, strokeWidth, fill);
         }
     }
 
@@ -105,7 +105,7 @@ namespace Moritz.Symbols
         {
             string dString = $"M{_p1.X},{_p1.Y}C{_c1.X},{_c1.Y},{_tc.X},{_tc.Y},{_tp.X},{_tp.Y}S{_c2.X},{_c2.Y},{_p2.X},{_p2.Y}";
 
-            w.SvgTemplatePath(CSSObjectClass.tieTemplate, dString, stroke, strokeWidth, fill);
+            w.SvgPath(CSSObjectClass.tieTemplate, dString, stroke, strokeWidth, fill);
         }
 
         internal override void Move(double dy)

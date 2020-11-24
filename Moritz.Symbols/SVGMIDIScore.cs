@@ -588,9 +588,11 @@ namespace Moritz.Symbols
                     {
                         /// The systems do not yet contain Metrics info.
                         /// The systems are given Metrics inside the following function then justified horizontally.
-                        Notator.CreateMetricsAndJustifySystemsHorizontally(graphics, this.Systems);
+                        Notator.CreateMetricsAndJustifySystemsHorizontally(graphics, Systems);
 
                         CreateSlurAndTieTemplates(Systems, M.PageFormat.GapVBPX);
+
+                        CreateTuplets(graphics, Systems, M.PageFormat.GapVBPX);
 
                         CreateExtendersAndJustifySystemsVertically(graphics);
                     }
@@ -666,6 +668,24 @@ namespace Moritz.Symbols
                 foreach(var voice in voiceList)
                 {
                     firstSlurInfos = voice.AddSlurTemplates(firstSlurInfos, gap, slurTieLeftLimit, slurTieRightLimit);
+                }
+            }
+        }
+
+        /// <summary>
+        /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
+        /// Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
+        /// </summary>
+        private void CreateTuplets(Graphics graphics, List<SvgSystem> systems, double gap)
+        {
+            foreach(var system in Systems)
+            {
+                foreach(var staff in system.Staves)
+                {
+                    foreach(var voice in staff.Voices)
+                    {
+                        voice.AddTuplets(graphics, gap);
+                    }
                 }
             }
         }

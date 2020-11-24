@@ -37,7 +37,7 @@ namespace MNX.Common
         public readonly List<Note> Notes = null;
         // Either Notes or Rest must be non-null;
         public readonly Rest Rest = null;
-        public readonly List<Slur> Slurs = null;
+        public readonly List<SlurDef> SlurDefs = null;
         // TupletLevel is used when setting Duration.Ticks. It has the following meaning:
         //    0: The Event is not contained in a Tuplet.
         //    1: The Event is contained in a Tuplet.
@@ -141,6 +141,8 @@ namespace MNX.Common
         public OctaveShift EndOctaveShift { get { return _endOctaveShift; } set { _endOctaveShift = value; } }
         private OctaveShift _endOctaveShift = null;
 
+        public List<TupletDef> TupletDefs = null;
+
         #endregion IUniqueDef
 
         public Event(XmlReader r, int ticksPosInScore)
@@ -201,11 +203,11 @@ namespace MNX.Common
                             }
                             break;
                         case "slur":
-                            if(Slurs == null)
+                            if(SlurDefs == null)
                             {
-                                Slurs = new List<Slur>();
+                                SlurDefs = new List<SlurDef>();
                             }
-                            Slurs.Add(new Slur(r));
+                            SlurDefs.Add(new SlurDef(r));
                             break;
                     }
                 }

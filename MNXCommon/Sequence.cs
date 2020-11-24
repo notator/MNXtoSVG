@@ -140,26 +140,9 @@ namespace MNX.Common
                         }
                     }
                 }
-                else if(seqObj is Tuplet t)
+                else if(seqObj is TupletDef t)
                 {
-                    var tupletComponents = t.SequenceComponents;
-                    foreach(var tupletCompt in tupletComponents)
-                    {
-                        // Assuming that tuplets can only contain Events and Directions...
-                        if(tupletCompt is Event tupletEvt)
-                        {
-                            tupletEvt.OctaveShift = octaveShift;
-                            octaveShift = null;
-                            rval.Add(tupletEvt as IUniqueDef);
-                        }
-                        if(tupletCompt is Directions tupletDir)
-                        {
-                            if(tupletDir.OctaveShift != null)
-                            {
-                                octaveShift = tupletDir.OctaveShift;
-                            }
-                        }
-                    }
+                    octaveShift = GetTupletComponents(t, rval, octaveShift);
                 }
                 else
                 {
@@ -168,6 +151,47 @@ namespace MNX.Common
                 }
             }
             return rval;
+        }
+
+        /// <summary>
+        /// recursive function (for nested tuplets)
+        /// </summary>
+        /// <param name="tupletDef"></param>
+        /// <param name="iuds"></param>
+        /// <param name="octaveShift"></param>
+        /// <returns>current octave shift (can be null)</returns>
+        private static OctaveShift GetTupletComponents(TupletDef tupletDef, List<IUniqueDef> iuds, OctaveShift octaveShift)
+        {
+            var tupletComponents = tupletDef.SequenceComponents;
+            Event firstEvent = (Event)tupletComponents.Find(e => e is Event);
+            if(firstEvent.TupletDefs == null)
+            {
+                firstEvent.TupletDefs = new List<TupletDef>();
+            }
+            firstEvent.TupletDefs.Add(tupletDef);
+            foreach(var component in tupletComponents)
+            {
+                if(component is Event tupletEvt)
+                {
+                    tupletEvt.OctaveShift = octaveShift;
+                    octaveShift = null;
+                    iuds.Add(tupletEvt as IUniqueDef);
+                }
+                else if(component is TupletDef tplet)
+                {
+                    // recursive call
+                    octaveShift = GetTupletComponents(tplet, iuds, octaveShift);
+                }
+                else if(component is Directions tupletDir)
+                {
+                    if(tupletDir.OctaveShift != null)
+                    {
+                        octaveShift = tupletDir.OctaveShift;
+                    }
+                }
+            }
+
+            return octaveShift;
         }
 
         private void SetMsDurations(int seqMsPositionInScore, List<Event> events, double millisecondsPerTick)

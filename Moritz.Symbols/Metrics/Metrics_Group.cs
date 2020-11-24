@@ -304,4 +304,65 @@ namespace Moritz.Symbols
             w.SvgEndGroup();
         }
     }
+
+    public class TupletMetrics : GroupMetrics
+    {
+        // TupletMetrics(textMetrics, bracketHoriz, bracketLeft, bracketRight, bracketHeight, isOver)
+        public TupletMetrics(TextMetrics textMetrics, double bracketHoriz, double bracketLeft, double bracketRight, double bracketHeight, bool isOver)
+            : base(CSSObjectClass.tupletBracket)
+        {
+            _tupletTextMetrics = textMetrics;
+            _text = textMetrics.TextInfo.Text;
+
+            double bracketTop = (isOver) ? bracketHoriz: bracketHoriz - bracketHeight;
+            double bracketBottom = (isOver) ? bracketHoriz + bracketHeight : bracketHoriz;
+            _top = (_tupletTextMetrics.Top < bracketTop) ? _tupletTextMetrics.Top : bracketTop;
+            _right = (_tupletTextMetrics.Right > bracketRight) ? _tupletTextMetrics.Right : bracketRight;
+            _bottom = (_tupletTextMetrics.Bottom > bracketBottom) ? _tupletTextMetrics.Bottom : bracketBottom;
+            _left = (_tupletTextMetrics.Left < bracketLeft) ? _tupletTextMetrics.Left : bracketLeft;
+
+            _bracketTop = bracketTop;
+            _bracketBottom = bracketBottom;
+            _isOver = isOver;
+        }
+
+        public override void Move(double dx, double dy)
+        {
+            M.Assert(dx == 0);
+
+            base.Move(dx, dy);
+            _tupletTextMetrics.Move(dx, dy);
+        }
+
+        public override void WriteSVG(SvgWriter w)
+        {
+            double textWidth = _tupletTextMetrics.Right - _tupletTextMetrics.Left;
+            double partBracketWidth = ((_right - _left) - textWidth) / 2;
+            string leftDString;
+            string rightDString;
+            if(_isOver)
+            {
+                leftDString = $"M{_left},{_bracketBottom}V{_bracketTop}H{_left + partBracketWidth}";
+                rightDString = $"M{_right},{_bracketBottom}V{_bracketTop}H{_right - partBracketWidth}";
+            }
+            else
+            {
+                leftDString = $"M{_left},{_bracketTop}V{_bracketBottom}H{_left + partBracketWidth}";
+                rightDString = $"M{_right},{_bracketTop}V{_bracketBottom}H{_right - partBracketWidth}";
+            }
+
+            w.SvgStartGroup(CSSObjectClass.ToString());
+            w.SvgPath(CSSObjectClass.tupletBracket, leftDString, null, null, null); // stroke, srtokeWidth and fill handled in CSS
+            w.SvgPath(CSSObjectClass.tupletBracket, rightDString, null, null, null); // stroke, srtokeWidth and fill handled in CSS
+            w.SvgText(CSSObjectClass.tupletText, _text, _tupletTextMetrics.OriginX, _tupletTextMetrics.OriginY);
+            w.SvgEndGroup();
+        }
+
+        TextMetrics _tupletTextMetrics = null;
+        readonly string _text;
+
+        readonly double _bracketTop;
+        readonly double _bracketBottom;
+        readonly bool _isOver;
+    }
 }

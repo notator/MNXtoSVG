@@ -60,10 +60,10 @@
     <Compile Include="Rest.cs" />
     <Compile Include="ScoreAudio.cs" />
     <Compile Include="Sequence.cs" />
-    <Compile Include="Slur.cs" />
+    <Compile Include="SlurDef.cs" />
     <Compile Include="Tied.cs" />
     <Compile Include="TimeSignature.cs" />
-    <Compile Include="Tuplet.cs" />
+    <Compile Include="TupletDef.cs" />
     <Compile Include="CurrentTupletLevel.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="Interfaces.cs" />

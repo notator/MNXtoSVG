@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-tuplet-element
     /// </summary>
-    public class Tuplet : EventGroup, IHasTicks, ISeqComponent
+    public class TupletDef : EventGroup, IHasTicks, ISeqComponent
     {
         /// Compulsory attributes:
         #region MNX file attributes
@@ -47,7 +47,7 @@ namespace MNX.Common
 
         public override string ToString() => $"Tuplet: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
-        public Tuplet(XmlReader r, int ticksPosInScore)
+        public TupletDef(XmlReader r, int ticksPosInScore)
         {
             TupletLevel = C.CurrentTupletLevel; // top level tuplet has tuplet level 0
             TicksPosInScore = ticksPosInScore;
@@ -138,7 +138,7 @@ namespace MNX.Common
                     components.Add(e);
                     ticksInside.Add(basicTicks);
                 }
-                else if(component is Tuplet t)
+                else if(component is TupletDef t)
                 {
                     // a nested tuplet
                     M.Assert(t.TupletLevel == localTupletLevel);
@@ -167,7 +167,7 @@ namespace MNX.Common
             {
                 ISeqComponent component = components[i];
                 int ticks = innerTicks[i];
-                if(component is Tuplet tuplet)
+                if(component is TupletDef tuplet)
                 {
                     tuplet.OuterDuration.Ticks = ticks;
                     tuplet.SetTicksInContent(tuplet.OuterDuration.Ticks, tuplet.TupletLevel + 1);

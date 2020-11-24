@@ -4,7 +4,7 @@ using MNX.Globals;
 
 namespace MNX.Common
 {
-    public class Slur : Span, IEventComponent
+    public class SlurDef : Span, IEventComponent
     {
         // DirectionComponent attributes
         public override PositionInMeasure Location { get; }
@@ -21,7 +21,7 @@ namespace MNX.Common
         public readonly Orientation? Side = null;
         public readonly Orientation? SideEnd = null;
 
-        public Slur(XmlReader r)
+        public SlurDef(XmlReader r)
         {
             // https://w3c.github.io/mnx/specification/common/#the-slur-element
             M.Assert(r.Name == "slur");

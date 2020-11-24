@@ -7,6 +7,7 @@ using Moritz.Xml;
 using Moritz.Spec;
 using MNX.Globals;
 using MNX.Common;
+using System.Drawing;
 
 namespace Moritz.Symbols
 {
@@ -511,7 +512,7 @@ namespace Moritz.Symbols
         /// </summary>
         /// <returns></returns>
         private (HeadMetrics startHeadMetrics, HeadMetrics endHeadMetrics, string targetEventID, string targetHeadID)
-            FindSlurHeadMetrics(List<Head> startHeadsTopDown, IReadOnlyList<HeadMetrics> startHeadsMetricsTopDown, Slur slurDef, int noteObjectIndex)
+            FindSlurHeadMetrics(List<Head> startHeadsTopDown, IReadOnlyList<HeadMetrics> startHeadsMetricsTopDown, SlurDef slurDef, int noteObjectIndex)
         {
             HeadMetrics startHeadMetrics = null;
             Head endHead = null;
@@ -825,5 +826,160 @@ namespace Moritz.Symbols
         }
 
         #endregion functions used for both slurs and ties
+
+        #region add tuplet brackets
+        /// <summary>
+        /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
+        /// Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
+        /// first
+        /// </summary>
+        internal void AddTuplets(Graphics graphics, double gap)
+        {
+            for(var noteObjectIndex = 0; noteObjectIndex < NoteObjects.Count; noteObjectIndex++)
+            {
+                NoteObject noteObject = NoteObjects[noteObjectIndex];
+                if(noteObject is OutputChordSymbol || noteObject is OutputRestSymbol)
+                {
+                    DurationSymbol dSymbol = (DurationSymbol) noteObject;
+                    if(dSymbol.TupletDefs != null)
+                    {
+                        foreach(TupletDef tupletDef in dSymbol.TupletDefs)
+                        {
+                            List<NoteObject> tupletChordsAndRests = GetTupletChordsAndRests(noteObjectIndex, tupletDef);
+
+                            Tuplet tuplet = GetTuplet(graphics, tupletChordsAndRests, tupletDef, gap);
+
+                            dSymbol.DrawObjects.Add(tuplet);
+                        }
+                    }
+                }
+            }
+        }
+
+        private List<NoteObject> GetTupletChordsAndRests(int noteObjectIndex, TupletDef tupletDef)
+        {
+            List<NoteObject> chordsAndRests = new List<NoteObject>();
+            int nEvents = tupletDef.Events.FindAll(e => e is Event).Count; // I think tuplets can also include Grace notes
+
+            for(int i = noteObjectIndex; i < NoteObjects.Count; ++i)
+            {
+                if(NoteObjects[i] is OutputChordSymbol || NoteObjects[i] is OutputRestSymbol)
+                {
+                    chordsAndRests.Add(NoteObjects[i]);
+                    if(chordsAndRests.Count == nEvents)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return chordsAndRests;
+        }
+
+        private Tuplet GetTuplet(Graphics graphics, List<NoteObject> tupletChordsAndRests, TupletDef tupletDef, double gap)
+        {
+            var textInfo = GetTupletTextInfo(tupletDef.InnerDuration, tupletDef.OuterDuration, gap);
+            var textMetrics = new TextMetrics(CSSObjectClass.tupletText, graphics, textInfo);
+            var textHeight = (textMetrics.Bottom - textMetrics.Top);
+            bool isOver = (tupletDef.Orient == Orientation.up);
+            double textXAlignment = 0;
+            double textYAlignment = 0;
+            if(tupletChordsAndRests.Count > 2)
+            {
+                int alignedIndex = (int)(tupletChordsAndRests.Count) / 2;
+                Metrics metrics = tupletChordsAndRests[alignedIndex].Metrics;
+                if(metrics is ChordMetrics cMetrics)
+                {
+                    textXAlignment = cMetrics.OriginX;
+                }
+                else
+                {
+                    textXAlignment = ((metrics.Right - metrics.Left) / 2) + metrics.Left;
+                }
+                textYAlignment = (isOver) ? metrics.Top - gap - (textHeight / 2) : metrics.Bottom + gap + (textHeight / 2);
+            }
+            else
+            {
+                M.Assert(tupletChordsAndRests.Count == 2);
+                Metrics metrics1 = tupletChordsAndRests[0].Metrics;
+                Metrics metrics2 = tupletChordsAndRests[1].Metrics;
+
+                textXAlignment = (metrics1.Left + metrics2.Right) / 2;
+                if(isOver)
+                {
+                    double top = (metrics1.Top < metrics2.Top) ? metrics1.Top : metrics2.Top;
+                    textYAlignment = top - gap - (textHeight / 2);
+                }
+                else
+                {
+                    double bottom = (metrics1.Bottom > metrics2.Bottom) ? metrics1.Bottom : metrics2.Bottom;
+                    textYAlignment = bottom + gap + (textHeight / 2);
+                }
+            }
+
+            #region move vertically off the staff if necessary
+            Metrics staffMetrics = tupletChordsAndRests[0].Voice.Staff.Metrics;
+            if(isOver) 
+            {
+                double topMax = staffMetrics.Top - gap - (textHeight / 2);
+                if(textYAlignment > topMax)
+                {
+                    textYAlignment = topMax;
+                }
+            }
+            else
+            {
+                double topMin = staffMetrics.Bottom + gap + (textHeight / 2);
+                if(textYAlignment < topMin)
+                {
+                    textYAlignment = topMin;
+                }
+            }
+            #endregion
+
+            textMetrics.Move(textXAlignment - textMetrics.OriginX, textYAlignment - textMetrics.OriginY);
+
+            Tuplet tuplet = new Tuplet(tupletChordsAndRests[0], textMetrics);
+
+            // set auto correctly later -- depends on beaming
+            if(tupletDef.Bracket == TupletBracketDisplay.yes)
+            {
+                double bracketHoriz = textYAlignment;
+                double bracketLeft = tupletChordsAndRests[0].Metrics.Left - (gap / 2);
+                double bracketRight = tupletChordsAndRests[tupletChordsAndRests.Count - 1].Metrics.Left + (gap / 2);
+                double bracketHeight = gap * 0.75;
+
+                tuplet.AddBrackets(textMetrics, bracketHoriz, bracketLeft, bracketRight, bracketHeight, isOver);
+            }
+
+            return tuplet;
+        }
+
+        private TextInfo GetTupletTextInfo(MNXDurationSymbol innerDuration, MNXDurationSymbol outerDuration, double gap)
+        {
+            M.Assert(innerDuration.DurationSymbolTyp == outerDuration.DurationSymbolTyp);
+            int outMult = (int)outerDuration.Multiple;
+            string text;
+            switch(outMult)
+            {
+                case 2:
+                case 4:
+                case 8:
+                case 16:
+                {
+                    text = ((int)innerDuration.Multiple).ToString();
+                    break;
+                }
+                default:
+                {
+                    text = ((int)innerDuration.Multiple).ToString() + ":" + outMult.ToString();
+                    break;
+                }
+            }
+
+            return new TextInfo(text, "Open Sans Condensed", gap * 1.5, SVGFontWeight.bold, SVGFontStyle.italic, TextHorizAlign.center);
+        }
+
+        #endregion add tuplet brackets 
     }
 }

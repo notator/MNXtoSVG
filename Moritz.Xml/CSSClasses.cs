@@ -66,6 +66,11 @@ namespace Moritz.Xml
 		barNumberNumber, // Container:barNumber
 		#endregion barNumbers
 
+		#region tuplets
+		tupletText, // recorded, CSS written to SVG if used
+		tupletBracket, // recorded, CSS written to SVG if used
+		#endregion tuplets
+
 		#region regionInfo
 		framedRegionInfo, // Container: The first voice in a system.
 					// not recorded, but is used if its contents are used. Must be defined if regionInfoString exists.

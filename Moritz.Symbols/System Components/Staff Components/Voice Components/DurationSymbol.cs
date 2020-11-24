@@ -2,6 +2,7 @@ using MNX.Common;
 using MNX.Globals;
 using Moritz.Xml;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Moritz.Symbols
@@ -141,6 +142,7 @@ namespace Moritz.Symbols
         public DurationClass DurationClass { get { return _durationClass; } }
         public int NAugmentationDots { get { return _nAugmentationDots; } }
         public int MinimumCrotchetDuration { get; private set; }
+        public List<TupletDef> TupletDefs { get; internal set; }
 
         protected DurationClass _durationClass = DurationClass.none;
         protected int _nAugmentationDots;

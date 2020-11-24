@@ -111,17 +111,17 @@ namespace Moritz.Symbols
 		public FramedBarNumberText(object container, string text, double gap, double stafflinethickness)
 			: base(container, text, "Arial", (gap * 2), TextHorizAlign.center)
 		{
-            //double paddingX = 22;
-            //if(text.Length > 1)
-            //    paddingX = 10;
-            //double paddingY = 22;
+			//double paddingX = 22;
+			//if(text.Length > 1)
+			//    paddingX = 10;
+			//double paddingY = 22;
 
-            double paddingX = 60;
-            if(text.Length > 1)
-                paddingX = 28;
-            double paddingY = 60;
+			double paddingX = 60;
+			if(text.Length > 1)
+				paddingX = 28;
+			double paddingY = 60;
 
-            double strokeWidth = stafflinethickness * 1.2;
+			double strokeWidth = stafflinethickness * 1.2;
 
 			_frameInfo = new FramePadding(TextFrameType.rectangle, paddingY, paddingX, paddingY, paddingX);
 		}

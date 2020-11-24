@@ -9,7 +9,7 @@ namespace Moritz.Symbols
     internal class OutputRestSymbol : RestSymbol
 	{
         public OutputRestSymbol(Voice voice, MNX.Common.Event mnxEventDef, int absMsPosition, PageFormat pageFormat)
-            :base(voice, mnxEventDef.MsDuration, absMsPosition, mnxEventDef.MNXDurationSymbol, pageFormat.MusicFontHeight)
+            :base(voice, mnxEventDef.MsDuration, absMsPosition, mnxEventDef, pageFormat.MusicFontHeight)
         {
 
         }

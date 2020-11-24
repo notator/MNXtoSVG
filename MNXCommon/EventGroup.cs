@@ -136,7 +136,6 @@ namespace MNX.Common
         /// </summary>
         protected static List<ISeqComponent> GetSequenceComponents(XmlReader r, string caller, int seqTicksPosInScore, bool isGlobal)
         {
-
             List<ISeqComponent> content = new List<ISeqComponent>();
 
             int ticksPosInScore = seqTicksPosInScore;
@@ -170,9 +169,9 @@ namespace MNX.Common
                             content.Add(grace);
                             break;
                         case "tuplet":
-                            Tuplet tuplet = new Tuplet(r, ticksPosInScore);
-                            ticksPosInScore += tuplet.TicksDuration;
-                            content.Add(tuplet);
+                            TupletDef tupletDef = new TupletDef(r, ticksPosInScore);
+                            ticksPosInScore += tupletDef.TicksDuration;
+                            content.Add(tupletDef);
                             break;
                         case "forward":
                             Forward forward = new Forward(r, ticksPosInScore);

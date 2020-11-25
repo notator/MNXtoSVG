@@ -329,12 +329,20 @@ namespace Moritz.Symbols
 
 			w.SvgText(CSSObjectClass, _characterString, _originX, _originY);
 
-            if(_ledgerlineBlockMetrics != null && _ledgerlineVisible)
-            {
-                _ledgerlineBlockMetrics.WriteSVG(w);
-            }
+			if(_ledgerlineBlockMetrics != null && _ledgerlineVisible)
+			{
+				_ledgerlineBlockMetrics.WriteSVG(w);
+			}
 
-            w.WriteEndElement(); // g graphics
+			if(_tuplets != null)
+			{
+				foreach(var tuplet in _tuplets)
+                {
+					tuplet.WriteSVG(w);
+                }
+			}
+
+			w.WriteEndElement(); // g graphics
         }
 
         /// <summary>
@@ -355,9 +363,21 @@ namespace Moritz.Symbols
 				}
 			}
 		}
+		public void AddTuplet(Tuplet tuplet)
+		{
+			if(_tuplets == null)
+			{
+				_tuplets = new List<Tuplet>();
+			}
+			_tuplets.Add(tuplet);
+		}
+
 		private readonly double _ledgerlineStub;
 		private bool _ledgerlineVisible = false;
 		private LedgerlineBlockMetrics _ledgerlineBlockMetrics = null;
+		private List<Tuplet> _tuplets = null;
+
+
 	}
 	internal class HeadMetrics : CLichtCharacterMetrics
 	{

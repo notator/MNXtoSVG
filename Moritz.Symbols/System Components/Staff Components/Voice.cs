@@ -849,7 +849,15 @@ namespace Moritz.Symbols
 
                             Tuplet tuplet = GetTuplet(graphics, tupletChordsAndRests, tupletDef, gap);
 
-                            dSymbol.DrawObjects.Add(tuplet);
+                            if(dSymbol.Metrics is ChordMetrics chordMetrics)
+                            {
+                                chordMetrics.AddTuplet(tuplet);
+                            }
+                            else if(dSymbol.Metrics is RestMetrics restMetrics)
+                            {
+                                restMetrics.AddTuplet(tuplet);
+                            }
+                            
                         }
                     }
                 }
@@ -883,7 +891,6 @@ namespace Moritz.Symbols
             var textHeight = (textMetrics.Bottom - textMetrics.Top);
             bool isOver = (tupletDef.Orient == Orientation.up);
             double textXAlignment = 0;
-            double textYAlignment = 0;
             if(tupletChordsAndRests.Count > 2)
             {
                 int alignedIndex = (int)(tupletChordsAndRests.Count) / 2;
@@ -896,7 +903,6 @@ namespace Moritz.Symbols
                 {
                     textXAlignment = ((metrics.Right - metrics.Left) / 2) + metrics.Left;
                 }
-                textYAlignment = (isOver) ? metrics.Top - gap - (textHeight / 2) : metrics.Bottom + gap + (textHeight / 2);
             }
             else
             {
@@ -905,23 +911,28 @@ namespace Moritz.Symbols
                 Metrics metrics2 = tupletChordsAndRests[1].Metrics;
 
                 textXAlignment = (metrics1.Left + metrics2.Right) / 2;
+            }
+
+            //textYAlignment = (isOver) ? metrics.Top - gap - (textHeight / 2) : metrics.Bottom + gap + (textHeight / 2);
+            double textYAlignment = (isOver) ? double.MaxValue : double.MinValue; ;
+            foreach(NoteObject noteObject in tupletChordsAndRests)
+            { 
+                var metrics = noteObject.Metrics;
                 if(isOver)
                 {
-                    double top = (metrics1.Top < metrics2.Top) ? metrics1.Top : metrics2.Top;
-                    textYAlignment = top - gap - (textHeight / 2);
+                    textYAlignment = (metrics.Top < textYAlignment) ? metrics.Top : textYAlignment;
                 }
                 else
                 {
-                    double bottom = (metrics1.Bottom > metrics2.Bottom) ? metrics1.Bottom : metrics2.Bottom;
-                    textYAlignment = bottom + gap + (textHeight / 2);
+                    textYAlignment = (metrics.Bottom > textYAlignment) ? metrics.Bottom : textYAlignment;
                 }
             }
 
             #region move vertically off the staff if necessary
-            Metrics staffMetrics = tupletChordsAndRests[0].Voice.Staff.Metrics;
+            StaffMetrics staffMetrics = tupletChordsAndRests[0].Voice.Staff.Metrics;
             if(isOver) 
             {
-                double topMax = staffMetrics.Top - gap - (textHeight / 2);
+                double topMax = staffMetrics.StafflinesTop - gap - (textHeight / 2);
                 if(textYAlignment > topMax)
                 {
                     textYAlignment = topMax;
@@ -929,7 +940,7 @@ namespace Moritz.Symbols
             }
             else
             {
-                double topMin = staffMetrics.Bottom + gap + (textHeight / 2);
+                double topMin = staffMetrics.StafflinesBottom + gap + (textHeight / 2);
                 if(textYAlignment < topMin)
                 {
                     textYAlignment = topMin;
@@ -937,16 +948,17 @@ namespace Moritz.Symbols
             }
             #endregion
 
-            textMetrics.Move(textXAlignment - textMetrics.OriginX, textYAlignment - textMetrics.OriginY);
+            textMetrics.Move(textXAlignment, textYAlignment + (textHeight / 2));
 
             Tuplet tuplet = new Tuplet(tupletChordsAndRests[0], textMetrics);
 
             // set auto correctly later -- depends on beaming
-            if(tupletDef.Bracket == TupletBracketDisplay.yes)
+            if(tupletDef.Bracket == TupletBracketDisplay.yes || tupletDef.Bracket == TupletBracketDisplay.auto)
             {
                 double bracketHoriz = textYAlignment;
-                double bracketLeft = tupletChordsAndRests[0].Metrics.Left - (gap / 2);
-                double bracketRight = tupletChordsAndRests[tupletChordsAndRests.Count - 1].Metrics.Left + (gap / 2);
+                //double bracketHoriz = (textHeight / 2 ) * -1;
+                double bracketLeft = tupletChordsAndRests[0].Metrics.Left;
+                double bracketRight = tupletChordsAndRests[tupletChordsAndRests.Count - 1].Metrics.Right;
                 double bracketHeight = gap * 0.75;
 
                 tuplet.AddBrackets(textMetrics, bracketHoriz, bracketLeft, bracketRight, bracketHeight, isOver);
@@ -977,7 +989,7 @@ namespace Moritz.Symbols
                 }
             }
 
-            return new TextInfo(text, "Open Sans Condensed", gap * 1.5, SVGFontWeight.bold, SVGFontStyle.italic, TextHorizAlign.center);
+            return new TextInfo(text, "Open Sans Condensed", M.PageFormat.TupletFontHeight, SVGFontWeight.bold, SVGFontStyle.italic, TextHorizAlign.center);
         }
 
         #endregion add tuplet brackets 

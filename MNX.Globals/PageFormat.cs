@@ -68,6 +68,8 @@ namespace MNX.Globals
         public double BarNumberFrameStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 1.2; } }
         public double RegionInfoFrameStrokeWidth { get { return BarNumberFrameStrokeWidth * 1.5; } }
         public double BeamThickness { get { return GapVBPX * 0.42; } }
+        public double TupletFontHeight { get { return GapVBPX * 1.8; } }
+        public double TupletBracketStrokeWidth { get { return StafflineStemStrokeWidthVBPX; } }
         #endregion
 
         #region frame

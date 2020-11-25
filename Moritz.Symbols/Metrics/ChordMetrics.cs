@@ -1074,7 +1074,7 @@ namespace Moritz.Symbols
         /// This function resets the public Top, Right, Bottom and Left properties, and
         /// must be called before leaving any public function that moves any of this ChordMetrics'
         /// private objects.
-        /// An attached BeamBlock or NoteheadExtender is not part of the external boundary.
+        /// An attached Tuplet, BeamBlock or NoteheadExtender is not part of the external boundary.
         /// </summary>
         private void SetExternalBoundary()
         {
@@ -1203,6 +1203,14 @@ namespace Moritz.Symbols
             { 
                 tieTemplate.WriteSVG(w);
             }
+
+            if(_tuplets != null)
+            {
+                foreach(var tuplet in _tuplets)
+                {
+                    tuplet.WriteSVG(w);
+                }
+            }
         }
 
         public override void Move(double dx, double dy)
@@ -1277,6 +1285,14 @@ namespace Moritz.Symbols
                 foreach(var tieTemplate in TieTemplates)
                 {
                     tieTemplate.Move(dy);
+                }
+            }
+
+            if(_tuplets != null)
+            {
+                foreach(var tuplet in _tuplets)
+                {
+                    tuplet.Move(dy);
                 }
             }
 
@@ -2389,6 +2405,15 @@ namespace Moritz.Symbols
             _slurTieMetrics.Add(slurTieMetrics);
         }
 
+        public void AddTuplet(Tuplet tuplet)
+        {
+            if(_tuplets == null)
+            {
+                _tuplets = new List<Tuplet>();
+            }
+            _tuplets.Add(tuplet);
+        }
+
         private List<HeadMetrics> _headsMetricsTopDown = null; // heads are always in top->bottom order
         private List<AccidentalMetrics> _accidentalsMetricsTopDown = null; // accidentals are always in top->bottom order
         private List<AugDotMetrics> _augDotMetricsTopDown = null; // augDots are always in top->bottom order (top row, then next row etc.)
@@ -2399,6 +2424,7 @@ namespace Moritz.Symbols
         private LyricMetrics _lyricMetrics = null;
         private DynamicMetrics _dynamicMetrics = null;
         private List<SlurTieMetrics> _slurTieMetrics = null;
+        private List<Tuplet> _tuplets = null;
 
         private readonly List<DrawObject> _drawObjects;
         #endregion private variables

@@ -262,4 +262,31 @@ namespace Moritz.Symbols
 			throw new ApplicationException();
 		}
 	}
+
+	internal class TupletBracketBoundaryMetrics : LineMetrics
+	{
+		public TupletBracketBoundaryMetrics(double top, double right, double bottom, double left, bool isOver)
+			: base(CSSObjectClass.tupletBracket, M.PageFormat.TupletBracketStrokeWidth, "black")
+		{
+			_originX = left;
+			_originY = top;
+			_top = top;
+			_right = right;
+			_bottom = bottom;
+			_left = left;
+			IsOver = isOver;
+		}
+
+		public override void WriteSVG(SvgWriter w)
+		{
+			throw new NotImplementedException();
+		}
+
+		public object Clone()
+		{
+			return this.MemberwiseClone();
+		}
+
+		public readonly bool IsOver;
+	}
 }

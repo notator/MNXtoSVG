@@ -67,6 +67,7 @@ namespace Moritz.Xml
 		#endregion barNumbers
 
 		#region tuplets
+		tuplet, // used as a comment class for tuplet groups in SVG. If used, both tupletText and tupletBracket, but without CSS
 		tupletText, // recorded, CSS written to SVG if used
 		tupletBracket, // recorded, CSS written to SVG if used
 		#endregion tuplets

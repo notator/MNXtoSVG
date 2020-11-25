@@ -316,14 +316,16 @@ namespace Moritz.Symbols
 
             double bracketTop = (isOver) ? bracketHoriz: bracketHoriz - bracketHeight;
             double bracketBottom = (isOver) ? bracketHoriz + bracketHeight : bracketHoriz;
-            _top = (_tupletTextMetrics.Top < bracketTop) ? _tupletTextMetrics.Top : bracketTop;
-            _right = (_tupletTextMetrics.Right > bracketRight) ? _tupletTextMetrics.Right : bracketRight;
-            _bottom = (_tupletTextMetrics.Bottom > bracketBottom) ? _tupletTextMetrics.Bottom : bracketBottom;
-            _left = (_tupletTextMetrics.Left < bracketLeft) ? _tupletTextMetrics.Left : bracketLeft;
 
-            _bracketTop = bracketTop;
-            _bracketBottom = bracketBottom;
-            _isOver = isOver;
+            _top = (textMetrics.Top < bracketTop) ? textMetrics.Top : bracketTop;
+            _right = (textMetrics.Right > bracketRight) ? textMetrics.Right : bracketRight;
+            _bottom = (textMetrics.Bottom > bracketBottom) ? textMetrics.Bottom : bracketBottom;
+            _left = (textMetrics.Left < bracketLeft) ? textMetrics.Left : bracketLeft;
+
+            _bracketBoundary = new TupletBracketBoundaryMetrics(bracketTop, bracketRight, bracketBottom, bracketLeft, isOver);
+
+            MetricsList.Add(textMetrics);
+            MetricsList.Add(_bracketBoundary);
         }
 
         public override void Move(double dx, double dy)
@@ -331,27 +333,35 @@ namespace Moritz.Symbols
             M.Assert(dx == 0);
 
             base.Move(dx, dy);
-            _tupletTextMetrics.Move(dx, dy);
         }
 
         public override void WriteSVG(SvgWriter w)
         {
             double textWidth = _tupletTextMetrics.Right - _tupletTextMetrics.Left;
-            double partBracketWidth = ((_right - _left) - textWidth) / 2;
+            double leftH = _tupletTextMetrics.Left; //  - (textWidth / 2);
+            double rightH = _tupletTextMetrics.Right + (textWidth / 2);
+
+            string leftStr = M.DoubleToShortString(_bracketBoundary.Left);
+            string rightStr = M.DoubleToShortString(_bracketBoundary.Right);
+            string bracketBottomStr = M.DoubleToShortString(_bracketBoundary.Bottom);
+            string bracketTopStr = M.DoubleToShortString(_bracketBoundary.Top);
+            string leftHStr = M.DoubleToShortString(leftH);
+            string rightHStr = M.DoubleToShortString(rightH);
+
             string leftDString;
             string rightDString;
-            if(_isOver)
+            if(_bracketBoundary.IsOver)
             {
-                leftDString = $"M{_left},{_bracketBottom}V{_bracketTop}H{_left + partBracketWidth}";
-                rightDString = $"M{_right},{_bracketBottom}V{_bracketTop}H{_right - partBracketWidth}";
+                leftDString = $"M{leftStr},{bracketBottomStr}V{bracketTopStr}H{leftHStr}";
+                rightDString = $"M{rightStr},{bracketBottomStr}V{bracketTopStr}H{rightHStr}";
             }
             else
             {
-                leftDString = $"M{_left},{_bracketTop}V{_bracketBottom}H{_left + partBracketWidth}";
-                rightDString = $"M{_right},{_bracketTop}V{_bracketBottom}H{_right - partBracketWidth}";
+                leftDString = $"M{leftStr},{bracketTopStr}V{bracketBottomStr}H{leftHStr}";
+                rightDString = $"M{rightStr},{bracketTopStr}V{bracketBottomStr}H{rightHStr}";
             }
 
-            w.SvgStartGroup(CSSObjectClass.ToString());
+            w.SvgStartGroup(CSSObjectClass.tuplet.ToString());
             w.SvgPath(CSSObjectClass.tupletBracket, leftDString, null, null, null); // stroke, srtokeWidth and fill handled in CSS
             w.SvgPath(CSSObjectClass.tupletBracket, rightDString, null, null, null); // stroke, srtokeWidth and fill handled in CSS
             w.SvgText(CSSObjectClass.tupletText, _text, _tupletTextMetrics.OriginX, _tupletTextMetrics.OriginY);
@@ -359,10 +369,8 @@ namespace Moritz.Symbols
         }
 
         TextMetrics _tupletTextMetrics = null;
-        readonly string _text;
+        TupletBracketBoundaryMetrics _bracketBoundary = null;
 
-        readonly double _bracketTop;
-        readonly double _bracketBottom;
-        readonly bool _isOver;
+        readonly string _text;
     }
 }

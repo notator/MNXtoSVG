@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Monday 23.11.2020, 19:38:31-->
+<!--file created: Wednesday 25.11.2020, 17:24:51-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
-		width="800"
+		width="1000"
 		height="100"
-		marginTopPage1="30"
+		marginTopPage1="50"
 		marginTopOther="30"
 		marginRight="30"
 		marginBottom="30"

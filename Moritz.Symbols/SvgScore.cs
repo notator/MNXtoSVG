@@ -422,20 +422,28 @@ namespace Moritz.Symbols
 				StringBuilder smallClefXStyle = TextStyle("." + CSSObjectClass.smallClefX.ToString(), "", smallClefXFontHeight, "");
                 fontStyles.Append(smallClefXStyle);
             }
-			#endregion Arial
+            #endregion Arial
 
-			#region Open Sans Condensed (ornament)
-			if(usedCSSObjectClasses.Contains(CSSObjectClass.ornament))
-			{
-				string openSansCondensed = "\"Open Sans Condensed\"";
-				string ornamentFontHeight = M.DoubleToShortString(pageFormat.OrnamentFontHeight);
-				StringBuilder ornamentType = TextStyle("." + CSSObjectClass.ornament.ToString(), openSansCondensed, ornamentFontHeight, "middle");
-				fontStyles.Append(ornamentType);
-			}
-			#endregion Open Sans Condensed (ornament)
-			#endregion text
+            #region Open Sans Condensed (ornament)
+            if(usedCSSObjectClasses.Contains(CSSObjectClass.ornament))
+            {
+                string openSansCondensed = "\"Open Sans Condensed\"";
+                string ornamentFontHeight = M.DoubleToShortString(pageFormat.OrnamentFontHeight);
+                StringBuilder ornamentType = TextStyle("." + CSSObjectClass.ornament.ToString(), openSansCondensed, ornamentFontHeight, "middle");
+                fontStyles.Append(ornamentType);
+            }
+            if(usedCSSObjectClasses.Contains(CSSObjectClass.tupletText))
+            {
+                string openSansCondensed = "\"Open Sans Condensed\"";
+                string tupletFontHeight = M.DoubleToShortString(pageFormat.TupletFontHeight);
+                StringBuilder ornamentType = TextStyle("." + CSSObjectClass.tupletText.ToString(), openSansCondensed, tupletFontHeight, SVGFontWeight.bold.ToString(),
+                    SVGFontStyle.italic.ToString(), TextHorizAlign.center.ToString());
+                fontStyles.Append(ornamentType);
+            }
+            #endregion Open Sans Condensed (ornament)
+            #endregion text
 
-			return fontStyles;
+            return fontStyles;
         }
 
 		private StringBuilder GetColorStyles(List<CSSColorClass> usedCSSColorClasses)
@@ -870,6 +878,18 @@ namespace Moritz.Symbols
             ");
             }
 
+            if(usedCSSClasses.Contains(CSSObjectClass.tupletBracket))
+            {
+                strokeWidth = M.DoubleToShortString(pageFormat.TupletBracketStrokeWidth);
+                lineStyles.Append($@".tupletBracket
+            {{
+                stroke:black;
+                stroke-width:{strokeWidth};
+                fill:none                
+            }}
+            ");
+            }
+
             return lineStyles;
         }
 
@@ -893,11 +913,11 @@ namespace Moritz.Symbols
 			{
 				ExtendRval(rval, ".regionFrameConnector");
 			}
-			if(usedCSSClasses.Contains(CSSObjectClass.beamBlock))
-			{
-				ExtendRval(rval, ".beam");
-			}
-			if(defineFlagStyle)
+            if(usedCSSClasses.Contains(CSSObjectClass.beamBlock))
+            {
+                ExtendRval(rval, ".beam");
+            }
+            if(defineFlagStyle)
             {
                 ExtendRval(rval, ".flag");
             }

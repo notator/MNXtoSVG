@@ -651,13 +651,19 @@ namespace Moritz.Symbols
             }
             firstTieInfos.Clear();
 
+            Clef clef = null;
             for(var noteObjectIndex = 0; noteObjectIndex < NoteObjects.Count; noteObjectIndex++)
             {
-                if(NoteObjects[noteObjectIndex] is OutputChordSymbol leftChord)
+                if(NoteObjects[noteObjectIndex] is Clef)
+                {
+                    clef = NoteObjects[noteObjectIndex] as Clef;
+                }
+                else if(NoteObjects[noteObjectIndex] is OutputChordSymbol leftChord)
                 {
                     var leftHeadsTopDown = leftChord.HeadsTopDown;
-                    var leftHeadsMetricsTopDown = ((ChordMetrics)leftChord.Metrics).HeadsMetricsTopDown;
-                    var leftStemDir = ((ChordMetrics)leftChord.Metrics).StemMetrics.VerticalDir;
+                    var leftHeadsMetricsTopDown = ((ChordMetrics)leftChord.Metrics).HeadsMetricsTopDown;                    
+                    StemMetrics stemMetrics = ((ChordMetrics)leftChord.Metrics).StemMetrics;
+                    VerticalDir leftStemDir = (stemMetrics == null) ? leftChord.DefaultStemDirection(clef): stemMetrics.VerticalDir;
 
                     for(var headIndex = 0; headIndex < leftHeadsTopDown.Count; ++headIndex)
                     {

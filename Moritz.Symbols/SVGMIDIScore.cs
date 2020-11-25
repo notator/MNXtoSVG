@@ -592,7 +592,7 @@ namespace Moritz.Symbols
 
                         CreateSlurAndTieTemplates(Systems, M.PageFormat.GapVBPX);
 
-                        CreateTuplets(graphics, Systems, M.PageFormat.GapVBPX);
+                        CreateTuplets(graphics, Systems);
 
                         CreateExtendersAndJustifySystemsVertically(graphics);
                     }
@@ -676,15 +676,15 @@ namespace Moritz.Symbols
         /// All the NoteObjects have Metrics, and have been moved to their correct left-right positions.
         /// Staves have not yet been moved from their original vertical position (so have their top staffline at y-coordinate = 0).
         /// </summary>
-        private void CreateTuplets(Graphics graphics, List<SvgSystem> systems, double gap)
+        private void CreateTuplets(Graphics graphics, List<SvgSystem> systems)
         {
-            foreach(var system in Systems)
+            foreach(var system in systems)
             {
                 foreach(var staff in system.Staves)
                 {
                     foreach(var voice in staff.Voices)
                     {
-                        voice.AddTuplets(graphics, gap);
+                        voice.AddTuplets(graphics);
                     }
                 }
             }

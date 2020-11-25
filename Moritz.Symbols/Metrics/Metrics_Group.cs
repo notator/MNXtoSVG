@@ -337,9 +337,16 @@ namespace Moritz.Symbols
 
         public override void WriteSVG(SvgWriter w)
         {
-            double textWidth = _tupletTextMetrics.Right - _tupletTextMetrics.Left;
-            double leftH = _tupletTextMetrics.Left; //  - (textWidth / 2);
-            double rightH = _tupletTextMetrics.Right + (textWidth / 2);
+
+            double padding = (_tupletTextMetrics.Right - _tupletTextMetrics.Left) / 2;
+            double leftH = _tupletTextMetrics.Left;
+            double rightH = _tupletTextMetrics.Right + padding;
+            if(_text.Length > 1)
+            {
+                padding = (_tupletTextMetrics.Right - _tupletTextMetrics.Left) / _text.Length;
+                leftH = _tupletTextMetrics.Left + padding;
+                rightH = _tupletTextMetrics.Right + padding;
+            }
 
             string leftStr = M.DoubleToShortString(_bracketBoundary.Left);
             string rightStr = M.DoubleToShortString(_bracketBoundary.Right);

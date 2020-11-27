@@ -97,7 +97,7 @@ namespace Moritz.Xml
 		flag, // path classes used in defs. Defined if flags exist. Container:chord
 		notehead, cautionaryNotehead, // Container:chord/cautionaryChord
         accidental, cautionaryAccidental, // Container:chord/cautionaryChord
-        augDot, cautionaryAugDot, // Container:chord/cautionaryChord
+        dot, cautionaryDot, // Container:chord/cautionaryChord
         ledgerlines, // recorded and used. There are no cautionaryLedgerlines. Container:chord/cautionaryChord
 		ledgerline, // used, but not recorded. Defined if ledgerlines exist. Container: ledgerlines
 		ornament,       // Container:chord. There are no cautionary ornaments

@@ -185,16 +185,6 @@ namespace Moritz.Symbols
             return accidentalClass;
         }
 
-        private CSSObjectClass GetAugDotClass(CSSObjectClass chordClass)
-        {
-            CSSObjectClass augDotClass = CSSObjectClass.augDot; // chordClass == chord
-            if(chordClass == CSSObjectClass.cautionaryChord)
-            {
-                augDotClass = CSSObjectClass.cautionaryAugDot;
-            }
-            return augDotClass;
-        }
-
         private CSSObjectClass GetDynamicClass(ChordSymbol chord)
         {
             CSSObjectClass dynamicClass = CSSObjectClass.dynamic; // OutputChordSymbol
@@ -245,14 +235,15 @@ namespace Moritz.Symbols
             double separationX = _gap * 0.5;
             if(nAugmentationDots > 0)
             {
-                _augDotMetricsTopDown = new List<AugDotMetrics>();
-                CSSObjectClass augDotClass = GetAugDotClass(chordClass);
-                separationX = ( augDotClass == CSSObjectClass.cautionaryAugDot) ? separationX * 0.8 : separationX;
-                List<AugDotMetrics> templateAugDotRowMetrics = GetTemplateAugDotRowMetrics(nAugmentationDots, fontHeight, separationX, augDotClass);
+                _augDotMetricsTopDown = new List<DotMetrics>();
+                CSSObjectClass dotClass = (chordClass == CSSObjectClass.chord) ? CSSObjectClass.dot : CSSObjectClass.cautionaryDot;
+                // (Note that ordinary CSSObjectClass.dot is also used by repeatBarlines)
+                separationX = ( dotClass == CSSObjectClass.cautionaryDot) ? separationX * 0.8 : separationX;
+                List<DotMetrics> templateAugDotRowMetrics = GetTemplateAugDotRowMetrics(nAugmentationDots, fontHeight, separationX, dotClass);
                 List<Tuple<double, double>> shiftPairs = GetAugDotRowShiftPairs(topDownHeadsMetrics);
                 foreach(var shiftPair in shiftPairs)
                 {
-                    List<AugDotMetrics> augDotRowMetrics = GetClone(templateAugDotRowMetrics);
+                    List<DotMetrics> augDotRowMetrics = GetClone(templateAugDotRowMetrics);
                     foreach(var augDotMetrics in augDotRowMetrics)
                     {
                         augDotMetrics.Move(shiftPair.Item1 - augDotMetrics.OriginX, shiftPair.Item2 - augDotMetrics.OriginY);
@@ -262,12 +253,12 @@ namespace Moritz.Symbols
             }
         }
 
-        private List<AugDotMetrics> GetClone(List<AugDotMetrics> templateAugDotRowMetrics)
+        private List<DotMetrics> GetClone(List<DotMetrics> templateAugDotRowMetrics)
         {
-            List<AugDotMetrics> rval = new List<AugDotMetrics>();
+            List<DotMetrics> rval = new List<DotMetrics>();
             foreach(var augDotMetrics in templateAugDotRowMetrics)
             {
-                rval.Add( (AugDotMetrics) augDotMetrics.Clone());
+                rval.Add( (DotMetrics) augDotMetrics.Clone());
             }
             return rval;
         }
@@ -355,15 +346,14 @@ namespace Moritz.Symbols
         /// The left-most AugDotMetrics has OriginX == 0.
         /// The other AugDotMetrics.OriginX values are separated by separationX from the previous AugDotMetrics.OriginX.
         /// </summary>
-        private List<AugDotMetrics> GetTemplateAugDotRowMetrics(int nAugmentationDots, double fontHeight, double separationX, CSSObjectClass augDotClass)
+        private List<DotMetrics> GetTemplateAugDotRowMetrics(int nAugmentationDots, double fontHeight, double separationX, CSSObjectClass dotClass)
         {
-            var rval = new List<AugDotMetrics>();
+            var rval = new List<DotMetrics>();
             double previousOriginX = -separationX;
-            string augDotCharstring = ".";
 
             for(var j = 0; j < nAugmentationDots; j++)
             {
-                AugDotMetrics augDotMetrics = new AugDotMetrics(augDotCharstring, fontHeight, _gap, augDotClass);
+                DotMetrics augDotMetrics = new DotMetrics(fontHeight, _gap, dotClass);
                 augDotMetrics.Move(previousOriginX - augDotMetrics.OriginX + separationX, 0 - augDotMetrics.OriginY);
                 previousOriginX = augDotMetrics.OriginX;
                 rval.Add(augDotMetrics);
@@ -1099,7 +1089,7 @@ namespace Moritz.Symbols
             }
             if(_augDotMetricsTopDown != null)
             {
-                foreach(AugDotMetrics augDotMetric in _augDotMetricsTopDown)
+                foreach(DotMetrics augDotMetric in _augDotMetricsTopDown)
                     SetBoundary(augDotMetric);
             }
             if(_upperLedgerlineBlockMetrics != null)
@@ -1156,7 +1146,7 @@ namespace Moritz.Symbols
             }
             if(_augDotMetricsTopDown!= null)
             {
-                foreach(AugDotMetrics augDotMetrics in _augDotMetricsTopDown)
+                foreach(DotMetrics augDotMetrics in _augDotMetricsTopDown)
                     augDotMetrics.WriteSVG(w);
             }
             if(_upperLedgerlineBlockMetrics != null)
@@ -1233,7 +1223,7 @@ namespace Moritz.Symbols
             }
             if(_augDotMetricsTopDown != null)
             {
-                foreach(AugDotMetrics augDotMetrics in _augDotMetricsTopDown)
+                foreach(DotMetrics augDotMetrics in _augDotMetricsTopDown)
                     augDotMetrics.Move(dx, dy);
             }
             if(_upperLedgerlineBlockMetrics != null)
@@ -2391,7 +2381,7 @@ namespace Moritz.Symbols
         {
             get { return _headsMetricsTopDown; }
         }
-        public IReadOnlyList<AugDotMetrics> AugDotMetricsTopDown
+        public IReadOnlyList<DotMetrics> AugDotMetricsTopDown
         {
             get { return _augDotMetricsTopDown; }
         }
@@ -2416,7 +2406,7 @@ namespace Moritz.Symbols
 
         private List<HeadMetrics> _headsMetricsTopDown = null; // heads are always in top->bottom order
         private List<AccidentalMetrics> _accidentalsMetricsTopDown = null; // accidentals are always in top->bottom order
-        private List<AugDotMetrics> _augDotMetricsTopDown = null; // augDots are always in top->bottom order (top row, then next row etc.)
+        private List<DotMetrics> _augDotMetricsTopDown = null; // augDots are always in top->bottom order (top row, then next row etc.)
         private LedgerlineBlockMetrics _upperLedgerlineBlockMetrics = null;
         private LedgerlineBlockMetrics _lowerLedgerlineBlockMetrics = null;
         private List<CautionaryBracketMetrics> _cautionaryBracketsMetrics = null;

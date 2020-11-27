@@ -8,10 +8,6 @@ namespace Moritz.Spec
 {
 	public class Bar : ITrksContainer
     {
-		public Bar()
-		{
-		}
-
 		/// <summary>
 		/// All constructors in this class are protected, so Bars can only be created by subclasses.
 		/// <para>A Bar contains a list of voiceDefs that are all Trks. A Seq only contains Trks.
@@ -23,7 +19,7 @@ namespace Moritz.Spec
 		/// <para>When complete, this constructor calls the bar.AssertConsistency() function (see that its documentation).</para>
 		/// </summary>
 		/// <param name="seq">Cannot be null, and must have Trks</param>
-		public Bar(Seq seq )
+		public Bar(Seq seq, Tuple<bool, bool> repeatBarlineTypes)
         {
 			#region conditions
             seq.AssertConsistency();
@@ -42,6 +38,9 @@ namespace Moritz.Spec
             }
 
             AssertConsistency();
+
+            RepeatBeginBarline = repeatBarlineTypes.Item1;
+            RepeatEndBarline = repeatBarlineTypes.Item2;
         }
 
 		public void Concat(Bar bar2)
@@ -301,6 +300,10 @@ namespace Moritz.Spec
 				AssertConsistency();
 			}
 		}
+
+        public bool RepeatBeginBarline { get; }
+        public bool RepeatEndBarline { get; }
+
         protected List<VoiceDef> _voiceDefs = new List<VoiceDef>();
 	}
 }

@@ -47,7 +47,7 @@ namespace MNX.Common
             M.Assert(Measures.Count > 0);
         }
 
-        public List<List<IUniqueDef>> GetGlobalDirectionsPerMeasure()
+        public List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
         {
             var rval = new List<List<IUniqueDef>>();
             for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)
@@ -70,6 +70,23 @@ namespace MNX.Common
                     }
                 }
                 rval.Add(measureList);
+            }
+            return rval;
+        }
+
+        /// <summary>
+        /// Item1 in each Tuple is RepeatBeginBarline (true or false)
+        /// Item2 in each Tuple is RepeatEndBarline (true or false) 
+        /// </summary>
+        /// <returns></returns>
+        public List<Tuple<bool, bool>> GetGlobalRepeatBarlineTypesPerMeasure()
+        {
+            var rval = new List<Tuple<bool, bool>>();
+            for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)
+            {
+                Directions directions = Measures[measureIndex].Directions;
+                Tuple<bool, bool> measureData = new Tuple<bool, bool>(directions.RepeatBeginBarline, directions.RepeatEndBarline);
+                rval.Add(measureData);
             }
             return rval;
         }

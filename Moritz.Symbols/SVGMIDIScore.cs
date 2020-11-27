@@ -52,16 +52,22 @@ namespace Moritz.Symbols
         private List<Bar> GetBars(MNX.Common.MNX mnxCommon)
         {
             var bars = new List<Bar>();
-            List<List<IUniqueDef>> globalDirectionsPerMeasure = mnxCommon.Global.GetGlobalDirectionsPerMeasure();
+            List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
+
+            List<Tuple<bool, bool>> repeatBarlineTypesPerMeasure = mnxCommon.Global.GetGlobalRepeatBarlineTypesPerMeasure();
+
+
+
+            
             var midiChannelsPerStaff = M.PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;
 
             var seqMsPositionInScore = 0;
-            for(var measureIndex = 0; measureIndex < globalDirectionsPerMeasure.Count; measureIndex++)
+            for(var measureIndex = 0; measureIndex < globalIUDsPerMeasure.Count; measureIndex++)
             {
                 var midiChannelIndexPerOutputVoice = new List<int>();
                 List<Trk> trks = new List<Trk>();
-                List<IUniqueDef> globalDirections = globalDirectionsPerMeasure[measureIndex];
+                List<IUniqueDef> globalDirections = globalIUDsPerMeasure[measureIndex];
                 var systemStaffIndex = 0;
                 foreach(var part in mnxCommon.Parts)
                 {
@@ -90,7 +96,8 @@ namespace Moritz.Symbols
                     }
                 }
                 Seq seq = new Seq(seqMsPositionInScore, trks, midiChannelIndexPerOutputVoice);
-                Bar bar = new Bar(seq);
+                var repeatBarlineTypes = repeatBarlineTypesPerMeasure[measureIndex];
+                Bar bar = new Bar(seq, repeatBarlineTypes);
                 bars.Add(bar);
                 seqMsPositionInScore += seq.MsDuration;
             }

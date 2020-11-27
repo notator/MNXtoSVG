@@ -354,10 +354,11 @@ namespace Moritz.Symbols
 		}
 	}
 
-	/// <summary>
-	/// A barline whose 2 lines are (left to right) thick then thin. OriginX is the thick line's x-coordinate.
-	/// </summary>
-	public class StartRegionBarline : Barline
+    #region AssistantPerformer barlines
+    /// <summary>
+    /// A barline whose 2 lines are (left to right) thick then thin. OriginX is the thick line's x-coordinate.
+    /// </summary>
+    public class StartRegionBarline : Barline
 	{
 		public StartRegionBarline(Voice voice, List<DrawObject> drawObjects)
 			: base(voice)
@@ -741,6 +742,120 @@ namespace Moritz.Symbols
 		public FramedRegionInfoMetrics FramedRegionEndTextMetrics = null;
 		public RegionFrameConnectorMetrics RegionFrameConnectorMetrics = null;
 	}
+
+	#endregion AssistantPerformer barlines
+
+	#region MNX barlines
+	/// <summary>
+	/// A barline consisting of a thick followed by a thin line.
+	/// Where the barline crosses a staff, two vertical dots follow the lines.
+	/// OriginX is the thick line's x-coordinate.
+	/// </summary>
+	public class StartRepeatBarline : NormalBarline
+	{
+		public StartRepeatBarline(Voice voice, List<DrawObject> drawObjects)
+			: base(voice)
+		{
+			SetDrawObjects(drawObjects);
+		}
+
+		/// <summary>
+		/// Writes out the barline's vertical line(s).
+		/// May be called twice per staff.barline:
+		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
+		///     2. for the range between the staff's lower edge and the next staff's upper edge
+		///        (if the staff's lower neighbour is in the same group)
+		/// </summary>
+		/// <param name="w"></param>
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem)
+		{
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+
+			double thickLeftLineOriginX = Barline_LineMetrics.OriginX;
+			w.SvgStartGroup(CSSObjectClass.startRepeatBarline.ToString());
+			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
+
+			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
+			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
+			w.SvgEndGroup();
+		}
+
+		public override string ToString()
+		{
+			return "startRepeatBarline: ";
+		}
+
+		public override void CreateMetrics(Graphics graphics)
+		{
+			double leftEdge = -(ThickStrokeWidth / 2F);
+			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
+			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+
+			SetCommonMetrics(graphics, DrawObjects);
+		}
+
+		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
+		{
+			AddBasicMetricsToEdge(horizontalEdge);
+		}
+	}
+
+	/// <summary>
+	/// A barline consisting of a normal followed by a thick line.
+	/// Where the barline crosses a staff, two vertical dots precede the lines.
+	/// OriginX is the thick line's x-coordinate.
+	/// </summary>
+	public class EndRepeatBarline : NormalBarline
+	{
+		public EndRepeatBarline(Voice voice, List<DrawObject> drawObjects)
+			: base(voice)
+		{
+			SetDrawObjects(drawObjects);
+		}
+
+		/// <summary>
+		/// Writes out the barline's vertical line(s).
+		/// May be called twice per staff.barline:
+		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
+		///     2. for the range between the staff's lower edge and the next staff's upper edge
+		///        (if the staff's lower neighbour is in the same group)
+		/// </summary>
+		/// <param name="w"></param>
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem)
+		{
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+
+			double thickLeftLineOriginX = Barline_LineMetrics.OriginX;
+			w.SvgStartGroup(CSSObjectClass.startRepeatBarline.ToString());
+			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
+
+			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
+			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
+			w.SvgEndGroup();
+		}
+
+		public override string ToString()
+		{
+			return "endRepeatBarline: ";
+		}
+
+		public override void CreateMetrics(Graphics graphics)
+		{
+			double leftEdge = -(ThickStrokeWidth / 2F);
+			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
+			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+
+			SetCommonMetrics(graphics, DrawObjects);
+		}
+
+		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
+		{
+			AddBasicMetricsToEdge(horizontalEdge);
+		}
+	}
+	#endregion MNX barlines
 
 	/// <summary>
 	/// A barline whose 2 lines are (left to right) normal then thick. OriginX is the thick line's x-coordinate.

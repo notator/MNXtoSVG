@@ -126,16 +126,24 @@ namespace Moritz.Xml
 
         #region barlines
         normalBarline, // always used, recorded and defined. A normal barline and endBarline component. Container:voice
-		thinBarline, // a double-bar component. Always defined. Container:regionStartbarline etc.
-		thickBarline, // a double-bar component. Always defined. Container:regionStartbarline etc.
+		thinBarline, // a double-bar component. Always defined. Container:startRegionbarline, startRepeatbarline etc.
+		thickBarline, // a double-bar component. Always defined. Container:startRegionbarline, startRepeatbarline etc.
 		staffConnectors, // A group of barline (and maybe endBarline) in a system. Never defined. Container:system.
+
+		startRepeatBarline, // container class (no CSS)
+		endRepeatBarline, // container class (no CSS)
+		endOfScoreBarline, // container class (no CSS)
+
+		#region AssistantPerformer region barline types
 		startRegionBarline,
 		endRegionBarline,
 		endAndStartRegionBarline,
-		endOfScoreBarline,
 		regionFrameConnector,
-        #endregion barlines
-    };
+		#endregion AssistantPerformer region barline types
+
+
+		#endregion barlines
+	};
 
 	/// <summary>
 	/// This enum contains _all_ the colour classes that Moritz can write to SVG scores.

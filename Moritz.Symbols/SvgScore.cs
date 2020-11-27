@@ -1378,7 +1378,7 @@ namespace Moritz.Symbols
 		}
 
 		/// <summary>
-		/// replaces NormalBarlines by barlines having the appropriate type for the region information.
+		/// replaces NormalBarlines by barlines having the appropriate type.
 		/// </summary>
 		private void SetBarlineTypes()
 		{

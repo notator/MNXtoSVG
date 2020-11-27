@@ -15,6 +15,8 @@ namespace MNX.Common
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
+        public bool RepeatBeginBarline { get; private set; } = false;
+        public bool RepeatEndBarline { get; private set; } = false;
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -65,9 +67,9 @@ namespace MNX.Common
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
-            M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift");
+            M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat");
 
-            while(r.Name == "time" || r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift")
+            while(r.Name == "time" || r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift" || r.Name == "repeat")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
@@ -91,11 +93,45 @@ namespace MNX.Common
                         case "octave-shift":
                             OctaveShift = new OctaveShift(r, ticksPosInScore);
                             break;
+                        case "repeat":
+                            if(isGlobal == false)
+                            {
+                                M.ThrowError("Error: the repeat element must be global.");
+                            }
+                            SetRepeatBarlineTypes(r);
+                            break;
                     }
                 }
-                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "directions");
+                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "directions");
             }
             M.Assert(r.Name == "directions"); // end of "directions"
+        }
+
+        private void SetRepeatBarlineTypes(XmlReader r)
+        {
+            M.Assert(r.Name == "repeat");
+
+            int count = r.AttributeCount;
+            for(int i = 0; i < count; i++)
+            {
+                r.MoveToAttribute(i);
+                if(r.Name == "type")
+                { 
+                    switch(r.Value)
+                    {
+                        case "start":
+                            RepeatBeginBarline = true;
+                            break;
+                        case "end":
+                            RepeatEndBarline = true;
+                            break;
+                        default:
+                            M.ThrowError("Unknown repeat type.");
+                            break;
+
+                    }
+                }
+            }
         }
     }
 }

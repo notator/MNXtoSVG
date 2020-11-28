@@ -67,9 +67,10 @@ namespace MNX.Common
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
-            M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat");
+            M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "ending");
 
-            while(r.Name == "time" || r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift" || r.Name == "repeat")
+            while(r.Name == "time" || r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift"
+                || r.Name == "repeat" || r.Name == "ending")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
@@ -100,9 +101,16 @@ namespace MNX.Common
                             }
                             SetRepeatBarlineTypes(r);
                             break;
+                        case "ending":
+                            if(isGlobal == false)
+                            {
+                                M.ThrowError("Error: the (repeat) ending element must be global.");
+                            }
+                            // TODO
+                            break;
                     }
                 }
-                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "directions");
+                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "ending", "directions");
             }
             M.Assert(r.Name == "directions"); // end of "directions"
         }

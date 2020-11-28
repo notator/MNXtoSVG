@@ -1404,14 +1404,14 @@ namespace Moritz.Symbols
                     AddRegionEndInfo();
                 }
 
-                SetBarlineTypes(); // 7. converts each NormalBarline to a Barline of the appropriate Region class
+                SetRegionBarlineTypes(); // 7. converts each NormalBarline to a Barline of the appropriate Region class
             }
 		}
 
 		/// <summary>
 		/// replaces NormalBarlines by barlines having the appropriate type.
 		/// </summary>
-		private void SetBarlineTypes()
+		private void SetRegionBarlineTypes()
 		{
 			Dictionary<int, CSSObjectClass> msPosBarlineClassDict = new Dictionary<int, CSSObjectClass>();
 			foreach(SvgSystem system in Systems)

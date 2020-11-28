@@ -1272,8 +1272,9 @@ namespace Moritz.Symbols
         /// </summary>
         /// <param name="barlineType"></param>
         /// <param name="systemNumbers"></param>
-        private void AddBarlines(List<Bar> bars)
+        private bool AddBarlines(List<Bar> bars)
         {
+            var usingMNXrepeats = false;
             // There is currently one bar per System, so systemIndex is bar index here.
             for(int systemIndex = 0; systemIndex < Systems.Count; ++systemIndex)
             {
@@ -1287,6 +1288,11 @@ namespace Moritz.Symbols
                         var noteObjects = voice.NoteObjects;
                         M.Assert(noteObjects.Count > 0
                             && !(noteObjects[noteObjects.Count - 1] is Barline));
+
+                        if(bars[systemIndex].RepeatBeginBarline || bars[systemIndex].RepeatEndBarline)
+                        {
+                            usingMNXrepeats = true;
+                        }
 
                         int startBarlineIndex = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)));
                         var beginBarline = (bars[systemIndex].RepeatBeginBarline) ? new RepeatBeginBarline(voice) : new NormalBarline(voice);
@@ -1314,6 +1320,7 @@ namespace Moritz.Symbols
                     }
                 }
             }
+            return usingMNXrepeats;
         }
 
         private List<int> GetGroupBottomStaffIndices(List<int> groupSizes, int nStaves)
@@ -1342,15 +1349,14 @@ namespace Moritz.Symbols
         /// When this function is called, every system still contains one bar, and all systems have the same number
         /// of staves and voices as System[0]. Now:
         /// 1. add a NormalBarline, RepeatBeginBarline, RepeatEndBarline or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
-        /// 2. join the bars into systems according to the user's options,
+        /// 2. join the bars into systems according to the user's options, setting RepeatBarlines as necessary...
         /// 3. set the visibility of naturals (if the chords have any noteheads)
-        /// 4. add the appropriate barline type at the start of each system, after the clef (and keySignature, if any). Corrects the system-start and -end barline types.
-        /// 5. add a barnumber to the first barline on each system.
-        /// 6. add the staff's name to the first barline on each staff. 
-        /// 7. add regionStart- and regionEnd- info to the appropriate NormalBarlines
-        /// 8. converts the NormalBarlines to the appropriate region barline class
+        /// 4. add a barnumber to the first barline on each system.
+        /// 5. add the staff's name to the first barline on each staff. 
+        /// 6. if there are no ordinary (MNX) repeats, add regionStart- and regionEnd- info to the appropriate NormalBarlines, then
+        /// 7. convert the NormalBarlines to the appropriate region barline class
         /// </summary>
-        protected void FinalizeSystemStructure(List<Spec.Bar> bars)
+        protected void FinalizeSystemStructure(List<Bar> bars)
         {
             #region preconditions
             int nStaves = Systems[0].Staves.Count;
@@ -1376,29 +1382,30 @@ namespace Moritz.Symbols
             #endregion preconditions
 
             // 1. add a NormalBarline, RepeatBeginBarline, RepeatEndBarline or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
-            AddBarlines(bars);
+            var usingMNXRepeats = AddBarlines(bars);
 
             ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
 
-            SetSystemsToBeginAtBars(M.PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options. Set RepeatBarlines as necessary...
+            SetSystemsToBeginAtBars(M.PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options, setting RepeatBarlines as necessary...
 
 			SetSystemAbsEndMsPositions();
 
             NormalizeSmallClefs();
 
-            AddNormalBarlineAtStartOfEachSystem(); // 4.??? Delete this ???
+            AddBarNumbers(); // 4.add a barnumber to the first Barline on each system.
+			AddStaffNames(); // 5. adds the staff's name to the first Barline on each staff.
 
-            AddBarNumbers(); // 5.add a barnumber to the first (Normal)Barline on each system.
-			AddStaffNames(); // 6. adds the staff's name to the first (Normal)Barline on each staff.
+            if(!usingMNXRepeats)
+            {
+                if(this.ScoreData != null)
+                {
+                    // 6. add regionStart- and regionEnd- info to the appropriate NormalBarlines
+                    AddRegionStartInfo();
+                    AddRegionEndInfo();
+                }
 
-			if(this.ScoreData != null)
-			{
-				// 7. add regionStart- and regionEnd- info to the appropriate NormalBarlines
-				AddRegionStartInfo();
-				AddRegionEndInfo();
-			}
-
-			SetBarlineTypes(); // 8. converts each NormalBarline to a Barline of the appropriate class
+                SetBarlineTypes(); // 7. converts each NormalBarline to a Barline of the appropriate Region class
+            }
 		}
 
 		/// <summary>
@@ -1830,30 +1837,6 @@ namespace Moritz.Symbols
 				}
 			}
 		}
-
-		/// <summary>
-		/// Inserts a NormalBarline at the start of the first bar in each Voice in each Staff in each System.
-		/// The barline is inserted after the initial Clef, and after the initial KeySignature if it exists.
-		/// </summary>
-		private void AddNormalBarlineAtStartOfEachSystem()
-        {
-            foreach(SvgSystem system in Systems)
-            {
-                foreach(Staff staff in system.Staves)
-                {
-                    foreach(Voice voice in staff.Voices)
-                    {
-                        M.Assert(voice.NoteObjects[0] is Clef);
-                        int insertIndex = 1;
-                        if(voice.NoteObjects[1] is KeySignature)
-                        {
-                            insertIndex = 2;
-                        }
-                        voice.NoteObjects.Insert(insertIndex, new NormalBarline(voice));
-                    }
-                }
-            }
-        }
 
         #endregion functions
 

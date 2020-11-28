@@ -587,7 +587,7 @@ namespace Moritz.Symbols
             {
                 Notator.ConvertVoiceDefsToNoteObjects(this.Systems);
 
-                FinalizeSystemStructure(); // adds barlines, joins bars to create systems, etc.
+                FinalizeSystemStructure(bars); // adds barlines, joins bars to create systems, etc.
 
                 using(Image image = new Bitmap(1, 1))
                 {

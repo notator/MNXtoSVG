@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 using MNX.Globals;
+
+using Moritz.Spec;
 using Moritz.Xml;
 
 namespace Moritz.Symbols
@@ -1269,11 +1270,12 @@ namespace Moritz.Symbols
         /// There is currently one bar per System. 
         /// All Duration Symbols have been constructed in voice.NoteObjects (possibly including CautionaryChordSymbols at the beginnings of staves).
         /// There are no barlines in the score yet.
-        /// Add a NormalBarline to each Voice.
+        /// Now add a NormalBarline, RepeatBeginBarline or RepeatEndBarline at the beginning of bar 1
+        /// (after the clef (and keySignature, if any)) and at end of each system=bar.
         /// </summary>
         /// <param name="barlineType"></param>
         /// <param name="systemNumbers"></param>
-        private void AddNormalBarlines()
+        private void AddBarlines(List<Bar> bars)
         {
             for(int systemIndex = 0; systemIndex < Systems.Count; ++systemIndex)
             {
@@ -1314,20 +1316,20 @@ namespace Moritz.Symbols
             return returnList;
         }
 
-		/// <summary>
-		/// When this function is called, every system still contains one bar, and all systems have the same number
-		/// of staves and voices as System[0].
-		/// This function:
-		/// 1. adds a NormalBarline at the end of each system=bar, 
-		/// 2. joins the bars into systems according to the user's options,
-		/// 3. sets the visibility of naturals (if the chords have any noteheads)
-		/// 4. adds a NormalBarline at the start of each system, after the clef.
-		/// 5. adds a barnumber to the first barline on each system.
-		/// 6. adds the staff's name to the first NormalBarline on each staff. 
-		/// 7. adds regionStart- and regionEnd- info to the appropriate NormalBarlines
-		/// 8. converts the NormalBarlines to the appropriate barline class
-		/// </summary>
-		protected void FinalizeSystemStructure()
+        /// <summary>
+        /// When this function is called, every system still contains one bar, and all systems have the same number
+        /// of staves and voices as System[0].
+        /// This function:
+        /// 1. adds a NormalBarline, RepeatBeginBarline or RepeatEndBarline at the beginning of bar 1 (after the clef (and keySignature, if any)) and at end of each system=bar.
+        /// 2. joins the bars into systems according to the user's options,
+        /// 3. sets the visibility of naturals (if the chords have any noteheads)
+        /// 4. adds the appropriate barline type at the start of each system, after the clef (and keySignature, if any). Corrects the system-start and -end barline types.
+        /// 5. adds a barnumber to the first barline on each system.
+        /// 6. adds the staff's name to the first barline on each staff. 
+        /// 7. adds regionStart- and regionEnd- info to the appropriate NormalBarlines
+        /// 8. converts the NormalBarlines to the appropriate region barline class
+        /// </summary>
+        protected void FinalizeSystemStructure(List<Spec.Bar> bars)
         {
             #region preconditions
             int nStaves = Systems[0].Staves.Count;
@@ -1352,9 +1354,9 @@ namespace Moritz.Symbols
             }
             #endregion preconditions
 
-            AddNormalBarlines(); // 1. add a NormalBarline at the end of each system=bar,
+            AddBarlines(bars); // 1. add a NormalBarline, RepeatBeginBarline or RepeatEndBarline at the beginning of bar 1 (after the clef (and keySignature, if any)) and at end of each system=bar.
 
-			ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
+            ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
 
             SetSystemsToBeginAtBars(M.PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
 
@@ -1362,9 +1364,9 @@ namespace Moritz.Symbols
 
             NormalizeSmallClefs();
 
-            AddNormalBarlineAtStartOfEachSystem(); // 4. adds a NormalBarline at the start of each system, after the clef (and keySignature, if any).
+            AddNormalBarlineAtStartOfEachSystem(); // 4. adds the appropriate barline type at the start of each system, after the clef (and keySignature, if any). Corrects the system-start and -end barline types.
 
-			AddBarNumbers(); // 5.add a barnumber to the first (Normal)Barline on each system.
+            AddBarNumbers(); // 5.add a barnumber to the first (Normal)Barline on each system.
 			AddStaffNames(); // 6. adds the staff's name to the first (Normal)Barline on each staff.
 
 			if(this.ScoreData != null)

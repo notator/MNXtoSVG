@@ -354,7 +354,7 @@ namespace Moritz.Symbols
 		}
 	}
 
-    #region AssistantPerformer barlines
+    #region AssistantPerformer Region barlines
     /// <summary>
     /// A barline whose 2 lines are (left to right) thick then thin. OriginX is the thick line's x-coordinate.
     /// </summary>
@@ -743,17 +743,17 @@ namespace Moritz.Symbols
 		public RegionFrameConnectorMetrics RegionFrameConnectorMetrics = null;
 	}
 
-	#endregion AssistantPerformer barlines
+	#endregion AssistantPerformer Region barlines
 
-	#region MNX barlines
+	#region MNX Repeat barlines
 	/// <summary>
-	/// A barline consisting of a thick followed by a thin line.
-	/// Where the barline crosses a staff, two vertical dots follow the lines.
+	/// A barline consisting of: thickBarline, normalBarline, dots.
+	/// The dots are only printed where the barline crosses a staff.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
-	public class StartRepeatBarline : NormalBarline
+	public class RepeatStartBarline : NormalBarline
 	{
-		public StartRepeatBarline(Voice voice, List<DrawObject> drawObjects)
+		public RepeatStartBarline(Voice voice, List<DrawObject> drawObjects)
 			: base(voice)
 		{
 			SetDrawObjects(drawObjects);
@@ -802,13 +802,13 @@ namespace Moritz.Symbols
 	}
 
 	/// <summary>
-	/// A barline consisting of a normal followed by a thick line.
-	/// Where the barline crosses a staff, two vertical dots precede the lines.
+	/// A barline consisting of: dots, normalBarline, thickBarline.
+	/// The dots are only printed where the barline crosses a staff.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
-	public class EndRepeatBarline : NormalBarline
+	public class RepeatEndBarline : NormalBarline
 	{
-		public EndRepeatBarline(Voice voice, List<DrawObject> drawObjects)
+		public RepeatEndBarline(Voice voice, List<DrawObject> drawObjects)
 			: base(voice)
 		{
 			SetDrawObjects(drawObjects);
@@ -855,7 +855,62 @@ namespace Moritz.Symbols
 			AddBasicMetricsToEdge(horizontalEdge);
 		}
 	}
-	#endregion MNX barlines
+
+	/// <summary>
+	/// A barline consisting of: dots,normalBarline, thickBarline,normalBarline, dots.
+	/// The dots are only printed where the barline crosses a staff.
+	/// OriginX is the thick line's x-coordinate.
+	/// </summary>
+	public class RepeatEndBeginBarline : NormalBarline
+	{
+		public RepeatEndBeginBarline(Voice voice, List<DrawObject> drawObjects)
+			: base(voice)
+		{
+			SetDrawObjects(drawObjects);
+		}
+
+		/// <summary>
+		/// Writes out the barline's vertical line(s).
+		/// May be called twice per staff.barline:
+		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
+		///     2. for the range between the staff's lower edge and the next staff's upper edge
+		///        (if the staff's lower neighbour is in the same group)
+		/// </summary>
+		/// <param name="w"></param>
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem)
+		{
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+
+			double thickLeftLineOriginX = Barline_LineMetrics.OriginX;
+			w.SvgStartGroup(CSSObjectClass.startRepeatBarline.ToString());
+			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
+
+			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
+			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
+			w.SvgEndGroup();
+		}
+
+		public override string ToString()
+		{
+			return "endRepeatBarline: ";
+		}
+
+		public override void CreateMetrics(Graphics graphics)
+		{
+			double leftEdge = -(ThickStrokeWidth / 2F);
+			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
+			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+
+			SetCommonMetrics(graphics, DrawObjects);
+		}
+
+		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
+		{
+			AddBasicMetricsToEdge(horizontalEdge);
+		}
+	}
+	#endregion MNX Repeat barlines
 
 	/// <summary>
 	/// A barline whose 2 lines are (left to right) normal then thick. OriginX is the thick line's x-coordinate.

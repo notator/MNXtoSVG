@@ -1030,8 +1030,6 @@ namespace Moritz.Symbols
                         List<int> consecutiveRestIndexList = new List<int>();
                         for(int i = 0; i < voice.NoteObjects.Count - 1; i++)
                         {
-                            M.Assert(!(voice.NoteObjects[i] is Barline));
-
 							RestSymbol rest2 = voice.NoteObjects[i + 1] as RestSymbol;
 							if(voice.NoteObjects[i] is RestSymbol rest1 && rest2 != null)
 							{
@@ -1270,25 +1268,49 @@ namespace Moritz.Symbols
         /// There is currently one bar per System. 
         /// All Duration Symbols have been constructed in voice.NoteObjects (possibly including CautionaryChordSymbols at the beginnings of staves).
         /// There are no barlines in the score yet.
-        /// Now add a NormalBarline, RepeatBeginBarline or RepeatEndBarline at the beginning of bar 1
-        /// (after the clef (and keySignature, if any)) and at end of each system=bar.
+        /// Now add a NormalBarline, RepeatBeginBarline, RepeatEndBarline or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
         /// </summary>
         /// <param name="barlineType"></param>
         /// <param name="systemNumbers"></param>
         private void AddBarlines(List<Bar> bars)
         {
+            // There is currently one bar per System, so systemIndex is bar index here.
             for(int systemIndex = 0; systemIndex < Systems.Count; ++systemIndex)
             {
-                foreach(Staff staff in Systems[systemIndex].Staves)
+                var staves = Systems[systemIndex].Staves;
+                for(var staffIndex = 0; staffIndex < staves.Count; ++staffIndex)                
                 {
-                    foreach(Voice voice in staff.Voices)
+                    var voices = staves[staffIndex].Voices;
+                    for(var voiceIndex = 0; voiceIndex < voices.Count; ++voiceIndex)
                     {
-                        M.Assert(voice.NoteObjects.Count > 0
-                            && !(voice.NoteObjects[voice.NoteObjects.Count - 1] is NormalBarline));
+                        var voice = voices[voiceIndex];
+                        var noteObjects = voice.NoteObjects;
+                        M.Assert(noteObjects.Count > 0
+                            && !(noteObjects[noteObjects.Count - 1] is Barline));
 
-                        NormalBarline normalBarline = new NormalBarline(voice);
+                        int startBarlineIndex = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)));
+                        var beginBarline = (bars[systemIndex].RepeatBeginBarline) ? new RepeatBeginBarline(voice) : new NormalBarline(voice);
 
-                        voice.NoteObjects.Add(normalBarline);
+                        var endOfScore = ((systemIndex == Systems.Count - 1) && (staffIndex == staves.Count - 1) && (voiceIndex == voices.Count - 1));
+                        Barline endBarline;
+                        if(endOfScore)
+                        {
+                            if(bars[systemIndex].RepeatEndBarline)
+                            {
+                                endBarline = new RepeatEndBarline(voice);
+                            }
+                            else
+                            {
+                                endBarline = new EndOfScoreBarline(voice);
+                            }                            
+                        }
+                        else
+                        {
+                            endBarline = (bars[systemIndex].RepeatEndBarline) ? new RepeatEndBarline(voice) : new NormalBarline(voice);
+                        }
+
+                        noteObjects.Insert(startBarlineIndex, beginBarline);
+                        noteObjects.Add(endBarline);
                     }
                 }
             }
@@ -1318,15 +1340,14 @@ namespace Moritz.Symbols
 
         /// <summary>
         /// When this function is called, every system still contains one bar, and all systems have the same number
-        /// of staves and voices as System[0].
-        /// This function:
-        /// 1. adds a NormalBarline, RepeatBeginBarline or RepeatEndBarline at the beginning of bar 1 (after the clef (and keySignature, if any)) and at end of each system=bar.
-        /// 2. joins the bars into systems according to the user's options,
-        /// 3. sets the visibility of naturals (if the chords have any noteheads)
-        /// 4. adds the appropriate barline type at the start of each system, after the clef (and keySignature, if any). Corrects the system-start and -end barline types.
-        /// 5. adds a barnumber to the first barline on each system.
-        /// 6. adds the staff's name to the first barline on each staff. 
-        /// 7. adds regionStart- and regionEnd- info to the appropriate NormalBarlines
+        /// of staves and voices as System[0]. Now:
+        /// 1. add a NormalBarline, RepeatBeginBarline, RepeatEndBarline or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
+        /// 2. join the bars into systems according to the user's options,
+        /// 3. set the visibility of naturals (if the chords have any noteheads)
+        /// 4. add the appropriate barline type at the start of each system, after the clef (and keySignature, if any). Corrects the system-start and -end barline types.
+        /// 5. add a barnumber to the first barline on each system.
+        /// 6. add the staff's name to the first barline on each staff. 
+        /// 7. add regionStart- and regionEnd- info to the appropriate NormalBarlines
         /// 8. converts the NormalBarlines to the appropriate region barline class
         /// </summary>
         protected void FinalizeSystemStructure(List<Spec.Bar> bars)
@@ -1354,17 +1375,18 @@ namespace Moritz.Symbols
             }
             #endregion preconditions
 
-            AddBarlines(bars); // 1. add a NormalBarline, RepeatBeginBarline or RepeatEndBarline at the beginning of bar 1 (after the clef (and keySignature, if any)) and at end of each system=bar.
+            // 1. add a NormalBarline, RepeatBeginBarline, RepeatEndBarline or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
+            AddBarlines(bars);
 
             ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
 
-            SetSystemsToBeginAtBars(M.PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
+            SetSystemsToBeginAtBars(M.PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options. Set RepeatBarlines as necessary...
 
 			SetSystemAbsEndMsPositions();
 
             NormalizeSmallClefs();
 
-            AddNormalBarlineAtStartOfEachSystem(); // 4. adds the appropriate barline type at the start of each system, after the clef (and keySignature, if any). Corrects the system-start and -end barline types.
+            AddNormalBarlineAtStartOfEachSystem(); // 4.??? Delete this ???
 
             AddBarNumbers(); // 5.add a barnumber to the first (Normal)Barline on each system.
 			AddStaffNames(); // 6. adds the staff's name to the first (Normal)Barline on each staff.
@@ -1428,7 +1450,7 @@ namespace Moritz.Symbols
 										voice.NoteObjects[i] = new EndAndStartRegionBarline(voice, normalBarline.DrawObjects);
 										break;
 									case CSSObjectClass.endOfScoreBarline:
-										voice.NoteObjects[i] = new EndOfScoreBarline(voice, normalBarline.DrawObjects);
+										voice.NoteObjects[i] = new EndOfScoreRegionBarline(voice, normalBarline.DrawObjects);
 										break;
 								}
 							}

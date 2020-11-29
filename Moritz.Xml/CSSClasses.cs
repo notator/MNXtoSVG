@@ -130,8 +130,9 @@ namespace Moritz.Xml
 		thickBarline, // a double-bar component. Always defined. Container:startRegionbarline, startRepeatbarline etc.
 		staffConnectors, // A group of barline (and maybe endBarline) in a system. Never defined. Container:system.
 
-		startRepeatBarline, // container class (no CSS)
-		endRepeatBarline, // container class (no CSS)
+		repeatBeginBarline, // container class (no CSS)
+		repeatEndBarline, // container class (no CSS)
+		repeatEndBeginBarline, // container class (no CSS)
 		endOfScoreBarline, // container class (no CSS)
 
 		#region AssistantPerformer region barline types

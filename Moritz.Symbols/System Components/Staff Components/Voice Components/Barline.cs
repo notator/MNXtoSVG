@@ -805,7 +805,7 @@ namespace Moritz.Symbols
 
 	#region MNX Repeat barlines
 	/// <summary>
-	/// A barline consisting of: thickBarline, normalBarline, dots.
+	/// A barline consisting of: thickBarline, thinBarline, dots.
 	/// The dots are only printed where the barline crosses a staff.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
@@ -830,10 +830,10 @@ namespace Moritz.Symbols
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
 			double thickLeftLineOriginX = Barline_LineMetrics.OriginX;
-			w.SvgStartGroup(CSSObjectClass.startRepeatBarline.ToString());
-			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
-
 			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
+
+			w.SvgStartGroup(CSSObjectClass.repeatBeginBarline.ToString());
+			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
 			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
@@ -843,11 +843,12 @@ namespace Moritz.Symbols
 			return "startRepeatBarline: ";
 		}
 
+		// RepeatBeginBarline: thick, thin, dots
 		public override void CreateMetrics(Graphics graphics)
 		{
-			double leftEdge = -(ThickStrokeWidth / 2F);
-			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			double leftEdgeReOriginX = -(ThickStrokeWidth / 2F);
+			double rightEdgeReOriginX = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
+			Barline_LineMetrics = new Barline_LineMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 		}
@@ -859,7 +860,7 @@ namespace Moritz.Symbols
 	}
 
 	/// <summary>
-	/// A barline consisting of: dots, normalBarline, thickBarline.
+	/// A barline consisting of: dots, thinBarline, thickBarline.
 	/// The dots are only printed where the barline crosses a staff.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
@@ -882,13 +883,12 @@ namespace Moritz.Symbols
 		{
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double thickRightLineOriginX = Barline_LineMetrics.OriginX;
+			double thinLeftLineOriginX = thickRightLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 
-			double thickLeftLineOriginX = Barline_LineMetrics.OriginX;
-			w.SvgStartGroup(CSSObjectClass.startRepeatBarline.ToString());
-			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
-
-			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
-			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
+			w.SvgStartGroup(CSSObjectClass.repeatEndBarline.ToString());
+			w.SvgLine(CSSObjectClass.thinBarline, thinLeftLineOriginX, topY, thinLeftLineOriginX, bottomY);
+			w.SvgLine(CSSObjectClass.thickBarline, thickRightLineOriginX, topY, thickRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
 
@@ -897,11 +897,13 @@ namespace Moritz.Symbols
 			return "endRepeatBarline: ";
 		}
 
+		// RepeatEndBarline: dots, thin, thick
 		public override void CreateMetrics(Graphics graphics)
 		{
-			double leftEdge = -(ThickStrokeWidth / 2F);
-			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+			double leftEdgeReOriginX = (ThickStrokeWidth / 2F) - DoubleBarPadding - ThinStrokeWidth; ;
+			double rightEdgeReOriginX = (ThickStrokeWidth / 2F);
+
+			Barline_LineMetrics = new Barline_LineMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 		}
@@ -913,7 +915,7 @@ namespace Moritz.Symbols
 	}
 
 	/// <summary>
-	/// A barline consisting of: dots, normalBarline, thickBarline, normalBarline, dots.
+	/// A barline consisting of: dots, thinBarline, thickBarline, thinBarline, dots.
 	/// The dots are only printed where the barline crosses a staff.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
@@ -936,12 +938,13 @@ namespace Moritz.Symbols
 		{
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double thickMiddleLineOriginX = Barline_LineMetrics.OriginX;
+			double thinLeftLineOriginX = thickMiddleLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
+			double thinRightLineOriginX = thickMiddleLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
 
-			double thickLeftLineOriginX = Barline_LineMetrics.OriginX;
-			w.SvgStartGroup(CSSObjectClass.startRepeatBarline.ToString());
-			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
-
-			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
+			w.SvgStartGroup(CSSObjectClass.repeatEndBeginBarline.ToString());
+			w.SvgLine(CSSObjectClass.thinBarline, thinLeftLineOriginX, topY, thinLeftLineOriginX, bottomY);
+			w.SvgLine(CSSObjectClass.thickBarline, thickMiddleLineOriginX, topY, thickMiddleLineOriginX, bottomY);
 			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
@@ -951,11 +954,12 @@ namespace Moritz.Symbols
 			return "endRepeatBarline: ";
 		}
 
+		// RepeatEndBeginBarline: dots, thin, thick, thin, dots
 		public override void CreateMetrics(Graphics graphics)
-		{
-			double leftEdge = -(ThickStrokeWidth / 2F);
-			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+		{			
+			double rightEdgeReOriginX = DoubleBarPadding + ThinStrokeWidth;
+			double leftEdgeReOriginX = -rightEdgeReOriginX;
+			Barline_LineMetrics = new Barline_LineMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 		}
@@ -967,7 +971,7 @@ namespace Moritz.Symbols
 	}
 
 	/// <summary>
-	/// A barline consisting of: normalBarline, thickBarline.
+	/// A barline consisting of: thinBarline, thickBarline.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
 	public class EndOfScoreBarline : NormalBarline
@@ -989,13 +993,12 @@ namespace Moritz.Symbols
 		{
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double thickRightLineOriginX = Barline_LineMetrics.OriginX;
+			double thinLeftLineOriginX = thickRightLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 
-			double thickLeftLineOriginX = Barline_LineMetrics.OriginX;
-			w.SvgStartGroup(CSSObjectClass.startRepeatBarline.ToString());
-			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
-
-			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
-			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
+			w.SvgStartGroup(CSSObjectClass.endOfScoreBarline.ToString());
+			w.SvgLine(CSSObjectClass.thinBarline, thinLeftLineOriginX, topY, thinLeftLineOriginX, bottomY);
+			w.SvgLine(CSSObjectClass.thickBarline, thickRightLineOriginX, topY, thickRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
 
@@ -1004,11 +1007,12 @@ namespace Moritz.Symbols
 			return "endRepeatBarline: ";
 		}
 
+		// EndOfScoreBarline: thin, thick
 		public override void CreateMetrics(Graphics graphics)
 		{
-			double leftEdge = -(ThickStrokeWidth / 2F);
-			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Barline_LineMetrics = new Barline_LineMetrics(leftEdge, rightEdge, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+			double leftEdgeReOriginX = -(ThickStrokeWidth / 2F);
+			double rightEdgeReOriginX = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
+			Barline_LineMetrics = new Barline_LineMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 		}
@@ -1019,7 +1023,5 @@ namespace Moritz.Symbols
 		}
 	}
 	#endregion MNX Repeat barlines
-
-
 
 }

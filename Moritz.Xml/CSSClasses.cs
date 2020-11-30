@@ -139,6 +139,7 @@ namespace Moritz.Xml
 		startRegionBarline,
 		endRegionBarline,
 		endAndStartRegionBarline,
+		endOfScoreRegionBarline,
 		regionFrameConnector,
 		#endregion AssistantPerformer region barline types
 

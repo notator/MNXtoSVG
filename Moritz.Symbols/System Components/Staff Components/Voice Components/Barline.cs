@@ -766,7 +766,7 @@ namespace Moritz.Symbols
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
 			double normalLeftLineOriginX = Metrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (NormalStrokeWidth / 2F);
-			w.SvgStartGroup(CSSObjectClass.endOfScoreBarline.ToString());
+			w.SvgStartGroup(CSSObjectClass.endOfScoreRegionBarline.ToString());
 			w.SvgLine(CSSObjectClass.normalBarline, normalLeftLineOriginX, topY, normalLeftLineOriginX, bottomY);
 
 			double thickRightLineOriginX = Metrics.OriginX;
@@ -784,7 +784,7 @@ namespace Moritz.Symbols
 		{
 			double leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + NormalStrokeWidth);
 			double rightEdge = (ThickStrokeWidth / 2F);
-			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.normalBarline, CSSObjectClass.thickBarline);
+			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			foreach(DrawObject drawObject in DrawObjects)
 			{
@@ -796,7 +796,7 @@ namespace Moritz.Symbols
 			}
 		}
 
-		public override string ToString() { return "endOfScoreBarline: "; }
+		public override string ToString() { return "endOfScoreRegionBarline: "; }
 	}
 
 	#endregion AssistantPerformer Region barlines
@@ -879,7 +879,7 @@ namespace Moritz.Symbols
 
 		public override string ToString()
 		{
-			return "startRepeatBarline: ";
+			return "repeatBeginBarline: ";
 		}
 
 		// RepeatBeginBarline: thick, thin, dots
@@ -940,7 +940,7 @@ namespace Moritz.Symbols
 
 		public override string ToString()
 		{
-			return "endRepeatBarline: ";
+			return "repeatEndBarline: ";
 		}
 
 		// RepeatEndBarline: dots, thin, thick
@@ -1005,7 +1005,7 @@ namespace Moritz.Symbols
 
 		public override string ToString()
 		{
-			return "endRepeatBarline: ";
+			return "repeatEndBeginBarline: ";
 		}
 
 		// RepeatEndBeginBarline: dots, thin, thick, thin, dots
@@ -1060,14 +1060,15 @@ namespace Moritz.Symbols
 
 		public override string ToString()
 		{
-			return "endRepeatBarline: ";
+			return "endOfScoreBarline: ";
 		}
 
 		// EndOfScoreBarline: thin, thick
 		public override void CreateMetrics(Graphics graphics)
 		{
-			double leftEdgeReOriginX = -(ThickStrokeWidth / 2F);
-			double rightEdgeReOriginX = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
+			double rightEdgeReOriginX = (ThickStrokeWidth / 2F);
+			double leftEdgeReOriginX = -DoubleBarPadding - (ThickStrokeWidth / 2) - (ThinStrokeWidth / 2);
+
 			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);

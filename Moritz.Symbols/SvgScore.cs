@@ -1466,7 +1466,7 @@ namespace Moritz.Symbols
 									case CSSObjectClass.endAndStartRegionBarline:
 										voice.NoteObjects[i] = new EndAndStartRegionBarline(voice, normalBarline.DrawObjects);
 										break;
-									case CSSObjectClass.endOfScoreBarline:
+									case CSSObjectClass.endOfScoreRegionBarline:
 										voice.NoteObjects[i] = new EndOfScoreRegionBarline(voice, normalBarline.DrawObjects);
 										break;
 								}

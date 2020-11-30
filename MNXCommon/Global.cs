@@ -84,8 +84,17 @@ namespace MNX.Common
             var rval = new List<Tuple<bool, bool>>();
             for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)
             {
+                Tuple<bool, bool> measureData;
                 Directions directions = Measures[measureIndex].Directions;
-                Tuple<bool, bool> measureData = new Tuple<bool, bool>(directions.RepeatBeginBarline, directions.RepeatEndBarline);
+                if(directions == null)
+                {
+                    measureData = new Tuple<bool, bool>(false, false);                    
+                }
+                else
+                {
+                    measureData = new Tuple<bool, bool>(directions.RepeatBeginBarline, directions.RepeatEndBarline);
+                }
+
                 rval.Add(measureData);
             }
             return rval;

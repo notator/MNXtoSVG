@@ -369,7 +369,7 @@ namespace Moritz.Symbols
 			if(barline != null)
 			{
 				barline.CreateMetrics(graphics);
-				returnMetrics = barline.Barline_Metrics;
+				returnMetrics = barline.Metrics;
 			}
 			else if(smallClef != null)
 			{

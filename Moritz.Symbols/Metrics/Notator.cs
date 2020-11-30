@@ -253,7 +253,7 @@ namespace Moritz.Symbols
             {
                 foreach(NoteObject noteObject in staff.Voices[0].NoteObjects)
                 {
-					if(noteObject is NormalBarline firstBarline)
+					if(noteObject is Barline firstBarline)
 					{
 						foreach(DrawObject drawObject in firstBarline.DrawObjects)
 						{

@@ -1294,8 +1294,18 @@ namespace Moritz.Symbols
                             usingMNXrepeats = true;
                         }
 
-                        int startBarlineIndex = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)));
-                        var beginBarline = (bars[systemIndex].RepeatBeginBarline) ? new RepeatBeginBarline(voice) : new NormalBarline(voice);
+                        Barline beginBarline;
+                        int startBarlineIndex;
+                        if(bars[systemIndex].RepeatBeginBarline)
+                        {
+                            beginBarline = new RepeatBeginBarline(voice);
+                            startBarlineIndex = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)) && (!(noteObject is TimeSignature)));
+                        }
+                        else
+                        {
+                            beginBarline = new NormalBarline(voice);
+                            startBarlineIndex = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)));
+                        }
 
                         var endOfScore = ((systemIndex == Systems.Count - 1) && (staffIndex == staves.Count - 1) && (voiceIndex == voices.Count - 1));
                         Barline endBarline;

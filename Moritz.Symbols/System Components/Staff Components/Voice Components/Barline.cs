@@ -256,11 +256,10 @@ namespace Moritz.Symbols
 		{
 			if(BarnumberMetrics != null)
 			{
-				BarnumberMetrics.Move(Barline_Metrics.OriginX - BarnumberMetrics.OriginX, 0);
+				BarnumberMetrics.Move(Metrics.OriginX - BarnumberMetrics.OriginX, 0);
 			}
 		}
 
-		internal Barline_Metrics Barline_Metrics = null;
 		public StaffNameMetrics StaffNameMetrics = null;
 		public BarnumberMetrics BarnumberMetrics = null;
 
@@ -320,7 +319,7 @@ namespace Moritz.Symbols
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			w.SvgLine(CSSObjectClass.normalBarline, this.Barline_Metrics.OriginX, topY, this.Barline_Metrics.OriginX, bottomY);
+			w.SvgLine(CSSObjectClass.normalBarline, this.Metrics.OriginX, topY, this.Metrics.OriginX, bottomY);
 		}
 
 		public override string ToString()
@@ -343,7 +342,7 @@ namespace Moritz.Symbols
 
 		public override void CreateMetrics(Graphics graphics)
 		{
-			Barline_Metrics = new Barline_Metrics(-(NormalStrokeWidth / 2F), (NormalStrokeWidth / 2F));
+			Metrics = new Barline_Metrics(-(NormalStrokeWidth / 2F), (NormalStrokeWidth / 2F));
 			SetCommonMetrics(graphics, DrawObjects);
 		}
 
@@ -378,7 +377,7 @@ namespace Moritz.Symbols
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			double thickLeftLineOriginX = Barline_Metrics.OriginX;
+			double thickLeftLineOriginX = Metrics.OriginX;
 			w.SvgStartGroup(CSSObjectClass.startRegionBarline.ToString());
 			w.SvgLine(CSSObjectClass.thickBarline, thickLeftLineOriginX, topY, thickLeftLineOriginX, bottomY);
 
@@ -420,7 +419,7 @@ namespace Moritz.Symbols
 		{
 			#region alignX
 			base.AlignBarnumberX();
-			double originX = Barline_Metrics.OriginX;
+			double originX = Metrics.OriginX;
 			if(FramedRegionStartTextMetrics != null)
 			{
 				FramedRegionStartTextMetrics.Move(originX - FramedRegionStartTextMetrics.Left, 0);
@@ -439,7 +438,7 @@ namespace Moritz.Symbols
 		{
 			double leftEdge = -(ThickStrokeWidth / 2F);
 			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Barline_Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 
@@ -448,7 +447,7 @@ namespace Moritz.Symbols
 				if(drawObject is FramedRegionStartText frst)
 				{
 					FramedRegionStartTextMetrics = new FramedRegionInfoMetrics(graphics, frst.Texts, frst.FrameInfo, Gap);
-					RegionFrameConnectorMetrics = new RegionFrameConnectorMetrics(Barline_Metrics.OriginX, frst.FrameInfo.Bottom, Barline_Metrics.Top);
+					RegionFrameConnectorMetrics = new RegionFrameConnectorMetrics(Metrics.OriginX, frst.FrameInfo.Bottom, Metrics.Top);
 					break;
 				}
 			}			
@@ -492,11 +491,11 @@ namespace Moritz.Symbols
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			double thinLeftLineOriginX = Barline_Metrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (ThinStrokeWidth / 2F);
+			double thinLeftLineOriginX = Metrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 			w.SvgStartGroup(CSSObjectClass.endRegionBarline.ToString());
 			w.SvgLine(CSSObjectClass.thinBarline, thinLeftLineOriginX, topY, thinLeftLineOriginX, bottomY);
 
-			double thickRightLineOriginX = Barline_Metrics.OriginX;
+			double thickRightLineOriginX = Metrics.OriginX;
 			w.SvgLine(CSSObjectClass.thickBarline, thickRightLineOriginX, topY, thickRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
@@ -529,7 +528,7 @@ namespace Moritz.Symbols
 		{
 			#region alignX
 			base.AlignBarnumberX();
-			double originX = Barline_Metrics.OriginX;
+			double originX = Metrics.OriginX;
 			if(FramedRegionEndTextMetrics != null)
 			{
 				FramedRegionEndTextMetrics.Move(originX - FramedRegionEndTextMetrics.Right, 0);
@@ -557,7 +556,7 @@ namespace Moritz.Symbols
 		{
 			double leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth);
 			double rightEdge = (ThickStrokeWidth / 2F);
-			Barline_Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 
@@ -566,7 +565,7 @@ namespace Moritz.Symbols
 				if(drawObject is FramedRegionEndText frst)
 				{
 					FramedRegionEndTextMetrics = new FramedRegionInfoMetrics(graphics, frst.Texts, frst.FrameInfo, Gap);
-					RegionFrameConnectorMetrics = new RegionFrameConnectorMetrics(Barline_Metrics.OriginX, frst.FrameInfo.Bottom, Barline_Metrics.Top);
+					RegionFrameConnectorMetrics = new RegionFrameConnectorMetrics(Metrics.OriginX, frst.FrameInfo.Bottom, Metrics.Top);
 					break;
 				}
 			}
@@ -607,10 +606,10 @@ namespace Moritz.Symbols
 			
 			w.SvgStartGroup(CSSObjectClass.endAndStartRegionBarline.ToString());
 
-			double thinLeftLineOriginX = Barline_Metrics.OriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
+			double thinLeftLineOriginX = Metrics.OriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 			w.SvgLine(CSSObjectClass.thinBarline, thinLeftLineOriginX, topY, thinLeftLineOriginX, bottomY);
 
-			double thickCentreLineOriginX = Barline_Metrics.OriginX;
+			double thickCentreLineOriginX = Metrics.OriginX;
 			w.SvgLine(CSSObjectClass.thickBarline, thickCentreLineOriginX, topY, thickCentreLineOriginX, bottomY);
 
 			double thinRightLineOriginX = thickCentreLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
@@ -679,7 +678,7 @@ namespace Moritz.Symbols
 			// so it can't have a barnumber, and there's no reason to call base.AlignBarnumberX();
 			M.Assert(BarnumberMetrics == null);
 
-			double originX = Barline_Metrics.OriginX;
+			double originX = Metrics.OriginX;
 			if(FramedRegionEndTextMetrics != null)
 			{
 				FramedRegionEndTextMetrics.Move(originX - FramedRegionEndTextMetrics.Right, 0);
@@ -702,7 +701,7 @@ namespace Moritz.Symbols
 		{
 			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
 			double leftEdge = -rightEdge;
-			Barline_Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 
@@ -713,7 +712,7 @@ namespace Moritz.Symbols
 					FramedRegionStartTextMetrics = new FramedRegionInfoMetrics(graphics, frst.Texts, frst.FrameInfo, Gap);
 					if(RegionFrameConnectorMetrics == null)
 					{
-						RegionFrameConnectorMetrics = new RegionFrameConnectorMetrics(Barline_Metrics.OriginX, frst.FrameInfo.Bottom, Barline_Metrics.Top);
+						RegionFrameConnectorMetrics = new RegionFrameConnectorMetrics(Metrics.OriginX, frst.FrameInfo.Bottom, Metrics.Top);
 					}
 				}
 				if(drawObject is FramedRegionEndText fret)
@@ -766,11 +765,11 @@ namespace Moritz.Symbols
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			double normalLeftLineOriginX = Barline_Metrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (NormalStrokeWidth / 2F);
+			double normalLeftLineOriginX = Metrics.OriginX - (ThickStrokeWidth / 2) - DoubleBarPadding - (NormalStrokeWidth / 2F);
 			w.SvgStartGroup(CSSObjectClass.endOfScoreBarline.ToString());
 			w.SvgLine(CSSObjectClass.normalBarline, normalLeftLineOriginX, topY, normalLeftLineOriginX, bottomY);
 
-			double thickRightLineOriginX = Barline_Metrics.OriginX;
+			double thickRightLineOriginX = Metrics.OriginX;
 			w.SvgLine(CSSObjectClass.thickBarline, thickRightLineOriginX, topY, thickRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
@@ -785,7 +784,7 @@ namespace Moritz.Symbols
 		{
 			double leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + NormalStrokeWidth);
 			double rightEdge = (ThickStrokeWidth / 2F);
-			Barline_Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.normalBarline, CSSObjectClass.thickBarline);
+			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.normalBarline, CSSObjectClass.thickBarline);
 
 			foreach(DrawObject drawObject in DrawObjects)
 			{
@@ -865,7 +864,7 @@ namespace Moritz.Symbols
 			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
 			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			double thickLeftLineOriginX = Barline_Metrics.OriginX;
+			double thickLeftLineOriginX = Metrics.OriginX;
 			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2) + DoubleBarPadding + (ThinStrokeWidth / 2);
 			double dotsX = thinRightLineOriginX + DoubleBarPadding; 
 
@@ -888,9 +887,9 @@ namespace Moritz.Symbols
 		{
 			double leftEdgeReOriginX = -(ThickStrokeWidth / 2F);
 			double rightEdgeReOriginX = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Barline_Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
-			Barline_Metrics.SetRight(Barline_Metrics.Right + DoubleBarPadding + _dotWidth);
+			((Barline_Metrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
 
 			SetCommonMetrics(graphics, DrawObjects);
 		}
@@ -926,7 +925,7 @@ namespace Moritz.Symbols
 			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
 			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
-			double thickRightLineOriginX = Barline_Metrics.OriginX;
+			double thickRightLineOriginX = Metrics.OriginX;
 			double thinLeftLineOriginX = thickRightLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 			double dotsX = thinLeftLineOriginX -(ThinStrokeWidth / 2F) - DoubleBarPadding - _dotWidth;
 
@@ -950,9 +949,9 @@ namespace Moritz.Symbols
 			double leftEdgeReOriginX = (ThickStrokeWidth / 2F) - DoubleBarPadding - ThinStrokeWidth - DoubleBarPadding - _dotWidth;
 			double rightEdgeReOriginX = (ThickStrokeWidth / 2F);
 
-			Barline_Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
-			Barline_Metrics.SetLeft(Barline_Metrics.Left - _dotWidth - DoubleBarPadding);
+			((Barline_Metrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
 
 			SetCommonMetrics(graphics, DrawObjects);
 		}
@@ -987,7 +986,7 @@ namespace Moritz.Symbols
 		{
 			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
 			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
-			double thickMiddleLineOriginX = Barline_Metrics.OriginX;
+			double thickMiddleLineOriginX = Metrics.OriginX;
 			double thinLeftLineOriginX = thickMiddleLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 			double thinRightLineOriginX = thickMiddleLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
 			double leftDotsX = thinLeftLineOriginX - (ThinStrokeWidth / 2F) - DoubleBarPadding - _dotWidth;
@@ -1014,10 +1013,10 @@ namespace Moritz.Symbols
 		{
 			double rightEdgeReOriginX = DoubleBarPadding + ThinStrokeWidth + DoubleBarPadding + _dotWidth;
 			double leftEdgeReOriginX = -rightEdgeReOriginX;
-			Barline_Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
-			Barline_Metrics.SetLeft(Barline_Metrics.Left - _dotWidth - DoubleBarPadding);
-			Barline_Metrics.SetRight(Barline_Metrics.Right + DoubleBarPadding + _dotWidth);
+			((Barline_Metrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
+			((Barline_Metrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
 
 			SetCommonMetrics(graphics, DrawObjects);
 		}
@@ -1051,7 +1050,7 @@ namespace Moritz.Symbols
 		{
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
-			double thickRightLineOriginX = Barline_Metrics.OriginX;
+			double thickRightLineOriginX = Metrics.OriginX;
 			double thinLeftLineOriginX = thickRightLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 
 			w.SvgStartGroup(CSSObjectClass.endOfScoreBarline.ToString());
@@ -1069,7 +1068,7 @@ namespace Moritz.Symbols
 		{
 			double leftEdgeReOriginX = -(ThickStrokeWidth / 2F);
 			double rightEdgeReOriginX = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Barline_Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 		}

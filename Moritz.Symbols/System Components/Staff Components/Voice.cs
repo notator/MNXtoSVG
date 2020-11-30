@@ -46,7 +46,7 @@ namespace Moritz.Symbols
                     double bottom = Staff.Metrics.StafflinesBottom;
                     if(barline.IsVisible)
                     {
-                        barline.WriteSVG(w, top, bottom, isLastNoteObject);
+                        barline.WriteSVG(w, top, bottom, isLastNoteObject, true);
                     }
                     barline.WriteDrawObjectsSVG(w);
                 }
@@ -153,12 +153,12 @@ namespace Moritz.Symbols
             M.Assert(symbolToBeReplaced != null && symbolToBeReplaced.Voice == this);
             #endregion conditions
 
-            List<NoteObject> tempList = new List<NoteObject>(this.NoteObjects);
+            List<NoteObject> tempList = new List<NoteObject>(NoteObjects);
             this.NoteObjects.Clear();
             int i = 0;
             while(tempList.Count > i && tempList[i] != symbolToBeReplaced)
             {
-                this.NoteObjects.Add(tempList[i]);
+                NoteObjects.Add(tempList[i]);
                 i++;
             }
             foreach(NoteObject noteObject in noteObjects)
@@ -610,9 +610,8 @@ namespace Moritz.Symbols
             var beginCentreY = ((startHeadMetrics.Top + startHeadMetrics.Bottom) / 2);
             var slurBeginX = beginCentreX + dx;
             var slurBeginY = (isOver) ? beginCentreY - dy : beginCentreY + dy;
-
-            double slurEndX = 0;
-            double slurEndY = 0;
+            double slurEndX;
+            double slurEndY;
             if(endHeadMetrics != null)
             {
                 var endCentreX = ((endHeadMetrics.Right + endHeadMetrics.Left) / 2);

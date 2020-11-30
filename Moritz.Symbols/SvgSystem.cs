@@ -113,7 +113,7 @@ namespace Moritz.Symbols
                                         double top = bottomEdge.YatX(barline.Metrics.OriginX);
                                         double bottom = topEdge.YatX(barline.Metrics.OriginX);
                                         bool isLastNoteObject = (i == (voice.NoteObjects.Count - 1));
-                                        barline.WriteSVG(w, top, bottom, isLastNoteObject);
+                                        barline.WriteSVG(w, top, bottom, isLastNoteObject, false);
                                         isFirstBarline = false;
                                     }
                                 }

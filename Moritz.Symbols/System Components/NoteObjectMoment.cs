@@ -94,8 +94,8 @@ namespace Moritz.Symbols
         /// OutputChordSymbols all have Metrics.OriginX at AlignmentX == 0, and are not moved.
         /// OutputRestSymbols can have Metrics.OriginX at some other value, but they are not moved either.
         /// Other NoteObjects are moved left so that they don't overlap the object on their right.
-        /// The left-right order is Clef-KeySignature-Barline-TimeSignature-RepeatSymbol-DurationSymbol.
-        /// The finalBarline has no DurationSymbols. Its noteObjects are right-aligned to 0.
+        /// The left-right order is Clef-Barline-KeySignature-TimeSignature-RepeatSymbol-DurationSymbol.
+        /// The finalBarline has no DurationSymbols, but otherwise has the same left-right order.
         /// </summary>
         public void SetInternalXPositions(double gap)
         {
@@ -204,26 +204,31 @@ namespace Moritz.Symbols
             {
                 Move(timeSignatures, ref minLeft);
 
-                if(barlines.Count > 0)
+                if(keySignatures.Count > 0)
+                {
+                    minLeft -= 0; // padding between TimeSignature and KeySig
+                }
+                else if(barlines.Count > 0)
                 {
                     minLeft -= gap / 3; // padding between TimeSignature and Barline
                 }
                 else
                 {
-                    throw new ApplicationException("Time signatures must immediately follow a barline.");
+                    throw new ApplicationException("Time signatures must follow a barline.");
                 }
+            }
+
+            if(keySignatures.Count > 0)
+            {
+                Move(keySignatures, ref minLeft);
+                // padding between KeySignature and Barline
+                minLeft -= gap / 2; // padding between keySignature and Barline
             }
 
             if(barlines.Count > 0)
             {
                 Move(barlines, ref minLeft);
                 // padding between barline and KeySignature or Clef is 0.
-            }
-
-            if(keySignatures.Count > 0)
-            {
-                Move(keySignatures, ref minLeft);
-                // padding between KeySignature and Clef is 0.
             }
 
             if(clefs.Count > 0)

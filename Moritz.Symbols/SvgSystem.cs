@@ -466,6 +466,7 @@ namespace Moritz.Symbols
             TimeSignature timeSignature = null;
             KeySignature keySignature = null;
             RepeatSymbol repeatSymbol = null;
+
             foreach(Staff staff in Staves)
             {
                 foreach(Voice voice in staff.Voices)
@@ -518,6 +519,7 @@ namespace Moritz.Symbols
                             }
                             if(repeatSymbol != null)
                             {
+                                M.Assert(repeatSymbol is RepeatBegin);
                                 dict[key].Add(repeatSymbol);
                                 repeatSymbol = null;
                             }
@@ -527,38 +529,24 @@ namespace Moritz.Symbols
 					}
                     #endregion
 
+                    NoteObjectMoment endMoment = new NoteObjectMoment(this.AbsEndMsPosition);
+                    dict.Add(this.AbsEndMsPosition, endMoment);
+
                     if(clef != null) // final clef
                     {
-                        if(dict.ContainsKey(this.AbsEndMsPosition))
-                            dict[this.AbsEndMsPosition].Add(clef);
-                        else
-                        {
-                            NoteObjectMoment nom = new NoteObjectMoment(this.AbsEndMsPosition);
-                            nom.Add(clef);
-                            dict.Add(this.AbsEndMsPosition, nom);
-                        }
+                        endMoment.Add(clef);
+                    }
+                    if(repeatSymbol != null)
+                    {
+                        endMoment.Add(repeatSymbol);
                     }
                     if(barline != null) // final barline
                     {
-                        if(dict.ContainsKey(this.AbsEndMsPosition))
-                        {
-                            dict[this.AbsEndMsPosition].Add(barline);
-                        }
-                        else
-                        {
-                            NoteObjectMoment nom = new NoteObjectMoment(this.AbsEndMsPosition);
-                            if(repeatSymbol != null)
-                            {
-                                nom.Add(repeatSymbol);
-                            }
-                            nom.Add(barline);
-                            dict.Add(this.AbsEndMsPosition, nom);
-                        }
+                        endMoment.Add(barline);
                     }
                     if(timeSignature != null) // timeSig after final barline
                     {
-                        if(dict.ContainsKey(this.AbsEndMsPosition))
-                            dict[this.AbsEndMsPosition].Add(timeSignature);
+                        endMoment.Add(timeSignature);
                     }
                 }
             }

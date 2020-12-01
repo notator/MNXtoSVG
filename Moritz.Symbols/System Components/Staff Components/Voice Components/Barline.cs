@@ -8,15 +8,13 @@ using System.Drawing;
 namespace Moritz.Symbols
 {
 	/// <summary>
-	/// Barlines maintain their line and drawObjects metrics separately.
-	/// The lines are drawn using implementations of an abstract function,
-	/// The drawObjects are drawn by calling BarlineDrawObjectsMetrics.WriteSVG().  
+	/// Base class for both Barline and RepeatSymbol
 	/// </summary>
-	public abstract class Barline : AnchorageSymbol
+	public abstract class BRLine : AnchorageSymbol
 	{
-		protected Barline (Voice voice)
-            : base(voice)
-        {
+		protected BRLine(Voice voice)
+			: base(voice)
+		{
 		}
 
 		/// <summary>
@@ -31,42 +29,70 @@ namespace Moritz.Symbols
 
 		public abstract void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool writeDots);
 
+
 		public abstract void CreateMetrics(Graphics graphics);
 
-		protected void SetCommonMetrics(Graphics graphics, List<DrawObject> drawObjects)
+		public abstract void AddMetricsToEdge(HorizontalEdge horizontalEdge);
+
+		/// <summary>
+		/// Called by EndOfScoreBarline and Repeat types
+		/// </summary>
+		/// <param name="w"></param>
+		/// <param name="thinLineOriginX"></param>
+		/// <param name="thickLineOriginX"></param>
+		/// <param name="topY"></param>
+		/// <param name="bottomY"></param>
+		protected void DrawLines(SvgWriter w, double thinLineOriginX, double thickLineOriginX, double topY, double bottomY)
 		{
-			StaffMetrics staffMetrics = Voice.Staff.Metrics;
-			foreach(DrawObject drawObject in DrawObjects)
-			{
-				if(drawObject is StaffNameText staffNameText)
-				{
-					CSSObjectClass staffClass = CSSObjectClass.staffName;
-					StaffNameMetrics = new StaffNameMetrics(staffClass, graphics, staffNameText.TextInfo);
-					// move the staffname vertically to the middle of this staff
-					double staffheight = staffMetrics.StafflinesBottom - staffMetrics.StafflinesTop;
-					double dy = (staffheight * 0.5F) + (Gap * 0.8F);
-					StaffNameMetrics.Move(0, dy);
-				}
-				if(drawObject is FramedBarNumberText framedBarNumberText)
-				{
-					BarnumberMetrics = new BarnumberMetrics(graphics, framedBarNumberText.TextInfo, framedBarNumberText.FrameInfo);
-					// move the bar number to its default (=lowest) position above this staff.
-					BarnumberMetrics.Move(0, staffMetrics.StafflinesTop - BarnumberMetrics.Bottom - (Gap * 3));
-				}
-			}
+			w.SvgLine(CSSObjectClass.thinBarline, thinLineOriginX, topY, thinLineOriginX, bottomY);
+			w.SvgLine(CSSObjectClass.thickBarline, thickLineOriginX, topY, thickLineOriginX, bottomY);
 		}
 
-		public abstract void AddMetricsToEdge(HorizontalEdge horizontalEdge);
-		protected void AddBasicMetricsToEdge(HorizontalEdge horizontalEdge)
+		/// <summary>
+		/// Default is true
+		/// </summary>
+		public bool IsVisible = true;
+
+		protected double StafflineStrokeWidth { get { return M.PageFormat.StafflineStemStrokeWidthVBPX; } }
+		protected double ThinStrokeWidth { get { return M.PageFormat.ThinBarlineStrokeWidth; } }
+		protected double NormalStrokeWidth { get { return M.PageFormat.NormalBarlineStrokeWidth; } }
+		protected double ThickStrokeWidth { get { return M.PageFormat.ThickBarlineStrokeWidth; } }
+		protected double DoubleBarPadding { get { return M.PageFormat.ThickBarlineStrokeWidth * 0.5; } }
+		protected double Gap { get { return M.PageFormat.GapVBPX; } }
+		protected double TopY(double topStafflineY, bool isEndOfSystem)
 		{
-			if(StaffNameMetrics != null)
+			double topY = topStafflineY;
+			if(isEndOfSystem)
 			{
-				horizontalEdge.Add(StaffNameMetrics);
+				double halfStafflineWidth = (StafflineStrokeWidth / 2);
+				topY -= halfStafflineWidth;
 			}
-			if(BarnumberMetrics != null)
+			return topY;
+		}
+		protected double BottomY(double bottomStafflineY, bool isEndOfSystem)
+		{
+			double bottomY = bottomStafflineY;
+			if(isEndOfSystem)
 			{
-				horizontalEdge.Add(BarnumberMetrics);
+				double halfStafflineWidth = (StafflineStrokeWidth / 2);
+				bottomY += halfStafflineWidth;
 			}
+			return bottomY;
+		}
+
+
+	}
+
+	/// <summary>
+	/// Barlines maintain their line and drawObjects metrics separately.
+	/// The lines are drawn using implementations of an abstract function,
+	/// The drawObjects are drawn by calling BarlineDrawObjectsMetrics.WriteSVG().  
+	/// </summary>
+	public abstract class Barline : BRLine
+	{
+		protected Barline (Voice voice)
+            : base(voice)
+        {
 		}
 
 		protected void MoveBarnumberAboveRegionBox(BarnumberMetrics barnumberMetrics, FramedRegionInfoMetrics regionInfoMetrics)
@@ -260,40 +286,44 @@ namespace Moritz.Symbols
 			}
 		}
 
+		protected void AddBasicMetricsToEdge(HorizontalEdge horizontalEdge)
+		{
+			if(StaffNameMetrics != null)
+			{
+				horizontalEdge.Add(StaffNameMetrics);
+			}
+			if(BarnumberMetrics != null)
+			{
+				horizontalEdge.Add(BarnumberMetrics);
+			}
+		}
+
+		protected void SetCommonMetrics(Graphics graphics, List<DrawObject> drawObjects)
+		{
+			StaffMetrics staffMetrics = Voice.Staff.Metrics;
+			foreach(DrawObject drawObject in DrawObjects)
+			{
+				if(drawObject is StaffNameText staffNameText)
+				{
+					CSSObjectClass staffClass = CSSObjectClass.staffName;
+					StaffNameMetrics = new StaffNameMetrics(staffClass, graphics, staffNameText.TextInfo);
+					// move the staffname vertically to the middle of this staff
+					double staffheight = staffMetrics.StafflinesBottom - staffMetrics.StafflinesTop;
+					double dy = (staffheight * 0.5F) + (Gap * 0.8F);
+					StaffNameMetrics.Move(0, dy);
+				}
+				if(drawObject is FramedBarNumberText framedBarNumberText)
+				{
+					BarnumberMetrics = new BarnumberMetrics(graphics, framedBarNumberText.TextInfo, framedBarNumberText.FrameInfo);
+					// move the bar number to its default (=lowest) position above this staff.
+					BarnumberMetrics.Move(0, staffMetrics.StafflinesTop - BarnumberMetrics.Bottom - (Gap * 3));
+				}
+			}
+		}
+
 		public StaffNameMetrics StaffNameMetrics = null;
 		public BarnumberMetrics BarnumberMetrics = null;
 
-        /// <summary>
-        /// Default is true
-        /// </summary>
-        public bool IsVisible = true;
-
-		protected double StafflineStrokeWidth { get { return M.PageFormat.StafflineStemStrokeWidthVBPX; } }
-		protected double ThinStrokeWidth { get { return M.PageFormat.ThinBarlineStrokeWidth; } }
-		protected double NormalStrokeWidth { get { return M.PageFormat.NormalBarlineStrokeWidth; } }
-		protected double ThickStrokeWidth { get { return M.PageFormat.ThickBarlineStrokeWidth; } }
-		protected double DoubleBarPadding { get { return M.PageFormat.ThickBarlineStrokeWidth * 0.5; } }
-		protected double Gap { get { return M.PageFormat.GapVBPX; } }
-		protected double TopY(double topStafflineY, bool isEndOfSystem)
-		{
-			double topY = topStafflineY;
-			if(isEndOfSystem)
-			{
-				double halfStafflineWidth = (StafflineStrokeWidth / 2);
-				topY -= halfStafflineWidth;
-			}
-			return topY;
-		}
-		protected double BottomY(double bottomStafflineY, bool isEndOfSystem)
-		{
-			double bottomY = bottomStafflineY;
-			if(isEndOfSystem)
-			{
-				double halfStafflineWidth = (StafflineStrokeWidth / 2);
-				bottomY += halfStafflineWidth;
-			}
-			return bottomY;
-		}
 	}
 
 	/// <summary>
@@ -342,7 +372,7 @@ namespace Moritz.Symbols
 
 		public override void CreateMetrics(Graphics graphics)
 		{
-			Metrics = new Barline_Metrics(-(NormalStrokeWidth / 2F), (NormalStrokeWidth / 2F));
+			Metrics = new BRMetrics(-(NormalStrokeWidth / 2F), (NormalStrokeWidth / 2F));
 			SetCommonMetrics(graphics, DrawObjects);
 		}
 
@@ -352,11 +382,61 @@ namespace Moritz.Symbols
 		}
 	}
 
-    #region AssistantPerformer Region barlines
-    /// <summary>
-    /// A barline whose 2 lines are (left to right) thick then thin. OriginX is the thick line's x-coordinate.
-    /// </summary>
-    public class StartRegionBarline : Barline
+	/// <summary>
+	/// A barline consisting of: thinBarline, thickBarline.
+	/// OriginX is the thick line's x-coordinate.
+	/// </summary>
+	public class EndOfScoreBarline : NormalBarline
+	{
+		public EndOfScoreBarline(Voice voice)
+			: base(voice)
+		{
+		}
+
+		/// <summary>
+		/// Writes out the barline's vertical line(s).
+		/// May be called twice per staff.barline:
+		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
+		///     2. for the range between the staff's lower edge and the next staff's upper edge
+		///        (if the staff's lower neighbour is in the same group)
+		/// </summary>
+		/// <param name="w"></param>
+		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots = false)
+		{
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double thickRightLineOriginX = Metrics.OriginX;
+			double thinLeftLineOriginX = thickRightLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
+
+			w.SvgStartGroup(CSSObjectClass.endOfScoreBarline.ToString());
+			DrawLines(w, thinLeftLineOriginX, thickRightLineOriginX, topY, bottomY);
+			w.SvgEndGroup();
+		}
+
+		public override string ToString()
+		{
+			return "endOfScoreBarline: ";
+		}
+
+		// EndOfScoreBarline: thin, thick
+		public override void CreateMetrics(Graphics graphics)
+		{
+			double rightEdgeReOriginX = (ThickStrokeWidth / 2F);
+			double leftEdgeReOriginX = -DoubleBarPadding - (ThickStrokeWidth / 2) - (ThinStrokeWidth / 2);
+
+			Metrics = new BRMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+		}
+
+		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
+		{
+		}
+	}
+
+	#region AssistantPerformer Region barlines
+	/// <summary>
+	/// A barline whose 2 lines are (left to right) thick then thin. OriginX is the thick line's x-coordinate.
+	/// </summary>
+	public class StartRegionBarline : Barline
 	{
 		public StartRegionBarline(Voice voice, List<DrawObject> drawObjects)
 			: base(voice)
@@ -438,7 +518,7 @@ namespace Moritz.Symbols
 		{
 			double leftEdge = -(ThickStrokeWidth / 2F);
 			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			Metrics = new BRMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 
@@ -556,7 +636,7 @@ namespace Moritz.Symbols
 		{
 			double leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth);
 			double rightEdge = (ThickStrokeWidth / 2F);
-			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			Metrics = new BRMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 
@@ -701,7 +781,7 @@ namespace Moritz.Symbols
 		{
 			double rightEdge = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
 			double leftEdge = -rightEdge;
-			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			Metrics = new BRMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			SetCommonMetrics(graphics, DrawObjects);
 
@@ -784,7 +864,7 @@ namespace Moritz.Symbols
 		{
 			double leftEdge = -((ThickStrokeWidth / 2F) + DoubleBarPadding + NormalStrokeWidth);
 			double rightEdge = (ThickStrokeWidth / 2F);
-			Metrics = new Barline_Metrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
+			Metrics = new BRMetrics(leftEdge, rightEdge, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			foreach(DrawObject drawObject in DrawObjects)
 			{
@@ -800,285 +880,5 @@ namespace Moritz.Symbols
 	}
 
 	#endregion AssistantPerformer Region barlines
-
-	#region MNX Repeat barlines
-
-	public abstract class DoubleBarline : NormalBarline
-	{
-		public DoubleBarline(Voice voice)
-			: base(voice)
-		{
-
-		}
-
-		protected void DrawLines(SvgWriter w, double thinLineOriginX, double thickLineOriginX, double topY, double bottomY)
-		{
-			w.SvgLine(CSSObjectClass.thinBarline, thinLineOriginX, topY, thinLineOriginX, bottomY);
-			w.SvgLine(CSSObjectClass.thickBarline, thickLineOriginX, topY, thickLineOriginX, bottomY);
-		}
-	}
-
-	public abstract class RepeatBarline : DoubleBarline
-	{
-		public RepeatBarline(Voice voice)
-			: base(voice)
-		{
-			var dotMetrics = new DotMetrics(M.PageFormat.MusicFontHeight, M.PageFormat.GapVBPX, CSSObjectClass.dot);
-			_dotWidth = (dotMetrics.Right - dotMetrics.Left) * 1.3; // strange but true!
-		}
-
-		protected void DrawDots(SvgWriter w, double topLineY, double gap, double dotsX)
-		{
-			double upperDotOriginY = topLineY + (gap * 1.5);
-			double lowerDotOriginY = topLineY + (gap * 2.5);
-
-			w.SvgText(CSSObjectClass.dot, ".", dotsX, upperDotOriginY);
-			w.SvgText(CSSObjectClass.dot, ".", dotsX, lowerDotOriginY);
-		}
-
-		protected readonly double _dotWidth;
-	}
-
-	/// <summary>
-	/// A barline consisting of: thickBarline, thinBarline, dots.
-	/// The dots are only printed where the barline crosses a staff.
-	/// OriginX is the thick line's x-coordinate.
-	/// </summary>
-	public class RepeatBeginBarline : RepeatBarline
-	{
-		public RepeatBeginBarline(Voice voice)
-			: base(voice)
-		{
-		}
-
-		/// <summary>
-		/// Writes out the barline's vertical lines and dots.
-		/// May be called twice per staff.barline:
-		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
-		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (if the staff's lower neighbour is in the same group)
-		/// </summary>
-		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
-		{
-			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
-			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
-
-			double thickLeftLineOriginX = Metrics.OriginX;
-			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2) + DoubleBarPadding + (ThinStrokeWidth / 2);
-			double dotsX = thinRightLineOriginX + DoubleBarPadding; 
-
-			w.SvgStartGroup(CSSObjectClass.repeatBeginBarline.ToString());
-			DrawLines(w, thinRightLineOriginX, thickLeftLineOriginX, barlineTopY, barlineBottomY);
-			if(drawDots)
-			{
-				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, dotsX);
-			}
-			w.SvgEndGroup();
-		}
-
-		public override string ToString()
-		{
-			return "repeatBeginBarline: ";
-		}
-
-		// RepeatBeginBarline: thick, thin, dots
-		public override void CreateMetrics(Graphics graphics)
-		{
-			double leftEdgeReOriginX = -(ThickStrokeWidth / 2F);
-			double rightEdgeReOriginX = (ThickStrokeWidth / 2F) + DoubleBarPadding + ThinStrokeWidth;
-			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
-
-			((Barline_Metrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
-
-			SetCommonMetrics(graphics, DrawObjects);
-		}
-
-		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
-		{
-			AddBasicMetricsToEdge(horizontalEdge);
-		}
-	}
-
-	/// <summary>
-	/// A barline consisting of: dots, thinBarline, thickBarline.
-	/// The dots are only printed where the barline crosses a staff.
-	/// OriginX is the thick line's x-coordinate.
-	/// </summary>
-	public class RepeatEndBarline : RepeatBarline
-	{
-		public RepeatEndBarline(Voice voice)
-			: base(voice)
-		{
-		}
-
-		/// <summary>
-		/// Writes out the barline's vertical line(s).
-		/// May be called twice per staff.barline:
-		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
-		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (if the staff's lower neighbour is in the same group)
-		/// </summary>
-		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
-		{
-			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
-			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
-
-			double thickRightLineOriginX = Metrics.OriginX;
-			double thinLeftLineOriginX = thickRightLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
-			double dotsX = thinLeftLineOriginX -(ThinStrokeWidth / 2F) - DoubleBarPadding - _dotWidth;
-
-			w.SvgStartGroup(CSSObjectClass.repeatEndBarline.ToString());
-			DrawLines(w, thinLeftLineOriginX, thickRightLineOriginX, barlineTopY, barlineBottomY);
-			if(drawDots)
-			{
-				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, dotsX);
-			}
-			w.SvgEndGroup();
-		}
-
-		public override string ToString()
-		{
-			return "repeatEndBarline: ";
-		}
-
-		// RepeatEndBarline: dots, thin, thick
-		public override void CreateMetrics(Graphics graphics)
-		{
-			double leftEdgeReOriginX = (ThickStrokeWidth / 2F) - DoubleBarPadding - ThinStrokeWidth - DoubleBarPadding - _dotWidth;
-			double rightEdgeReOriginX = (ThickStrokeWidth / 2F);
-
-			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
-
-			((Barline_Metrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
-
-			SetCommonMetrics(graphics, DrawObjects);
-		}
-
-		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
-		{
-			AddBasicMetricsToEdge(horizontalEdge);
-		}
-	}
-
-	/// <summary>
-	/// A barline consisting of: dots, thinBarline, thickBarline, thinBarline, dots.
-	/// The dots are only printed where the barline crosses a staff.
-	/// OriginX is the thick line's x-coordinate.
-	/// </summary>
-	public class RepeatEndBeginBarline : RepeatBarline
-	{
-		public RepeatEndBeginBarline(Voice voice)
-			: base(voice)
-		{
-		}
-
-		/// <summary>
-		/// Writes out the barline's vertical line(s).
-		/// May be called twice per staff.barline:
-		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
-		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (if the staff's lower neighbour is in the same group)
-		/// </summary>
-		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
-		{
-			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
-			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
-			double thickMiddleLineOriginX = Metrics.OriginX;
-			double thinLeftLineOriginX = thickMiddleLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
-			double thinRightLineOriginX = thickMiddleLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
-			double leftDotsX = thinLeftLineOriginX - (ThinStrokeWidth / 2F) - DoubleBarPadding - _dotWidth;
-			double rightDotsX = thinRightLineOriginX + (ThinStrokeWidth / 2F) + DoubleBarPadding;
-
-			w.SvgStartGroup(CSSObjectClass.repeatEndBeginBarline.ToString());
-			DrawLines(w, thinLeftLineOriginX, thickMiddleLineOriginX, barlineTopY, barlineBottomY);
-			if(drawDots)
-			{
-				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, leftDotsX);
-				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, rightDotsX);
-			}
-			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, barlineTopY, thinRightLineOriginX, barlineBottomY);
-			w.SvgEndGroup();
-		}
-
-		public override string ToString()
-		{
-			return "repeatEndBeginBarline: ";
-		}
-
-		// RepeatEndBeginBarline: dots, thin, thick, thin, dots
-		public override void CreateMetrics(Graphics graphics)
-		{
-			double rightEdgeReOriginX = DoubleBarPadding + ThinStrokeWidth + DoubleBarPadding + _dotWidth;
-			double leftEdgeReOriginX = -rightEdgeReOriginX;
-			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
-
-			((Barline_Metrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
-			((Barline_Metrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
-
-			SetCommonMetrics(graphics, DrawObjects);
-		}
-
-		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
-		{
-			AddBasicMetricsToEdge(horizontalEdge);
-		}
-	}
-
-	/// <summary>
-	/// A barline consisting of: thinBarline, thickBarline.
-	/// OriginX is the thick line's x-coordinate.
-	/// </summary>
-	public class EndOfScoreBarline : DoubleBarline
-	{
-		public EndOfScoreBarline(Voice voice)
-			: base(voice)
-		{
-		}
-
-		/// <summary>
-		/// Writes out the barline's vertical line(s).
-		/// May be called twice per staff.barline:
-		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
-		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (if the staff's lower neighbour is in the same group)
-		/// </summary>
-		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots = false)
-		{
-			double topY = TopY(topStafflineY, isEndOfSystem);
-			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
-			double thickRightLineOriginX = Metrics.OriginX;
-			double thinLeftLineOriginX = thickRightLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
-
-			w.SvgStartGroup(CSSObjectClass.endOfScoreBarline.ToString());
-			DrawLines(w, thinLeftLineOriginX, thickRightLineOriginX, topY, bottomY);
-			w.SvgEndGroup();
-		}
-
-		public override string ToString()
-		{
-			return "endOfScoreBarline: ";
-		}
-
-		// EndOfScoreBarline: thin, thick
-		public override void CreateMetrics(Graphics graphics)
-		{
-			double rightEdgeReOriginX = (ThickStrokeWidth / 2F);
-			double leftEdgeReOriginX = -DoubleBarPadding - (ThickStrokeWidth / 2) - (ThinStrokeWidth / 2);
-
-			Metrics = new Barline_Metrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
-
-			SetCommonMetrics(graphics, DrawObjects);
-		}
-
-		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
-		{
-			AddBasicMetricsToEdge(horizontalEdge);
-		}
-	}
-	#endregion MNX Repeat barlines
 
 }

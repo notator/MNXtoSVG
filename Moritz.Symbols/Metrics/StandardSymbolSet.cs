@@ -365,6 +365,7 @@ namespace Moritz.Symbols
             RestSymbol rest = noteObject as RestSymbol;
             TimeSignature timeSignature = noteObject as TimeSignature;
             KeySignature keySignature = noteObject as KeySignature;
+            RepeatSymbol repeatSymbol = noteObject as RepeatSymbol;
 
 			if(barline != null)
 			{
@@ -424,6 +425,11 @@ namespace Moritz.Symbols
             {
                 // Like rests, all keySignatures are originally created with their OriginY on the centre line.
                 returnMetrics = new KeySignatureMetrics(graphics, gap, pageFormat.MusicFontHeight, currentClefType, keySignature.Fifths);
+            }
+            else if(repeatSymbol != null)
+            {
+                repeatSymbol.CreateMetrics(graphics);
+                returnMetrics = repeatSymbol.Metrics;
             }
 
 

@@ -94,8 +94,7 @@ namespace Moritz.Symbols
         /// OutputChordSymbols all have Metrics.OriginX at AlignmentX == 0, and are not moved.
         /// OutputRestSymbols can have Metrics.OriginX at some other value, but they are not moved either.
         /// Other NoteObjects are moved left so that they don't overlap the object on their right.
-        /// The left-right order is Clef-KeySignature-Barline-TimeSignature-DurationSymbol.
-        ///                      Or Clef-KeySignature-TimeSignature-RepeatBeginBarline-DurationSymbol.
+        /// The left-right order is Clef-KeySignature-Barline-TimeSignature-RepeatSymbol-DurationSymbol.
         /// The finalBarline has no DurationSymbols. Its noteObjects are right-aligned to 0.
         /// </summary>
         public void SetInternalXPositions(double gap)
@@ -106,8 +105,7 @@ namespace Moritz.Symbols
             var keySignatures = new List<NoteObject>();
             var barlines = new List<NoteObject>();
             var clefs = new List<NoteObject>();
-
-            bool momentContainsRepeatBeginBarline = false;
+            var repeatSymbols = new List<NoteObject>();
 
             double minLeft = double.MaxValue;
             #region get typed objectLists and minLeft
@@ -137,11 +135,19 @@ namespace Moritz.Symbols
                 {
                     clefs.Add(c);
                 }
+                else if(noteObject is RepeatSymbol rs)
+                {
+                    repeatSymbols.Add(rs);
+                }
             }
 
             if(minLeft < double.MaxValue) // this moment contains one or more DurationSymbols
             {
-                if(timeSignatures.Count > 0)
+                if(repeatSymbols.Count > 0)
+                {
+                    minLeft -= gap * 1; // padding between DurationSymbol and RepeatSymbol
+                }
+                else if(timeSignatures.Count > 0)
                 {
                     minLeft -= 0; // padding between DurationSymbol and TimeSig
                 }
@@ -167,12 +173,10 @@ namespace Moritz.Symbols
                     {
                         minLeft -= 0; // padding between DurationSymbol and KeySig
                     }
-
                     else if(clefs.Count > 0)
                     {
                         minLeft -= gap / 2; // padding between DurationSymbol and Clef
                     }
-
                 }
             }
             else // finalBarline
@@ -181,71 +185,50 @@ namespace Moritz.Symbols
             }
             #endregion
 
-            if(barlines.Count > 0 && barlines[0] is RepeatBeginBarline)
+            if(repeatSymbols.Count > 0)
             {
-                momentContainsRepeatBeginBarline = true;
-                minLeft -= gap / 2; // padding between Chord and RepeatBeginBarline
-                Move(barlines, ref minLeft);
-                minLeft += gap / 2; // padding between RepeatBeginBarline and symbol on left.
+                Move(repeatSymbols, ref minLeft);
+                if(barlines.Count > 0 && timeSignatures.Count == 0)
+                {
+                    // Barlines will be moved so that their OriginXs coincide with the repeatSymbols' OriginXs.
+                    minLeft = repeatSymbols[0].Metrics.OriginX + ((barlines[0].Metrics.Right - barlines[0].Metrics.Left) / 2);
+                }
+                else
+                {
+                    minLeft += gap / 2; // padding between RepeatSymbol and the noteObject on its left.
+                }
+
             }
 
             if(timeSignatures.Count > 0)
             {
                 Move(timeSignatures, ref minLeft);
 
-                if(clefs.Count == 0 && keySignatures.Count > 0)
-                {
-                    minLeft -= 0; // padding between TimeSignature and KeySignature
-                }
                 if(barlines.Count > 0)
                 {
-                    if(momentContainsRepeatBeginBarline)
-                    {
-                        minLeft += gap / 4; // padding between TimeSignature and Clef
-                    }
-                    else
-                    {
-                        minLeft -= gap / 3; // padding between TimeSignature and Barline
-                    }
+                    minLeft -= gap / 3; // padding between TimeSignature and Barline
                 }
+                else
+                {
+                    throw new ApplicationException("Time signatures must immediately follow a barline.");
+                }
+            }
+
+            if(barlines.Count > 0)
+            {
+                Move(barlines, ref minLeft);
+                // padding between barline and KeySignature or Clef is 0.
             }
 
             if(keySignatures.Count > 0)
             {
-                if(clefs.Count > 0)
-                {
-                    // Put clef and keySig together:
-                    // left to right order is Clef, KeySignature, Barline, TimeSignature
-                    if(barlines.Count > 0)
-                    {
-                        Move(barlines, ref minLeft);
-                        // padding between barline and KeySignature or Clef is 0.
-                    }
-                    Move(keySignatures, ref minLeft);
-                    // padding between KeySignature and Clef is 0.
-                }
-                else
-                {
-                    // Put keySig right of barline:
-                    // left to right order is Clef, Barline, KeySignature, TimeSignature
-                    Move(keySignatures, ref minLeft);
-                    if(barlines.Count > 0)
-                    {
-                        minLeft -= gap / 2; // padding between keySignature and Barline
-                        Move(barlines, ref minLeft);
-                        // padding between Barline and Clef is 0.
-                    }
-                }
-            }
-            else if(barlines.Count > 0 && ! (barlines[0] is RepeatBeginBarline))
-            {
-                Move(barlines, ref minLeft);
-                // padding between Barline and Clef is 0.
+                Move(keySignatures, ref minLeft);
+                // padding between KeySignature and Clef is 0.
             }
 
-            foreach(var clef in clefs)
+            if(clefs.Count > 0)
             {
-                clef.Metrics.Move(minLeft - clef.Metrics.Right, 0);
+                Move(clefs, ref minLeft);
             }
         }
 

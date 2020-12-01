@@ -455,7 +455,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// The MomentSymbols are in order of msPosition.
         /// The contained symbols are in order of voice (top-bottom of this system).
-        /// Barlines, Clefs and TimeSignatures and KeySignatures are added to the NoteObjectMomentSymbol containing the following DurationSymbol.
+        /// Barlines, Clefs and TimeSignatures, KeySignatures and RepeatSymbols are added to the NoteObjectMomentSymbol containing the following DurationSymbol.
         /// When this function returns, moments are in order of msPosition, and aligned internally at AlignmentX = 0;
         /// </summary>
         private List<NoteObjectMoment> MomentSymbols(double gap)
@@ -465,6 +465,7 @@ namespace Moritz.Symbols
             Clef clef = null;
             TimeSignature timeSignature = null;
             KeySignature keySignature = null;
+            RepeatSymbol repeatSymbol = null;
             foreach(Staff staff in Staves)
             {
                 foreach(Voice voice in staff.Voices)
@@ -483,6 +484,8 @@ namespace Moritz.Symbols
                                 timeSignature = noteObject as TimeSignature;
                             if(noteObject is KeySignature)
                                 keySignature = noteObject as KeySignature;
+                            if(noteObject is RepeatSymbol)
+                                repeatSymbol = noteObject as RepeatSymbol;
                         }
 						else
 						{
@@ -503,7 +506,7 @@ namespace Moritz.Symbols
                                 dict[key].Add(keySignature);
                                 keySignature = null;
                             }
-                            if(barline != null && !(barline is RepeatBeginBarline))
+                            if(barline != null)
                             {
                                 dict[key].Add(barline);
                                 barline = null;
@@ -513,10 +516,10 @@ namespace Moritz.Symbols
                                 dict[key].Add(timeSignature);
                                 timeSignature = null;
                             }
-                            if(barline != null && barline is RepeatBeginBarline)
+                            if(repeatSymbol != null)
                             {
-                                dict[key].Add(barline);
-                                barline = null;
+                                dict[key].Add(repeatSymbol);
+                                repeatSymbol = null;
                             }
 
                             dict[key].Add(durationSymbol);
@@ -538,10 +541,16 @@ namespace Moritz.Symbols
                     if(barline != null) // final barline
                     {
                         if(dict.ContainsKey(this.AbsEndMsPosition))
+                        {
                             dict[this.AbsEndMsPosition].Add(barline);
+                        }
                         else
                         {
                             NoteObjectMoment nom = new NoteObjectMoment(this.AbsEndMsPosition);
+                            if(repeatSymbol != null)
+                            {
+                                nom.Add(repeatSymbol);
+                            }
                             nom.Add(barline);
                             dict.Add(this.AbsEndMsPosition, nom);
                         }

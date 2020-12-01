@@ -78,6 +78,7 @@
     <Compile Include="System Components\Staff Components\OctaveShiftExtender.cs" />
     <Compile Include="System Components\Staff Components\OutputVoice.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\AnchorageSymbol.cs" />
+    <Compile Include="System Components\Staff Components\Voice Components\Repeats.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\Barline.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\CautionaryChordSymbol.cs" />
     <Compile Include="System Components\Staff Components\Voice Components\Chord Components\Beam.cs" />

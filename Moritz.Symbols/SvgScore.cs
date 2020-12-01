@@ -1186,9 +1186,11 @@ namespace Moritz.Symbols
                 for(int voiceIndex = 0; voiceIndex < system2.Staves[staffIndex].Voices.Count; voiceIndex++)
                 {
                     Voice voice1 = system1.Staves[staffIndex].Voices[voiceIndex];
-                    GetFinalDirections(voice1.NoteObjects, out Clef v1FinalClef, out KeySignature v1FinalKeySignature, out TimeSignature v1FinalTimeSignature);
+                    GetFinalDirections(voice1.NoteObjects,
+                        out Clef v1FinalClef, out KeySignature v1FinalKeySignature, out TimeSignature v1FinalTimeSignature, out RepeatEnd v1EndRepeatEnd);
                     Voice voice2 = system2.Staves[staffIndex].Voices[voiceIndex];
-                    GetInitialDirections(voice2.NoteObjects, out Clef v2InitialClef, out KeySignature v2InitialKeySignature, out TimeSignature v2InitialTimeSignature);
+                    GetInitialDirections(voice2.NoteObjects,
+                        out Clef v2InitialClef, out KeySignature v2InitialKeySignature, out TimeSignature v2InitialTimeSignature);
                     M.Assert(v1FinalClef != null);
 
                     if(v2InitialClef != null && v2InitialClef.ClefType == v1FinalClef.ClefType)
@@ -1204,6 +1206,15 @@ namespace Moritz.Symbols
                         voice2.NoteObjects.Remove(v2InitialTimeSignature);
                     }
 
+                    if(voice2.NoteObjects[0] is RepeatBegin && v1EndRepeatEnd != null)
+                    {
+                        int index = voice1.NoteObjects.FindLastIndex(no => no is RepeatEnd);
+                        RepeatEndBegin reb = new RepeatEndBegin(voice1);
+                        voice1.NoteObjects.RemoveAt(index);
+                        voice1.NoteObjects.Insert(index, reb);
+                        voice2.NoteObjects.RemoveAt(0);
+                    }
+
                     voice1.AppendNoteObjects(voice2.NoteObjects);
                 }
             }
@@ -1211,37 +1222,38 @@ namespace Moritz.Symbols
             system2 = null;
         }
 
-        private void GetInitialDirections(List<NoteObject> noteObjects, out Clef initialClef, out KeySignature initialKeySignature, out TimeSignature initialTimeSignature)
+        private void GetInitialDirections(List<NoteObject> noteObjects,
+            out Clef initialClef, out KeySignature initialKeySignature, out TimeSignature initialTimeSignature)
         {
             initialClef = null;
             initialKeySignature = null;
             initialTimeSignature = null;
-            for(var i = 0; i < 3; i++)
+
+            for(var i = 0; i < 3; ++i)
             {
-                if(noteObjects.Count > i)
+                var noteObject = noteObjects[i];
+                if(noteObject is Clef clef)
                 {
-                    var noteObject = noteObjects[i];
-                    if(noteObject is Clef clef)
-                    {
-                        initialClef = clef;
-                    }
-                    if(noteObject is KeySignature keySignature)
-                    {
-                        initialKeySignature = keySignature;
-                    }
-                    if(noteObject is TimeSignature timeSignature)
-                    {
-                        initialTimeSignature = timeSignature;
-                    }
+                    initialClef = clef;
+                }
+                if(noteObject is KeySignature keySignature)
+                {
+                    initialKeySignature = keySignature;
+                }
+                if(noteObject is TimeSignature timeSignature)
+                {
+                    initialTimeSignature = timeSignature;
                 }
             }
         }
 
-        private void GetFinalDirections(List<NoteObject> noteObjects, out Clef outClef, out KeySignature outKeySignature, out TimeSignature outTimeSignature)
+        private void GetFinalDirections(List<NoteObject> noteObjects, 
+            out Clef outClef, out KeySignature outKeySignature, out TimeSignature outTimeSignature, out RepeatEnd outEndRepeatEnd)
         {
             outClef = null;
             outKeySignature = null;
             outTimeSignature = null;
+            outEndRepeatEnd = null;
 
             foreach(var noteObject in noteObjects)
             {
@@ -1258,6 +1270,14 @@ namespace Moritz.Symbols
                     outTimeSignature = timeSignature;
                 }
             }
+
+            for(int i = noteObjects.Count - 1; i >= noteObjects.Count - 2; --i)
+            {
+                if(noteObjects[i] is RepeatEnd repeatEnd)
+                {
+                    outEndRepeatEnd = repeatEnd;
+                }
+            }
         }
 
         #endregion
@@ -1267,8 +1287,10 @@ namespace Moritz.Symbols
         /// <summary>
         /// There is currently one bar per System. 
         /// All Duration Symbols have been constructed in voice.NoteObjects (possibly including CautionaryChordSymbols at the beginnings of staves).
-        /// There are no barlines in the score yet.
-        /// Now add a NormalBarline, RepeatBeginBarline, RepeatEndBarline or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
+        /// There are no barlines or repeatSymbols in the score yet.
+        /// Now add a RepeatBegin at the beginning and/or a RepeatEnd at end of each system/bar as necessary,
+        /// then add a NormalBarline or EndOfScoreBarline at the end of each system=bar (after the clef (and keySignature, if any))
+        /// and add a NormalBarline at the beginning of the Systems[0].
         /// </summary>
         /// <param name="barlineType"></param>
         /// <param name="systemNumbers"></param>
@@ -1294,38 +1316,36 @@ namespace Moritz.Symbols
                             usingMNXrepeats = true;
                         }
 
-                        Barline beginBarline;
-                        int startBarlineIndex;
                         if(bars[systemIndex].RepeatBeginBarline)
                         {
-                            beginBarline = new RepeatBeginBarline(voice);
-                            startBarlineIndex = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)) && (!(noteObject is TimeSignature)));
-                        }
-                        else
-                        {
-                            beginBarline = new NormalBarline(voice);
-                            startBarlineIndex = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)));
+                            var repeatBegin = new RepeatBegin(voice);
+                            var index = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)) && (!(noteObject is TimeSignature)));
+                            noteObjects.Insert(index, repeatBegin);
                         }
 
-                        var endOfScore = ((systemIndex == Systems.Count - 1) && (staffIndex == staves.Count - 1) && (voiceIndex == voices.Count - 1));
+                        if(bars[systemIndex].RepeatEndBarline)
+                        {
+                            var repeatEnd = new RepeatEnd(voice);
+                            noteObjects.Add(repeatEnd);
+                        }
+
+                        if(systemIndex == 0 && voiceIndex == 0)
+                        {
+                            var initialBarline = new NormalBarline(voice);
+                            var index = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)));
+                            noteObjects.Insert(index, initialBarline);
+                        }
+
+                        var endOfScore = ((systemIndex == Systems.Count - 1) && (voiceIndex == 0));
                         Barline endBarline;
                         if(endOfScore)
                         {
-                            if(bars[systemIndex].RepeatEndBarline)
-                            {
-                                endBarline = new RepeatEndBarline(voice);
-                            }
-                            else
-                            {
-                                endBarline = new EndOfScoreBarline(voice);
-                            }                            
+                            endBarline = new EndOfScoreBarline(voice);                            
                         }
                         else
                         {
-                            endBarline = (bars[systemIndex].RepeatEndBarline) ? new RepeatEndBarline(voice) : new NormalBarline(voice);
+                            endBarline = new NormalBarline(voice);
                         }
-
-                        noteObjects.Insert(startBarlineIndex, beginBarline);
                         noteObjects.Add(endBarline);
                     }
                 }
@@ -1391,7 +1411,9 @@ namespace Moritz.Symbols
             }
             #endregion preconditions
 
-            // 1. add a NormalBarline, RepeatBeginBarline, RepeatEndBarline or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
+
+            // 1. add a RepeatBegin at the beginning and/or a RepeatEnd at end of each system/bar as necessary,
+            // then add a NormalBarline or EndOfScoreBarline at the end of each system=bar (after the clef (and keySignature, if any))
             var usingMNXRepeats = AddBarlines(bars);
 
             ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);

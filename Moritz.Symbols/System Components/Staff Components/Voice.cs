@@ -36,6 +36,8 @@ namespace Moritz.Symbols
         /// <param name="w"></param>
         public virtual void WriteSVG(SvgWriter w, int voiceIndex, List<CarryMsgs> carryMsgsPerChannel, bool graphicsOnly)
         {
+            bool suppressEndOfScoreBarline = false;
+
             for(int i = 0; i < NoteObjects.Count; ++i)
             {
                 NoteObject noteObject = NoteObjects[i];
@@ -44,7 +46,7 @@ namespace Moritz.Symbols
                     bool isLastNoteObject = (i == (NoteObjects.Count - 1));
                     double top = Staff.Metrics.StafflinesTop;
                     double bottom = Staff.Metrics.StafflinesBottom;
-                    if(barline.IsVisible)
+                    if(barline.IsVisible && !suppressEndOfScoreBarline)
                     {
                         barline.WriteSVG(w, top, bottom, isLastNoteObject, true);
                     }
@@ -88,6 +90,15 @@ namespace Moritz.Symbols
                 if(noteObject is TimeSignature timeSignature && voiceIndex == 0)
                 {
                     timeSignature.WriteSVG(w, timeSignature.Signature, timeSignature.Metrics.OriginX, timeSignature.Metrics.OriginY);
+                }
+                if(noteObject is RepeatSymbol repeatSymbol && voiceIndex == 0)
+                {
+                    bool isLastNoteObject = (i == (NoteObjects.Count - 1));
+                    double top = Staff.Metrics.StafflinesTop;
+                    double bottom = Staff.Metrics.StafflinesBottom;
+                    repeatSymbol.WriteSVG(w, top, bottom, isLastNoteObject, true);
+
+                    suppressEndOfScoreBarline = (i == (NoteObjects.Count - 2));
                 }
             }
         }

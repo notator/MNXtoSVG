@@ -1288,13 +1288,13 @@ namespace Moritz.Symbols
         /// There is currently one bar per System. 
         /// All Duration Symbols have been constructed in voice.NoteObjects (possibly including CautionaryChordSymbols at the beginnings of staves).
         /// There are no barlines or repeatSymbols in the score yet.
-        /// Now add a RepeatBegin at the beginning and/or a RepeatEnd at end of each system/bar as necessary,
-        /// then add a NormalBarline or EndOfScoreBarline at the end of each system=bar (after the clef (and keySignature, if any))
-        /// and add a NormalBarline at the beginning of the Systems[0].
+        /// Add a NormalBarline at the beginning of the Systems[0] (after the clef).
+        /// Now add a RepeatBegin at the beginning (before the first durationSymbol) and/or a RepeatEnd at end of each system/bar as necessary,
+        /// then add a NormalBarline or EndOfScoreBarline at the end of each system=bar. (Cautionary keySigs and timeSigs may be added later.)
         /// </summary>
         /// <param name="barlineType"></param>
         /// <param name="systemNumbers"></param>
-        private bool AddBarlines(List<Bar> bars)
+        private bool AddBarlinesAndRepeatSymbols(List<Bar> bars)
         {
             var usingMNXrepeats = false;
             // There is currently one bar per System, so systemIndex is bar index here.
@@ -1308,18 +1308,24 @@ namespace Moritz.Symbols
                     {
                         var voice = voices[voiceIndex];
                         var noteObjects = voice.NoteObjects;
-                        M.Assert(noteObjects.Count > 0
-                            && !(noteObjects[noteObjects.Count - 1] is Barline));
+                        M.Assert(noteObjects.Count > 0 && !(noteObjects[noteObjects.Count - 1] is Barline));
 
                         if(bars[systemIndex].RepeatBegin || bars[systemIndex].RepeatEnd)
                         {
                             usingMNXrepeats = true;
                         }
 
+                        if(systemIndex == 0)
+                        {
+                            var initialBarline = new NormalBarline(voice);
+                            var index = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)));
+                            noteObjects.Insert(index, initialBarline);
+                        }
+
                         if(bars[systemIndex].RepeatBegin)
                         {
                             var repeatBegin = new RepeatBegin(voice);
-                            var index = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)) && (!(noteObject is TimeSignature)));
+                            var index = noteObjects.FindIndex(noteObject => (noteObject is DurationSymbol));
                             noteObjects.Insert(index, repeatBegin);
                         }
 
@@ -1327,25 +1333,10 @@ namespace Moritz.Symbols
                         {
                             var repeatEnd = new RepeatEnd(voice);
                             noteObjects.Add(repeatEnd);
-                        }
+                        }                                    
 
-                        if(systemIndex == 0 && voiceIndex == 0)
-                        {
-                            var initialBarline = new NormalBarline(voice);
-                            var index = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)));
-                            noteObjects.Insert(index, initialBarline);
-                        }
-
-                        var endOfScore = ((systemIndex == Systems.Count - 1) && (voiceIndex == 0));
-                        Barline endBarline;
-                        if(endOfScore)
-                        {
-                            endBarline = new EndOfScoreBarline(voice);                            
-                        }
-                        else
-                        {
-                            endBarline = new NormalBarline(voice);
-                        }
+                        // endBarline is inserted after repeatEnd (if any)
+                        var endBarline = (systemIndex == Systems.Count - 1) ? new EndOfScoreBarline(voice) : new NormalBarline(voice);
                         noteObjects.Add(endBarline);
                     }
                 }
@@ -1414,7 +1405,7 @@ namespace Moritz.Symbols
 
             // 1. add a RepeatBegin at the beginning and/or a RepeatEnd at end of each system/bar as necessary,
             // then add a NormalBarline or EndOfScoreBarline at the end of each system=bar (after the clef (and keySignature, if any))
-            var usingMNXRepeats = AddBarlines(bars);
+            var usingMNXRepeats = AddBarlinesAndRepeatSymbols(bars);
 
             ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
 

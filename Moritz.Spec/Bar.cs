@@ -19,7 +19,7 @@ namespace Moritz.Spec
 		/// <para>When complete, this constructor calls the bar.AssertConsistency() function (see that its documentation).</para>
 		/// </summary>
 		/// <param name="seq">Cannot be null, and must have Trks</param>
-		public Bar(Seq seq, Tuple<bool, bool> repeatBarlineTypes)
+		public Bar(Seq seq, Tuple<bool, bool> repeatTypes)
         {
 			#region conditions
             seq.AssertConsistency();
@@ -39,8 +39,8 @@ namespace Moritz.Spec
 
             AssertConsistency();
 
-            RepeatBeginBarline = repeatBarlineTypes.Item1;
-            RepeatEndBarline = repeatBarlineTypes.Item2;
+            RepeatBegin = repeatTypes.Item1;
+            RepeatEnd = repeatTypes.Item2;
         }
 
 		public void Concat(Bar bar2)
@@ -301,8 +301,8 @@ namespace Moritz.Spec
 			}
 		}
 
-        public bool RepeatBeginBarline { get; }
-        public bool RepeatEndBarline { get; }
+        public bool RepeatBegin { get; }
+        public bool RepeatEnd { get; }
 
         protected List<VoiceDef> _voiceDefs = new List<VoiceDef>();
 	}

@@ -29,7 +29,7 @@ namespace Moritz.Symbols
 	}
 
 	/// <summary>
-	/// A RepeatSymbol consisting of: thickBarline, thinBarline, dots.
+	/// A RepeatSymbol consisting of: thick line, thin line, dots.
 	/// The dots are only printed if the symbol crosses a staff.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
@@ -41,24 +41,24 @@ namespace Moritz.Symbols
 		}
 
 		/// <summary>
-		/// Writes out the barline's vertical lines and dots.
-		/// May be called twice per staff.barline:
-		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
+		/// Writes out the vertical lines and dots.
+		/// May be called twice per staff:
+		///     1. for the range between top and bottom stafflines
 		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (if the staff's lower neighbour is in the same group)
+		///        (The drawDots argument will be false in this case.)
 		/// </summary>
 		/// <param name="w"></param>
 		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
 		{
-			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
-			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
 			double thickLeftLineOriginX = Metrics.OriginX;
 			double thinRightLineOriginX = thickLeftLineOriginX + (ThickStrokeWidth / 2) + DoubleBarPadding + (ThinStrokeWidth / 2);
 			double dotsX = thinRightLineOriginX + DoubleBarPadding; 
 
-			w.SvgStartGroup(CSSObjectClass.repeatBeginBarline.ToString());
-			DrawLines(w, thinRightLineOriginX, thickLeftLineOriginX, barlineTopY, barlineBottomY);
+			w.SvgStartGroup(CSSObjectClass.repeatBegin.ToString());
+			DrawLines(w, thinRightLineOriginX, thickLeftLineOriginX, topY, bottomY);
 			if(drawDots)
 			{
 				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, dotsX);
@@ -71,7 +71,7 @@ namespace Moritz.Symbols
 			return "repeatBegin: ";
 		}
 
-		// RepeatBeginBarline: thick, thin, dots
+		// RepeatBegin: thick, thin, dots
 		public override void CreateMetrics(Graphics graphics)
 		{
 			double leftEdgeReOriginX = -(ThickStrokeWidth / 2F);
@@ -87,7 +87,7 @@ namespace Moritz.Symbols
 	}
 
 	/// <summary>
-	/// A RepeatSymbol consisting of: dots, thinBarline, thickBarline.
+	/// A RepeatSymbol consisting of: dots, thin line, thick line.
 	/// The dots are only printed if the symbol crosses a staff.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
@@ -99,24 +99,24 @@ namespace Moritz.Symbols
 		}
 
 		/// <summary>
-		/// Writes out the barline's vertical line(s).
-		/// May be called twice per staff.barline:
-		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
+		/// Writes out the vertical lines and dots.
+		/// May be called twice per staff:
+		///     1. for the range between top and bottom stafflines
 		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (if the staff's lower neighbour is in the same group)
+		///        (The drawDots argument will be false in this case.)
 		/// </summary>
 		/// <param name="w"></param>
 		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
 		{
-			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
-			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 
 			double thickRightLineOriginX = Metrics.OriginX;
 			double thinLeftLineOriginX = thickRightLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 			double dotsX = thinLeftLineOriginX -(ThinStrokeWidth / 2F) - DoubleBarPadding - _dotWidth;
 
-			w.SvgStartGroup(CSSObjectClass.repeatEndBarline.ToString());
-			DrawLines(w, thinLeftLineOriginX, thickRightLineOriginX, barlineTopY, barlineBottomY);
+			w.SvgStartGroup(CSSObjectClass.repeatEnd.ToString());
+			DrawLines(w, thinLeftLineOriginX, thickRightLineOriginX, topY, bottomY);
 			if(drawDots)
 			{
 				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, dotsX);
@@ -129,7 +129,7 @@ namespace Moritz.Symbols
 			return "repeatEnd: ";
 		}
 
-		// RepeatEndBarline: dots, thin, thick
+		// RepeatEnd: dots, thin, thick
 		public override void CreateMetrics(Graphics graphics)
 		{
 			double leftEdgeReOriginX = (ThickStrokeWidth / 2F) - DoubleBarPadding - ThinStrokeWidth - DoubleBarPadding - _dotWidth;
@@ -147,7 +147,7 @@ namespace Moritz.Symbols
 	}
 
 	/// <summary>
-	/// A RepeatSymbol consisting of: dots, thinBarline, thickBarline, thinBarline, dots.
+	/// A RepeatSymbol consisting of: dots, thin line, thick line, thin line, dots.
 	/// The dots are only printed if the symbol crosses a staff.
 	/// OriginX is the thick line's x-coordinate.
 	/// </summary>
@@ -159,31 +159,31 @@ namespace Moritz.Symbols
 		}
 
 		/// <summary>
-		/// Writes out the barline's vertical line(s).
-		/// May be called twice per staff.barline:
-		///     1. for the range between top and bottom stafflines (if Barline.Visible is true)
+		/// Writes out the vertical lines and dots.
+		/// May be called twice per staff:
+		///     1. for the range between top and bottom stafflines
 		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (if the staff's lower neighbour is in the same group)
+		///        (The drawDots argument will be false in this case.)
 		/// </summary>
 		/// <param name="w"></param>
 		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
 		{
-			double barlineTopY = TopY(topStafflineY, isEndOfSystem);
-			double barlineBottomY = BottomY(bottomStafflineY, isEndOfSystem);
+			double topY = TopY(topStafflineY, isEndOfSystem);
+			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
 			double thickMiddleLineOriginX = Metrics.OriginX;
 			double thinLeftLineOriginX = thickMiddleLineOriginX - (ThickStrokeWidth / 2F) - DoubleBarPadding - (ThinStrokeWidth / 2F);
 			double thinRightLineOriginX = thickMiddleLineOriginX + (ThickStrokeWidth / 2F) + DoubleBarPadding + (ThinStrokeWidth / 2F);
 			double leftDotsX = thinLeftLineOriginX - (ThinStrokeWidth / 2F) - DoubleBarPadding - _dotWidth;
 			double rightDotsX = thinRightLineOriginX + (ThinStrokeWidth / 2F) + DoubleBarPadding;
 
-			w.SvgStartGroup(CSSObjectClass.repeatEndBeginBarline.ToString());
-			DrawLines(w, thinLeftLineOriginX, thickMiddleLineOriginX, barlineTopY, barlineBottomY);
+			w.SvgStartGroup(CSSObjectClass.repeatEndBegin.ToString());
+			DrawLines(w, thinLeftLineOriginX, thickMiddleLineOriginX, topY, bottomY);
 			if(drawDots)
 			{
 				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, leftDotsX);
 				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, rightDotsX);
 			}
-			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, barlineTopY, thinRightLineOriginX, barlineBottomY);
+			w.SvgLine(CSSObjectClass.thinBarline, thinRightLineOriginX, topY, thinRightLineOriginX, bottomY);
 			w.SvgEndGroup();
 		}
 
@@ -192,7 +192,7 @@ namespace Moritz.Symbols
 			return "repeatEndBegin: ";
 		}
 
-		// RepeatEndBeginBarline: dots, thin, thick, thin, dots
+		// RepeatEndBegin: dots, thin, thick, thin, dots
 		public override void CreateMetrics(Graphics graphics)
 		{
 			double rightEdgeReOriginX = DoubleBarPadding + ThinStrokeWidth + DoubleBarPadding + _dotWidth;

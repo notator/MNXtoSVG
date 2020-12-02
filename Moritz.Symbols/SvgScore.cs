@@ -1311,19 +1311,19 @@ namespace Moritz.Symbols
                         M.Assert(noteObjects.Count > 0
                             && !(noteObjects[noteObjects.Count - 1] is Barline));
 
-                        if(bars[systemIndex].RepeatBeginBarline || bars[systemIndex].RepeatEndBarline)
+                        if(bars[systemIndex].RepeatBegin || bars[systemIndex].RepeatEnd)
                         {
                             usingMNXrepeats = true;
                         }
 
-                        if(bars[systemIndex].RepeatBeginBarline)
+                        if(bars[systemIndex].RepeatBegin)
                         {
                             var repeatBegin = new RepeatBegin(voice);
                             var index = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)) && (!(noteObject is KeySignature)) && (!(noteObject is TimeSignature)));
                             noteObjects.Insert(index, repeatBegin);
                         }
 
-                        if(bars[systemIndex].RepeatEndBarline)
+                        if(bars[systemIndex].RepeatEnd)
                         {
                             var repeatEnd = new RepeatEnd(voice);
                             noteObjects.Add(repeatEnd);
@@ -1378,7 +1378,7 @@ namespace Moritz.Symbols
         /// <summary>
         /// When this function is called, every system still contains one bar, and all systems have the same number
         /// of staves and voices as System[0]. Now:
-        /// 1. add a NormalBarline, RepeatBeginBarline, RepeatEndBarline or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
+        /// 1. add a NormalBarline, RepeatBegin, RepeatEnd or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
         /// 2. join the bars into systems according to the user's options, setting RepeatBarlines as necessary...
         /// 3. set the visibility of naturals (if the chords have any noteheads)
         /// 4. add a barnumber to the first barline on each system.

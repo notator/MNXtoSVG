@@ -75,11 +75,11 @@ namespace MNX.Common
         }
 
         /// <summary>
-        /// Item1 in each Tuple is RepeatBeginBarline (true or false)
-        /// Item2 in each Tuple is RepeatEndBarline (true or false) 
+        /// Item1 in each Tuple is RepeatBegin (true or false)
+        /// Item2 in each Tuple is RepeatEnd (true or false) 
         /// </summary>
         /// <returns></returns>
-        public List<Tuple<bool, bool>> GetGlobalRepeatBarlineTypesPerMeasure()
+        public List<Tuple<bool, bool>> GetGlobalRepeatTypesPerMeasure()
         {
             var rval = new List<Tuple<bool, bool>>();
             for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)
@@ -92,7 +92,7 @@ namespace MNX.Common
                 }
                 else
                 {
-                    measureData = new Tuple<bool, bool>(directions.RepeatBeginBarline, directions.RepeatEndBarline);
+                    measureData = new Tuple<bool, bool>(directions.RepeatBegin, directions.RepeatEnd);
                 }
 
                 rval.Add(measureData);

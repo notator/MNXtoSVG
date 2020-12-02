@@ -54,10 +54,7 @@ namespace Moritz.Symbols
             var bars = new List<Bar>();
             List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
 
-            List<Tuple<bool, bool>> repeatBarlineTypesPerMeasure = mnxCommon.Global.GetGlobalRepeatBarlineTypesPerMeasure();
-
-
-
+            List<Tuple<bool, bool>> repeatTypesPerMeasure = mnxCommon.Global.GetGlobalRepeatTypesPerMeasure();
             
             var midiChannelsPerStaff = M.PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;
@@ -96,8 +93,8 @@ namespace Moritz.Symbols
                     }
                 }
                 Seq seq = new Seq(seqMsPositionInScore, trks, midiChannelIndexPerOutputVoice);
-                var repeatBarlineTypes = repeatBarlineTypesPerMeasure[measureIndex];
-                Bar bar = new Bar(seq, repeatBarlineTypes);
+                var repeatTypes = repeatTypesPerMeasure[measureIndex];
+                Bar bar = new Bar(seq, repeatTypes);
                 bars.Add(bar);
                 seqMsPositionInScore += seq.MsDuration;
             }

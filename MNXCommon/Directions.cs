@@ -15,8 +15,8 @@ namespace MNX.Common
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
-        public bool RepeatBeginBarline { get; private set; } = false;
-        public bool RepeatEndBarline { get; private set; } = false;
+        public bool RepeatBegin { get; private set; } = false;
+        public bool RepeatEnd { get; private set; } = false;
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -128,10 +128,10 @@ namespace MNX.Common
                     switch(r.Value)
                     {
                         case "start":
-                            RepeatBeginBarline = true;
+                            RepeatBegin = true;
                             break;
                         case "end":
-                            RepeatEndBarline = true;
+                            RepeatEnd = true;
                             break;
                         default:
                             M.ThrowError("Unknown repeat type.");

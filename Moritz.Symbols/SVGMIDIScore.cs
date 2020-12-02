@@ -54,7 +54,7 @@ namespace Moritz.Symbols
             var bars = new List<Bar>();
             List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
 
-            List<Tuple<bool, bool>> repeatTypesPerMeasure = mnxCommon.Global.GetGlobalRepeatTypesPerMeasure();
+            List<Tuple<bool, bool, string>> repeatTypesPerMeasure = mnxCommon.Global.GetGlobalRepeatTypesPerMeasure();
             
             var midiChannelsPerStaff = M.PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;

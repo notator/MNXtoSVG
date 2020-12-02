@@ -17,6 +17,8 @@ namespace MNX.Common
         public readonly OctaveShift OctaveShift;
         public bool RepeatBegin { get; private set; } = false;
         public bool RepeatEnd { get; private set; } = false;
+        public string RepeatTimes { get; private set; } = null;
+
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -123,21 +125,34 @@ namespace MNX.Common
             for(int i = 0; i < count; i++)
             {
                 r.MoveToAttribute(i);
-                if(r.Name == "type")
-                { 
-                    switch(r.Value)
+                switch(r.Name)
+                {
+                    case "type":
                     {
-                        case "start":
-                            RepeatBegin = true;
-                            break;
-                        case "end":
-                            RepeatEnd = true;
-                            break;
-                        default:
-                            M.ThrowError("Unknown repeat type.");
-                            break;
+                        switch(r.Value)
+                        {
+                            case "start":
+                                RepeatBegin = true;
+                                break;
+                            case "end":
+                                RepeatEnd = true;
+                                break;
+                            default:
+                                M.ThrowError("Unknown repeat type.");
+                                break;
 
+                        }
+                        break;
                     }
+                    case "times":
+                    {
+                        M.Assert(int.TryParse(r.Value, out _));
+                        RepeatTimes = r.Value;
+                        break;
+                    }
+                    default:
+                        M.ThrowError("Unknown repeat attribute.");
+                        break;
                 }
             }
         }

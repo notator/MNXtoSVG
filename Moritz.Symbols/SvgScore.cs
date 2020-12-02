@@ -423,6 +423,14 @@ namespace Moritz.Symbols
 				StringBuilder smallClefXStyle = TextStyle("." + CSSObjectClass.smallClefX.ToString(), "", smallClefXFontHeight, "");
                 fontStyles.Append(smallClefXStyle);
             }
+            if(usedCSSObjectClasses.Contains(CSSObjectClass.repeatTimes))
+            {
+                string repeatTimesStringFontHeight = M.DoubleToShortString(pageFormat.RepeatTimesStringFontHeight);
+                StringBuilder repeatTimesInfoHeight = TextStyle("." + CSSObjectClass.repeatTimes.ToString(), "", repeatTimesStringFontHeight,
+                    SVGFontWeight.bold.ToString(), "", "");
+
+                fontStyles.Append(repeatTimesInfoHeight);
+            }
             #endregion Arial
 
             #region Open Sans Condensed (ornament)
@@ -579,6 +587,10 @@ namespace Moritz.Symbols
             if(usedCSSClasses.Contains(CSSObjectClass.octaveShiftExtender))
             {
                 ExtendRval(rval, "." + CSSObjectClass.octaveShiftExtenderText.ToString());
+            }
+            if(usedCSSClasses.Contains(CSSObjectClass.repeatTimes))
+            {
+                ExtendRval(rval, "." + CSSObjectClass.repeatTimes.ToString());
             }
 
             return rval;
@@ -1331,7 +1343,7 @@ namespace Moritz.Symbols
 
                         if(bars[systemIndex].RepeatEnd)
                         {
-                            var repeatEnd = new RepeatEnd(voice);
+                            var repeatEnd = new RepeatEnd(voice, bars[systemIndex].RepeatTimes);
                             noteObjects.Add(repeatEnd);
                         }                                    
 

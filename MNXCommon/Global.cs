@@ -76,23 +76,24 @@ namespace MNX.Common
 
         /// <summary>
         /// Item1 in each Tuple is RepeatBegin (true or false)
-        /// Item2 in each Tuple is RepeatEnd (true or false) 
+        /// Item2 in each Tuple is RepeatEnd (true or false)
+        /// Item3 in each Tuple is RepeatTimes (a string that is int.ToString())
         /// </summary>
         /// <returns></returns>
-        public List<Tuple<bool, bool>> GetGlobalRepeatTypesPerMeasure()
+        public List<Tuple<bool, bool, string>> GetGlobalRepeatTypesPerMeasure()
         {
-            var rval = new List<Tuple<bool, bool>>();
+            var rval = new List<Tuple<bool, bool, string>>();
             for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)
             {
-                Tuple<bool, bool> measureData;
+                Tuple<bool, bool, string> measureData;
                 Directions directions = Measures[measureIndex].Directions;
                 if(directions == null)
                 {
-                    measureData = new Tuple<bool, bool>(false, false);                    
+                    measureData = new Tuple<bool, bool, string>(false, false, null);                    
                 }
                 else
                 {
-                    measureData = new Tuple<bool, bool>(directions.RepeatBegin, directions.RepeatEnd);
+                    measureData = new Tuple<bool, bool, string>(directions.RepeatBegin, directions.RepeatEnd, directions.RepeatTimes);
                 }
 
                 rval.Add(measureData);

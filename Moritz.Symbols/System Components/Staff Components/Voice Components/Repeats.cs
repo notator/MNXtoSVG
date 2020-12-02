@@ -93,9 +93,10 @@ namespace Moritz.Symbols
 	/// </summary>
 	public class RepeatEnd : RepeatSymbol
 	{
-		public RepeatEnd(Voice voice)
+		public RepeatEnd(Voice voice, string timesStr)
 			: base(voice)
 		{
+			_timesStr = (timesStr != null) ? timesStr + "x" : null; // can be null
 		}
 
 		/// <summary>
@@ -120,6 +121,13 @@ namespace Moritz.Symbols
 			if(drawDots)
 			{
 				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, dotsX);
+				if(_timesTextMetrics != null)
+                {
+					var width = _timesTextMetrics.Right - _timesTextMetrics.Left;
+					_timesTextMetrics.Move(thickRightLineOriginX - _timesTextMetrics.Right - (width * 0.6),
+						topStafflineY - Gap - _timesTextMetrics.Bottom);
+					_timesTextMetrics.WriteSVG(w);
+                }
 			}
 			w.SvgEndGroup();
 		}
@@ -138,12 +146,25 @@ namespace Moritz.Symbols
 			Metrics = new BRMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
 			((BRMetrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
-		}
 
+			if(_timesStr != null)
+			{
+				var timesText = new RepeatTimesText(this, _timesStr, M.PageFormat.RepeatTimesStringFontHeight);
+				_timesTextMetrics = new TextMetrics(CSSObjectClass.repeatTimes, graphics, timesText.TextInfo);
+
+				var ttHeight = _timesTextMetrics.Bottom - _timesTextMetrics.Top;
+				((BRMetrics)Metrics).SetTop(Metrics.Top - ttHeight - Gap);
+
+				this.DrawObjects.Add(timesText);
+			}
+		}
 
 		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
 		{
 		}
+
+		private readonly string _timesStr = null;
+		private TextMetrics _timesTextMetrics = null;
 	}
 
 	/// <summary>

@@ -529,8 +529,16 @@ namespace Moritz.Symbols
 					}
                     #endregion
 
-                    NoteObjectMoment endMoment = new NoteObjectMoment(this.AbsEndMsPosition);
-                    dict.Add(this.AbsEndMsPosition, endMoment);
+                    NoteObjectMoment endMoment;
+                    if(!dict.ContainsKey(this.AbsEndMsPosition))
+                    {
+                        endMoment = new NoteObjectMoment(this.AbsEndMsPosition);
+                        dict.Add(this.AbsEndMsPosition, endMoment);
+                    }
+                    else
+                    {
+                        endMoment = dict[AbsEndMsPosition];
+                    }
 
                     if(clef != null) // final clef
                     {

@@ -329,6 +329,11 @@ namespace Moritz.Symbols
             return sb.ToString();
         }
 
+        public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
+        {
+            ChordMetrics.AddToEdge(horizontalEdge);
+        }
+
         public MidiChordDef MidiChordDef { get { return _midiChordDef; } }
         protected MidiChordDef _midiChordDef = null;
     }

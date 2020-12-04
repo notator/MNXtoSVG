@@ -10,7 +10,7 @@ namespace Moritz.Symbols
 	/// <summary>
 	/// DurationSymbols are NoteObjects which have a logical width (and symbolize a duration)
 	/// </summary>
-	public abstract class DurationSymbol : AnchorageSymbol 
+	public abstract class DurationSymbol : Anchor 
     {
         /// <summary>
         /// Used by MNX.Common

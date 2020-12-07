@@ -144,32 +144,28 @@ namespace Moritz.Symbols
         {
             foreach(Voice voice in staff.Voices)
             {
-                var noteObjects = voice.NoteObjects;
-                var nonAnchors = noteObjects.FindAll(obj => (obj is Clef clef && clef.ClefType != "n") || obj is KeySignature || obj is TimeSignature);
-                foreach(var nonAnchor in nonAnchors)
+                foreach(NoteObject noteObject in voice.NoteObjects)
                 {
-                    Add(nonAnchor.Metrics);
-                }
-                // anchor objects in the order in which to add them to this HorizontalEdge.
-                // Anchors are symbols that have drawObjects that may need special attention.
-                var durationSymbols = noteObjects.FindAll(obj => obj is DurationSymbol); // all chord and rest types
-                foreach(DurationSymbol durationSymbol in durationSymbols)
-                {
-                    // anchor.AddMetricsToEdge(this, staff.Metrics.StafflinesTop, staff.Metrics.StafflinesBottom);
-                    durationSymbol.AddMetricsToEdge(this);
-                }
-                var repeatSymbols = noteObjects.FindAll(obj => obj is RepeatSymbol);
-                foreach(RepeatSymbol repeatSymbol in repeatSymbols)
-                {
-                    // anchor.AddMetricsToEdge(this, staff.Metrics.StafflinesTop, staff.Metrics.StafflinesBottom);
-                    repeatSymbol.AddMetricsToEdge(this);
-                }
-                var barlines = noteObjects.FindAll(obj => obj is Barline); // Barnumber is placed above repeat.DrawObjects (if any)
-                foreach(Barline barline in barlines)
-                {
-                    // anchor.AddMetricsToEdge(this, staff.Metrics.StafflinesTop, staff.Metrics.StafflinesBottom);
-                    barline.AddMetricsToEdge(this);
-                }
+					Clef clef = noteObject as Clef;
+
+					if(noteObject is OutputChordSymbol chordSymbol)
+					{
+						chordSymbol.ChordMetrics.AddToEdge(this);
+					}
+					else if(clef != null && clef.ClefType != "n")
+					{
+						Add(clef.Metrics);
+					}
+					else
+					{
+						Add(noteObject.Metrics);
+					}
+
+					if(noteObject is Barline barline)
+					{
+						barline.AddMetricsToEdge(this);						
+					}
+				}
             }
 
             foreach(Extender extender in staff.Extenders)

@@ -1968,21 +1968,21 @@ namespace Moritz.Symbols
             return maxOverlapWidth;
 
         }
-        public new double OverlapWidth(Anchor previousAnchor)
+        public new double OverlapWidth(AnchorageSymbol previousAnchorageSymbol)
         {
             double maxOverlapWidth = double.MinValue;
             double overlap = 0;
             #region _stemMetrics
             if(_stemMetrics != null)
             {
-                overlap = _stemMetrics.OverlapWidth(previousAnchor);
+                overlap = _stemMetrics.OverlapWidth(previousAnchorageSymbol);
                 maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
             }
             #endregion
             #region _flagsBlockMetrics
             if(_flagsMetrics != null)
             {
-                overlap = _flagsMetrics.OverlapWidth(previousAnchor);
+                overlap = _flagsMetrics.OverlapWidth(previousAnchorageSymbol);
                 maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
             }
             #endregion
@@ -1991,7 +1991,7 @@ namespace Moritz.Symbols
             {
                 foreach(HeadMetrics headMetric in _headsMetricsTopDown)
                 {
-                    overlap = headMetric.OverlapWidth(previousAnchor);
+                    overlap = headMetric.OverlapWidth(previousAnchorageSymbol);
                     maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
                 }
             }
@@ -2001,7 +2001,7 @@ namespace Moritz.Symbols
             {
                 foreach(AccidentalMetrics accidentalMetric in _accidentalsMetricsTopDown)
                 {
-                    overlap = accidentalMetric.OverlapWidth(previousAnchor);
+                    overlap = accidentalMetric.OverlapWidth(previousAnchorageSymbol);
                     maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
                 }
             }
@@ -2009,12 +2009,12 @@ namespace Moritz.Symbols
             #region _ledgerlineBlocksMetrics
             if(_upperLedgerlineBlockMetrics != null)
             {
-                overlap = _upperLedgerlineBlockMetrics.OverlapWidth(previousAnchor);
+                overlap = _upperLedgerlineBlockMetrics.OverlapWidth(previousAnchorageSymbol);
                 maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
             }
             if(_lowerLedgerlineBlockMetrics != null)
             {
-                overlap = _lowerLedgerlineBlockMetrics.OverlapWidth(previousAnchor);
+                overlap = _lowerLedgerlineBlockMetrics.OverlapWidth(previousAnchorageSymbol);
                 maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
             }
             #endregion
@@ -2023,7 +2023,7 @@ namespace Moritz.Symbols
             {
                 foreach(CautionaryBracketMetrics cautionaryBracketMetrics in _cautionaryBracketsMetrics)
                 {
-                    overlap = cautionaryBracketMetrics.OverlapWidth(previousAnchor);
+                    overlap = cautionaryBracketMetrics.OverlapWidth(previousAnchorageSymbol);
                     maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
                 }
             }
@@ -2031,26 +2031,26 @@ namespace Moritz.Symbols
             #region _ornamentMetrics
             if(_ornamentMetrics != null)
             {
-                overlap = _ornamentMetrics.OverlapWidth(previousAnchor);
+                overlap = _ornamentMetrics.OverlapWidth(previousAnchorageSymbol);
                 maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
             }
             #endregion
             #region _lyricMetrics
             if(_lyricMetrics != null)
             {
-                overlap = _lyricMetrics.OverlapWidth(previousAnchor);
+                overlap = _lyricMetrics.OverlapWidth(previousAnchorageSymbol);
                 maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
             }
             #endregion
             #region _dynamicMetrics
             if(_dynamicMetrics != null)
             {
-                overlap = _dynamicMetrics.OverlapWidth(previousAnchor);
+                overlap = _dynamicMetrics.OverlapWidth(previousAnchorageSymbol);
                 maxOverlapWidth = maxOverlapWidth > overlap ? maxOverlapWidth : overlap;
             }
             #endregion
             #region NoteheadExtendersMetrics
-            // NoteheadExtenders never overlap the previousAnchor,
+            // NoteheadExtenders never overlap the previousAnchorageSymbol,
             // and should only be created after JustifyHorizontally() anyway.
             // They should be null here.
             M.Assert(NoteheadExtendersMetrics == null);

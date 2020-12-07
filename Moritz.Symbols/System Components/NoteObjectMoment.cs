@@ -291,13 +291,13 @@ namespace Moritz.Symbols
             _noteObjects.Add(noteObject);
         }
 
-        public IEnumerable Anchors
+        public IEnumerable AnchorageSymbols
         {
             get
             {
                 foreach(NoteObject noteObject in _noteObjects)
                 {
-					if(noteObject is Anchor anchorageSymbol)
+					if(noteObject is AnchorageSymbol anchorageSymbol)
 						yield return anchorageSymbol;
 				}
             }

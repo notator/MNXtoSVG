@@ -109,7 +109,7 @@ namespace Moritz.Symbols
 		/// The result can be 0, if previousMetrics.Right = this.Metrics.Left.
 		/// If there is no overlap, double.MinValue is returned.
 		/// </summary>
-		public double OverlapWidth(Anchor previousAS)
+		public double OverlapWidth(AnchorageSymbol previousAS)
 		{
 			double overlap = double.MinValue;
 

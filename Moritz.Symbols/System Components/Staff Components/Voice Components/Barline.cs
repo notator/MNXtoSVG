@@ -10,7 +10,7 @@ namespace Moritz.Symbols
 	/// <summary>
 	/// Base class for both Barline and RepeatSymbol
 	/// </summary>
-	public abstract class BRLine : Anchor
+	public abstract class BRLine : AnchorageSymbol
 	{
 		protected BRLine(Voice voice)
 			: base(voice)
@@ -29,7 +29,10 @@ namespace Moritz.Symbols
 
 		public abstract void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool writeDots);
 
+
 		public abstract void CreateMetrics(Graphics graphics);
+
+		public abstract void AddMetricsToEdge(HorizontalEdge horizontalEdge);
 
 		/// <summary>
 		/// Called by EndOfScoreBarline and Repeat types
@@ -426,8 +429,6 @@ namespace Moritz.Symbols
 
 		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
 		{
-			// nothing to do here since there are no drawObjects
-			M.Assert(DrawObjects.Count == 0);
 		}
 	}
 

@@ -425,7 +425,7 @@ namespace Moritz.Symbols
         {
             double overlap = double.MinValue;
             double localOverlap = 0;
-            foreach(AnchorageSymbol previousAS in previousNOM.AnchorageSymbols)
+            foreach(Anchor previousAS in previousNOM.Anchors)
             {
 				//if(this is Study2b2ChordSymbol)
 				//	localOverlap = Metrics.OverlapWidth(previousAS);

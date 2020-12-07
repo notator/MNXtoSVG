@@ -325,13 +325,13 @@ namespace Moritz.Symbols
         }
 
         #region Enumerators
-        public IEnumerable AnchorageSymbols
+        public IEnumerable Anchors
         {
             get
             {
                 foreach(NoteObject noteObject in NoteObjects)
                 {
-                    if(noteObject is AnchorageSymbol iHasDrawObjects)
+                    if(noteObject is Anchor iHasDrawObjects)
                         yield return iHasDrawObjects;
                 }
             }

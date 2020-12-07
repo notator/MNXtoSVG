@@ -6,16 +6,16 @@ using MNX.Globals;
 namespace Moritz.Symbols
 {
     /// <summary>
-    /// AnchorageSymbols can have a list of attached DrawObjects.
+    /// Anchors can have a list of attached DrawObjects.
     /// </summary>
-    public abstract class AnchorageSymbol : NoteObject
+    public abstract class Anchor : NoteObject
     {
-        public AnchorageSymbol(Voice voice)
+        public Anchor(Voice voice)
             : base(voice)
         {
         }
 
-        public AnchorageSymbol(Voice voice, double fontHeight)
+        public Anchor(Voice voice, double fontHeight)
             : base(voice, fontHeight)
         {
         }
@@ -85,5 +85,7 @@ namespace Moritz.Symbols
             #endregion get dynamicString and _dynamic
             return dynamicString;
         }
+
+        public abstract void AddMetricsToEdge(HorizontalEdge horizontalEdge);
     }
 }

@@ -25,6 +25,11 @@ namespace Moritz.Symbols
 			w.SvgText(CSSObjectClass.dot, ".", dotsX, lowerDotOriginY);
 		}
 
+		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
+		{
+			horizontalEdge.Add(Metrics);
+		}
+
 		protected readonly double _dotWidth;
 	}
 
@@ -79,10 +84,6 @@ namespace Moritz.Symbols
 			Metrics = new BRMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 
 			((BRMetrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
-		}
-
-		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
-		{
 		}
 	}
 
@@ -159,10 +160,6 @@ namespace Moritz.Symbols
 			}
 		}
 
-		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
-		{
-		}
-
 		private readonly string _timesStr = null;
 		private TextMetrics _timesTextMetrics = null;
 	}
@@ -222,10 +219,6 @@ namespace Moritz.Symbols
 
 			((BRMetrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
 			((BRMetrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
-		}
-
-		public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
-		{
 		}
 	}
 }

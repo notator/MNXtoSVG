@@ -1,9 +1,8 @@
-using System.Drawing;
-
 using MNX.Globals;
 
 using Moritz.Xml;
 
+using System.Drawing;
 
 namespace Moritz.Symbols
 {
@@ -31,7 +30,7 @@ namespace Moritz.Symbols
 		}
 
 		protected readonly double _dotWidth;
-	}
+    }
 
 	/// <summary>
 	/// A RepeatSymbol consisting of: thick line, thin line, dots.
@@ -85,7 +84,7 @@ namespace Moritz.Symbols
 
 			((BRMetrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
 		}
-	}
+    }
 
 	/// <summary>
 	/// A RepeatSymbol consisting of: dots, thin line, thick line.
@@ -122,14 +121,13 @@ namespace Moritz.Symbols
 			if(drawDots)
 			{
 				DrawDots(w, topStafflineY, M.PageFormat.GapVBPX, dotsX);
-				if(_timesTextMetrics != null)
-                {
-					var width = _timesTextMetrics.Right - _timesTextMetrics.Left;
-					_timesTextMetrics.Move(thickRightLineOriginX - _timesTextMetrics.Right - (width * 0.6),
-						topStafflineY - Gap - _timesTextMetrics.Bottom);
-					_timesTextMetrics.WriteSVG(w);
-                }
 			}
+
+			foreach(var drawObject in DrawObjects)
+			{
+				drawObject.Metrics.WriteSVG(w);
+			}
+
 			w.SvgEndGroup();
 		}
 
@@ -144,24 +142,32 @@ namespace Moritz.Symbols
 			double leftEdgeReOriginX = (ThickStrokeWidth / 2F) - DoubleBarPadding - ThinStrokeWidth - DoubleBarPadding - _dotWidth;
 			double rightEdgeReOriginX = (ThickStrokeWidth / 2F);
 
-			Metrics = new BRMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
+			BRMetrics brMetrics = new BRMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thickBarline, CSSObjectClass.thinBarline);
 
-			((BRMetrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
+			brMetrics.SetLeft(brMetrics.Left - _dotWidth - DoubleBarPadding);
 
+			RepeatTimesText timesText = null;
 			if(_timesStr != null)
 			{
-				var timesText = new RepeatTimesText(this, _timesStr, M.PageFormat.RepeatTimesStringFontHeight);
-				_timesTextMetrics = new TextMetrics(CSSObjectClass.repeatTimes, graphics, timesText.TextInfo);
+				timesText = new RepeatTimesText(this, _timesStr, M.PageFormat.RepeatTimesStringFontHeight);
+				timesText.Metrics = new TextMetrics(CSSObjectClass.repeatTimes, graphics, timesText.TextInfo);
 
-				var ttHeight = _timesTextMetrics.Bottom - _timesTextMetrics.Top;
-				((BRMetrics)Metrics).SetTop(Metrics.Top - ttHeight - Gap);
+				// Set the timesText's default position wrt its anchor here
+				// (it can be moved again later using drawObject.Metrics).
+				var width = timesText.Metrics.Right - timesText.Metrics.Left;
+				var deltaX = brMetrics.OriginX  - (width * 0.6);
+				var deltaY = brMetrics.Top - timesText.Metrics.Bottom - Gap;
+
+				timesText.Metrics.Move(deltaX, deltaY);
 
 				this.DrawObjects.Add(timesText);
 			}
+
+			// Note that the AnchorMetrics are used for both horizontal and vertical collision checking.
+			Metrics = new AnchorMetrics(brMetrics, DrawObjects);
 		}
 
 		private readonly string _timesStr = null;
-		private TextMetrics _timesTextMetrics = null;
 	}
 
 	/// <summary>
@@ -220,5 +226,5 @@ namespace Moritz.Symbols
 			((BRMetrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
 			((BRMetrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
 		}
-	}
+    }
 }

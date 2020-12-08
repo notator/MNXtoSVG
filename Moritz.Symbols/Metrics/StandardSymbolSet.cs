@@ -432,7 +432,6 @@ namespace Moritz.Symbols
                 returnMetrics = repeatSymbol.Metrics;
             }
 
-
             return returnMetrics;
         }
 

@@ -110,6 +110,7 @@
     <None Include="MNX_in\mnx\_17_slurincomplete.mnx" />
     <None Include="MNX_in\mnx\_18_parts.mnx" />
     <None Include="MNX_in\mnx\_21_repeatsmorethanonce.mnx" />
+    <None Include="MNX_in\mnx\_23a_repeatsmidmeasure.mnx" />
     <None Include="MNX_in\mnx\_25_jumpsdalsegnoalfine.mnx" />
     <None Include="MNX_in\mnx\_24_jumpsdalsegno.mnx" />
     <None Include="MNX_in\mnx\_23_repeatsadvancedalternateendings.mnx" />

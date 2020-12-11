@@ -63,6 +63,7 @@
     <Compile Include="Sequence.cs" />
     <Compile Include="SlurDef.cs" />
     <Compile Include="Tied.cs" />
+    <Compile Include="Repeat.cs" />
     <Compile Include="TimeSignature.cs" />
     <Compile Include="TupletDef.cs" />
     <Compile Include="CurrentTupletLevel.cs" />

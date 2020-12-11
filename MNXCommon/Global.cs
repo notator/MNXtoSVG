@@ -75,28 +75,29 @@ namespace MNX.Common
         }
 
         /// <summary>
-        /// Item1 in each Tuple is RepeatBegin (true or false)
-        /// Item2 in each Tuple is RepeatEnd (true or false)
-        /// Item3 in each Tuple is RepeatTimes (a string that is int.ToString())
+        /// Returns a list of Repeat objects per measure.
+        /// Each list contains repeat objects in order of their ticks position.
         /// </summary>
         /// <returns></returns>
-        public List<Tuple<bool, bool, string>> GetGlobalRepeatTypesPerMeasure()
+        public List<List<Repeat>> GetRepeatSymbolsPerMeasure()
         {
-            var rval = new List<Tuple<bool, bool, string>>();
+            var rval = new List<List<Repeat>>();
             for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)
             {
-                Tuple<bool, bool, string> measureData;
-                Directions directions = Measures[measureIndex].Directions;
-                if(directions == null)
+                var measureList = new List<Repeat>();
+                rval.Add(measureList);
+                var directions = Measures[measureIndex].Directions;
+                if(directions != null)
                 {
-                    measureData = new Tuple<bool, bool, string>(false, false, null);                    
+                    SortedList<Repeat,int> sortedRepeats = directions.Repeats;
+                    if(sortedRepeats != null)
+                    {
+                        foreach(var repeat in sortedRepeats)
+                        {
+                            measureList.Add(repeat.Key);
+                        }
+                    }
                 }
-                else
-                {
-                    measureData = new Tuple<bool, bool, string>(directions.RepeatBegin, directions.RepeatEnd, directions.RepeatTimes);
-                }
-
-                rval.Add(measureData);
             }
             return rval;
         }

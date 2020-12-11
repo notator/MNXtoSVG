@@ -78,10 +78,7 @@ namespace MNX.Common
                         Short = ShortTieOrSlur.outgoing;
                         break;
                     default:
-                        if(value.IndexOf('.') >= 0)
-                        {
-                            Position = new MNXDurationSymbol(value, C.CurrentTupletLevel);
-                        }
+                        Position = new MNXDurationSymbol(value, C.CurrentTupletLevel);
                         break;
                 }
             }

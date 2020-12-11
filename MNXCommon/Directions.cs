@@ -1,8 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using MNX.Globals;
+
 using System.Collections.Generic;
 using System.Xml;
-using MNX.Globals;
 
 namespace MNX.Common
 {
@@ -15,10 +14,9 @@ namespace MNX.Common
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
-        public bool RepeatBegin { get; private set; } = false;
-        public bool RepeatEnd { get; private set; } = false;
-        public string RepeatTimes { get; private set; } = null;
-
+        // A measure can contain any number of Repeat symbols (having either IsBegin == true or IsBegin == false).
+        // They are kept here in order of their PositionInMeasure.Ticks. 
+        public readonly SortedList<Repeat, int> Repeats;
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -101,7 +99,12 @@ namespace MNX.Common
                             {
                                 M.ThrowError("Error: the repeat element must be global.");
                             }
-                            SetRepeatBarlineTypes(r);
+                            if(Repeats == null)
+                            {
+                                Repeats = new SortedList<Repeat, int>();
+                            }
+                            var rep = new Repeat(r);
+                            Repeats.Add(rep, rep.PositionInMeasure.Ticks);
                             break;
                         case "ending":
                             if(isGlobal == false)
@@ -114,47 +117,8 @@ namespace MNX.Common
                 }
                 M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "ending", "directions");
             }
+
             M.Assert(r.Name == "directions"); // end of "directions"
-        }
-
-        private void SetRepeatBarlineTypes(XmlReader r)
-        {
-            M.Assert(r.Name == "repeat");
-
-            int count = r.AttributeCount;
-            for(int i = 0; i < count; i++)
-            {
-                r.MoveToAttribute(i);
-                switch(r.Name)
-                {
-                    case "type":
-                    {
-                        switch(r.Value)
-                        {
-                            case "start":
-                                RepeatBegin = true;
-                                break;
-                            case "end":
-                                RepeatEnd = true;
-                                break;
-                            default:
-                                M.ThrowError("Unknown repeat type.");
-                                break;
-
-                        }
-                        break;
-                    }
-                    case "times":
-                    {
-                        M.Assert(int.TryParse(r.Value, out _));
-                        RepeatTimes = r.Value;
-                        break;
-                    }
-                    default:
-                        M.ThrowError("Unknown repeat attribute.");
-                        break;
-                }
-            }
         }
     }
 }

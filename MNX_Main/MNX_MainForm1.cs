@@ -12,6 +12,7 @@ namespace MNX.Main
         private readonly List<Tuple<string, string>> _MNX_Form1Data_Paths = new List<Tuple<string, string>>();
         private bool _settingsHaveChanged = false;
         private int _numberOfMeasures; // the number of measures in the currently loaded MNX file
+        private MNX.Common.MNX mnx = null;
 
         public MNX_MainForm1()
         {
@@ -39,19 +40,15 @@ namespace MNX.Main
             }
             MNXSelect.SelectedIndex = 0;
             MNXSelect.ResumeLayout();
-
-            LoadSettings(MNXSelect.SelectedIndex);
         }
 
         private void WriteButton_Click(object sender, EventArgs e)
         {
-            string mnxDataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex].Item1;
             string form1DataPath = _MNX_Form1Data_Paths[MNXSelect.SelectedIndex].Item2;
 
             var form1StringData = new Form1StringData(form1DataPath);
             var form1Data = new Form1Data(form1StringData);
 
-            var mnx = new MNX.Common.MNX(mnxDataPath);
             SVGMIDIScore svgMIDIScore = new SVGMIDIScore(M.SVG_out_Folder, mnx, form1Data);
         }
 
@@ -65,7 +62,7 @@ namespace MNX.Main
 
         private void LoadSettings(int mnxSelectedIndex)
         {
-            var mnx = new MNX.Common.MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1);
+            mnx = new MNX.Common.MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1);
 
             _numberOfMeasures = mnx.NumberOfMeasures;
 

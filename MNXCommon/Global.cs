@@ -41,7 +41,7 @@ namespace MNX.Common
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     GlobalMeasure globalMeasure = new GlobalMeasure(r, measureIndex++, currentTimeSig, currentTicksPosInScore);
-                    currentTimeSig = (globalMeasure.GlobalDirections.TimeSignature != null) ? globalMeasure.GlobalDirections.TimeSignature : currentTimeSig;
+                    currentTimeSig = (globalMeasure.GlobalDirections != null && globalMeasure.GlobalDirections.TimeSignature != null) ? globalMeasure.GlobalDirections.TimeSignature : currentTimeSig;
                     currentTicksPosInScore += currentTimeSig.TicksDuration;
                     GlobalMeasures.Add(globalMeasure);
                 }
@@ -80,8 +80,10 @@ namespace MNX.Common
         }
 
         /// <summary>
-        /// Returns a list of Repeat objects per measure.
-        /// Each list contains repeat objects in order of their ticks position.
+        /// Returns a (non-null) list of Repeat objects per measure.
+        /// The list can contain 0 or more RepeatEnd and RepeatBegin symbols in order of their ticks position in the measure.
+        /// If two Repeats have the same ticksPosition, they will be in the order RepeatEnd, RepeatBegin.
+        /// The same ticksPosition cannot have more than two Repeats.
         /// </summary>
         /// <returns></returns>
         public List<List<Repeat>> GetRepeatSymbolsPerMeasure()
@@ -94,12 +96,12 @@ namespace MNX.Common
                 var directions = GlobalMeasures[measureIndex].GlobalDirections;
                 if(directions != null)
                 {
-                    SortedList<Repeat,int> sortedRepeats = directions.Repeats;
-                    if(sortedRepeats != null)
+                    List<Repeat> repeats = directions.Repeats;
+                    if(repeats != null)
                     {
-                        foreach(var repeat in sortedRepeats)
+                        foreach(var repeat in repeats)
                         {
-                            measureList.Add(repeat.Key);
+                            measureList.Add(repeat);
                         }
                     }
                 }

@@ -36,47 +36,48 @@ namespace MNX.Common
             TicksDuration = (currentTimeSig != null) ? currentTimeSig.TicksDuration : -1; // overridden below if the time sig changes.
             TicksPosInScore = ticksPosInScore; // ji: 13.12.2020
 
-            int count = r.AttributeCount;
-            for(int i = 0; i < count; i++)
+            if(!r.IsEmptyElement)
             {
-                r.MoveToAttribute(i);
-                switch(r.Name)
+                int count = r.AttributeCount;
+                for(int i = 0; i < count; i++)
                 {
-                    // The optional MNX-Common "index" attribute is always ignored.
-                    //case "index":
-                    //    Index = Int32.Parse(r.Value);
-                    //    M.Assert(Index > 0);
-                    //    break;
-                    case "number":
-                        Number = Int32.Parse(r.Value);
-                        M.Assert(Number > 0);
-                        break;
-                    case "barline":
-                        Barline = GetBarlineType(r.Value);
-                        break;
-                    default:
-                        throw new ApplicationException("Unknown attribute");
-                }
-            }
-
-            M.ReadToXmlElementTag(r, "directions");
-
-            while(r.Name == "directions")
-            {
-                if(r.NodeType != XmlNodeType.EndElement)
-                {
+                    r.MoveToAttribute(i);
                     switch(r.Name)
                     {
-                        case "directions":
-                            GlobalDirections = new GlobalDirections(r, ticksPosInScore);
-                            if(GlobalDirections.TimeSignature != null)
-                            {
-                                TicksDuration = GlobalDirections.TimeSignature.TicksDuration;
-                            }
+                        // The optional MNX-Common "index" attribute is always ignored.
+                        //case "index":
+                        //    Index = Int32.Parse(r.Value);
+                        //    M.Assert(Index > 0);
+                        //    break;
+                        case "number":
+                            Number = Int32.Parse(r.Value);
+                            M.Assert(Number > 0);
                             break;
+                        case "barline":
+                            Barline = GetBarlineType(r.Value);
+                            break;
+                        default:
+                            throw new ApplicationException("Unknown attribute");
                     }
                 }
-                M.ReadToXmlElementTag(r, "directions", "measure");
+
+                M.ReadToXmlElementTag(r, "directions");
+
+                while(r.Name == "directions")
+                {
+                    if(r.NodeType != XmlNodeType.EndElement)
+                    {
+                        switch(r.Name)
+                        {
+                            case "directions":
+                                GlobalDirections = new GlobalDirections(r, currentTimeSig, ticksPosInScore);
+                                currentTimeSig = (GlobalDirections.TimeSignature != null) ? GlobalDirections.TimeSignature : currentTimeSig;
+                                TicksDuration = currentTimeSig.TicksDuration;
+                                break;
+                        }
+                    }
+                    M.ReadToXmlElementTag(r, "directions", "measure");
+                }
             }
 
             M.Assert(r.Name == "measure"); // end of measure

@@ -15,9 +15,10 @@ namespace MNX.Common
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
-        // A measure can contain any number of Repeat symbols (having either IsBegin == true or IsBegin == false).
-        // They are kept here in order of their PositionInMeasure.Ticks. 
-        public readonly SortedList<Repeat, int> Repeats;
+        /// A measure can contain any number of RepeatEnd and RepeatBegin symbols.
+        /// They are kept here in order of their PositionInMeasure.Ticks.
+        /// If two Repeats have the same ticksPosition, they are kept in order RepeatEnd, RepeatBegin
+        public readonly List<Repeat> Repeats;
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -60,7 +61,7 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public GlobalDirections(XmlReader r, int ticksPosInScore)
+        public GlobalDirections(XmlReader r, TimeSignature currentTimeSignature, int ticksPosInScore)
         {
             M.Assert(r.Name == "directions");
 
@@ -80,6 +81,7 @@ namespace MNX.Common
                         case "time":
                             // https://w3c.github.io/mnx/specification/common/#the-time-element
                             TimeSignature = new TimeSignature(r, ticksPosInScore);
+                            currentTimeSignature = TimeSignature;
                             break;
                         case "clef":
                             Clef = new Clef(r, ticksPosInScore);
@@ -94,10 +96,10 @@ namespace MNX.Common
                         case "repeat":
                             if(Repeats == null)
                             {
-                                Repeats = new SortedList<Repeat, int>();
+                                Repeats = new List<Repeat>();
                             }
-                            Repeat rep = GetRepeat(r, TimeSignature);
-                            Repeats.Add(rep, rep.PositionInMeasure.Ticks);
+                            Repeat repeat = GetRepeat(r, currentTimeSignature);
+                            AddRepeatToRepeats(repeat, Repeats);
                             break;
                         case "ending":
                             // TODO
@@ -110,8 +112,53 @@ namespace MNX.Common
             M.Assert(r.Name == "directions"); // end of "directions"
         }
 
+        private void AddRepeatToRepeats(Repeat repeat, List<Repeat> repeats)
+        {
+            if(repeats.Count == 0)
+            {
+                repeats.Add(repeat);
+            }
+            else
+            {
+                int newTicksPos = repeat.PositionInMeasure.TickPositionInMeasure;
+                for(int i = 0; i < repeats.Count; ++i)
+                {
+                    int existingTicksPos = repeats[i].PositionInMeasure.TickPositionInMeasure;
+                    if(existingTicksPos < newTicksPos)
+                    {
+                        if(i == repeats.Count - 1)
+                        {
+                            repeats.Add(repeat);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else if(existingTicksPos == newTicksPos)
+                    {
+                        M.Assert((repeat is RepeatEnd && repeats[i] is RepeatBegin) || (repeat is RepeatBegin && repeats[i] is RepeatEnd));
+                        if(repeat is RepeatEnd)
+                        {
+                            repeats.Insert(i, repeat);
+                        }
+                        else
+                        {
+                            repeats.Insert(i + 1, repeat);
+                        }
+                        break;
+                    }
+                    else if(existingTicksPos > newTicksPos)
+                    {
+                        repeats.Insert(i, repeat);
+                        break;
+                    }
+                }
+            }
+        }
+
         // returns either a RepeatBegin or RepeatEnd
-        private Repeat GetRepeat(XmlReader r, TimeSignature timeSignature)
+        private Repeat GetRepeat(XmlReader r, TimeSignature currentTimeSignature)
         {
             M.Assert(r.Name == "repeat");
 
@@ -171,8 +218,8 @@ namespace MNX.Common
                 }
                 case false:
                 {
-                    M.Assert(TimeSignature != null, "TimeSignature must be known here.");
-                    rval = new RepeatEnd(PositionInMeasure, TimeSignature, Times);
+                    M.Assert(currentTimeSignature != null, "TimeSignature must be known here.");
+                    rval = new RepeatEnd(PositionInMeasure, currentTimeSignature, Times);
                     break;
                 }
                 default: // null

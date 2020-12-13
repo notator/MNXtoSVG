@@ -86,7 +86,7 @@ namespace MNX.Common
                             break;
                         case "measure":
                             GlobalDirections globalDirections = globalMeasures[measureIndex].GlobalDirections;
-                            currentTimeSig = (globalDirections.TimeSignature == null) ? currentTimeSig : globalDirections.TimeSignature;
+                            currentTimeSig = (globalDirections == null || globalDirections.TimeSignature == null) ? currentTimeSig : globalDirections.TimeSignature;
                             Measure measure = new Measure(r, measureIndex++, currentTimeSig, ticksPosInScore);
                             ticksPosInScore += currentTimeSig.TicksDuration;
                             Measures.Add(measure);

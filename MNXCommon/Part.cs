@@ -59,7 +59,7 @@ namespace MNX.Common
             }
         }
 
-        public Part(XmlReader r)
+        public Part(XmlReader r, List<GlobalMeasure> globalMeasures)
         {
             M.Assert(r.Name == "part");
             // https://w3c.github.io/mnx/specification/common/#the-part-element
@@ -67,6 +67,7 @@ namespace MNX.Common
             M.ReadToXmlElementTag(r, "part-name", "part-abbreviation", "instrument-sound", "measure");
 
             int measureIndex = 0;
+            TimeSignature currentTimeSig = null;
             int ticksPosInScore = 0;
             while(r.Name == "part-name" || r.Name == "part-abbreviation" || r.Name == "instrument-sound" || r.Name == "measure")
             {
@@ -84,8 +85,10 @@ namespace MNX.Common
                             InstrumentSound = r.ReadElementContentAsString();
                             break;
                         case "measure":
-                            Measure measure = new Measure(r, measureIndex++, ticksPosInScore, false);
-                            ticksPosInScore += measure.TicksDuration;
+                            GlobalDirections globalDirections = globalMeasures[measureIndex].GlobalDirections;
+                            currentTimeSig = (globalDirections.TimeSignature == null) ? currentTimeSig : globalDirections.TimeSignature;
+                            Measure measure = new Measure(r, measureIndex++, currentTimeSig, ticksPosInScore);
+                            ticksPosInScore += currentTimeSig.TicksDuration;
                             Measures.Add(measure);
                             break;
                     }

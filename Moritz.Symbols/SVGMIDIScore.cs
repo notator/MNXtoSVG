@@ -185,10 +185,10 @@ namespace Moritz.Symbols
                 {
                     rval.Add(measureDirections.KeySignature);
                 }
-                if(measureDirections.TimeSignature != null)
-                {
-                    rval.Add(measureDirections.TimeSignature);
-                }
+                //if(measureDirections.TimeSignature != null)
+                //{
+                //    rval.Add(measureDirections.TimeSignature);
+                //}
                 if(measureDirections.OctaveShift != null)
                 {
                     rval.Add(measureDirections.OctaveShift);

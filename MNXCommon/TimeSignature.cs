@@ -12,7 +12,7 @@ namespace MNX.Common
         private readonly int TicksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"TimeSignature: TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public override string ToString() => $"TimeSignature: {Signature} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -44,6 +44,9 @@ namespace MNX.Common
                 _msPositionReFirstIUD = value;
             }
         }
+
+        public int TicksDuration { get; }
+
         private int _msPositionReFirstIUD = 0;
 
         #endregion IUniqueDef
@@ -70,6 +73,9 @@ namespace MNX.Common
                         break;
                 }
             }
+
+            MNXDurationSymbol mds = new MNXDurationSymbol(Signature, 0);
+            TicksDuration = mds.Ticks;
 
             // r.Name is now the name of the last time attribute that has been read.
         }

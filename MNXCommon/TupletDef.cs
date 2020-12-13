@@ -93,7 +93,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "tuplet", ticksPosInScore, false);
+            SequenceComponents = GetSequenceComponents(r, "tuplet", ticksPosInScore);
 
             if(C.CurrentTupletLevel == 1)
             {

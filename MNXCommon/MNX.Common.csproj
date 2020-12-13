@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Accidental.cs" />
     <Compile Include="Clef.cs" />
+    <Compile Include="GlobalDirections.cs" />
     <Compile Include="Forward.cs" />
     <Compile Include="EventGroup.cs" />
     <Compile Include="DirectionsComponent.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="Global.cs" />
     <Compile Include="Grace.cs" />
     <Compile Include="KeySignature.cs" />
+    <Compile Include="GlobalMeasure.cs" />
     <Compile Include="Measure.cs" />
     <Compile Include="MNX.cs" />
     <Compile Include="MNXCommonData.cs" />

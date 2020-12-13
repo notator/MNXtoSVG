@@ -7,17 +7,13 @@ using System.Xml;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#elementdef-directions
-    public class Directions : IGlobalMeasureComponent, IPartMeasureComponent, ISeqComponent
+    public class Directions : IPartMeasureComponent, ISeqComponent
     {
         // These are just the elements used in the first set of examples.
         // Other elements need to be added later.
-        public readonly TimeSignature TimeSignature;
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
-        // A measure can contain any number of Repeat symbols (having either IsBegin == true or IsBegin == false).
-        // They are kept here in order of their PositionInMeasure.Ticks. 
-        public readonly SortedList<Repeat, int> Repeats;
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -60,7 +56,7 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Directions(XmlReader r, int ticksPosInScore, bool isGlobal)
+        public Directions(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "directions");
 
@@ -68,23 +64,14 @@ namespace MNX.Common
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
-            M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "ending");
+            M.ReadToXmlElementTag(r, "clef", "key", "octave-shift");
 
-            while(r.Name == "time" || r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift"
-                || r.Name == "repeat" || r.Name == "ending")
+            while(r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
                     {
-                        case "time":
-                            // https://w3c.github.io/mnx/specification/common/#the-time-element
-                            if(isGlobal == false)
-                            {
-                                M.ThrowError("Error: the time element must be global in standard mnx-common.");
-                            }
-                            TimeSignature = new TimeSignature(r, ticksPosInScore);
-                            break;
                         case "clef":
                             Clef = new Clef(r, ticksPosInScore);
                             break;
@@ -95,106 +82,12 @@ namespace MNX.Common
                         case "octave-shift":
                             OctaveShift = new OctaveShift(r, ticksPosInScore);
                             break;
-                        case "repeat":
-                            if(isGlobal == false)
-                            {
-                                M.ThrowError("Error: the repeat element must be global.");
-                            }
-                            if(Repeats == null)
-                            {
-                                Repeats = new SortedList<Repeat, int>();
-                            }
-                            Repeat rep = GetRepeat(r, TimeSignature);
-                            Repeats.Add(rep, rep.PositionInMeasure.Ticks);
-                            break;
-                        case "ending":
-                            if(isGlobal == false)
-                            {
-                                M.ThrowError("Error: the (repeat) ending element must be global.");
-                            }
-                            // TODO
-                            break;
                     }
                 }
-                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "ending", "directions");
+                M.ReadToXmlElementTag(r, "clef", "key", "octave-shift", "directions");
             }
 
             M.Assert(r.Name == "directions"); // end of "directions"
-        }
-
-        // returns either a RepeatBegin or RepeatEnd
-        private Repeat GetRepeat(XmlReader r, TimeSignature timeSignature)
-        {
-            M.Assert(r.Name == "repeat");
-
-            bool? IsBegin = null;
-            string Times = null;
-            // when null, this defaults to 0 for RepeatBegin, and measure duration (= current time signature) for RepeatEnd.
-            PositionInMeasure PositionInMeasure = null;
-
-            int count = r.AttributeCount;
-            for(int i = 0; i < count; i++)
-            {
-                r.MoveToAttribute(i);
-                switch(r.Name)
-                {
-                    case "type":
-                    {
-                        switch(r.Value)
-                        {
-                            case "start":
-                                IsBegin = true;
-                                break;
-                            case "end":
-                                IsBegin = false;
-                                break;
-                            default:
-                                M.ThrowError("Unknown repeat type.");
-                                break;
-
-                        }
-                        break;
-                    }
-                    case "times":
-                    {
-                        M.Assert(int.TryParse(r.Value, out _));
-                        Times = r.Value;
-                        break;
-                    }
-                    case "location":
-                    {
-                        PositionInMeasure = new PositionInMeasure(r.Value);
-                        break;
-                    }
-                    default:
-                        M.ThrowError("Unknown repeat attribute.");
-                        break;
-                }
-            }
-            // r.Name is now the name of the last repeat attribute that has been read.
-
-            Repeat rval = null;
-            switch (IsBegin)
-            {
-                case true:
-                {
-                    rval = new RepeatBegin(PositionInMeasure);
-                    break;
-                }
-                case false:
-                {
-                    M.Assert(TimeSignature != null, "TimeSignature must be known here.");
-                    rval = new RepeatEnd(PositionInMeasure, TimeSignature, Times);
-                    break;
-                }
-                default: // null
-                {
-                    M.ThrowError("Undefined repeat type.");
-                    break;
-                }
-            }
-
-            return rval;
         }
     }
 }

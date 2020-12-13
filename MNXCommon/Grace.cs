@@ -65,7 +65,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "grace", ticksPosInScore, false);
+            SequenceComponents = GetSequenceComponents(r, "grace", ticksPosInScore);
 
             SetDefaultTicks(SequenceComponents);
 

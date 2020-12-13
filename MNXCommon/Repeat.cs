@@ -7,17 +7,10 @@ namespace MNX.Common
     // https://w3c.github.io/mnx/specification/common/#the-time-element
     public class Repeat : IUniqueDef, IDirectionsComponent
     {
-        public bool IsBegin { get; private set; } = false;
-        public string Times { get; private set; } = null;
         // when null, this defaults to 0 for RepeatBegin, and measure duration (= current time signature) for RepeatEnd.
         public PositionInMeasure PositionInMeasure { get; private set; } = null;
 
         #region IUniqueDef
-        public override string ToString()
-        {
-            string times = (Times == null) ? "null" : Times;
-            return $"Repeat: IsBegin={IsBegin} Times={times} TickPositionInMeasure={PositionInMeasure.TickPositionInMeasure}";
-        }
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -53,49 +46,41 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Repeat(XmlReader r)
+        protected Repeat(PositionInMeasure positionInMeasure)
         {
-            M.Assert(r.Name == "repeat");
-            int count = r.AttributeCount;
-            for(int i = 0; i < count; i++)
-            {
-                r.MoveToAttribute(i);
-                switch(r.Name)
-                {
-                    case "type":
-                    {
-                        switch(r.Value)
-                        {
-                            case "start":
-                                IsBegin = true;
-                                break;
-                            case "end":
-                                IsBegin = false;
-                                break;
-                            default:
-                                M.ThrowError("Unknown repeat type.");
-                                break;
-
-                        }
-                        break;
-                    }
-                    case "times":
-                    {
-                        M.Assert(int.TryParse(r.Value, out _));
-                        Times = r.Value;
-                        break;
-                    }
-                    case "location":
-                    {
-                        PositionInMeasure = new PositionInMeasure(r.Value);
-                        break;
-                    }
-                    default:
-                        M.ThrowError("Unknown repeat attribute.");
-                        break;
-                }
-            }
-            // r.Name is now the name of the last repeat attribute that has been read.
+            PositionInMeasure = positionInMeasure;
         }
     }
+
+    public class RepeatBegin : Repeat
+    {
+        public RepeatBegin(PositionInMeasure positionInMeasure)
+         : base((positionInMeasure == null) ? new PositionInMeasure("0") : positionInMeasure)
+        {
+        }
+        public override string ToString()
+        {
+            return $"RepeatBegin: TickPositionInMeasure={PositionInMeasure.TickPositionInMeasure}";
+        }
+    }
+
+    public class RepeatEnd : Repeat
+    {
+        public RepeatEnd(PositionInMeasure positionInMeasure, TimeSignature timeSignature, string times)
+         : base((positionInMeasure == null) ? new PositionInMeasure(timeSignature.Signature) : positionInMeasure)
+        {
+            Times = times;
+        }
+
+        public override string ToString()
+        {
+            string times = (Times == null) ? "null" : Times;
+            return $"RepeatEnd: Times={times} TickPositionInMeasure={PositionInMeasure.TickPositionInMeasure}";
+        }
+
+        public string Times { get; private set; } = null;
+
+    }
+
+
 }

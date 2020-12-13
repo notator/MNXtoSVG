@@ -1,5 +1,6 @@
 ﻿using MNX.Globals;
 
+using System;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -103,7 +104,7 @@ namespace MNX.Common
                             {
                                 Repeats = new SortedList<Repeat, int>();
                             }
-                            var rep = new Repeat(r);
+                            Repeat rep = GetRepeat(r, TimeSignature);
                             Repeats.Add(rep, rep.PositionInMeasure.Ticks);
                             break;
                         case "ending":
@@ -119,6 +120,81 @@ namespace MNX.Common
             }
 
             M.Assert(r.Name == "directions"); // end of "directions"
+        }
+
+        // returns either a RepeatBegin or RepeatEnd
+        private Repeat GetRepeat(XmlReader r, TimeSignature timeSignature)
+        {
+            M.Assert(r.Name == "repeat");
+
+            bool? IsBegin = null;
+            string Times = null;
+            // when null, this defaults to 0 for RepeatBegin, and measure duration (= current time signature) for RepeatEnd.
+            PositionInMeasure PositionInMeasure = null;
+
+            int count = r.AttributeCount;
+            for(int i = 0; i < count; i++)
+            {
+                r.MoveToAttribute(i);
+                switch(r.Name)
+                {
+                    case "type":
+                    {
+                        switch(r.Value)
+                        {
+                            case "start":
+                                IsBegin = true;
+                                break;
+                            case "end":
+                                IsBegin = false;
+                                break;
+                            default:
+                                M.ThrowError("Unknown repeat type.");
+                                break;
+
+                        }
+                        break;
+                    }
+                    case "times":
+                    {
+                        M.Assert(int.TryParse(r.Value, out _));
+                        Times = r.Value;
+                        break;
+                    }
+                    case "location":
+                    {
+                        PositionInMeasure = new PositionInMeasure(r.Value);
+                        break;
+                    }
+                    default:
+                        M.ThrowError("Unknown repeat attribute.");
+                        break;
+                }
+            }
+            // r.Name is now the name of the last repeat attribute that has been read.
+
+            Repeat rval = null;
+            switch (IsBegin)
+            {
+                case true:
+                {
+                    rval = new RepeatBegin(PositionInMeasure);
+                    break;
+                }
+                case false:
+                {
+                    M.Assert(TimeSignature != null, "TimeSignature must be known here.");
+                    rval = new RepeatEnd(PositionInMeasure, TimeSignature, Times);
+                    break;
+                }
+                default: // null
+                {
+                    M.ThrowError("Undefined repeat type.");
+                    break;
+                }
+            }
+
+            return rval;
         }
     }
 }

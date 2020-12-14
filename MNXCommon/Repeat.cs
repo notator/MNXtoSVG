@@ -1,14 +1,15 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using MNX.Globals;
 using Moritz.Spec;
 
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-time-element
-    public class Repeat : IUniqueDef, IDirectionsComponent
+    public abstract class Repeat : IUniqueDef, IDirectionsComponent
     {
         // when null, this defaults to 0 for RepeatBegin, and measure duration (= current time signature) for RepeatEnd.
-        public PositionInMeasure PositionInMeasure { get; private set; } = null;
+        public PositionInMeasure PositionInMeasure { get; protected set; } = null;
 
         #region IUniqueDef
         /// <summary>
@@ -46,36 +47,81 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        protected Repeat(PositionInMeasure positionInMeasure)
+        protected Repeat()
         {
-            PositionInMeasure = positionInMeasure;
         }
+
+        internal abstract void SetDefaultPositionInMeasure(TimeSignature currentTimeSignature);
     }
 
     public class RepeatBegin : Repeat
     {
         public RepeatBegin(PositionInMeasure positionInMeasure)
-         : base((positionInMeasure == null) ? new PositionInMeasure("0") : positionInMeasure)
         {
+            PositionInMeasure = positionInMeasure; // can be null
         }
+
+        internal override void SetDefaultPositionInMeasure(TimeSignature currentTimeSignature)
+        {
+            PositionInMeasure = (PositionInMeasure == null) ? new PositionInMeasure("0") : PositionInMeasure;
+        }
+
         public override string ToString()
         {
-            return $"RepeatBegin: TickPositionInMeasure={PositionInMeasure.TickPositionInMeasure}";
+            string tickPos = (PositionInMeasure == null) ? "null" : $"{PositionInMeasure.TickPositionInMeasure}";
+            return $"RepeatBegin: TickPositionInMeasure={tickPos}";
         }
     }
 
     public class RepeatEnd : Repeat
     {
-        public RepeatEnd(PositionInMeasure positionInMeasure, TimeSignature timeSignature, string times)
-         : base((positionInMeasure == null) ? new PositionInMeasure(timeSignature.Signature) : positionInMeasure)
+        public RepeatEnd(PositionInMeasure positionInMeasure, string times)
         {
+            PositionInMeasure = positionInMeasure; // can be null
             Times = times;
+        }
+
+        internal override void SetDefaultPositionInMeasure(TimeSignature currentTimeSignature)
+        {
+            PositionInMeasure = (PositionInMeasure == null) ? new PositionInMeasure(currentTimeSignature.Signature) : PositionInMeasure;
         }
 
         public override string ToString()
         {
             string times = (Times == null) ? "null" : Times;
-            return $"RepeatEnd: Times={times} TickPositionInMeasure={PositionInMeasure.TickPositionInMeasure}";
+            string tickPos = (PositionInMeasure == null) ? "null" : $"{PositionInMeasure.TickPositionInMeasure}";
+            return $"RepeatEnd: Times={times} TickPositionInMeasure={tickPos}";
+        }
+
+        public string Times { get; private set; } = null;
+
+    }
+
+    /// <summary>
+    /// Note that RepeatEndBegin symbols only occur mid-measure.
+    /// They never occur on the barlines at each end of a measure,
+    /// but exist to simplify horizontal justification.
+    /// </summary>
+    public class RepeatEndBegin : Repeat
+    {
+        public RepeatEndBegin(RepeatEnd repeatEnd, RepeatBegin repeatBegin)
+        {
+            M.Assert(repeatEnd.PositionInMeasure == repeatBegin.PositionInMeasure);
+
+            PositionInMeasure = repeatEnd.PositionInMeasure;
+            Times = repeatEnd.Times;
+        }
+
+        internal override void SetDefaultPositionInMeasure(TimeSignature currentTimeSignature)
+        {
+            M.Assert(false, "This function should never be called.");
+        }
+
+        public override string ToString()
+        {
+            string times = (Times == null) ? "null" : Times;
+            string tickPos = (PositionInMeasure == null) ? "null" : $"{PositionInMeasure.TickPositionInMeasure}";
+            return $"RepeatEndBegin: Times={times} TickPositionInMeasure={tickPos}";
         }
 
         public string Times { get; private set; } = null;

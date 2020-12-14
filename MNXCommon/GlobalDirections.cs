@@ -98,7 +98,7 @@ namespace MNX.Common
                             {
                                 Repeats = new List<Repeat>();
                             }
-                            Repeat repeat = GetRepeat(r, currentTimeSignature);
+                            Repeat repeat = GetRepeat(r);
                             AddRepeatToRepeats(repeat, Repeats);
                             break;
                         case "ending":
@@ -109,16 +109,34 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "ending", "directions");
             }
 
+            if(Repeats != null)
+            {
+                SetDefaultRepeatPositions(Repeats, currentTimeSignature);
+            }
+
             M.Assert(r.Name == "directions"); // end of "directions"
+        }
+
+        private void SetDefaultRepeatPositions(List<Repeat> repeats, TimeSignature currentTimeSignature)
+        {
+            M.Assert(currentTimeSignature != null);
+            foreach(var repeat in repeats)
+            {
+                repeat.SetDefaultPositionInMeasure(currentTimeSignature);
+            }
         }
 
         private void AddRepeatToRepeats(Repeat repeat, List<Repeat> repeats)
         {
-            if(repeats.Count == 0)
+            if((repeats.Count == 0) || (repeat is RepeatEnd && repeat.PositionInMeasure == null))
             {
                 repeats.Add(repeat);
             }
-            else
+            else if(repeat is RepeatBegin && repeat.PositionInMeasure == null)
+            {
+                repeats.Insert(0, repeat);
+            }
+            else // mid-measure repeat symbols
             {
                 int newTicksPos = repeat.PositionInMeasure.TickPositionInMeasure;
                 for(int i = 0; i < repeats.Count; ++i)
@@ -138,14 +156,17 @@ namespace MNX.Common
                     else if(existingTicksPos == newTicksPos)
                     {
                         M.Assert((repeat is RepeatEnd && repeats[i] is RepeatBegin) || (repeat is RepeatBegin && repeats[i] is RepeatEnd));
+                        RepeatEndBegin repeatEndBegin;
                         if(repeat is RepeatEnd)
                         {
-                            repeats.Insert(i, repeat);
+                            repeatEndBegin = new RepeatEndBegin(repeat as RepeatEnd, repeats[i] as RepeatBegin);
                         }
                         else
                         {
-                            repeats.Insert(i + 1, repeat);
+                            repeatEndBegin = new RepeatEndBegin(repeats[i] as RepeatEnd, repeat as RepeatBegin);
                         }
+                        repeats.RemoveAt(i);
+                        repeats.Insert(i, repeatEndBegin);
                         break;
                     }
                     else if(existingTicksPos > newTicksPos)
@@ -157,8 +178,8 @@ namespace MNX.Common
             }
         }
 
-        // returns either a RepeatBegin or RepeatEnd
-        private Repeat GetRepeat(XmlReader r, TimeSignature currentTimeSignature)
+        // returns either a RepeatBegin or RepeatEnd.
+        private Repeat GetRepeat(XmlReader r)
         {
             M.Assert(r.Name == "repeat");
 
@@ -218,8 +239,7 @@ namespace MNX.Common
                 }
                 case false:
                 {
-                    M.Assert(currentTimeSignature != null, "TimeSignature must be known here.");
-                    rval = new RepeatEnd(PositionInMeasure, currentTimeSignature, Times);
+                    rval = new RepeatEnd(PositionInMeasure, Times);
                     break;
                 }
                 default: // null

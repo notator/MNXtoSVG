@@ -35,19 +35,7 @@ namespace MNX.Common
 
         // MNXDurationSymbol is not an ITicks object, its an implementation detail of ITicks objects.
         // ITicks objects, except Event and Grace, do not implement Ticks.set.
-        public int Ticks
-        {
-            get
-            {
-                return _ticks;
-            }
-            set
-            {
-                M.Assert(value >= M.MinimumEventTicks);
-                _ticks = value;
-            }
-        }
-        private int _ticks = 0;
+        public int Ticks { get; set; }
 
         /// <summary>
         /// The value argument is the MNXCommon duration symbol string ("/2", "/4", "/8d" etc.)
@@ -67,9 +55,7 @@ namespace MNX.Common
             DurationSymbolTyp = analysis.Item2;
             NAugmentationDots = analysis.Item3;
 
-            Ticks = GetDefaultTicks();
-
-            M.Assert(Ticks >= M.MinimumEventTicks);
+            Ticks = GetDefaultTicks(); // can be 0!
         }
 
         /// <summary>
@@ -169,13 +155,20 @@ namespace MNX.Common
                 return mult;
             }
 
-            StringBuilder sb = new StringBuilder(ctorArg);
+            int multiple = 0;
+            DurationSymbolType symbol = DurationSymbolType.noteQuarter_crotchet;
+            int nDots = 0;
 
-            int nDots = GetNDots(sb);
+            if(string.Compare(ctorArg, "0") != 0)
+            {
+                StringBuilder sb = new StringBuilder(ctorArg);
 
-            DurationSymbolType symbol = GetSymbol(sb);
+                nDots = GetNDots(sb);
 
-            int multiple = GetMultiple(sb);
+                symbol = GetSymbol(sb);
+
+                multiple = GetMultiple(sb);
+            }
 
             Tuple<int, DurationSymbolType, int> rval = new Tuple<int, DurationSymbolType, int>(multiple, symbol, nDots);
 

@@ -58,14 +58,11 @@ namespace MNX.Common
         /// </summary>
         public PositionInMeasure(string value)
         {
-            StringBuilder sbValue = new StringBuilder(value);
-            int colonPos = -1;
-
             if(value[0] == '#')
             {
                 ID = value.Substring(1); // no '#' (okay?)
             }
-            else if((colonPos = value.IndexOf(':')) < 0)
+            else if(value.IndexOf(':') < 0)
             {
                 MeasureNumber = null; //  means "current measure"
 

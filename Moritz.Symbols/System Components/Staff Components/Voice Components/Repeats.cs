@@ -78,7 +78,7 @@ namespace Moritz.Symbols
 		// RepeatBegin: thick, thin, dots
 		public override void CreateMetrics(Graphics graphics)
 		{
-			double leftEdgeReOriginX = 0;
+			double leftEdgeReOriginX = -DoubleBarPadding;
 			double rightEdgeReOriginX = DoubleBarPadding + ThinStrokeWidth;
 			Metrics = new BRMetrics(leftEdgeReOriginX, rightEdgeReOriginX, CSSObjectClass.thinBarline, CSSObjectClass.thickBarline);
 

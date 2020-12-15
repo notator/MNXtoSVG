@@ -215,7 +215,7 @@ namespace Moritz.Symbols
                     string currentClefType = null;
                     for(int nIndex = 0; nIndex < staff.Voices[voiceIndex].NoteObjects.Count; nIndex++)
                     {
-                        NoteObject noteObject = staff.Voices[voiceIndex].NoteObjects[nIndex];
+                        NoteObject noteObject = staff.Voices[voiceIndex].NoteObjects[nIndex];                        
                         noteObject.Metrics = Score.Notator.SymbolSet.NoteObjectMetrics(graphics, noteObject, voice.StemDirection, staff.Gap, pageFormat, currentClefType);
 
 						M.Assert(noteObject.Metrics != null);
@@ -519,7 +519,6 @@ namespace Moritz.Symbols
                             }
                             if(repeatSymbol != null)
                             {
-                                M.Assert(repeatSymbol is RepeatBegin);
                                 dict[key].Add(repeatSymbol);
                                 repeatSymbol = null;
                             }

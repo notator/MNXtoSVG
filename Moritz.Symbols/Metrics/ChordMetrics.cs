@@ -281,11 +281,11 @@ namespace Moritz.Symbols
             {
                 double shiftX = 0;
                 HeadMetrics headMetrics = topDownHeadsMetrics[i];
-                if(headMetrics.OriginY < (_gap / 2))
+                if(headMetrics.OriginY < (_gap * -0.8))
                 {
                     shiftX = (double)augDotsOriginXForUpperLedgerlines;
                 }
-                else if(headMetrics.OriginY > (_gap * 4.5))
+                else if(headMetrics.OriginY > (_gap * 4.8))
                 {
                     shiftX = (double)augDotsoriginXForLowerLedgerlines;
                 }

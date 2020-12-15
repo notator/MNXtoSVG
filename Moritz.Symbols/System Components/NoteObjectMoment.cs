@@ -43,16 +43,19 @@ namespace Moritz.Symbols
         {
             get
             {
-                Barline barline = null;
-                foreach(NoteObject noteObject in NoteObjects)
-                {
-                    if(noteObject is Barline)
-                    {
-                        barline = noteObject as Barline;
-                        break;
-                    }
-                }
-                return barline;
+                return (Barline) NoteObjects.Find(n => n is Barline);
+            }
+        }
+
+        /// <summary>
+        /// returns the first RepeatSymbol in this NoteObjectMoment,
+        /// or null if there is no repeatSymbol.
+        /// </summary>
+        public RepeatSymbol RepeatSymbol
+        {
+            get
+            {
+                return (RepeatSymbol) NoteObjects.Find(n => n is RepeatSymbol);
             }
         }
 

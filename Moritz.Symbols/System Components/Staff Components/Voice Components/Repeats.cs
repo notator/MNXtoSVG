@@ -39,20 +39,20 @@ namespace Moritz.Symbols
 	/// </summary>
 	public class RepeatBegin : RepeatSymbol
 	{
-		public RepeatBegin(Voice voice)
+        public RepeatBegin(Voice voice)
 			: base(voice)
-		{
-		}
+        {
+        }
 
-		/// <summary>
-		/// Writes out the vertical lines and dots.
-		/// May be called twice per staff:
-		///     1. for the range between top and bottom stafflines
-		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (The drawDots argument will be false in this case.)
-		/// </summary>
-		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
+        /// <summary>
+        /// Writes out the vertical lines and dots.
+        /// May be called twice per staff:
+        ///     1. for the range between top and bottom stafflines
+        ///     2. for the range between the staff's lower edge and the next staff's upper edge
+        ///        (The drawDots argument will be false in this case.)
+        /// </summary>
+        /// <param name="w"></param>
+        public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
 		{
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
@@ -93,21 +93,21 @@ namespace Moritz.Symbols
 	/// </summary>
 	public class RepeatEnd : RepeatSymbol
 	{
-		public RepeatEnd(Voice voice, string timesStr)
+        public RepeatEnd(Voice voice, string timesStr)
 			: base(voice)
-		{
+        {
 			_timesStr = (timesStr != null) ? timesStr + "x" : null; // can be null
 		}
 
-		/// <summary>
-		/// Writes out the vertical lines and dots.
-		/// May be called twice per staff:
-		///     1. for the range between top and bottom stafflines
-		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (The drawDots argument will be false in this case.)
-		/// </summary>
-		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
+        /// <summary>
+        /// Writes out the vertical lines and dots.
+        /// May be called twice per staff:
+        ///     1. for the range between top and bottom stafflines
+        ///     2. for the range between the staff's lower edge and the next staff's upper edge
+        ///        (The drawDots argument will be false in this case.)
+        /// </summary>
+        /// <param name="w"></param>
+        public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
 		{
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
@@ -177,20 +177,21 @@ namespace Moritz.Symbols
 	/// </summary>
 	public class RepeatEndBegin : RepeatSymbol
 	{
-		public RepeatEndBegin(Voice voice)
+        public RepeatEndBegin(Voice voice, string timesStr)
 			: base(voice)
-		{
+        {
+			_timesStr = (timesStr != null) ? timesStr + "x" : null; // can be null
 		}
 
-		/// <summary>
-		/// Writes out the vertical lines and dots.
-		/// May be called twice per staff:
-		///     1. for the range between top and bottom stafflines
-		///     2. for the range between the staff's lower edge and the next staff's upper edge
-		///        (The drawDots argument will be false in this case.)
-		/// </summary>
-		/// <param name="w"></param>
-		public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
+        /// <summary>
+        /// Writes out the vertical lines and dots.
+        /// May be called twice per staff:
+        ///     1. for the range between top and bottom stafflines
+        ///     2. for the range between the staff's lower edge and the next staff's upper edge
+        ///        (The drawDots argument will be false in this case.)
+        /// </summary>
+        /// <param name="w"></param>
+        public override void WriteSVG(SvgWriter w, double topStafflineY, double bottomStafflineY, bool isEndOfSystem, bool drawDots)
 		{
 			double topY = TopY(topStafflineY, isEndOfSystem);
 			double bottomY = BottomY(bottomStafflineY, isEndOfSystem);
@@ -226,5 +227,7 @@ namespace Moritz.Symbols
 			((BRMetrics)Metrics).SetLeft(Metrics.Left - _dotWidth - DoubleBarPadding);
 			((BRMetrics)Metrics).SetRight(Metrics.Right + DoubleBarPadding + _dotWidth);
 		}
-    }
+
+		private readonly string _timesStr = null;
+	}
 }

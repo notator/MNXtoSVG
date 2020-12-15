@@ -1218,15 +1218,6 @@ namespace Moritz.Symbols
                         voice2.NoteObjects.Remove(v2InitialTimeSignature);
                     }
 
-                    if(voice2.NoteObjects[0] is RepeatBegin && v1EndRepeatEnd != null)
-                    {
-                        int index = voice1.NoteObjects.FindLastIndex(no => no is RepeatEnd);
-                        RepeatEndBegin reb = new RepeatEndBegin(voice1);
-                        voice1.NoteObjects.RemoveAt(index);
-                        voice1.NoteObjects.Insert(index, reb);
-                        voice2.NoteObjects.RemoveAt(0);
-                    }
-
                     voice1.AppendNoteObjects(voice2.NoteObjects);
                 }
             }
@@ -1406,14 +1397,16 @@ namespace Moritz.Symbols
             AddBarNumbers(); // 4.add a barnumber to the first Barline on each system.
 			AddStaffNames(); // 5. adds the staff's name to the first Barline on each staff.
 
-            if(this.ScoreData != null)
-            {
-                // 6. add regionStart- and regionEnd- info to the appropriate NormalBarlines
-                AddRegionStartInfo();
-                AddRegionEndInfo();
-            }
+            // Regions are not implemented for MNXtoSVG, so region code is currently unused and not debugged!
+            //
+            //if(this.ScoreData != null)
+            //{
+            //    // 6. add regionStart- and regionEnd- info to the appropriate NormalBarlines
+            //    AddRegionStartInfo();
+            //    AddRegionEndInfo();
+            //}
 
-            SetRegionBarlineTypes(); // 7. converts each NormalBarline to a Barline of the appropriate Region class
+            //SetRegionBarlineTypes(); // 7. converts each NormalBarline to a Barline of the appropriate Region class
 		}
 
 		/// <summary>

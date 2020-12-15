@@ -524,8 +524,11 @@ namespace Moritz.Symbols
             var mnxTimeSigDef = iud as MNX.Common.TimeSignature;
             var mnxKeySigDef = iud as MNX.Common.KeySignature;
             var mnxEventDef = iud as MNX.Common.Event;
+            var mnxRepeatBegin = iud as MNX.Common.RepeatBegin;
+            var mnxRepeatEnd = iud as MNX.Common.RepeatEnd;
+            var mnxRepeatEndBegin = iud as MNX.Common.RepeatEndBegin;
 
-			if(cautionaryChordDef != null && iudIndex == 1)
+            if(cautionaryChordDef != null && iudIndex == 1)
             {
 				CautionaryChordSymbol cautionaryChordSymbol = new CautionaryChordSymbol(voice, cautionaryChordDef, absMsPosition, pageFormat);
                 noteObject = cautionaryChordSymbol;
@@ -602,6 +605,18 @@ namespace Moritz.Symbols
             else if(mnxKeySigDef != null)
             {
                 noteObject = new KeySignature(voice, mnxKeySigDef, pageFormat.MusicFontHeight);
+            }
+            else if(mnxRepeatBegin != null)
+            {
+                noteObject = new RepeatBegin(voice);
+            }
+            else if(mnxRepeatEnd != null)
+            {
+                noteObject = new RepeatEnd(voice, mnxRepeatEnd.Times);
+            }
+            else if(mnxRepeatEndBegin != null)
+            {
+                noteObject = new RepeatEndBegin(voice, mnxRepeatEndBegin.Times);
             }
 
             return noteObject;

@@ -53,8 +53,6 @@ namespace Moritz.Symbols
         {
             var bars = new List<Bar>();
             List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
-
-            List<List<Repeat>> repeatSymbolsPerMeasure = mnxCommon.Global.GetRepeatSymbolsPerMeasure();
             
             var midiChannelsPerStaff = M.PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;
@@ -93,7 +91,10 @@ namespace Moritz.Symbols
                         systemStaffIndex++;
                     }
                 }
+
                 Seq seq = new Seq(seqMsPositionInScore, trks, midiChannelIndexPerOutputVoice);
+                Bar bar = new Bar(seq);
+                bars.Add(bar);
                 seqMsPositionInScore += seq.MsDuration;
             }
 
@@ -203,6 +204,49 @@ namespace Moritz.Symbols
             MNX.Common.Clef clef = Find<MNX.Common.Clef>(seqIUDs, measureDirections, globalDirections);
             MNX.Common.KeySignature keySignature = Find<MNX.Common.KeySignature>(seqIUDs, measureDirections, globalDirections);
             MNX.Common.TimeSignature timeSignature = Find<MNX.Common.TimeSignature>(seqIUDs, measureDirections, globalDirections);
+
+            #region insert repeats
+            List<Repeat> repeats = new List<Repeat>();
+            foreach(var iud in globalDirections)
+            {
+                if(iud is Repeat repeat)
+                {
+                    repeats.Add(repeat);
+                }
+            }
+            Dictionary<IUniqueDef, int> ticksPositionsInMeasure = new Dictionary<IUniqueDef, int>();
+            int ticksPosInMeasure = 0;
+            foreach(var iud in seqIUDs)
+            {
+                if(iud is Event evnt)
+                {
+                    ticksPositionsInMeasure.Add(evnt, ticksPosInMeasure);
+                    ticksPosInMeasure += evnt.TicksDuration;
+                }
+            }
+            for(int i = seqIUDs.Count - 1; i >= 0; --i)
+            {
+                var iud = seqIUDs[i];
+                if(iud is Event evnt)
+                {
+                    for(var ri = repeats.Count - 1; ri >= 0; --ri)
+                    {
+                        var repeat = repeats[ri];
+                        var tickPositionInMeasure = ticksPositionsInMeasure[iud];
+                        if(repeat.PositionInMeasure.TickPositionInMeasure > tickPositionInMeasure)
+                        {
+                            seqIUDs.Insert(i + 1, repeat);
+                            repeats.RemoveAt(ri);
+                        }
+                        else if(repeat.PositionInMeasure.TickPositionInMeasure == tickPositionInMeasure)
+                        {
+                            seqIUDs.Insert(i, repeat);
+                            repeats.RemoveAt(ri);
+                        }
+                    }
+                }
+            }
+            #endregion insert repeats
 
             for(int i = 2; i >= 0; i--)
             {

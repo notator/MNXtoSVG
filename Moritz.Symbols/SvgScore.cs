@@ -1301,14 +1301,12 @@ namespace Moritz.Symbols
         /// All Duration Symbols have been constructed in voice.NoteObjects (possibly including CautionaryChordSymbols at the beginnings of staves).
         /// There are no barlines or repeatSymbols in the score yet.
         /// Add a NormalBarline at the beginning of the Systems[0] (after the clef).
-        /// Now add a RepeatBegin at the beginning (before the first durationSymbol) and/or a RepeatEnd at end of each system/bar as necessary,
-        /// then add a NormalBarline or EndOfScoreBarline at the end of each system=bar. (Cautionary keySigs and timeSigs may be added later.)
+        /// Now add a NormalBarline or EndOfScoreBarline at the end of each system=bar. (Cautionary keySigs and timeSigs may be added later.)
         /// </summary>
         /// <param name="barlineType"></param>
         /// <param name="systemNumbers"></param>
-        private bool AddBarlinesAndRepeatSymbols(List<Bar> bars)
+        private void AddBarlines()
         {
-            var usingMNXrepeats = false;
             // There is currently one bar per System, so systemIndex is bar index here.
             for(int systemIndex = 0; systemIndex < Systems.Count; ++systemIndex)
             {
@@ -1322,38 +1320,18 @@ namespace Moritz.Symbols
                         var noteObjects = voice.NoteObjects;
                         M.Assert(noteObjects.Count > 0 && !(noteObjects[noteObjects.Count - 1] is Barline));
 
-                        if(bars[systemIndex].RepeatBegin || bars[systemIndex].RepeatEnd)
-                        {
-                            usingMNXrepeats = true;
-                        }
-
                         if(systemIndex == 0)
                         {
                             var initialBarline = new NormalBarline(voice);
                             var index = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)));
                             noteObjects.Insert(index, initialBarline);
-                        }
+                        }                                   
 
-                        if(bars[systemIndex].RepeatBegin)
-                        {
-                            var repeatBegin = new RepeatBegin(voice);
-                            var index = noteObjects.FindIndex(noteObject => (noteObject is DurationSymbol));
-                            noteObjects.Insert(index, repeatBegin);
-                        }
-
-                        if(bars[systemIndex].RepeatEnd)
-                        {
-                            var repeatEnd = new RepeatEnd(voice, bars[systemIndex].RepeatTimes);
-                            noteObjects.Add(repeatEnd);
-                        }                                    
-
-                        // endBarline is inserted after repeatEnd (if any)
                         var endBarline = (systemIndex == Systems.Count - 1) ? new EndOfScoreBarline(voice) : new NormalBarline(voice);
                         noteObjects.Add(endBarline);
                     }
                 }
             }
-            return usingMNXrepeats;
         }
 
         private List<int> GetGroupBottomStaffIndices(List<int> groupSizes, int nStaves)
@@ -1414,10 +1392,8 @@ namespace Moritz.Symbols
             }
             #endregion preconditions
 
-
-            // 1. add a RepeatBegin at the beginning and/or a RepeatEnd at end of each system/bar as necessary,
-            // then add a NormalBarline or EndOfScoreBarline at the end of each system=bar (after the clef (and keySignature, if any))
-            var usingMNXRepeats = AddBarlinesAndRepeatSymbols(bars);
+            // Add a NormalBarline or EndOfScoreBarline at the end of each system=bar (after the clef (and keySignature, if any))
+            AddBarlines();
 
             ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
 
@@ -1430,17 +1406,14 @@ namespace Moritz.Symbols
             AddBarNumbers(); // 4.add a barnumber to the first Barline on each system.
 			AddStaffNames(); // 5. adds the staff's name to the first Barline on each staff.
 
-            if(!usingMNXRepeats)
+            if(this.ScoreData != null)
             {
-                if(this.ScoreData != null)
-                {
-                    // 6. add regionStart- and regionEnd- info to the appropriate NormalBarlines
-                    AddRegionStartInfo();
-                    AddRegionEndInfo();
-                }
-
-                SetRegionBarlineTypes(); // 7. converts each NormalBarline to a Barline of the appropriate Region class
+                // 6. add regionStart- and regionEnd- info to the appropriate NormalBarlines
+                AddRegionStartInfo();
+                AddRegionEndInfo();
             }
+
+            SetRegionBarlineTypes(); // 7. converts each NormalBarline to a Barline of the appropriate Region class
 		}
 
 		/// <summary>

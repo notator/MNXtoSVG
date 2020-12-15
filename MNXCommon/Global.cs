@@ -73,30 +73,7 @@ namespace MNX.Common
                     {
                         measureList.Add(globalDirections.OctaveShift);
                     }
-                }
-                rval.Add(measureList);
-            }
-            return rval;
-        }
-
-        /// <summary>
-        /// Returns a (non-null) list of Repeat objects per measure.
-        /// The list can contain 0 or more RepeatEnd and RepeatBegin symbols in order of their ticks position in the measure.
-        /// If two Repeats have the same ticksPosition, they will be in the order RepeatEnd, RepeatBegin.
-        /// The same ticksPosition cannot have more than two Repeats.
-        /// </summary>
-        /// <returns></returns>
-        public List<List<Repeat>> GetRepeatSymbolsPerMeasure()
-        {
-            var rval = new List<List<Repeat>>();
-            for(var measureIndex = 0; measureIndex < GlobalMeasures.Count; measureIndex++)
-            {
-                var measureList = new List<Repeat>();
-                rval.Add(measureList);
-                var directions = GlobalMeasures[measureIndex].GlobalDirections;
-                if(directions != null)
-                {
-                    List<Repeat> repeats = directions.Repeats;
+                    List<Repeat> repeats = globalDirections.Repeats;
                     if(repeats != null)
                     {
                         foreach(var repeat in repeats)
@@ -105,6 +82,7 @@ namespace MNX.Common
                         }
                     }
                 }
+                rval.Add(measureList);
             }
             return rval;
         }

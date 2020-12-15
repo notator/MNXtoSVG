@@ -232,7 +232,7 @@ namespace Moritz.Symbols
 
         private void CreateAugDotMetrics(int nAugmentationDots, double fontHeight, List<HeadMetrics> topDownHeadsMetrics, CSSObjectClass chordClass)
         {
-            double separationX = _gap * 0.5;
+            double separationX = _gap * 0.33;
             if(nAugmentationDots > 0)
             {
                 _augDotMetricsTopDown = new List<DotMetrics>();
@@ -271,9 +271,9 @@ namespace Moritz.Symbols
         {
             List<Tuple<double, double>> shiftPairs = new List<Tuple<double, double>>();
 
-            double headRightToFirstAugDotOriginX = _gap * 0.5;
+            double headRightToFirstAugDotOriginX = _gap * 0.33;
             double augDotsOriginXForHeads = FindAugDotsFirstOriginX(topDownHeadsMetrics, headRightToFirstAugDotOriginX);
-            double ledgerlineRightToFirstAugDotOriginX = _gap * 0.4;
+            double ledgerlineRightToFirstAugDotOriginX = _gap * 0.03;
             double? augDotsOriginXForUpperLedgerlines = FindAugDotsFirstOriginX(_upperLedgerlineBlockMetrics, ledgerlineRightToFirstAugDotOriginX);
             double? augDotsoriginXForLowerLedgerlines = FindAugDotsFirstOriginX(_lowerLedgerlineBlockMetrics, ledgerlineRightToFirstAugDotOriginX);
 

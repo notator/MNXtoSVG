@@ -80,6 +80,7 @@
     <None Include="MNX_in\form1Data\_17_slurincomplete.f1d" />
     <None Include="MNX_in\form1Data\_21_repeatsmorethanonce.f1d" />
     <None Include="MNX_in\form1Data\_22_repeatssimplealternateendings.f1d" />
+    <None Include="MNX_in\form1Data\_23a_repeatsmidmeasure.f1d" />
     <None Include="MNX_in\form1Data\_25_jumpsdalsegnoalfine.f1d" />
     <None Include="MNX_in\form1Data\_24_jumpsdalsegno.f1d" />
     <None Include="MNX_in\form1Data\_23_repeatsadvancedalternateendings.f1d" />

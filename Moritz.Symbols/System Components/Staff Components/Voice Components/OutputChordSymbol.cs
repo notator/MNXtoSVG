@@ -281,19 +281,7 @@ namespace Moritz.Symbols
 
             if(width <= shortTieMaxWidth)
             {
-                if(width <= veryShortTieMaxWidth)
-                {                    
-                    deltaControl = width / 3;
-                    // widen the tie
-                    width = (width < gap) ? gap : width; // just to guard against divide by zero error in next line
-                    double deltaWidth = (veryShortTieMaxWidth - width) * 0.35 * (veryShortTieMaxWidth / width);
-                    p1x -= deltaWidth;
-                    p2x += deltaWidth;
-                }
-                else
-                {
-                    deltaControl = gap * 1.15;
-                }
+                deltaControl = (width <= veryShortTieMaxWidth) ? width / 3 : gap * 1.15;
 
                 var p1 = new Point((int)p1x, (int)p1y);
                 var c1 = (isOver) ? new Point((int)(p1x + deltaControl), (int)(p1y - deltaControl)) : new Point((int)(p1x + deltaControl), (int)(p1y + deltaControl));

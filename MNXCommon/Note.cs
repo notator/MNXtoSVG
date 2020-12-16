@@ -103,7 +103,7 @@ namespace MNX.Common
 
         internal void ShiftNoteheadPitch(OctaveShiftType octaveShiftType)
         {
-            GetComponents(NoteheadPitch, out string pitchString, out int octave);
+            GetComponents(NoteheadPitch, out string soundingPitchString, out int octave);
             switch(octaveShiftType)
             {
                 case OctaveShiftType.up3Oct:
@@ -126,14 +126,14 @@ namespace MNX.Common
                     break;
             }
             M.Assert(octave > -1 && octave < 10);
-            NoteheadPitch = pitchString + octave.ToString();
+            NoteheadPitch = soundingPitchString + octave.ToString();
         }
 
-        private void GetComponents(string noteheadPitch, out string pitchString, out int octave)
+        private void GetComponents(string noteheadPitch, out string soundingPitchString, out int octave)
         {
             StringBuilder pitchSB = new StringBuilder();
             StringBuilder octaveSB = new StringBuilder();
-            foreach(var c in NoteheadPitch)
+            foreach(var c in SoundingPitch)
             {
                 if(Char.IsDigit(c))
                 {
@@ -144,7 +144,7 @@ namespace MNX.Common
                     pitchSB.Append(c);
                 }
             }
-            pitchString = pitchSB.ToString();
+            soundingPitchString = pitchSB.ToString();
             int.TryParse(octaveSB.ToString(), out octave);
         }
     }

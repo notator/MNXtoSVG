@@ -5,6 +5,9 @@ using System.Xml;
 
 namespace MNX.Common
 {
+    /// <summary>
+    /// A Measure in a Part. Global Measures have class GlobalMeasure.
+    /// </summary>
     public class Measure : IHasTicks
     {
         /// <summary>
@@ -45,33 +48,27 @@ namespace MNX.Common
         {
             get
             {
-                int ticks = Sequences[0].TicksDuration;
                 for(var i = 1; i < Sequences.Count; i++)
                 {
-                    M.Assert(Sequences[i].TicksDuration == ticks);
+                    M.Assert(Sequences[i].TicksDuration == _ticksDuration);
                 }
-                return ticks;
+                return _ticksDuration;
             }
         }
+        private int _ticksDuration = -1;
 
-        public Measure(XmlReader r, int measureIndex, int ticksPosInScore, bool isGlobal)
+        public Measure(XmlReader r, int measureIndex, TimeSignature currentTimeSig, int ticksPosInScore)
         {
             M.Assert(r.Name == "measure");
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
 
             if(r.IsEmptyElement)
             {
-                if(isGlobal)
-                {
-                    return;
-                }
-                else
-                {
-                    M.ThrowError("Empty measure in part.");
-                }
+                M.ThrowError("Empty measure in part.");
             }
 
             Index = measureIndex; // ji: 23.06.2020
+            _ticksDuration = currentTimeSig.TicksDuration;
             _ticksPosInScore = ticksPosInScore; // ji: 23.06.2020
 
             int count = r.AttributeCount;
@@ -108,14 +105,10 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "directions":
-                            Directions = new Directions(r, ticksPosInScore, isGlobal);
+                            Directions = new Directions(r, ticksPosInScore);
                             break;
                         case "sequence":
-                            if(isGlobal)
-                            {
-                                M.ThrowError("Error in input file.");
-                            }
-                            Sequence sequence = new Sequence(r, measureIndex, ticksPosInScore, sequenceIndex++, isGlobal);
+                            Sequence sequence = new Sequence(r, measureIndex, ticksPosInScore, sequenceIndex++);
                             Sequences.Add(sequence);
                             break;
                     }

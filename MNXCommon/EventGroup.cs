@@ -134,7 +134,7 @@ namespace MNX.Common
         /// "directions occurring within sequence content must omit this ("location") attribute as their
         /// location is determined during the procedure of sequencing the content."
         /// </summary>
-        protected static List<ISeqComponent> GetSequenceComponents(XmlReader r, string caller, int seqTicksPosInScore, bool isGlobal)
+        protected static List<ISeqComponent> GetSequenceComponents(XmlReader r, string caller, int seqTicksPosInScore)
         {
             List<ISeqComponent> content = new List<ISeqComponent>();
 
@@ -156,7 +156,11 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "directions":
-                            content.Add(new Directions(r, ticksPosInScore, isGlobal));
+                            /// The spec says:
+                            /// "directions occurring within sequence content (i.e.when isGlobal is false) must omit
+                            /// this ("location") attribute as their location is determined during the procedure of
+                            /// sequencing the content."
+                            content.Add(new Directions(r, -1));
                             break;
                         case "event":
                             Event e = new Event(r, ticksPosInScore);
@@ -184,21 +188,9 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "directions", "event", "grace", "tuplet", "forward", "sequence");
             }
 
-            CheckDirectionContent(content, isGlobal);
-
             M.Assert(r.Name == caller); // end of sequence content
 
             return content;
-        }
-
-        /// The spec says:
-        /// "directions occurring within sequence content (i.e.when isGlobal is false) must omit
-        /// this ("location") attribute as their location is determined during the procedure of
-        /// sequencing the content."
-        /// If found, write a message to the console, explaining that such data is ignored.
-        private static void CheckDirectionContent(List<ISeqComponent> seq, bool isGlobal)
-        {
-            bool global = isGlobal; // isGlobal is from the outer scope                
         }
     }
 }

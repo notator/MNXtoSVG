@@ -36,7 +36,7 @@ namespace MNX.Common
                                 Global = new Global(r);
                                 break;
                             case "part":
-                                Parts.Add(new Part(r));
+                                Parts.Add(new Part(r, Global.GlobalMeasures));
                                 break;
                             case "score-audio":
                                 ScoreAudios.Add(new ScoreAudio(r));
@@ -46,7 +46,7 @@ namespace MNX.Common
                     M.ReadToXmlElementTag(r, "global", "part", "score-audio", "mnx");
                 }
 
-                NumberOfMeasures = Global.Measures.Count;
+                NumberOfMeasures = Global.GlobalMeasures.Count;
 
                 AdjustForGraceNotes();
 

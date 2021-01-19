@@ -9,12 +9,15 @@ namespace MNX.Common
     public class Global
     {
         public List<string> PartIDs = null;
-        public List<Measure> Measures = new List<Measure>();
+        public List<GlobalMeasure> GlobalMeasures = new List<GlobalMeasure>();
 
         public Global(XmlReader r)
         {
             M.Assert(r.Name == "global");
             // https://w3c.github.io/mnx/specification/common/#the-global-element
+
+            TimeSignature currentTimeSig = null;
+            int currentTicksPosInScore = 0;
 
             // can have a "parts" attribute
             int count = r.AttributeCount;
@@ -37,36 +40,46 @@ namespace MNX.Common
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
-                    Measure measure = new Measure(r, measureIndex++, -1, true);
-                    Measures.Add(measure);
+                    GlobalMeasure globalMeasure = new GlobalMeasure(r, measureIndex++, currentTimeSig, currentTicksPosInScore);
+                    currentTimeSig = (globalMeasure.GlobalDirections != null && globalMeasure.GlobalDirections.TimeSignature != null) ? globalMeasure.GlobalDirections.TimeSignature : currentTimeSig;
+                    currentTicksPosInScore += currentTimeSig.TicksDuration;
+                    GlobalMeasures.Add(globalMeasure);
                 }
                 M.ReadToXmlElementTag(r, "measure", "global");
             }
             M.Assert(r.Name == "global"); // end of global
 
-            M.Assert(Measures.Count > 0);
+            M.Assert(GlobalMeasures.Count > 0);
         }
 
-        public List<List<IUniqueDef>> GetGlobalDirectionsPerMeasure()
+        public List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
         {
             var rval = new List<List<IUniqueDef>>();
-            for(var measureIndex = 0; measureIndex < Measures.Count; measureIndex++)
+            for(var measureIndex = 0; measureIndex < GlobalMeasures.Count; measureIndex++)
             {
                 List<IUniqueDef> measureList = new List<IUniqueDef>();
-                Directions directions = Measures[measureIndex].Directions;
-                if(directions != null)
+                GlobalDirections globalDirections = GlobalMeasures[measureIndex].GlobalDirections;
+                if(globalDirections != null)
                 {
-                    if(directions.KeySignature != null)
+                    if(globalDirections.KeySignature != null)
                     {
-                        measureList.Add(directions.KeySignature);
+                        measureList.Add(globalDirections.KeySignature);
                     }
-                    if(directions.TimeSignature != null)
+                    if(globalDirections.TimeSignature != null)
                     {
-                        measureList.Add(directions.TimeSignature);
+                        measureList.Add(globalDirections.TimeSignature);
                     }
-                    if(directions.OctaveShift != null)
+                    if(globalDirections.OctaveShift != null)
                     {
-                        measureList.Add(directions.OctaveShift);
+                        measureList.Add(globalDirections.OctaveShift);
+                    }
+                    List<Repeat> repeats = globalDirections.Repeats;
+                    if(repeats != null)
+                    {
+                        foreach(var repeat in repeats)
+                        {
+                            measureList.Add(repeat);
+                        }
                     }
                 }
                 rval.Add(measureList);

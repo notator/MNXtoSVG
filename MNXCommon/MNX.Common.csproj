@@ -37,10 +37,12 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accidental.cs" />
     <Compile Include="Clef.cs" />
+    <Compile Include="GlobalDirections.cs" />
     <Compile Include="Forward.cs" />
     <Compile Include="EventGroup.cs" />
     <Compile Include="DirectionsComponent.cs" />
@@ -49,6 +51,7 @@
     <Compile Include="Global.cs" />
     <Compile Include="Grace.cs" />
     <Compile Include="KeySignature.cs" />
+    <Compile Include="GlobalMeasure.cs" />
     <Compile Include="Measure.cs" />
     <Compile Include="MNX.cs" />
     <Compile Include="MNXCommonData.cs" />
@@ -62,6 +65,7 @@
     <Compile Include="Sequence.cs" />
     <Compile Include="SlurDef.cs" />
     <Compile Include="Tied.cs" />
+    <Compile Include="Repeat.cs" />
     <Compile Include="TimeSignature.cs" />
     <Compile Include="TupletDef.cs" />
     <Compile Include="CurrentTupletLevel.cs" />
@@ -69,6 +73,7 @@
     <Compile Include="Interfaces.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="System.ValueTuple, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>

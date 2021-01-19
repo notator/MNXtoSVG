@@ -365,11 +365,12 @@ namespace Moritz.Symbols
             RestSymbol rest = noteObject as RestSymbol;
             TimeSignature timeSignature = noteObject as TimeSignature;
             KeySignature keySignature = noteObject as KeySignature;
+            RepeatSymbol repeatSymbol = noteObject as RepeatSymbol;
 
 			if(barline != null)
 			{
 				barline.CreateMetrics(graphics);
-				returnMetrics = barline.Barline_LineMetrics;
+				returnMetrics = barline.Metrics;
 			}
 			else if(smallClef != null)
 			{
@@ -425,7 +426,11 @@ namespace Moritz.Symbols
                 // Like rests, all keySignatures are originally created with their OriginY on the centre line.
                 returnMetrics = new KeySignatureMetrics(graphics, gap, pageFormat.MusicFontHeight, currentClefType, keySignature.Fifths);
             }
-
+            else if(repeatSymbol != null)
+            {
+                repeatSymbol.CreateMetrics(graphics);
+                returnMetrics = repeatSymbol.Metrics;
+            }
 
             return returnMetrics;
         }
@@ -519,8 +524,11 @@ namespace Moritz.Symbols
             var mnxTimeSigDef = iud as MNX.Common.TimeSignature;
             var mnxKeySigDef = iud as MNX.Common.KeySignature;
             var mnxEventDef = iud as MNX.Common.Event;
+            var mnxRepeatBegin = iud as MNX.Common.RepeatBegin;
+            var mnxRepeatEnd = iud as MNX.Common.RepeatEnd;
+            var mnxRepeatEndBegin = iud as MNX.Common.RepeatEndBegin;
 
-			if(cautionaryChordDef != null && iudIndex == 1)
+            if(cautionaryChordDef != null && iudIndex == 1)
             {
 				CautionaryChordSymbol cautionaryChordSymbol = new CautionaryChordSymbol(voice, cautionaryChordDef, absMsPosition, pageFormat);
                 noteObject = cautionaryChordSymbol;
@@ -597,6 +605,18 @@ namespace Moritz.Symbols
             else if(mnxKeySigDef != null)
             {
                 noteObject = new KeySignature(voice, mnxKeySigDef, pageFormat.MusicFontHeight);
+            }
+            else if(mnxRepeatBegin != null)
+            {
+                noteObject = new RepeatBegin(voice);
+            }
+            else if(mnxRepeatEnd != null)
+            {
+                noteObject = new RepeatEnd(voice, mnxRepeatEnd.Times);
+            }
+            else if(mnxRepeatEndBegin != null)
+            {
+                noteObject = new RepeatEndBegin(voice, mnxRepeatEndBegin.Times);
             }
 
             return noteObject;

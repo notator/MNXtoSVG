@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Tuesday 08.12.2020, 14:02:20-->
+<!--file created: Friday 22.05.2020, 16:05:56-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
-		width="500"
+		width="600"
 		height="100"
 		marginTopPage1="30"
 		marginTopOther="30"
-		marginRight="100"
+		marginRight="30"
 		marginBottom="30"
 		marginLeft="30" />
 	<notation

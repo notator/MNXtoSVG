@@ -58,6 +58,7 @@ namespace MNX.Globals
         public double OrnamentFontHeight { get { return GapVBPX * 2.156; } }
         /// CLicht (new 26.06.2017)
         public double DynamicFontHeight { get { return MusicFontHeight * 0.75; } }
+        public double RepeatTimesStringFontHeight { get { return (GapVBPX * 1.8); } }
         #endregion
 
         #region stroke widths

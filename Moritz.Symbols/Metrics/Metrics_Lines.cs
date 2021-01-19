@@ -238,9 +238,12 @@ namespace Moritz.Symbols
 		private readonly bool _drawExtender;
 	}
 
-	internal class Barline_LineMetrics : Metrics
+	/// <summary>
+	/// Metrics used by both Barlines and RepeatSymbols
+	/// </summary>
+	internal class BRMetrics : Metrics
 	{
-		public Barline_LineMetrics(double leftReOriginX, double rightReOriginX,
+		public BRMetrics(double leftReOriginX, double rightReOriginX,
 			CSSObjectClass lineClass1 = CSSObjectClass.normalBarline, CSSObjectClass lineClass2 = CSSObjectClass.normalBarline)
 			: base(lineClass1, lineClass2)
 		{
@@ -260,6 +263,16 @@ namespace Moritz.Symbols
 		public override void WriteSVG(SvgWriter w)
 		{
 			throw new ApplicationException();
+		}
+
+		public void SetLeft(double left)
+		{
+			_left = left;
+		}
+
+		public void SetRight(double right)
+		{
+			_right = right;
 		}
 	}
 

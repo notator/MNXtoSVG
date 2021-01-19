@@ -36,6 +36,8 @@ namespace Moritz.Symbols
         /// <param name="w"></param>
         public virtual void WriteSVG(SvgWriter w, int voiceIndex, List<CarryMsgs> carryMsgsPerChannel, bool graphicsOnly)
         {
+            bool suppressEndOfScoreBarline = false;
+
             for(int i = 0; i < NoteObjects.Count; ++i)
             {
                 NoteObject noteObject = NoteObjects[i];
@@ -44,9 +46,9 @@ namespace Moritz.Symbols
                     bool isLastNoteObject = (i == (NoteObjects.Count - 1));
                     double top = Staff.Metrics.StafflinesTop;
                     double bottom = Staff.Metrics.StafflinesBottom;
-                    if(barline.IsVisible)
+                    if(barline.IsVisible && !suppressEndOfScoreBarline)
                     {
-                        barline.WriteSVG(w, top, bottom, isLastNoteObject);
+                        barline.WriteSVG(w, top, bottom, isLastNoteObject, true);
                     }
                     barline.WriteDrawObjectsSVG(w);
                 }
@@ -88,6 +90,15 @@ namespace Moritz.Symbols
                 if(noteObject is TimeSignature timeSignature && voiceIndex == 0)
                 {
                     timeSignature.WriteSVG(w, timeSignature.Signature, timeSignature.Metrics.OriginX, timeSignature.Metrics.OriginY);
+                }
+                if(noteObject is RepeatSymbol repeatSymbol && voiceIndex == 0)
+                {
+                    bool isLastNoteObject = (i == (NoteObjects.Count - 1));
+                    double top = Staff.Metrics.StafflinesTop;
+                    double bottom = Staff.Metrics.StafflinesBottom;
+                    repeatSymbol.WriteSVG(w, top, bottom, isLastNoteObject, true);
+
+                    suppressEndOfScoreBarline = (i == (NoteObjects.Count - 2));
                 }
             }
         }
@@ -153,12 +164,12 @@ namespace Moritz.Symbols
             M.Assert(symbolToBeReplaced != null && symbolToBeReplaced.Voice == this);
             #endregion conditions
 
-            List<NoteObject> tempList = new List<NoteObject>(this.NoteObjects);
+            List<NoteObject> tempList = new List<NoteObject>(NoteObjects);
             this.NoteObjects.Clear();
             int i = 0;
             while(tempList.Count > i && tempList[i] != symbolToBeReplaced)
             {
-                this.NoteObjects.Add(tempList[i]);
+                NoteObjects.Add(tempList[i]);
                 i++;
             }
             foreach(NoteObject noteObject in noteObjects)
@@ -314,13 +325,13 @@ namespace Moritz.Symbols
         }
 
         #region Enumerators
-        public IEnumerable AnchorageSymbols
+        public IEnumerable Anchors
         {
             get
             {
                 foreach(NoteObject noteObject in NoteObjects)
                 {
-                    if(noteObject is AnchorageSymbol iHasDrawObjects)
+                    if(noteObject is Anchor iHasDrawObjects)
                         yield return iHasDrawObjects;
                 }
             }
@@ -610,9 +621,8 @@ namespace Moritz.Symbols
             var beginCentreY = ((startHeadMetrics.Top + startHeadMetrics.Bottom) / 2);
             var slurBeginX = beginCentreX + dx;
             var slurBeginY = (isOver) ? beginCentreY - dy : beginCentreY + dy;
-
-            double slurEndX = 0;
-            double slurEndY = 0;
+            double slurEndX;
+            double slurEndY;
             if(endHeadMetrics != null)
             {
                 var endCentreX = ((endHeadMetrics.Right + endHeadMetrics.Left) / 2);

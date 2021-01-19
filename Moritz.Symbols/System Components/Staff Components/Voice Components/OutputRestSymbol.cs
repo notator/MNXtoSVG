@@ -70,6 +70,11 @@ namespace Moritz.Symbols
 
 		public override string ToString() => "outputRest " + InfoString;
 
-		MidiRestDef _midiRestDef = null;
+        public override void AddMetricsToEdge(HorizontalEdge horizontalEdge)
+        {
+            horizontalEdge.Add(Metrics);
+        }
+
+        MidiRestDef _midiRestDef = null;
     }
 }

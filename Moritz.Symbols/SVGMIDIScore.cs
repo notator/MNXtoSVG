@@ -52,16 +52,17 @@ namespace Moritz.Symbols
         private List<Bar> GetBars(MNX.Common.MNX mnxCommon)
         {
             var bars = new List<Bar>();
-            List<List<IUniqueDef>> globalDirectionsPerMeasure = mnxCommon.Global.GetGlobalDirectionsPerMeasure();
+            List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
+            
             var midiChannelsPerStaff = M.PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;
 
             var seqMsPositionInScore = 0;
-            for(var measureIndex = 0; measureIndex < globalDirectionsPerMeasure.Count; measureIndex++)
+            for(var measureIndex = 0; measureIndex < globalIUDsPerMeasure.Count; measureIndex++)
             {
                 var midiChannelIndexPerOutputVoice = new List<int>();
                 List<Trk> trks = new List<Trk>();
-                List<IUniqueDef> globalDirections = globalDirectionsPerMeasure[measureIndex];
+                List<IUniqueDef> globalDirections = globalIUDsPerMeasure[measureIndex];
                 var systemStaffIndex = 0;
                 foreach(var part in mnxCommon.Parts)
                 {
@@ -79,6 +80,7 @@ namespace Moritz.Symbols
                             Sequence sequence = measure.Sequences[voiceIndex];
                             List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, M.PageFormat.MillisecondsPerTick);
 
+                            // TODO add Repeats as IUDs here
                             InsertDirectionsInSeqIUDs(seqIUDs, measureDirections, globalDirections);
 
                             var midiChannel = midiChannelsPerStaff[systemStaffIndex][voiceIndex];
@@ -89,6 +91,7 @@ namespace Moritz.Symbols
                         systemStaffIndex++;
                     }
                 }
+
                 Seq seq = new Seq(seqMsPositionInScore, trks, midiChannelIndexPerOutputVoice);
                 Bar bar = new Bar(seq);
                 bars.Add(bar);
@@ -183,10 +186,10 @@ namespace Moritz.Symbols
                 {
                     rval.Add(measureDirections.KeySignature);
                 }
-                if(measureDirections.TimeSignature != null)
-                {
-                    rval.Add(measureDirections.TimeSignature);
-                }
+                //if(measureDirections.TimeSignature != null)
+                //{
+                //    rval.Add(measureDirections.TimeSignature);
+                //}
                 if(measureDirections.OctaveShift != null)
                 {
                     rval.Add(measureDirections.OctaveShift);
@@ -201,6 +204,49 @@ namespace Moritz.Symbols
             MNX.Common.Clef clef = Find<MNX.Common.Clef>(seqIUDs, measureDirections, globalDirections);
             MNX.Common.KeySignature keySignature = Find<MNX.Common.KeySignature>(seqIUDs, measureDirections, globalDirections);
             MNX.Common.TimeSignature timeSignature = Find<MNX.Common.TimeSignature>(seqIUDs, measureDirections, globalDirections);
+
+            #region insert repeats
+            List<Repeat> repeats = new List<Repeat>();
+            foreach(var iud in globalDirections)
+            {
+                if(iud is Repeat repeat)
+                {
+                    repeats.Add(repeat);
+                }
+            }
+            Dictionary<IUniqueDef, int> ticksPositionsInMeasure = new Dictionary<IUniqueDef, int>();
+            int ticksPosInMeasure = 0;
+            foreach(var iud in seqIUDs)
+            {
+                if(iud is Event evnt)
+                {
+                    ticksPositionsInMeasure.Add(evnt, ticksPosInMeasure);
+                    ticksPosInMeasure += evnt.TicksDuration;
+                }
+            }
+            for(int i = seqIUDs.Count - 1; i >= 0; --i)
+            {
+                var iud = seqIUDs[i];
+                if(iud is Event evnt)
+                {
+                    for(var ri = repeats.Count - 1; ri >= 0; --ri)
+                    {
+                        var repeat = repeats[ri];
+                        var tickPositionInMeasure = ticksPositionsInMeasure[iud];
+                        if(repeat.PositionInMeasure.TickPositionInMeasure > tickPositionInMeasure)
+                        {
+                            seqIUDs.Insert(i + 1, repeat);
+                            repeats.RemoveAt(ri);
+                        }
+                        else if(repeat.PositionInMeasure.TickPositionInMeasure == tickPositionInMeasure)
+                        {
+                            seqIUDs.Insert(i, repeat);
+                            repeats.RemoveAt(ri);
+                        }
+                    }
+                }
+            }
+            #endregion insert repeats
 
             for(int i = 2; i >= 0; i--)
             {
@@ -580,7 +626,7 @@ namespace Moritz.Symbols
             {
                 Notator.ConvertVoiceDefsToNoteObjects(this.Systems);
 
-                FinalizeSystemStructure(); // adds barlines, joins bars to create systems, etc.
+                FinalizeSystemStructure(bars); // adds barlines, joins bars to create systems, etc.
 
                 using(Image image = new Bitmap(1, 1))
                 {

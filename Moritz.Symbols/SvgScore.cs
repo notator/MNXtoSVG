@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 using MNX.Globals;
+
+using Moritz.Spec;
 using Moritz.Xml;
 
 namespace Moritz.Symbols
@@ -422,6 +423,14 @@ namespace Moritz.Symbols
 				StringBuilder smallClefXStyle = TextStyle("." + CSSObjectClass.smallClefX.ToString(), "", smallClefXFontHeight, "");
                 fontStyles.Append(smallClefXStyle);
             }
+            if(usedCSSObjectClasses.Contains(CSSObjectClass.repeatTimes))
+            {
+                string repeatTimesStringFontHeight = M.DoubleToShortString(pageFormat.RepeatTimesStringFontHeight);
+                StringBuilder repeatTimesInfoHeight = TextStyle("." + CSSObjectClass.repeatTimes.ToString(), "", repeatTimesStringFontHeight,
+                    SVGFontWeight.bold.ToString(), "", "");
+
+                fontStyles.Append(repeatTimesInfoHeight);
+            }
             #endregion Arial
 
             #region Open Sans Condensed (ornament)
@@ -494,10 +503,12 @@ namespace Moritz.Symbols
             StringBuilder rval = new StringBuilder();
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.rest);
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.notehead);
-			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.accidental);
-			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryNotehead);
-			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryAccidental);
-			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.clef);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.accidental);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.dot);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryNotehead);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryAccidental);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryDot);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.clef);
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.smallClef);
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.dynamic);
             if(OctavedClefExists(usedClefIDs))
@@ -514,13 +525,13 @@ namespace Moritz.Symbols
         
         private StringBuilder GetStandardSizeClasses(List<CSSObjectClass> usedCSSClasses, List<ClefID> usedClefIDs)
         {
-            //".rest, .notehead, .accidental, .augDot, .clef"
+            //".rest, .notehead, .accidental, .dot, .clef"
 
             StringBuilder rval = new StringBuilder();
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.rest);
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.notehead);
             ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.accidental);
-            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.augDot);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.dot);
             ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.clef);
             return rval;
         }
@@ -532,7 +543,7 @@ namespace Moritz.Symbols
             StringBuilder rval = new StringBuilder();
 			ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryNotehead);
             ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryAccidental);
-            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryAugDot);
+            ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.cautionaryDot);
             ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.smallClef);
 
             return rval;
@@ -576,6 +587,10 @@ namespace Moritz.Symbols
             if(usedCSSClasses.Contains(CSSObjectClass.octaveShiftExtender))
             {
                 ExtendRval(rval, "." + CSSObjectClass.octaveShiftExtenderText.ToString());
+            }
+            if(usedCSSClasses.Contains(CSSObjectClass.repeatTimes))
+            {
+                ExtendRval(rval, "." + CSSObjectClass.repeatTimes.ToString());
             }
 
             return rval;
@@ -1027,8 +1042,6 @@ namespace Moritz.Symbols
                         List<int> consecutiveRestIndexList = new List<int>();
                         for(int i = 0; i < voice.NoteObjects.Count - 1; i++)
                         {
-                            M.Assert(!(voice.NoteObjects[i] is Barline));
-
 							RestSymbol rest2 = voice.NoteObjects[i + 1] as RestSymbol;
 							if(voice.NoteObjects[i] is RestSymbol rest1 && rest2 != null)
 							{
@@ -1185,9 +1198,11 @@ namespace Moritz.Symbols
                 for(int voiceIndex = 0; voiceIndex < system2.Staves[staffIndex].Voices.Count; voiceIndex++)
                 {
                     Voice voice1 = system1.Staves[staffIndex].Voices[voiceIndex];
-                    GetFinalDirections(voice1.NoteObjects, out Clef v1FinalClef, out KeySignature v1FinalKeySignature, out TimeSignature v1FinalTimeSignature);
+                    GetFinalDirections(voice1.NoteObjects,
+                        out Clef v1FinalClef, out KeySignature v1FinalKeySignature, out TimeSignature v1FinalTimeSignature, out RepeatEnd v1EndRepeatEnd);
                     Voice voice2 = system2.Staves[staffIndex].Voices[voiceIndex];
-                    GetInitialDirections(voice2.NoteObjects, out Clef v2InitialClef, out KeySignature v2InitialKeySignature, out TimeSignature v2InitialTimeSignature);
+                    GetInitialDirections(voice2.NoteObjects,
+                        out Clef v2InitialClef, out KeySignature v2InitialKeySignature, out TimeSignature v2InitialTimeSignature);
                     M.Assert(v1FinalClef != null);
 
                     if(v2InitialClef != null && v2InitialClef.ClefType == v1FinalClef.ClefType)
@@ -1210,37 +1225,38 @@ namespace Moritz.Symbols
             system2 = null;
         }
 
-        private void GetInitialDirections(List<NoteObject> noteObjects, out Clef initialClef, out KeySignature initialKeySignature, out TimeSignature initialTimeSignature)
+        private void GetInitialDirections(List<NoteObject> noteObjects,
+            out Clef initialClef, out KeySignature initialKeySignature, out TimeSignature initialTimeSignature)
         {
             initialClef = null;
             initialKeySignature = null;
             initialTimeSignature = null;
-            for(var i = 0; i < 3; i++)
+
+            for(var i = 0; i < 3; ++i)
             {
-                if(noteObjects.Count > i)
+                var noteObject = noteObjects[i];
+                if(noteObject is Clef clef)
                 {
-                    var noteObject = noteObjects[i];
-                    if(noteObject is Clef clef)
-                    {
-                        initialClef = clef;
-                    }
-                    if(noteObject is KeySignature keySignature)
-                    {
-                        initialKeySignature = keySignature;
-                    }
-                    if(noteObject is TimeSignature timeSignature)
-                    {
-                        initialTimeSignature = timeSignature;
-                    }
+                    initialClef = clef;
+                }
+                if(noteObject is KeySignature keySignature)
+                {
+                    initialKeySignature = keySignature;
+                }
+                if(noteObject is TimeSignature timeSignature)
+                {
+                    initialTimeSignature = timeSignature;
                 }
             }
         }
 
-        private void GetFinalDirections(List<NoteObject> noteObjects, out Clef outClef, out KeySignature outKeySignature, out TimeSignature outTimeSignature)
+        private void GetFinalDirections(List<NoteObject> noteObjects, 
+            out Clef outClef, out KeySignature outKeySignature, out TimeSignature outTimeSignature, out RepeatEnd outEndRepeatEnd)
         {
             outClef = null;
             outKeySignature = null;
             outTimeSignature = null;
+            outEndRepeatEnd = null;
 
             foreach(var noteObject in noteObjects)
             {
@@ -1257,6 +1273,14 @@ namespace Moritz.Symbols
                     outTimeSignature = timeSignature;
                 }
             }
+
+            for(int i = noteObjects.Count - 1; i >= noteObjects.Count - 2; --i)
+            {
+                if(noteObjects[i] is RepeatEnd repeatEnd)
+                {
+                    outEndRepeatEnd = repeatEnd;
+                }
+            }
         }
 
         #endregion
@@ -1266,25 +1290,36 @@ namespace Moritz.Symbols
         /// <summary>
         /// There is currently one bar per System. 
         /// All Duration Symbols have been constructed in voice.NoteObjects (possibly including CautionaryChordSymbols at the beginnings of staves).
-        /// There are no barlines in the score yet.
-        /// Add a NormalBarline to each Voice.
+        /// There are no barlines or repeatSymbols in the score yet.
+        /// Add a NormalBarline at the beginning of the Systems[0] (after the clef).
+        /// Now add a NormalBarline or EndOfScoreBarline at the end of each system=bar. (Cautionary keySigs and timeSigs may be added later.)
         /// </summary>
         /// <param name="barlineType"></param>
         /// <param name="systemNumbers"></param>
-        private void AddNormalBarlines()
+        private void AddBarlines()
         {
+            // There is currently one bar per System, so systemIndex is bar index here.
             for(int systemIndex = 0; systemIndex < Systems.Count; ++systemIndex)
             {
-                foreach(Staff staff in Systems[systemIndex].Staves)
+                var staves = Systems[systemIndex].Staves;
+                for(var staffIndex = 0; staffIndex < staves.Count; ++staffIndex)                
                 {
-                    foreach(Voice voice in staff.Voices)
+                    var voices = staves[staffIndex].Voices;
+                    for(var voiceIndex = 0; voiceIndex < voices.Count; ++voiceIndex)
                     {
-                        M.Assert(voice.NoteObjects.Count > 0
-                            && !(voice.NoteObjects[voice.NoteObjects.Count - 1] is NormalBarline));
+                        var voice = voices[voiceIndex];
+                        var noteObjects = voice.NoteObjects;
+                        M.Assert(noteObjects.Count > 0 && !(noteObjects[noteObjects.Count - 1] is Barline));
 
-                        NormalBarline normalBarline = new NormalBarline(voice);
+                        if(systemIndex == 0)
+                        {
+                            var initialBarline = new NormalBarline(voice);
+                            var index = noteObjects.FindIndex(noteObject => (!(noteObject is Clef)));
+                            noteObjects.Insert(index, initialBarline);
+                        }                                   
 
-                        voice.NoteObjects.Add(normalBarline);
+                        var endBarline = (systemIndex == Systems.Count - 1) ? new EndOfScoreBarline(voice) : new NormalBarline(voice);
+                        noteObjects.Add(endBarline);
                     }
                 }
             }
@@ -1312,20 +1347,18 @@ namespace Moritz.Symbols
             return returnList;
         }
 
-		/// <summary>
-		/// When this function is called, every system still contains one bar, and all systems have the same number
-		/// of staves and voices as System[0].
-		/// This function:
-		/// 1. adds a NormalBarline at the end of each system=bar, 
-		/// 2. joins the bars into systems according to the user's options,
-		/// 3. sets the visibility of naturals (if the chords have any noteheads)
-		/// 4. adds a NormalBarline at the start of each system, after the clef.
-		/// 5. adds a barnumber to the first barline on each system.
-		/// 6. adds the staff's name to the first NormalBarline on each staff. 
-		/// 7. adds regionStart- and regionEnd- info to the appropriate NormalBarlines
-		/// 8. converts the NormalBarlines to the appropriate barline class
-		/// </summary>
-		protected void FinalizeSystemStructure()
+        /// <summary>
+        /// When this function is called, every system still contains one bar, and all systems have the same number
+        /// of staves and voices as System[0]. Now:
+        /// 1. add a NormalBarline, RepeatBegin, RepeatEnd or EndOfScoreBarline at the beginning and end of each system=bar (after the clef (and keySignature, if any))
+        /// 2. join the bars into systems according to the user's options, setting RepeatBarlines as necessary...
+        /// 3. set the visibility of naturals (if the chords have any noteheads)
+        /// 4. add a barnumber to the first barline on each system.
+        /// 5. add the staff's name to the first barline on each staff. 
+        /// 6. if there are no ordinary (MNX) repeats, add regionStart- and regionEnd- info to the appropriate NormalBarlines, then
+        /// 7. convert the NormalBarlines to the appropriate region barline class
+        /// </summary>
+        protected void FinalizeSystemStructure(List<Bar> bars)
         {
             #region preconditions
             int nStaves = Systems[0].Staves.Count;
@@ -1350,35 +1383,36 @@ namespace Moritz.Symbols
             }
             #endregion preconditions
 
-            AddNormalBarlines(); // 1. add a NormalBarline at the end of each system=bar,
+            // Add a NormalBarline or EndOfScoreBarline at the end of each system=bar (after the clef (and keySignature, if any))
+            AddBarlines();
 
-			ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
+            ReplaceConsecutiveRestsInBars(M.PageFormat.MinimumCrotchetDuration);
 
-            SetSystemsToBeginAtBars(M.PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options.
+            SetSystemsToBeginAtBars(M.PageFormat.SystemStartBars); // 2. join the bars into systems according to the user's options, setting RepeatBarlines as necessary...
 
 			SetSystemAbsEndMsPositions();
 
             NormalizeSmallClefs();
 
-            AddNormalBarlineAtStartOfEachSystem(); // 4. adds a NormalBarline at the start of each system, after the clef (and keySignature, if any).
+            AddBarNumbers(); // 4.add a barnumber to the first Barline on each system.
+			AddStaffNames(); // 5. adds the staff's name to the first Barline on each staff.
 
-			AddBarNumbers(); // 5.add a barnumber to the first (Normal)Barline on each system.
-			AddStaffNames(); // 6. adds the staff's name to the first (Normal)Barline on each staff.
+            // Regions are not implemented for MNXtoSVG, so region code is currently unused and not debugged!
+            //
+            //if(this.ScoreData != null)
+            //{
+            //    // 6. add regionStart- and regionEnd- info to the appropriate NormalBarlines
+            //    AddRegionStartInfo();
+            //    AddRegionEndInfo();
+            //}
 
-			if(this.ScoreData != null)
-			{
-				// 7. add regionStart- and regionEnd- info to the appropriate NormalBarlines
-				AddRegionStartInfo();
-				AddRegionEndInfo();
-			}
-
-			SetBarlineTypes(); // 8. converts each NormalBarline to a Barline of the appropriate class
+            //SetRegionBarlineTypes(); // 7. converts each NormalBarline to a Barline of the appropriate Region class
 		}
 
 		/// <summary>
-		/// replaces NormalBarlines by barlines having the appropriate type for the region information.
+		/// replaces NormalBarlines by barlines having the appropriate type.
 		/// </summary>
-		private void SetBarlineTypes()
+		private void SetRegionBarlineTypes()
 		{
 			Dictionary<int, CSSObjectClass> msPosBarlineClassDict = new Dictionary<int, CSSObjectClass>();
 			foreach(SvgSystem system in Systems)
@@ -1423,8 +1457,8 @@ namespace Moritz.Symbols
 									case CSSObjectClass.endAndStartRegionBarline:
 										voice.NoteObjects[i] = new EndAndStartRegionBarline(voice, normalBarline.DrawObjects);
 										break;
-									case CSSObjectClass.endOfScoreBarline:
-										voice.NoteObjects[i] = new EndOfScoreBarline(voice, normalBarline.DrawObjects);
+									case CSSObjectClass.endOfScoreRegionBarline:
+										voice.NoteObjects[i] = new EndOfScoreRegionBarline(voice, normalBarline.DrawObjects);
 										break;
 								}
 							}
@@ -1804,30 +1838,6 @@ namespace Moritz.Symbols
 				}
 			}
 		}
-
-		/// <summary>
-		/// Inserts a NormalBarline at the start of the first bar in each Voice in each Staff in each System.
-		/// The barline is inserted after the initial Clef, and after the initial KeySignature if it exists.
-		/// </summary>
-		private void AddNormalBarlineAtStartOfEachSystem()
-        {
-            foreach(SvgSystem system in Systems)
-            {
-                foreach(Staff staff in system.Staves)
-                {
-                    foreach(Voice voice in staff.Voices)
-                    {
-                        M.Assert(voice.NoteObjects[0] is Clef);
-                        int insertIndex = 1;
-                        if(voice.NoteObjects[1] is KeySignature)
-                        {
-                            insertIndex = 2;
-                        }
-                        voice.NoteObjects.Insert(insertIndex, new NormalBarline(voice));
-                    }
-                }
-            }
-        }
 
         #endregion functions
 

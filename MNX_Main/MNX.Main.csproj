@@ -70,6 +70,7 @@
     </Compile>
     <None Include="MNX_in\form1Data\_10_beamhooks.f1d" />
     <None Include="MNX_in\form1Data\_11_tuplets.f1d" />
+    <None Include="MNX_in\form1Data\_13a_crossSystemOctaves.f1d" />
     <None Include="MNX_in\form1Data\_14a_crossBarlineSlurs.f1d" />
     <None Include="MNX_in\form1Data\_18_parts.f1d" />
     <None Include="MNX_in\form1Data\_12_voices.f1d" />
@@ -80,6 +81,7 @@
     <None Include="MNX_in\form1Data\_17_slurincomplete.f1d" />
     <None Include="MNX_in\form1Data\_21_repeatsmorethanonce.f1d" />
     <None Include="MNX_in\form1Data\_22_repeatssimplealternateendings.f1d" />
+    <None Include="MNX_in\form1Data\_23a_repeatsmidmeasure.f1d" />
     <None Include="MNX_in\form1Data\_25_jumpsdalsegnoalfine.f1d" />
     <None Include="MNX_in\form1Data\_24_jumpsdalsegno.f1d" />
     <None Include="MNX_in\form1Data\_23_repeatsadvancedalternateendings.f1d" />
@@ -98,6 +100,7 @@
     <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
     <None Include="MNX_in\mnx\_11_tuplets.mnx" />
     <None Include="MNX_in\mnx\_12_voices.mnx" />
+    <None Include="MNX_in\mnx\_13a_crossSystemOctaves.mnx" />
     <None Include="MNX_in\mnx\_13_octaves.mnx" />
     <None Include="MNX_in\mnx\_14a_crossBarlineSlurs.mnx">
       <SubType>Designer</SubType>
@@ -110,6 +113,7 @@
     <None Include="MNX_in\mnx\_17_slurincomplete.mnx" />
     <None Include="MNX_in\mnx\_18_parts.mnx" />
     <None Include="MNX_in\mnx\_21_repeatsmorethanonce.mnx" />
+    <None Include="MNX_in\mnx\_23a_repeatsmidmeasure.mnx" />
     <None Include="MNX_in\mnx\_25_jumpsdalsegnoalfine.mnx" />
     <None Include="MNX_in\mnx\_24_jumpsdalsegno.mnx" />
     <None Include="MNX_in\mnx\_23_repeatsadvancedalternateendings.mnx" />

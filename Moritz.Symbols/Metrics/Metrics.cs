@@ -77,7 +77,7 @@ namespace Moritz.Symbols
 		public double OverlapWidth(Metrics previousMetrics)
 		{
 			bool verticalOverlap = true;
-			if(!(this is Barline_LineMetrics))
+			if(!(this is BRMetrics))
 			{
 				if((previousMetrics.Top > Bottom) || (previousMetrics.Bottom < Top))
 					verticalOverlap = false;
@@ -109,7 +109,7 @@ namespace Moritz.Symbols
 		/// The result can be 0, if previousMetrics.Right = this.Metrics.Left.
 		/// If there is no overlap, double.MinValue is returned.
 		/// </summary>
-		public double OverlapWidth(AnchorageSymbol previousAS)
+		public double OverlapWidth(Anchor previousAS)
 		{
 			double overlap = double.MinValue;
 

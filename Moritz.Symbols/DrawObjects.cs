@@ -62,6 +62,14 @@ namespace Moritz.Symbols
 			_textInfo = new TextInfo(text, fontName, fontHeight, align);
 		}
 
+		public Text(object container,
+			string text, string fontName, double fontHeight,
+			SVGFontWeight weight, SVGFontStyle style, TextHorizAlign align)
+				: base(container)
+		{
+			_textInfo = new TextInfo(text, fontName, fontHeight, weight, style, new ColorString("000000"), align);
+		}
+
 		public override void WriteSVG(SvgWriter w)
 		{
 			//w.SvgText(TextInfo, Metrics as TextMetrics); // does not work with DynamicMetrics
@@ -103,6 +111,19 @@ namespace Moritz.Symbols
 		public override string ToString()
 		{
 			return "staffname: " + TextInfo.Text;
+		}
+	}
+
+	internal class RepeatTimesText : Text
+	{
+		public RepeatTimesText(object container, string repeatTimes, double fontHeight)
+			: base(container, repeatTimes, "Arial", fontHeight, SVGFontWeight.bold, SVGFontStyle.normal, TextHorizAlign.right)
+		{
+		}
+
+		public override string ToString()
+		{
+			return "repeatTimes: " + TextInfo.Text;
 		}
 	}
 

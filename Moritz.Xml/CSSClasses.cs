@@ -97,7 +97,7 @@ namespace Moritz.Xml
 		flag, // path classes used in defs. Defined if flags exist. Container:chord
 		notehead, cautionaryNotehead, // Container:chord/cautionaryChord
         accidental, cautionaryAccidental, // Container:chord/cautionaryChord
-        augDot, cautionaryAugDot, // Container:chord/cautionaryChord
+        dot, cautionaryDot, // Container:chord/cautionaryChord
         ledgerlines, // recorded and used. There are no cautionaryLedgerlines. Container:chord/cautionaryChord
 		ledgerline, // used, but not recorded. Defined if ledgerlines exist. Container: ledgerlines
 		ornament,       // Container:chord. There are no cautionary ornaments
@@ -126,16 +126,28 @@ namespace Moritz.Xml
 
         #region barlines
         normalBarline, // always used, recorded and defined. A normal barline and endBarline component. Container:voice
-		thinBarline, // a double-bar component. Always defined. Container:regionStartbarline etc.
-		thickBarline, // a double-bar component. Always defined. Container:regionStartbarline etc.
+		thinBarline, // a double-bar component. Always defined. Container:startRegionbarline, startRepeatbarline etc.
+		thickBarline, // a double-bar component. Always defined. Container:startRegionbarline, startRepeatbarline etc.
 		staffConnectors, // A group of barline (and maybe endBarline) in a system. Never defined. Container:system.
+		endOfScoreBarline, // container class (no CSS)
+
+		#region AssistantPerformer region barline types
 		startRegionBarline,
 		endRegionBarline,
 		endAndStartRegionBarline,
-		endOfScoreBarline,
+		endOfScoreRegionBarline,
 		regionFrameConnector,
-        #endregion barlines
-    };
+		#endregion AssistantPerformer region barline types
+
+		#endregion barlines
+
+		#region repeats
+		repeatBegin, // container class (no CSS)
+		repeatEnd, // container class (no CSS)
+		repeatEndBegin, // container class (no CSS)
+		repeatTimes // font class (contained by repeatEnd or repeatEndBegin)
+		#endregion repeats
+	};
 
 	/// <summary>
 	/// This enum contains _all_ the colour classes that Moritz can write to SVG scores.

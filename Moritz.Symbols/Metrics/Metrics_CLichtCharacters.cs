@@ -510,10 +510,10 @@ namespace Moritz.Symbols
 
     }
 
-    internal class AugDotMetrics : CLichtCharacterMetrics
+    internal class DotMetrics : CLichtCharacterMetrics
     {
-        public AugDotMetrics(string augDotChar, double fontHeight, double gap, CSSObjectClass cssClass)
-            : base(augDotChar, fontHeight, TextHorizAlign.center, cssClass)
+        public DotMetrics(double fontHeight, double gap, CSSObjectClass cssClass)
+            : base(".", fontHeight, TextHorizAlign.center, cssClass)
         {
             _originX = (_right + _left) / 2;
             Move(0 - _originX, 0F); // centre horizontally
@@ -526,7 +526,7 @@ namespace Moritz.Symbols
 
         public override void WriteSVG(SvgWriter w)
         {
-            w.SvgText(CSSObjectClass, CSSColorClass, _characterString, _left, _bottom);
+            w.SvgText(CSSObjectClass, CSSColorClass, _characterString, _originX, _originY);
         }
 
     }

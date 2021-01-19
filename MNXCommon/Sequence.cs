@@ -25,7 +25,7 @@ namespace MNX.Common
 
         public int MsPositionInScore { get; private set; }
 
-        public Sequence(XmlReader r, int measureindex, int ticksPosInScore, int sequenceIndex, bool isGlobal)
+        public Sequence(XmlReader r, int measureindex, int ticksPosInScore, int sequenceIndex)
         {
             M.Assert(r.Name == "sequence");
 
@@ -55,7 +55,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "sequence", ticksPosInScore, isGlobal);
+            SequenceComponents = GetSequenceComponents(r, "sequence", ticksPosInScore);
 
             M.Assert(r.Name == "sequence");
         }
@@ -103,10 +103,6 @@ namespace MNX.Common
                     if(d.KeySignature != null)
                     {
                         rval.Add(d.KeySignature as IUniqueDef);
-                    }
-                    if(d.TimeSignature != null)
-                    {
-                        rval.Add(d.TimeSignature as IUniqueDef);
                     }
                     if(d.OctaveShift != null)
                     {

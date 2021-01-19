@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Tuesday 08.12.2020, 14:02:20-->
+<!--file created: Monday 21.12.2020, 11:00:02-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
 		width="500"
-		height="100"
-		marginTopPage1="30"
-		marginTopOther="30"
-		marginRight="100"
+		height="350"
+		marginTopPage1="50"
+		marginTopOther="50"
+		marginRight="30"
 		marginBottom="30"
 		marginLeft="30" />
 	<notation
@@ -15,10 +15,10 @@
 		gapSize="10"
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="3"
-		systemStartBars="1"
+		systemStartBars="1,  2"
 		crotchetsPerMinute="60" />
 	<metadata
-		title="beams"
+		title="octaves"
 		author="MNX by Example"
 		comment="See https://w3c.github.io/mnx/by-example/" />
 	<options

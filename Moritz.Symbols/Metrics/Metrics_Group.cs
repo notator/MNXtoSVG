@@ -95,7 +95,7 @@ namespace Moritz.Symbols
             w.SvgEndGroup();
         }
 
-        TextMetrics _barNumberNumberMetrics = null;
+        readonly TextMetrics _barNumberNumberMetrics = null;
         readonly string _number;
     }
 
@@ -205,8 +205,8 @@ namespace Moritz.Symbols
             w.SvgEndGroup();
         }
 
-        List<TextMetrics> _textMetrics = new List<TextMetrics>();
-        List<string> _textStrings = new List<string>();
+        readonly List<TextMetrics> _textMetrics = new List<TextMetrics>();
+        readonly List<string> _textStrings = new List<string>();
 
         public double Gap { get; }
     }
@@ -337,7 +337,6 @@ namespace Moritz.Symbols
 
         public override void WriteSVG(SvgWriter w)
         {
-
             double padding = (_tupletTextMetrics.Right - _tupletTextMetrics.Left) / 2;
             double leftH = _tupletTextMetrics.Left;
             double rightH = _tupletTextMetrics.Right + padding;
@@ -379,5 +378,32 @@ namespace Moritz.Symbols
         TupletBracketBoundaryMetrics _bracketBoundary = null;
 
         readonly string _text;
+    }
+
+    public class AnchorMetrics : GroupMetrics
+    {
+        /// <summary>
+        /// The relevant CSSObjectClasses are set when creating the anchorMetrics and drawObject.Metrics,
+        /// so don't need to be mentioned again when calling the base constructor here.
+        /// Note that the drawObject.Metrics added here will be used for both horizontal and vertical
+        /// collision checking. Additional metrics can be added _after_ doing horizontal justification
+        /// if that is not the intended behaviour -- using the virtual Add(metrics) function.
+        /// </summary>
+        /// <param name="firstMetrics">The first metrics object in this AnchorMetrics.</param>
+        /// <param name="drawObject">An attached drawObject with drawObject.Metrics != null</param>
+        public AnchorMetrics(Metrics firstMetrics, List<DrawObject> drawObjects)
+            :base(CSSObjectClass.none)
+        {
+            _top = firstMetrics.Top;
+            _right = firstMetrics.Right;
+            _bottom = firstMetrics.Bottom;
+            _left = firstMetrics.Left;
+            MetricsList.Add(firstMetrics);
+
+            foreach(var drawObject in drawObjects)
+            {
+                this.Add(drawObject.Metrics);
+            }
+        }
     }
 }

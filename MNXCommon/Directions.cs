@@ -1,17 +1,16 @@
-﻿using System;
-using System.IO;
+﻿using MNX.Globals;
+
+using System;
 using System.Collections.Generic;
 using System.Xml;
-using MNX.Globals;
 
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#elementdef-directions
-    public class Directions : IGlobalMeasureComponent, IPartMeasureComponent, ISeqComponent
+    public class Directions : IPartMeasureComponent, ISeqComponent
     {
         // These are just the elements used in the first set of examples.
         // Other elements need to be added later.
-        public readonly TimeSignature TimeSignature;
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
@@ -57,7 +56,7 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Directions(XmlReader r, int ticksPosInScore, bool isGlobal)
+        public Directions(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "directions");
 
@@ -65,22 +64,14 @@ namespace MNX.Common
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
-            M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift");
+            M.ReadToXmlElementTag(r, "clef", "key", "octave-shift");
 
-            while(r.Name == "time" || r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift")
+            while(r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
                     {
-                        case "time":
-                            // https://w3c.github.io/mnx/specification/common/#the-time-element
-                            if(isGlobal == false)
-                            {
-                                M.ThrowError("Error: the time element must be global in standard mnx-common.");
-                            }
-                            TimeSignature = new TimeSignature(r, ticksPosInScore);
-                            break;
                         case "clef":
                             Clef = new Clef(r, ticksPosInScore);
                             break;
@@ -93,8 +84,9 @@ namespace MNX.Common
                             break;
                     }
                 }
-                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "directions");
+                M.ReadToXmlElementTag(r, "clef", "key", "octave-shift", "directions");
             }
+
             M.Assert(r.Name == "directions"); // end of "directions"
         }
     }

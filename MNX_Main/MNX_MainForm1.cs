@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace MNX.Main
 {
@@ -62,7 +64,11 @@ namespace MNX.Main
 
         private void LoadSettings(int mnxSelectedIndex)
         {
-            mnx = new MNX.Common.MNX(_MNX_Form1Data_Paths[mnxSelectedIndex].Item1);
+            string mnxFilePath =_MNX_Form1Data_Paths[mnxSelectedIndex].Item1;
+
+            ValidateXML(mnxFilePath); // throws an exception on failure
+
+            mnx = new MNX.Common.MNX(mnxFilePath);
 
             _numberOfMeasures = mnx.NumberOfMeasures;
 
@@ -70,6 +76,45 @@ namespace MNX.Main
             var svgds = new Form1StringData(form1DataPath);
 
             LoadControls(svgds, _numberOfMeasures);
+        }
+
+        // See: https://www.youtube.com/watch?v=wTgSS8X90aA&list=PL73qvSDlAVViXEuAWaRFKul4gmYX9D-qL&index=13
+        private void ValidateXML(string filepath)
+        {
+            //bool rval = true;
+            try
+            {
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.ValidationType= ValidationType.Schema;
+                settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
+                settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
+                settings.ValidationEventHandler +=new System.Xml.Schema.ValidationEventHandler(ValidationEventHandler);
+
+                using(XmlReader r = XmlReader.Create(filepath, settings))
+                {
+                    // iterate over the XML
+                    while(r.Read())
+                    {
+                        // Do nothing.
+                        // If something goes wrong call ValidationEventHandler(...)
+                        // to throw an exception
+                    }
+                    Console.WriteLine("Validation passed.");
+                }
+            }
+            catch(Exception ex)
+            {
+                // Error message has already been printed to the console.
+                //rval = false;
+            }
+            //return rval;
+        }
+
+        private void ValidationEventHandler(object sender, ValidationEventArgs args)
+        {
+            // if we're here, something is wrong with the XML
+            Console.WriteLine("Validation Error: " + args.Message);
+            throw new Exception("Validation failed. message: " + args.Message);
         }
 
         private void LoadControls(Form1StringData svgds, int numberOfMeasures)

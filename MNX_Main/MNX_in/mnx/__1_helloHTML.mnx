@@ -1,0 +1,27 @@
+<?xml version ="1.0"?>
+<mnx xmlns="https://github.com/notator/mnx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/notator/mnx ../schema/common1900.xsd">
+    <global>
+        <measure>
+            <directions>
+                <time signature="4/4"/>
+            </directions>
+        </measure>
+    </global>
+    <part id="part1">
+        <measure barline="regular">
+            <directions>
+                <clef sign="G" line="2"/>
+                <text-block>
+                    line1<br/>line2
+                </text-block>
+            </directions>
+            <sequence>
+                <event value="/1">
+                    <note pitch="C4"/>
+                </event>
+            </sequence>
+        </measure>
+    </part>
+</mnx>

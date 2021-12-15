@@ -1,0 +1,923 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://github.com/notator/mnx"
+           elementFormDefault="qualified"
+           xmlns="https://github.com/notator/mnx">
+    <xs:annotation>
+        <!--xs:documentation xml:lang="en"-->
+        <xs:documentation>
+            **************************************************************
+            *  common1900.xsd:                                           *
+            *  Draft MNX common1900 Schema (.mnx file)                   *
+            *                                                            *
+            *  N.B.: This Schema is an evolving draft, that validates    *
+            *  an expanding set of MNX common1900 Example files.         *
+            *  It will change in future, as new example files are added, *
+            *  leading to the creation of new complexTypes, simpleTypes  *
+            *  and elements. It will also change as part of the drive    *
+            *  to accomodate new, related schemas.                       *
+            *  Suggestions for new examples and/or changes or            *
+            *  improvements to this Schema would be very welcome.        *
+            *                                                            *
+            *  Author(s): James Ingram...                                *
+            *                                                            *
+            *  Licensed in accordance with the                           *
+            *  W3C COMMUNITY CONTRIBUTOR LICENSE AGREEMENT (CLA)         *
+            *  https://www.w3.org/community/about/process/cla/           *
+            *  Contributors must be members of the W3C Music Notation    *
+            *  Community Notation Group:                                 *
+            *  https://www.w3.org/community/music-notation/              *
+            *  and so have already signed the above licence.             *
+            *                                                            *
+            **************************************************************
+        </xs:documentation>
+    </xs:annotation>
+
+    <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+    <!-- mnx: the root element of an .mnx file -->
+    <xs:element name="mnx">
+        <xs:annotation>
+            <xs:documentation>
+                the root element of an .mnx file
+                Both systemLayouts and systemLayout can be omitted only if the score contains
+                a single part on a single system.
+                Issue: The Draft Spec says that there can be more than one global element (enclosed
+                in a globals element). That does not seem necessary in this common1900 schema.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="global" type="globalType"/>
+                <xs:choice>
+                    <xs:element name="parts" type="partsType"/>
+                    <xs:element name="part" type="partType"/>                    
+                </xs:choice>
+                <!--
+                <xs:choice minOccurs="0">
+                    <xs:element name="systemLayouts" type="systemLayoutsType"/>
+                    <xs:element name="systemLayout" type="systemLayoutType"/>                    
+                </xs:choice>
+                <xs:choice>
+                    <xs:element name="scores" type="scoresType"/>
+                    <xs:element name="score" type="scoreType"/>                   
+                </xs:choice> 
+                -->
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+    <!-- Global Types -->
+    <xs:complexType name="globalType">
+        <xs:annotation>
+            <xs:documentation>
+                the mnx/global element
+            </xs:documentation>
+        </xs:annotation>        
+        <xs:sequence>
+            <xs:element name="instrumentTypes" type="instrumentTypesType" minOccurs="0" />
+            <xs:choice>
+                <xs:element name="measures" type="globalMeasuresType"/>
+                <xs:element name="measure" type="globalMeasureType"/>                
+            </xs:choice>            
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="instrumentTypesType">
+        <xs:annotation>
+            <xs:documentation>
+                the mnx/global/instrumentTypes element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="instrumentType" type="instrumentType" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="globalMeasuresType">
+        <xs:annotation>
+            <xs:documentation>
+                the mnx/global/measures element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="measure" type="globalMeasureType" />
+                <xs:element name="emptyMeasures" type="emptyMeasuresType" />
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>    
+    
+    <xs:complexType name ="emptyMeasuresType">
+        <xs:attribute name="count" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="instrumentType">
+        <xs:annotation>
+            <xs:documentation>
+                the mnx/globals/instrumentTypes/instrumentType element
+                See https://github.com/w3c/musicxml/blob/v3.1/schema/sounds.xml for a list of
+                possible values for the instrumentSound attribute.
+                Note that the file says: "Applications may wish to provide a modified version of this
+                file where the element content includes an application's method for identifying sounds."
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="id" type="idValueType" use="required"/>
+        <xs:attribute name="groupName" type="xs:token" use="optional"/>
+        <xs:attribute name="name" type="xs:token" use="required"/>
+        <xs:attribute name="nameAbbrev" type="xs:token" use="required"/>
+        <xs:attribute name="instrumentSound" type="xs:token" use="optional"/>        
+    </xs:complexType>
+
+    <xs:complexType name="globalMeasureType">
+        <xs:annotation>
+            <xs:documentation>
+                the mnx/global/measures/measure element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="directions" type="globalMeasureDirectionsType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="globalMeasureDirectionsType">
+        <xs:annotation>
+            <xs:documentation>
+                the global/measure/directions element
+                How these elements relate to groups and staves has yet to be decided.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element name="time" type="timeSigType"/>
+                <xs:element name="key" type="keySigType"/>
+                <xs:element name="repeat" type="repeatType"/>
+                <xs:element name="ending" type="endingType"/>
+                <xs:element name="instruction" type="textBlockType"/>
+                <xs:element name="accel" type="extendableTextType"/>
+                <xs:element name="rit" type="extendableTextType"/>
+                <xs:element name="cresc" type="extendableTextType"/>
+                <xs:element name="dim" type="extendableTextType"/>
+                <xs:element name="crescWedge" type="extenderLineType"/>
+                <xs:element name="dimWedge" type="extenderLineType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="timeSigType">
+        <xs:annotation>
+            <xs:documentation>
+                the global/measure/directions/timeSig element
+                Note that the staffGroupClasses are simply the names of staffGroup
+                classes. They are not IDs, so don't have '#' prefixes.                
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="signature" type="multipleNoteValueType" use="required"/>
+        <xs:attribute name="staffGroupClasses" type="namesListType" default=""/>
+    </xs:complexType>
+
+    <xs:complexType name="keySigType">
+        <xs:annotation>
+            <xs:documentation>
+                the global/measure/directions/keySig element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="fifths" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Issue: The draft spec allows arbitrary integers here.
+                    I think it would be better to restrict the numbers of flats and sharps to 7 (in common1900 notation).
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                    <xs:maxInclusive value="7"/>
+                    <xs:minInclusive value="-7"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="repeatType">
+        <xs:annotation>
+            <xs:documentation>
+                the global/measure/directions/repeat element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="type" type="startEndType" use="required"/>
+        <xs:attribute name="location" type="locationType"/>
+        <xs:attribute name="times" type="xs:positiveInteger"/>
+    </xs:complexType>
+
+    <xs:complexType name="endingType">
+        <xs:annotation>
+            <xs:documentation>
+                the global/measure/directions/ending element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:pattern value="start|stop|discontinue"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="number">
+            <xs:annotation>
+                <xs:documentation>
+                    The string to be printed inside the ending.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:pattern value="[1-9,\.]*"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    
+    <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+    <!-- Parts -->
+     
+    <xs:complexType name="partsType">
+        <xs:annotation>
+            <xs:documentation>
+                the mnx/parts element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="part" type="partType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="partType">
+        <xs:annotation>
+            <xs:documentation>
+                If required here, the instrumentType is defined in mnx/globals.
+                Each part retrieves its groupName, name, nameAbbrev and instrumentSound using its instrumentType attribute.
+                If the part is one of a group having the same instrumentType, the partNumberInGroup should be set.
+                If set:
+                    a) the partNumberInGroup can be concatenated, after a space, to any of the name values.
+                    b) used on its own, centred above other partNumberInGroup values, in front of staves.
+                Issue: I'm using a reference to the instrumentType here instead of MusicXML's part-name,
+                part-abbreviation and instrument-sound elements.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="measures" type="partMeasuresType"/>
+            <xs:element name="measure" type="partMeasureType"/>
+        </xs:choice>
+        <xs:attribute name="id" type="idValueType" use="required"/>
+        <xs:attribute name="instrumentType" type="idReferenceType" use="optional"/>
+        <xs:attribute name="partNumberInGroup" type="xs:nonNegativeInteger" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="partMeasuresType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="measure" type="partMeasureType"/>            
+                <xs:element name="emptyMeasures" type="emptyMeasuresType" />
+            </xs:choice>
+        </xs:sequence>       
+    </xs:complexType>    
+
+    <xs:complexType name="partMeasureType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure element
+                Note that an empty part/measure element will be printed (if at all) containing a measure rest.
+                See also the emptyMeasuresType.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="directions" type="partMeasureDirectionsType" minOccurs="0"/>
+            <xs:element name="sequence" type="sequenceType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="barline" type="barlineType" default="regular"/>
+    </xs:complexType>
+
+    <xs:complexType name="partMeasureDirectionsType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/directions element
+                Issue: The draft spec says that if the key is present here, it "must indicate a value of fifths
+                that is either identical to the corresponding value in the global key or differs from it by
+                a multiple of 12. That can't be validated here, but would be something to be checked by
+                consuming applications.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="clef" type="clefType"/>
+            <xs:element name="key" type="keySigType"/>
+            <xs:element name="instruction" type="textBlockType"/>
+            <xs:element name="cresc" type="extendableTextType"/>
+            <xs:element name="dim" type="extendableTextType"/>
+            <xs:element name="crescWedge" type="extenderLineType"/>
+            <xs:element name="dimWedge" type="extenderLineType"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="clefType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/directions/clef element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="sign" type="clefSignType" use="required"/>
+        <xs:attribute name="line" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="octave" type="xs:int" default="0"/>
+    </xs:complexType>
+
+    <xs:complexType name="sequenceType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence element
+                Note that an empty sequence will be printed (if at all) containing a measure rest.
+                Issue: is there a way to avoid the code duplication between eventType, tupletType and graceType?
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>            
+            <xs:element name="beams" type="beamsType" minOccurs="0"/>            
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element name="directions" type="sequenceDirectionsType"/>
+                <xs:element name="event" type="eventType"/>
+                <xs:element name="tuplet" type="tupletType"/>
+                <xs:element name="grace" type="graceType"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="staff" type="xs:positiveInteger" default="1"/>
+    </xs:complexType>
+    
+    <xs:complexType name="sequenceDirectionsType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/directions element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element name="clef" type="clefType"/>
+                <xs:element name="instruction" type="textBlockType"/>
+                <xs:element name="octave-shift" type="octaveShiftType"/>
+                <xs:element name="pedal" type="extendableTextType"/>
+                <xs:element name="cresc" type="extendableTextType"/>
+                <xs:element name="dim" type="extendableTextType"/>
+                <xs:element name="crescWedge" type="extenderLineType"/>
+                <xs:element name="dimWedge" type="extenderLineType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="tupletType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/tuplet element (recursive)
+                N.B.: beams are not defined here. 
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="directions" type="sequenceDirectionsType"/>
+                <xs:element name="event" type="eventType"/>
+                <xs:element name="tuplet" type="tupletType"/>
+                <xs:element name="grace" type="graceType"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="outer" type="multipleNoteValueType" use="required"/>
+        <xs:attribute name="inner" type="multipleNoteValueType" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="graceType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/grace element
+                N.B.: tuplet, grace and beams elements are not allowed here.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="directions" type="sequenceDirectionsType"/>
+                <xs:element name="event" type="eventType"/>                
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="beamsType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/beams element
+                (contains a list of the beam elements that begin in this part-measures-measure-sequence)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="beam" type="beamType" maxOccurs="unbounded"/>            
+        </xs:sequence>        
+    </xs:complexType>
+
+    <xs:complexType name="beamType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/beams/beam element
+                N.B.: Each beam can contain nested beams and/or beamHooks
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="beam" type="beamType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="beam-hook" type="beamHookType" maxOccurs="2" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="events" type="locationsListType" use="required"/>      
+    </xs:complexType>
+
+    <xs:complexType name="beamHookType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/beams/beam/beam-hook element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="direction" type="leftRightType" use="required"/>
+        <xs:attribute name="event" type="locationType" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="octaveShiftType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/directions/octave-shift element
+                Issue: Should this element also be allowed in part/measures/measure/directions ?
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="type" type="xs:int" use="required"/>
+        <xs:attribute name="end" type="locationType" use="required"/>      
+    </xs:complexType>
+
+    <xs:complexType name="eventType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/event element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="note" type="noteType"/>
+                <xs:element name="slur" type="slurType"/>                
+            </xs:choice>
+            <xs:element name="rest" type="xs:string" fixed=""/>            
+        </xs:choice>
+        <xs:attribute name="value" type="noteValueType" use="required"/>
+        <xs:attribute name="id" type="idValueType" use="optional"/>
+        <xs:attribute name="staff" type="xs:positiveInteger" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="noteType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/event/note element
+                Issue1: The Draft Spec defines an "accidental" attribute, that
+                "supplies an accidental value for this note. This attribute must match the alteration of the pitch attribute.
+                Omission of the attribute indicates that no accidental is to be displayed."
+                I think it would be clearer and less error prone, to define a boolean "displayAcc" attribute
+                with a default value of false.
+                Issue2: The Draft Spec says that the values of the accidental attribute sould be imported from MusicXML.
+                The MusicXML values are the words "flat", "sharp" etc. I think it would be better (if not using displayAcc)
+                to use the values in the pitch definition: "b", "#" etc. (see accidentalType).
+                Issue3: See MNX Issue #184 (Unicode accidentals)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="tied" type="tiedType" minOccurs="0"/>            
+        </xs:sequence>
+        <xs:attribute name="id" type="idValueType" use="optional"/>
+        <xs:attribute name="pitch" type="pitchType" use="required"/>
+        <xs:attribute name="accidental" type="accidentalType" use="optional"/> <!-- delete? -->
+        <!--<xs:attribute name="displayAcc" type="xs:boolean" default="false" /> -->
+    </xs:complexType>
+    
+    <xs:complexType name="tiedType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/event/note/tied element
+                Issue: could we rename tied->tie?
+                This element is called 'tied' because 'tie' is used for something else in MusicXML,
+                but 'tie' would be better in the long run in MNX, because it corresponds to 'slur'.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="target" type="idReferenceType" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="slurType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/event/slur element
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="side" type="upDownType" use="required"/>
+        <xs:attribute name="target" type="idReferenceType" use="optional"/>
+        <xs:attribute name="location" type="slurLocationType" use="optional"/>
+        <xs:attribute name="startNote" type="idReferenceType" use="optional"/>
+        <xs:attribute name="endNote" type="idReferenceType" use="optional"/>
+    </xs:complexType>
+    
+    <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+    <!-- General ComplexTypes                                           -->
+    <!-- These can be used both globally and in parts.  -->
+
+    <xs:complexType name="textBlockType">
+        <xs:annotation>
+            <xs:documentation>
+                A sequence of one or more string and/or image elements.
+                By default, consecutive strings are concatenated (to the right), but this behaviour
+                can be changed by giving each string and/or image an align attribute. All the
+                align attributes refer to the location of the textBlock as a whole.
+                This textBlock can be added to any directions element (global, part/measure and
+                part/measure/sequence).
+                Note 1: If a text only applies at the part level, then it must be added
+                to all the parts to which it applies. If two or more parts or part/sequence having
+                the same text share a staff, the text will only be printed once.
+                Note 2: The staffGroupClasses are simply the names of classes. They are not IDs.
+                This allows the text and it's extender (if any) to be used in different staffGroups,
+                and so to span different systems.
+                Issue 1: The consuming application will provide standard styles for elements of
+                this type that depend on the _names_ of the elements and their local or global scope.
+                These default styles will be overridable by CSS-like class attributes defined in a
+                &gt;style&lt; element at the top of the file.
+                Issue 2: I tried unsuccessfuly to have the string as the content of this element,
+                but that became a problem when trying to define extendedText as a text plus a
+                textExtender. Maybe we could define this element differently...
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="string" type="stringElementType"/>
+            <xs:element name="image" type="imageType"/>
+        </xs:choice>
+        <xs:attribute name="location" type="locationType" default="0"/>
+        <xs:attribute name="orient" type="aboveBelowType" default="above"/>
+        <xs:attribute name="align" type="textAlignType" default="left"/>
+        <xs:attribute name="staffGroupClasses" type="namesListType" default=""/>
+    </xs:complexType>
+
+    <xs:complexType name="extendableTextType">
+        <xs:annotation>
+            <xs:documentation>
+                A textBlockType that can optionally be followed by an extenderLine.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="textBlockType">
+                <xs:sequence>
+                    <xs:element name="extenderLine" type="extenderLineType" minOccurs="0"/>
+                </xs:sequence>                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="extenderLineType">
+        <xs:annotation>
+            <xs:documentation>
+                Issue: How to define the end-point of the line? duration or end?
+                Either one or both must be defined here.
+                Only one of them must be used in the XML.
+                The duration of the extender would be measured from the location
+                of its containing text.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="class" type="xs:token" use="optional"/>
+        <xs:attribute name="duration" type="durationType" use="optional"/>
+        <xs:attribute name="end" type="locationType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="stringElementType">
+        <xs:annotation>
+            <xs:documentation>
+                An element component of the textBlockType
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="class" type="xs:token" use="optional"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+        <xs:attribute name="location" type="locationType" use="optional"/>
+        <xs:attribute name="align" type="textAlignType" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="imageType">
+        <xs:annotation>
+            <xs:documentation>
+                This is an external image file, such as an SVG, that can be a
+                component of the textBlockType.
+                The width, height and baseline would be in the same anonymous
+                units as all the other measurements in the file including page
+                and margin sizes and the heights of fonts.
+                (The units can generally be thought of as pixels, as in SVG.)
+                The baseline is the height of the image's baseline below the top
+                of the image at the final scale. The image's baseline is 
+                vertically aligned with the baseline of any surrounding text.
+                Issue class: The color of an SVG can be changed using a CSS
+                filter, so the class attribute can be used to stipulate the
+                color in the SVG output: It might be better, simply to call the
+                attribute 'color' - but that might encourage its overuse...                
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="src" type="xs:anyURI" use="required"/>
+        <xs:attribute name="class" type="xs:token" use="optional"/>
+        <xs:attribute name="location" type="locationType" use="optional"/>
+        <xs:attribute name="align" type="textAlignType" use="optional"/>
+        <xs:attribute name="width" type="xs:decimal" use="required"/>
+        <xs:attribute name="height" type="xs:decimal" use="required"/>
+        <xs:attribute name="baseline" type="xs:decimal" use="required"/>    
+    </xs:complexType>
+    
+    <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+    <!-- Simple Types -->
+    
+    <xs:simpleType name="noteValueType">
+        <xs:annotation>
+            <xs:documentation>
+                An optional '1' character
+                followed by
+                {
+                EITHER  (breve, long, maxima)
+                    a compulsory "*" character followed by one of the strings "2", "4", "8"
+                OR (semibreve to 1024th)
+                    a compulsory "/" character followed by one of the strings "1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024"
+                }
+                followed by zero or more "d" characters.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="(1)?((\*(8|4|2))|(/(1|2|4|8|16|32|64|128|256|512|1024)))(d*)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="multipleNoteValueType">
+        <xs:annotation>
+            <xs:documentation>
+                A string that does not begin with 0, but that has an unlimited number of digits,
+                followed by a noteValueType.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="([1-9][0-9]*)((\*(8|4|2))|(/(1|2|4|8|16|32|64|128|256|512|1024)))(d*)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="simpleLocationType">
+        <xs:annotation>
+            <xs:documentation>
+                An optional (measure number followed by a ':' character) followed by
+                EITHER
+                { a decimal floating-point number indicating the positive number of whole-notes after the start of the measure }
+                OR
+                { a multipleNoteValueType (2/4, 3/8, 4/2 6/1d etc.}
+                Issue: I think it would be better if the _measure_ component was _relative_ to the measure in which this
+                simpleLocation is defined. (Not absolute as defined in the Draft Spec.) That would keep the numbers down, and
+                be easier to check. For example: 1:2/4 would always mean 2 quarter-notes after the beginning of the following measure.
+                It would also be possible to have negative measure components: -2:3/8 would mean 3 eighth-notes after the beginning
+                of two measures earlier. This also solves the problem of "measure indices starting at 1"...
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="(([1-9][0-9]*):)?(([0-9]*\.)?([0-9]*)|([1-9][0-9]*)?((\*(8|4|2))|(/(1|2|4|8|16|32|64|128|256|512|1024)))(d*))"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="startEndType">
+        <xs:annotation>
+            <xs:documentation>
+                Used to describe the start or end of a measure
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="start|end"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="leftRightType">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="left|right"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="pitchType">
+        <xs:annotation>
+            <xs:documentation>
+                A character in range [A-G], optionally followed by b, bb, # or ##,
+                followed by a character in range [0-9].
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="[A-G](b|bb|#|##)?[0-9]"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="accidentalType">
+        <xs:annotation>
+            <xs:documentation>
+                These values have been imported from MusicXML.
+                Issues: See noteType above
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="natural|flat|flatFlat|sharp|sharpSharp"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="upDownType">
+        <xs:annotation>
+            <xs:documentation>
+                Stem directions
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="up|down"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="aboveBelowType">
+        <xs:annotation>
+            <xs:documentation>
+                Text position
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="above|below"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="bracketType">
+        <xs:annotation>
+            <xs:documentation>
+                The types of bracket that can occur to the left of systems and staves
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="none|curly|straight"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="barlineType">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="regular|dotted|dashed|heavy|light-light|light-heavy|heavy-light|heavy-heavy|tick|short|none"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="textAlignType">
+        <xs:annotation>
+            <xs:documentation>
+                Issue: I (ji) am currently assuming that:
+                If align has one of the values 'left', 'right' or 'centre', the text will be aligned
+                to the event whose location is given by the text's location attribute.
+                If align has one of the values 'barlineLeft', 'barlineRight' or 'barlineCentre', the
+                text will be aligned to the barline at the beginning of the measure, and the location
+                attribute will be ignored.
+                Is that okay?
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="left|right|center|barlineLeft|barlineRight|barlineCenter"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="clefSignType">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="G|F|C|percussion|jianpu"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="locationType">
+        <xs:annotation>
+            <xs:documentation>
+                EITHER an idReferenceType OR a simpleLocationType.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="idReferenceType simpleLocationType"/>
+    </xs:simpleType>
+         
+    <xs:simpleType name="durationType">
+        <xs:annotation>
+            <xs:documentation>
+                EITHER a multipleNoteValueType OR a tickDurationType.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="multipleNoteValueType tickDurationType"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="tickDurationType">
+        <xs:annotation>
+            <xs:documentation>
+                A string that is a positive integer followed by a 't' character.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[1-9][0-9]*[t]"/>
+        </xs:restriction>
+    </xs:simpleType>    
+    
+    <xs:simpleType name="incomingOutgoingType">
+        <xs:annotation>
+            <xs:documentation>
+                a component of the slurLocationType
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="incoming|outgoing"/>
+        </xs:restriction>
+    </xs:simpleType>    
+    
+    <xs:simpleType name="slurLocationType">
+        <xs:annotation>
+            <xs:documentation>
+                the value of the slur.location attribute:
+                EITHER a locationType OR an incomingOutgoingType
+            </xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="locationType incomingOutgoingType"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="namesListType">
+        <xs:annotation>
+            <xs:documentation>
+                A string containing a list of xs:Name separated by whitespace.
+                This is the value of the part/measures/measure/sequence/beams/beam/events attribute.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="xs:Name"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="locationsListType">
+        <xs:annotation>
+            <xs:documentation>
+                A string containing a list of locationTypes separated by whitespace.
+                This is the value of the part/measures/measure/sequence/beams/beam/events attribute.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="locationType"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="positiveIntegerListType">
+        <xs:annotation>
+            <xs:documentation>
+                A string containing a list of xs:positiveInteger separated by whitespace.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="xs:positiveInteger"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="directionClassListType">
+        <xs:annotation>
+            <xs:documentation>
+                A string containing a list of direction class names separated by whitespace.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="directionClassType"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="directionClassType">
+        <xs:annotation>
+            <xs:documentation>
+                A direction class name.
+                These names should match the names of the directions defined in globalMeasureDirectionsType.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="time|key|repeat|ending"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="idReferenceListType">
+        <xs:annotation>
+            <xs:documentation>
+                A string containing a list of idReferenceTypes separated by whitespace.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:list itemType="idReferenceType"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="idValueType">
+        <xs:annotation>
+            <xs:documentation>
+                All ID attributes are of this form. It is defined here as:
+                A string beginning with a character in range [a-z] or [A-Z]
+                followed by an arbitrary number of characters from [a-z], [A-Z], [0-9], '-' (minus), or '_' (underscore).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="[a-zA-Z][a-zA-Z0-9\-_]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+        
+    <xs:simpleType name="idReferenceType">
+        <xs:annotation>
+            <xs:documentation>
+                All ID references are of this form. It is defined here as:
+                A string beginning with a '#' character
+                followed by an idValueType
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="[#][a-zA-Z][a-zA-Z0-9\-_]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

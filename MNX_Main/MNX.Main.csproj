@@ -120,7 +120,6 @@
     <None Include="MNX_in\mnx\_22_repeatssimplealternateendings.mnx" />
     <None Include="MNX_in\mnx\_20_repeatswithimpliedstart.mnx" />
     <None Include="MNX_in\mnx\_19_repeats.mnx" />
-    <None Include="MNX_in\mnx\__1_helloworld.mnx" />
     <None Include="MNX_in\mnx\__2_cscale.mnx" />
     <None Include="MNX_in\mnx\__3_chord.mnx" />
     <None Include="MNX_in\mnx\__4_timesigs.mnx" />

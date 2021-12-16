@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:xhtml="http://www.w3.org/1999/xhtml"
            targetNamespace="https://github.com/notator/mnx"
            elementFormDefault="qualified"
            xmlns="https://github.com/notator/mnx">
@@ -33,6 +34,66 @@
         </xs:documentation>
     </xs:annotation>
 
+    <!-- Importing XHTML namespace -->
+    <xs:import namespace="http://www.w3.org/1999/xhtml"
+        schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
+
+    <xs:complexType name="HtmlType">
+        <xs:complexContent>
+            <xs:extension base="xhtml:Block">
+                <xs:attributeGroup ref="xhtml:attrs"/>
+                <xs:attribute name="onload" type="xhtml:Script"/>
+                <xs:attribute name="onunload" type="xhtml:Script"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType mixed="true" name="simpleMultiLineTextBlockType">
+        <xs:annotation>
+            <xs:documentation>
+                Simple multi-line text (like a div)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xhtml:Flow">
+                <xs:attributeGroup ref="xhtml:attrs"/>
+            </xs:extension>            
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="multiLineTextBlockType">
+        <xs:annotation>
+            <xs:documentation>
+                A multiline text block containing html elements 
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="p">
+                    <xs:complexType mixed="true">
+                        <xs:complexContent>
+                            <xs:extension base="xhtml:Inline">
+                                <xs:attributeGroup ref="xhtml:attrs"/>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="div">
+                    <xs:annotation>
+                        <xs:documentation> generic language/style container </xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType mixed="true">
+                        <xs:complexContent>
+                            <xs:extension base="xhtml:Flow">
+                                <xs:attributeGroup ref="xhtml:attrs"/>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>    
+    
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
     <!-- mnx: the root element of an .mnx file -->
     <xs:element name="mnx">
@@ -319,6 +380,8 @@
             <xs:element name="dim" type="extendableTextType"/>
             <xs:element name="crescWedge" type="extenderLineType"/>
             <xs:element name="dimWedge" type="extenderLineType"/>
+            <xs:element name="text-block" type="multiLineTextBlockType"/> 
+            <xs:element name="simple-text-block" type="simpleMultiLineTextBlockType"/> 
         </xs:choice>
     </xs:complexType>
 

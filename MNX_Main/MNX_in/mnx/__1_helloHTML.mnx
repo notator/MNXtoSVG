@@ -14,8 +14,26 @@
             <directions>
                 <clef sign="G" line="2"/>
                 <text-block>
-                    line1<br/>line2
+                    <p>
+                        line1\n
+                        line2 // can use \n here, but not in comments!
+                        line3
+                    </p>
+                    <div>
+                        div_1_line1
+                        div_1_line2
+                        div_1_line3
+                    </div>
+                    <div>
+                        div_2_line1
+                        div_2_line2
+                        div_2_line3
+                    </div>
                 </text-block>
+                <simple-text-block>
+                    simpleText1
+                    simpleText2
+                </simple-text-block>
             </directions>
             <sequence>
                 <event value="/1">

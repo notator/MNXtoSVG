@@ -66,7 +66,7 @@ namespace MNX.Main
         {
             string mnxFilePath =_MNX_Form1Data_Paths[mnxSelectedIndex].Item1;
 
-            ValidateXML(mnxFilePath); // throws an exception on failure
+            ValidateXML(mnxFilePath); // If there is an error, a MessageBox is displayed, and the program stops.
 
             mnx = new MNX.Common.MNX(mnxFilePath);
 
@@ -104,17 +104,16 @@ namespace MNX.Main
             }
             catch(Exception ex)
             {
-                // Error message has already been printed to the console.
-                //rval = false;
+                string message = "File: " + Path.GetFileName(filepath) + "\n\n" + ex.Message;
+                MessageBox.Show(message, "Validation Error", MessageBoxButtons.OK);
+                Environment.Exit(0); // stop the application
             }
-            //return rval;
         }
 
         private void ValidationEventHandler(object sender, ValidationEventArgs args)
         {
             // if we're here, something is wrong with the XML
-            Console.WriteLine("Validation Error: " + args.Message);
-            throw new Exception("Validation failed. message: " + args.Message);
+            throw new Exception(args.Message);
         }
 
         private void LoadControls(Form1StringData svgds, int numberOfMeasures)

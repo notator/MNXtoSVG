@@ -1,5 +1,6 @@
 <?xml version ="1.0"?>
 <mnx xmlns="https://github.com/notator/mnx"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://github.com/notator/mnx ../schema/common1900.xsd">
     <global>
@@ -13,27 +14,56 @@
         <measure barline="regular">
             <directions>
                 <clef sign="G" line="2"/>
-                <text-block>
-                    <p>
-                        line1\n
-                        line2 // can use \n here, but not in comments!
-                        line3
+                
+                <text-block id="textBlockID" class="tbClass" location="0.5" vPos="4" width="200" >
+                    
+                    <p id="pID" class="pClass" style="width:300px; margins:3px 4px 5px 6px;">
+                        line1<xhtml:br/>
+                        <xhtml:span class="spanClass">line2</xhtml:span>
+                        <xhtml:em>line3</xhtml:em>
                     </p>
-                    <div>
-                        div_1_line1
+                    
+                    <div id="divID" class='divClass' style="width:300px; margins:3px 4px 5px 6px;">
+                        div_1_line1<xhtml:br/>
                         div_1_line2
-                        div_1_line3
+                        <xhtml:i>div_1_line3</xhtml:i>
                     </div>
+                    
                     <div>
-                        div_2_line1
-                        div_2_line2
+                        div_2_line1<xhtml:br/>
+                        <xhtml:span class="spanClass">div_2_line2</xhtml:span>
                         div_2_line3
                     </div>
+                    
                 </text-block>
-                <simple-text-block>
-                    simpleText1
+                
+                <!--
+                    simple-text-block is equivalent to an xhtml:div
+                    xhtml:p, xhtml:div and xhtml:span automatically have the optional
+                        core attributes: id, class, style, title
+                        internationalization attributes: lang, xml:lang, dir
+                        common UI event attributes: onclick, onmousedown etc.
+                    I've added the following attributes to simple-text-block
+                        location: the "Measure location" of the origin of the first glyph in the first line of text.
+                        vPos: the vertical position of the base-line of the first line of text with respect to the top line of the staff (gaps)
+                        align: the lines' alignment. left|right|center|barlineLeft|barlineRight|barlineCenter (add these to MNX docs?)
+                    ISSUE 1: Maybe the 'vPos' attibute should be an 'orient`attribute?
+                    ISSUE 2: I think Orientation should be above|below, not up|down as currently in the docs.
+                -->
+                <simple-text-block id="simpleID" class="simpleClass" location="0.5" vPos="4" align="left">
+                    simpleText1<xhtml:br/>
                     simpleText2
+                    <xhtml:span class="spanClass">simple_line2</xhtml:span>
+                    <xhtml:div>
+                        sDivLine1<xhtml:br/>
+                        sDivLine2
+                        sDivLine3
+                    </xhtml:div>
+                    <xhtml:p>
+                        <xhtml:a href="URL">link text</xhtml:a>
+                    </xhtml:p>
                 </simple-text-block>
+                
             </directions>
             <sequence>
                 <event value="/1">

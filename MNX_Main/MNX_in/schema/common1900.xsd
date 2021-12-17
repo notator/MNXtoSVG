@@ -48,16 +48,27 @@
         </xs:complexContent>
     </xs:complexType>
     
-    <xs:complexType mixed="true" name="simpleMultiLineTextBlockType">
+    <xs:complexType name="divType">
         <xs:annotation>
             <xs:documentation>
-                Simple multi-line text (like a div)
+                generic multi-line container
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="xhtml:Flow">
                 <xs:attributeGroup ref="xhtml:attrs"/>
-            </xs:extension>            
+                <xs:attribute name="location" type="xs:string" use="optional"/>
+                <xs:attribute name="vPos" type="xs:string" use="optional"/>
+                <xs:attribute name="align" type="textAlignType" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>     
+    </xs:complexType>    
+
+    <xs:complexType name="pType" mixed="true">
+        <xs:complexContent>
+            <xs:extension base="xhtml:Inline">
+                <xs:attributeGroup ref="xhtml:attrs"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     
@@ -69,29 +80,16 @@
         </xs:annotation>
         <xs:sequence>
             <xs:choice maxOccurs="unbounded">
-                <xs:element name="p">
-                    <xs:complexType mixed="true">
-                        <xs:complexContent>
-                            <xs:extension base="xhtml:Inline">
-                                <xs:attributeGroup ref="xhtml:attrs"/>
-                            </xs:extension>
-                        </xs:complexContent>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="div">
-                    <xs:annotation>
-                        <xs:documentation> generic language/style container </xs:documentation>
-                    </xs:annotation>
-                    <xs:complexType mixed="true">
-                        <xs:complexContent>
-                            <xs:extension base="xhtml:Flow">
-                                <xs:attributeGroup ref="xhtml:attrs"/>
-                            </xs:extension>
-                        </xs:complexContent>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element name="p" type="pType" />
+                <xs:element name="div" type="divType" />
             </xs:choice>
         </xs:sequence>
+        <xs:attribute name="style" type="xs:string" use="optional"/>
+        <xs:attribute name="id" type="xs:string" use="optional"/>
+        <xs:attribute name="class" type="xs:string" use="optional"/>
+        <xs:attribute name="location" type="xs:string" use="optional"/>
+        <xs:attribute name="vPos" type="xs:string" use="optional"/>
+        <xs:attribute name="width" type="xs:string" use="optional"/>
     </xs:complexType>    
     
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
@@ -381,7 +379,7 @@
             <xs:element name="crescWedge" type="extenderLineType"/>
             <xs:element name="dimWedge" type="extenderLineType"/>
             <xs:element name="text-block" type="multiLineTextBlockType"/> 
-            <xs:element name="simple-text-block" type="simpleMultiLineTextBlockType"/> 
+            <xs:element name="simple-text-block" type="divType"/>
         </xs:choice>
     </xs:complexType>
 

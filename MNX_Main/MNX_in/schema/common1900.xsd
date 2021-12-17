@@ -34,9 +34,10 @@
         </xs:documentation>
     </xs:annotation>
 
-    <!-- Importing XHTML namespace -->
-    <xs:import namespace="http://www.w3.org/1999/xhtml"
-        schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
+    <!-- Importing xhtml namespace -->
+    <xs:import namespace="http://www.w3.org/1999/xhtml" schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
+    <!-- importing xml namespace (for xml:space) -->
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
     
     <xs:complexType name="xhtmlTextBoxType">
         <xs:annotation>
@@ -77,6 +78,23 @@
         <xs:sequence>
             <xs:element name="line" type="textLineType" maxOccurs="unbounded" minOccurs="0"/>            
         </xs:sequence>
+        <xs:attribute name="class" type="xs:string" use="optional"/>
+        <xs:attribute name="id" type="xs:string" use="optional"/>
+        <xs:attribute name="location" type="xs:string" use="optional"/>
+        <xs:attribute name="vPos" type="xs:string" use="optional"/>
+        <xs:attribute name="align" type="textAlignType" use="optional"/>
+    </xs:complexType>
+    
+        <xs:complexType name="simplestTextBoxType">
+        <xs:annotation>
+            <xs:documentation>
+                a container for multiple lines of text
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="line" type="textLineType" maxOccurs="unbounded" minOccurs="0"/>            
+        </xs:sequence>
+        <xs:attribute ref="xml:space" fixed="preserve"/>
         <xs:attribute name="class" type="xs:string" use="optional"/>
         <xs:attribute name="id" type="xs:string" use="optional"/>
         <xs:attribute name="location" type="xs:string" use="optional"/>
@@ -371,7 +389,7 @@
             <xs:element name="crescWedge" type="extenderLineType"/>
             <xs:element name="dimWedge" type="extenderLineType"/>
             <xs:element name="xhtml-text-block" type="xhtmlTextBoxType"/>
-            <xs:element name="simple-text-block" type="simpleTextBoxType"/>
+            <xs:element name="simple-text-block" type="simplestTextBoxType"/>
         </xs:choice>
     </xs:complexType>
 

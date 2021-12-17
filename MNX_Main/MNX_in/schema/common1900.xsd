@@ -38,7 +38,7 @@
     <xs:import namespace="http://www.w3.org/1999/xhtml"
         schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
     
-    <xs:complexType name="divType">
+    <xs:complexType name="xhtmlTextBoxType">
         <xs:annotation>
             <xs:documentation>
                 generic multi-line container
@@ -52,7 +52,37 @@
                 <xs:attribute name="align" type="textAlignType" use="optional"/>
             </xs:extension>
         </xs:complexContent>     
-    </xs:complexType>       
+    </xs:complexType>
+
+    <xs:complexType name="textLineType">
+        <xs:annotation>
+            <xs:documentation>
+                a line of text in a simpleTextBoxType
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="span" type="xs:string"  maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="a" type="xs:string"  maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="i" type="xs:string"  maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="em" type="xs:string"  maxOccurs="unbounded" minOccurs="0" />
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="simpleTextBoxType">
+        <xs:annotation>
+            <xs:documentation>
+                a container for multiple lines of text
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="line" type="textLineType" maxOccurs="unbounded" minOccurs="0"/>            
+        </xs:sequence>
+        <xs:attribute name="class" type="xs:string" use="optional"/>
+        <xs:attribute name="id" type="xs:string" use="optional"/>
+        <xs:attribute name="location" type="xs:string" use="optional"/>
+        <xs:attribute name="vPos" type="xs:string" use="optional"/>
+        <xs:attribute name="align" type="textAlignType" use="optional"/>
+    </xs:complexType>
     
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
     <!-- mnx: the root element of an .mnx file -->
@@ -340,7 +370,8 @@
             <xs:element name="dim" type="extendableTextType"/>
             <xs:element name="crescWedge" type="extenderLineType"/>
             <xs:element name="dimWedge" type="extenderLineType"/>
-            <xs:element name="xhtml-text-block" type="divType"/>
+            <xs:element name="xhtml-text-block" type="xhtmlTextBoxType"/>
+            <xs:element name="simple-text-block" type="simpleTextBoxType"/>
         </xs:choice>
     </xs:complexType>
 

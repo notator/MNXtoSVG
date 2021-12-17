@@ -8,12 +8,12 @@ using System.Xml.Serialization;
 
 namespace MNX.Common
 {
-    public class XhtmlTextBlock : IDirectionsComponent
+    public class SimpleTextBlock : IDirectionsComponent
     {
         public readonly string Lines = "";
         public readonly int TicksPosInScore = -1; // set in ctor
 
-        public XhtmlTextBlock(XmlReader r, int ticksPosInScore)
+        public SimpleTextBlock(XmlReader r, int ticksPosInScore)
         {
             // returns all XmlNodes whose name is nodeName in the document tree
             List<XmlNode> GetNodesByName(XmlNode rootNode, string nodeName)
@@ -40,28 +40,29 @@ namespace MNX.Common
                 return xmlNodes;
             }
 
-            M.Assert(r.Name == "xhtml-text-block");
+            M.Assert(r.Name == "simple-text-block");
 
             string filePath = r.BaseURI;
             XmlDocument doc = new XmlDocument();
             doc.Load(filePath);
 
             XmlNode root = doc.DocumentElement;
-            List<XmlNode> xhtmlTextBlockNodes = GetNodesByName(root, "xhtml-text-block");
-            foreach(var xhtmltextBlockNode in xhtmlTextBlockNodes)
+            List<XmlNode> simpleTextBlockNodes = GetNodesByName(root, "simple-text-block");
+            foreach(var simpleTextBlockNode in simpleTextBlockNodes)
             {
-                List<XmlNode> brNodes = GetNodesByName(xhtmltextBlockNode, "xhtml:br");
-                List<XmlNode> iNodes = GetNodesByName(xhtmltextBlockNode, "xhtml:i");
-                List<XmlNode> emNodes = GetNodesByName(xhtmltextBlockNode, "xhtml:em");
-                List<XmlNode> aNodes = GetNodesByName(xhtmltextBlockNode, "xhtml:a");
-                List<XmlNode> pNodes = GetNodesByName(xhtmltextBlockNode, "xhtml:p");
-                List<XmlNode> divNodes = GetNodesByName(xhtmltextBlockNode, "xhtml:div");
-                List<XmlNode> spanNodes = GetNodesByName(xhtmltextBlockNode, "xhtml:span");
-            }            
+                List<XmlNode> lineNodes = GetNodesByName(simpleTextBlockNode, "line");
+                foreach(var lineNode in lineNodes)
+                {
+                    List<XmlNode> aNodes = GetNodesByName(lineNode, "a");
+                    List<XmlNode> iNodes = GetNodesByName(lineNode, "i");
+                    List<XmlNode> emNodes = GetNodesByName(lineNode, "em");
+                    List<XmlNode> spanNodes = GetNodesByName(lineNode, "span");
+                }
+            }
 
-            M.ReadToXmlElementTag(r, "xhtml-text-block");
+            M.ReadToXmlElementTag(r, "simple-text-block");
 
-            M.Assert(r.Name == "xhtml-text-block"); // end of "text-block"
+            M.Assert(r.Name == "simple-text-block"); // end of "text-block"
         }
     }
 }

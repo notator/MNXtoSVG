@@ -37,16 +37,6 @@
     <!-- Importing XHTML namespace -->
     <xs:import namespace="http://www.w3.org/1999/xhtml"
         schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
-
-    <xs:complexType name="HtmlType">
-        <xs:complexContent>
-            <xs:extension base="xhtml:Block">
-                <xs:attributeGroup ref="xhtml:attrs"/>
-                <xs:attribute name="onload" type="xhtml:Script"/>
-                <xs:attribute name="onunload" type="xhtml:Script"/>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
     
     <xs:complexType name="divType">
         <xs:annotation>
@@ -62,35 +52,7 @@
                 <xs:attribute name="align" type="textAlignType" use="optional"/>
             </xs:extension>
         </xs:complexContent>     
-    </xs:complexType>    
-
-    <xs:complexType name="pType" mixed="true">
-        <xs:complexContent>
-            <xs:extension base="xhtml:Inline">
-                <xs:attributeGroup ref="xhtml:attrs"/>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-    
-    <xs:complexType name="multiLineTextBlockType">
-        <xs:annotation>
-            <xs:documentation>
-                A multiline text block containing html elements 
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element name="p" type="pType" />
-                <xs:element name="div" type="divType" />
-            </xs:choice>
-        </xs:sequence>
-        <xs:attribute name="style" type="xs:string" use="optional"/>
-        <xs:attribute name="id" type="xs:string" use="optional"/>
-        <xs:attribute name="class" type="xs:string" use="optional"/>
-        <xs:attribute name="location" type="xs:string" use="optional"/>
-        <xs:attribute name="vPos" type="xs:string" use="optional"/>
-        <xs:attribute name="width" type="xs:string" use="optional"/>
-    </xs:complexType>    
+    </xs:complexType>       
     
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
     <!-- mnx: the root element of an .mnx file -->
@@ -378,8 +340,7 @@
             <xs:element name="dim" type="extendableTextType"/>
             <xs:element name="crescWedge" type="extenderLineType"/>
             <xs:element name="dimWedge" type="extenderLineType"/>
-            <xs:element name="text-block" type="multiLineTextBlockType"/> 
-            <xs:element name="simple-text-block" type="divType"/>
+            <xs:element name="xhtml-text-block" type="divType"/>
         </xs:choice>
     </xs:complexType>
 

@@ -64,7 +64,7 @@
     <Compile Include="ScoreAudio.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="SlurDef.cs" />
-    <Compile Include="TextBlock.cs" />
+    <Compile Include="XhtmlTextBlock.cs" />
     <Compile Include="Tied.cs" />
     <Compile Include="Repeat.cs" />
     <Compile Include="TimeSignature.cs" />

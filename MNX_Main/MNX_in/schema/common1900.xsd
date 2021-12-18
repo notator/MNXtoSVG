@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:xhtml="http://www.w3.org/1999/xhtml"
            targetNamespace="https://github.com/notator/mnx"
            elementFormDefault="qualified"
            xmlns="https://github.com/notator/mnx">
@@ -33,74 +32,6 @@
             **************************************************************
         </xs:documentation>
     </xs:annotation>
-
-    <!-- Importing xhtml namespace -->
-    <xs:import namespace="http://www.w3.org/1999/xhtml" schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
-    <!-- importing xml namespace (for xml:space) -->
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
-    
-    <xs:complexType name="xhtmlTextBoxType">
-        <xs:annotation>
-            <xs:documentation>
-                generic multi-line container
-            </xs:documentation>
-        </xs:annotation>
-        <xs:complexContent>
-            <xs:extension base="xhtml:Flow">
-                <xs:attributeGroup ref="xhtml:attrs"/>
-                <xs:attribute name="location" type="xs:string" use="optional"/>
-                <xs:attribute name="vPos" type="xs:string" use="optional"/>
-                <xs:attribute name="align" type="textAlignType" use="optional"/>
-            </xs:extension>
-        </xs:complexContent>     
-    </xs:complexType>
-
-    <xs:complexType name="textLineType">
-        <xs:annotation>
-            <xs:documentation>
-                a line of text in a simpleTextBoxType
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded" minOccurs="0">
-            <xs:element name="span" type="xs:string"  maxOccurs="unbounded" minOccurs="0" />
-            <xs:element name="a" type="xs:string"  maxOccurs="unbounded" minOccurs="0" />
-            <xs:element name="i" type="xs:string"  maxOccurs="unbounded" minOccurs="0" />
-            <xs:element name="em" type="xs:string"  maxOccurs="unbounded" minOccurs="0" />
-        </xs:choice>
-    </xs:complexType>
-    
-    <xs:complexType name="simpleTextBoxType">
-        <xs:annotation>
-            <xs:documentation>
-                a container for multiple lines of text
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="line" type="textLineType" maxOccurs="unbounded" minOccurs="0"/>            
-        </xs:sequence>
-        <xs:attribute name="class" type="xs:string" use="optional"/>
-        <xs:attribute name="id" type="xs:string" use="optional"/>
-        <xs:attribute name="location" type="xs:string" use="optional"/>
-        <xs:attribute name="vPos" type="xs:string" use="optional"/>
-        <xs:attribute name="align" type="textAlignType" use="optional"/>
-    </xs:complexType>
-    
-        <xs:complexType name="simplestTextBoxType">
-        <xs:annotation>
-            <xs:documentation>
-                a container for multiple lines of text
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="line" type="textLineType" maxOccurs="unbounded" minOccurs="0"/>            
-        </xs:sequence>
-        <xs:attribute ref="xml:space" fixed="preserve"/>
-        <xs:attribute name="class" type="xs:string" use="optional"/>
-        <xs:attribute name="id" type="xs:string" use="optional"/>
-        <xs:attribute name="location" type="xs:string" use="optional"/>
-        <xs:attribute name="vPos" type="xs:string" use="optional"/>
-        <xs:attribute name="align" type="textAlignType" use="optional"/>
-    </xs:complexType>
     
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
     <!-- mnx: the root element of an .mnx file -->
@@ -147,7 +78,7 @@
             <xs:element name="instrumentTypes" type="instrumentTypesType" minOccurs="0" />
             <xs:choice>
                 <xs:element name="measures" type="globalMeasuresType"/>
-                <xs:element name="measure" type="globalMeasureType"/>                
+                <xs:element name="measure-global" type="globalMeasureType"/>                
             </xs:choice>            
         </xs:sequence>
     </xs:complexType>
@@ -205,8 +136,9 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="directions" type="globalMeasureDirectionsType" minOccurs="0"/>
+            <xs:element name="directions-global" type="globalMeasureDirectionsType" minOccurs="0"/>
         </xs:sequence>
+        <xs:attribute name="barline" type="barlineType"/>
     </xs:complexType>
 
     <xs:complexType name="globalMeasureDirectionsType">
@@ -222,7 +154,7 @@
                 <xs:element name="key" type="keySigType"/>
                 <xs:element name="repeat" type="repeatType"/>
                 <xs:element name="ending" type="endingType"/>
-                <xs:element name="instruction" type="textBlockType"/>
+                <xs:element name="instruction" type="instructionType"/>
                 <xs:element name="accel" type="extendableTextType"/>
                 <xs:element name="rit" type="extendableTextType"/>
                 <xs:element name="cresc" type="extendableTextType"/>
@@ -304,6 +236,35 @@
             </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
+
+    <xs:complexType name="emptyElementType">
+         <xs:annotation>
+            <xs:documentation>
+                an empty element with no attributes and no content (br)
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    
+    <xs:complexType name="textBlockType" mixed="true">
+        <xs:annotation>
+            <xs:documentation>
+                a container for multiple lines of text mixed with elements
+                Uses preserved white-space inside the element (includes line breaks).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="br" type="emptyElementType" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="span" type="xs:string" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="a" type="xs:string" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="i" type="xs:string" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="em" type="xs:string" maxOccurs="unbounded" minOccurs="0" />
+        </xs:choice>
+        <xs:attribute name="class" type="xs:string" use="optional"/>
+        <xs:attribute name="id" type="xs:string" use="optional"/>
+        <xs:attribute name="location" type="xs:string" use="optional"/>
+        <xs:attribute name="vPos" type="xs:string" use="optional"/>
+        <xs:attribute name="align" type="textAlignType" use="optional"/>
+    </xs:complexType>
     
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
     <!-- Parts -->
@@ -364,7 +325,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="directions" type="partMeasureDirectionsType" minOccurs="0"/>
+            <xs:element name="directions-part" type="partMeasureDirectionsType" minOccurs="0"/>
             <xs:element name="sequence" type="sequenceType" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="barline" type="barlineType" default="regular"/>
@@ -383,13 +344,12 @@
         <xs:choice maxOccurs="unbounded" minOccurs="0">
             <xs:element name="clef" type="clefType"/>
             <xs:element name="key" type="keySigType"/>
-            <xs:element name="instruction" type="textBlockType"/>
+            <xs:element name="instruction" type="instructionType"/>
             <xs:element name="cresc" type="extendableTextType"/>
             <xs:element name="dim" type="extendableTextType"/>
             <xs:element name="crescWedge" type="extenderLineType"/>
             <xs:element name="dimWedge" type="extenderLineType"/>
-            <xs:element name="xhtml-text-block" type="xhtmlTextBoxType"/>
-            <xs:element name="simple-text-block" type="simplestTextBoxType"/>
+            <xs:element name="text-block" type="textBlockType"/>
         </xs:choice>
     </xs:complexType>
 
@@ -433,7 +393,7 @@
         <xs:sequence>
             <xs:choice maxOccurs="unbounded" minOccurs="0">
                 <xs:element name="clef" type="clefType"/>
-                <xs:element name="instruction" type="textBlockType"/>
+                <xs:element name="instruction" type="instructionType"/>
                 <xs:element name="octave-shift" type="octaveShiftType"/>
                 <xs:element name="pedal" type="extendableTextType"/>
                 <xs:element name="cresc" type="extendableTextType"/>
@@ -596,14 +556,14 @@
     <!-- General ComplexTypes                                           -->
     <!-- These can be used both globally and in parts.  -->
 
-    <xs:complexType name="textBlockType">
+    <xs:complexType name="instructionType">
         <xs:annotation>
             <xs:documentation>
                 A sequence of one or more string and/or image elements.
                 By default, consecutive strings are concatenated (to the right), but this behaviour
                 can be changed by giving each string and/or image an align attribute. All the
-                align attributes refer to the location of the textBlock as a whole.
-                This textBlock can be added to any directions element (global, part/measure and
+                align attributes refer to the location of the instructionType as a whole.
+                This instructionType can be added to any directions element (global, part/measure and
                 part/measure/sequence).
                 Note 1: If a text only applies at the part level, then it must be added
                 to all the parts to which it applies. If two or more parts or part/sequence having
@@ -633,11 +593,11 @@
     <xs:complexType name="extendableTextType">
         <xs:annotation>
             <xs:documentation>
-                A textBlockType that can optionally be followed by an extenderLine.
+                A instructionType that can optionally be followed by an extenderLine.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="textBlockType">
+            <xs:extension base="instructionType">
                 <xs:sequence>
                     <xs:element name="extenderLine" type="extenderLineType" minOccurs="0"/>
                 </xs:sequence>                
@@ -663,7 +623,7 @@
     <xs:complexType name="stringElementType">
         <xs:annotation>
             <xs:documentation>
-                An element component of the textBlockType
+                An element component of the instructionType
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="class" type="xs:token" use="optional"/>
@@ -676,7 +636,7 @@
         <xs:annotation>
             <xs:documentation>
                 This is an external image file, such as an SVG, that can be a
-                component of the textBlockType.
+                component of the instructionType.
                 The width, height and baseline would be in the same anonymous
                 units as all the other measurements in the file including page
                 and margin sizes and the heights of fonts.

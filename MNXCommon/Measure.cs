@@ -94,17 +94,17 @@ namespace MNX.Common
                 }
             }
 
-            M.ReadToXmlElementTag(r, "directions", "sequence");
+            M.ReadToXmlElementTag(r, "directions-part", "sequence");
 
             int sequenceIndex = 0;
 
-            while(r.Name == "directions" || r.Name == "sequence")
+            while(r.Name == "directions-part" || r.Name == "sequence")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
                     {
-                        case "directions":
+                        case "directions-part":
                             Directions = new Directions(r, ticksPosInScore);
                             break;
                         case "sequence":
@@ -113,7 +113,7 @@ namespace MNX.Common
                             break;
                     }
                 }
-                M.ReadToXmlElementTag(r, "directions", "sequence", "measure");
+                M.ReadToXmlElementTag(r, "directions-part", "sequence", "measure");
             }
             M.Assert(r.Name == "measure"); // end of measure
         }

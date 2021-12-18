@@ -1,17 +1,16 @@
 <mnx>
     <global>
-        <measure>
-            <directions>
+        <measure-global barline="regular">
+            <directions-global>
                 <time signature="4/4"/>
-            </directions>
-        </measure>
+            </directions-global>
+        </measure-global>
     </global>
-    <part>
-        <part-name>Music</part-name>
-        <measure barline="regular">
-            <directions>
+    <part name="Music">
+        <measure>
+            <directions-part>
                 <clef sign="G" line="2"/>
-            </directions>
+            </directions-part>
             <sequence>
                 <event value="/1">
                     <note pitch="C4"/>

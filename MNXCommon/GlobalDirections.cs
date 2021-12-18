@@ -63,7 +63,7 @@ namespace MNX.Common
 
         public GlobalDirections(XmlReader r, TimeSignature currentTimeSignature, int ticksPosInScore)
         {
-            M.Assert(r.Name == "directions");
+            M.Assert(r.Name == "directions-global");
 
             TicksPosInScore = ticksPosInScore;
 
@@ -106,7 +106,7 @@ namespace MNX.Common
                             break;
                     }
                 }
-                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "ending", "directions");
+                M.ReadToXmlElementTag(r, "time", "clef", "key", "octave-shift", "repeat", "ending", "directions-global");
             }
 
             if(Repeats != null)
@@ -114,7 +114,7 @@ namespace MNX.Common
                 SetDefaultRepeatPositions(Repeats, currentTimeSignature);
             }
 
-            M.Assert(r.Name == "directions"); // end of "directions"
+            M.Assert(r.Name == "directions-global"); // end of "directions-global"
         }
 
         private void SetDefaultRepeatPositions(List<Repeat> repeats, TimeSignature currentTimeSignature)

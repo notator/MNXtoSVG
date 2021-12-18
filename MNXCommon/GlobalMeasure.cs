@@ -29,7 +29,7 @@ namespace MNX.Common
 
         public GlobalMeasure(XmlReader r, int measureIndex, TimeSignature currentTimeSig, int ticksPosInScore)
         {
-            M.Assert(r.Name == "measure");
+            M.Assert(r.Name == "measure-global");
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
 
             Index = measureIndex; // ji: 23.06.2020
@@ -61,26 +61,26 @@ namespace MNX.Common
                     }
                 }
 
-                M.ReadToXmlElementTag(r, "directions");
+                M.ReadToXmlElementTag(r, "directions-global");
 
-                while(r.Name == "directions")
+                while(r.Name == "directions-global")
                 {
                     if(r.NodeType != XmlNodeType.EndElement)
                     {
                         switch(r.Name)
                         {
-                            case "directions":
+                            case "directions-global":
                                 GlobalDirections = new GlobalDirections(r, currentTimeSig, ticksPosInScore);
                                 currentTimeSig = (GlobalDirections.TimeSignature != null) ? GlobalDirections.TimeSignature : currentTimeSig;
                                 TicksDuration = currentTimeSig.TicksDuration;
                                 break;
                         }
                     }
-                    M.ReadToXmlElementTag(r, "directions", "measure");
+                    M.ReadToXmlElementTag(r, "directions-global", "measure-global");
                 }
             }
 
-            M.Assert(r.Name == "measure"); // end of measure
+            M.Assert(r.Name == "measure-global"); // end of measure-global
         }
 
         private BarlineType GetBarlineType(string value)

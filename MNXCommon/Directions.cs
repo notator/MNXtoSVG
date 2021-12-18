@@ -14,8 +14,7 @@ namespace MNX.Common
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
         public readonly OctaveShift OctaveShift;
-        public readonly XhtmlTextBlock XhtmlTextBlock;
-        public readonly SimpleTextBlock SimpleTextBlock;
+        public readonly TextBlock TextBlock;
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -60,15 +59,15 @@ namespace MNX.Common
 
         public Directions(XmlReader r, int ticksPosInScore)
         {
-            M.Assert(r.Name == "directions");
+            M.Assert(r.Name == "directions-part");
 
             TicksPosInScore = ticksPosInScore;
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
-            M.ReadToXmlElementTag(r, "clef", "key", "octave-shift", "xhtml-text--block", "simple-text--block");
+            M.ReadToXmlElementTag(r, "clef", "key", "octave-shift", "text-block");
 
-            while(r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift" || r.Name == "xhtml-text-block" || r.Name == "simple-text-block")
+            while(r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift" || r.Name == "text-block")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
@@ -84,18 +83,15 @@ namespace MNX.Common
                         case "octave-shift":
                             OctaveShift = new OctaveShift(r, ticksPosInScore);
                             break;
-                        case "xhtml-text-block":
-                            XhtmlTextBlock = new XhtmlTextBlock(r, ticksPosInScore);
-                            break;
-                        case "simple-text-block":
-                            SimpleTextBlock = new SimpleTextBlock(r, ticksPosInScore);
+                        case "text-block":
+                            TextBlock = new TextBlock(r, ticksPosInScore);
                             break;
                     }
                 }
-                M.ReadToXmlElementTag(r, "clef", "key", "octave-shift", "xhtml-text-block", "simple-text-block", "directions");
+                M.ReadToXmlElementTag(r, "clef", "key", "octave-shift", "text-block", "directions-part");
             }
 
-            M.Assert(r.Name == "directions"); // end of "directions"
+            M.Assert(r.Name == "directions-part"); // end of "directions-part"
         }
     }
 }

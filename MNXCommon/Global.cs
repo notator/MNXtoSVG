@@ -33,10 +33,10 @@ namespace MNX.Common
                 }
             }
 
-            M.ReadToXmlElementTag(r, "measure");
+            M.ReadToXmlElementTag(r, "measure-global");
 
             int measureIndex = 0;
-            while(r.Name == "measure")
+            while(r.Name == "measure-global")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
@@ -45,7 +45,7 @@ namespace MNX.Common
                     currentTicksPosInScore += currentTimeSig.TicksDuration;
                     GlobalMeasures.Add(globalMeasure);
                 }
-                M.ReadToXmlElementTag(r, "measure", "global");
+                M.ReadToXmlElementTag(r, "measure-global", "global");
             }
             M.Assert(r.Name == "global"); // end of global
 

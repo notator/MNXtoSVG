@@ -1,6 +1,7 @@
 ﻿using MNX.Globals;
 
 using System.Collections.Generic;
+using System.Text;
 using System.Xml;
 
 using System.Xml.Schema;
@@ -10,56 +11,91 @@ namespace MNX.Common
 {
     public class TextBlock : IDirectionsComponent
     {
-        public readonly string Lines = "";
+        public List<string> Lines = new List<string>();
         public readonly int TicksPosInScore = -1; // set in ctor
 
         public TextBlock(XmlReader r, int ticksPosInScore)
         {
-            // returns all XmlNodes whose name is nodeName in the document tree
-            List<XmlNode> GetNodesByName(XmlNode rootNode, string nodeName)
-            {
-                List<XmlNode> xmlNodes = new List<XmlNode>();
-
-                void RecursiveGetNodes(XmlNode baseNode)
-                {
-                    if(baseNode.ChildNodes.Count > 0)
-                    {
-                        foreach(XmlNode childNode in baseNode.ChildNodes)
-                        {
-                            if(childNode.Name == nodeName)
-                            {
-                                xmlNodes.Add(childNode);
-                            }
-                            RecursiveGetNodes(childNode);
-                        }  
-                    }
-                }
-
-                RecursiveGetNodes(rootNode);
-
-                return xmlNodes;
-            }
-
             M.Assert(r.Name == "text-block");
 
-            string filePath = r.BaseURI;
-            XmlDocument doc = new XmlDocument();
-            doc.Load(filePath);
+            var xmlContent = r.ReadInnerXml();
 
-            XmlNode root = doc.DocumentElement;
-            List<XmlNode> textBlockNodes = GetNodesByName(root, "text-block");
-            foreach(var textBlockNode in textBlockNodes)
+            List<string> lines = GetLines(xmlContent);
+            
+            Lines.AddRange(lines);
+
+            M.Assert(r.NodeType == XmlNodeType.Whitespace); // end of "text-block"
+        }
+
+        private List<string> GetLines(string xmlContent)
+        {
+            var brStrLength = GetLineBreakStringLength(xmlContent);
+
+            xmlContent = RemoveComments(xmlContent);
+
+            List<string> lines = new List<string>();
+
+            while(xmlContent.Length > 0)
             {
-                List<XmlNode> brNodes = GetNodesByName(textBlockNode, "br");
-                List<XmlNode> aNodes = GetNodesByName(textBlockNode, "a");
-                List<XmlNode> iNodes = GetNodesByName(textBlockNode, "i");
-                List<XmlNode> emNodes = GetNodesByName(textBlockNode, "em");
-                List<XmlNode> spanNodes = GetNodesByName(textBlockNode, "span");
+                var brStart = xmlContent.IndexOf("<br");
+                int charsToRemove;
+                StringBuilder sb = new StringBuilder();
+                if(brStart >= 0)
+                {
+                    sb.Append(xmlContent, 0, brStart);
+                    charsToRemove = sb.Length + brStrLength;
+
+                    string line = sb.ToString();
+                    line = line.Trim();
+
+                    lines.Add(line);
+                }
+                else
+                {
+                    charsToRemove = xmlContent.Length;
+                }
+
+                xmlContent = xmlContent.Remove(0, charsToRemove);
             }
 
-            M.ReadToXmlElementTag(r, "text-block");
+            return lines;
+        }
 
-            M.Assert(r.Name == "text-block"); // end of "text-block"
+        private string RemoveComments(string xmlContent)
+        {
+            if(!string.IsNullOrEmpty(xmlContent))
+            {
+                var start = 0;
+                while(start >= 0)
+                {
+                    start = xmlContent.IndexOf("<!--");
+                    if(start >= 0)
+                    {
+                        var end = xmlContent.IndexOf("-->", start);
+                        int charsToRemove = end - start + 3;
+                        xmlContent = xmlContent.Remove(start, charsToRemove);
+                    }
+                }
+            }
+
+            return xmlContent;
+        }
+
+        private int GetLineBreakStringLength(string xmlContent)
+        {
+            int lineBreakStringLength = 0;
+
+            if(!string.IsNullOrEmpty(xmlContent))
+            {
+                var start = xmlContent.IndexOf("<br");
+                if(start >= 0)
+                {
+                    var end = xmlContent.IndexOf("/>", start);
+                    lineBreakStringLength = end - start + 2;
+                }
+            }
+
+            return lineBreakStringLength;
         }
     }
 }

@@ -42,6 +42,7 @@
                     line2<br />
                     <span>line3</span><br />
                     <span>line4</span><br />
+                    line5 that contains whitespace.
                 </text-block>
 
                 <text-block id="textBoxID" class="textBoxClass" location="0.75" vPos="2" align="right">

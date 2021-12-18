@@ -52,6 +52,11 @@ namespace MNX.Common
                 }
                 else
                 {
+                    xmlContent = xmlContent.Trim();
+                    if(xmlContent.Length > 0)
+                    {
+                        lines.Add(xmlContent);
+                    }
                     charsToRemove = xmlContent.Length;
                 }
 

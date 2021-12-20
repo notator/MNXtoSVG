@@ -1,0 +1,89 @@
+<mnx xmlns="https://github.com/notator/mnx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/notator/mnx ../schema/common1900.xsd">
+    <global>
+        <measure-global>
+            <directions-global>
+                <time signature="4/4"/>
+            </directions-global>
+        </measure-global>
+        <measure-global/>
+    </global>
+    <part name="Melody">
+        <measure>
+            <directions-part>
+                <clef line="2" sign="G"/>
+            </directions-part>
+            <sequence>
+                <event value="/4">
+                    <note pitch="C5"/>
+                </event>
+                <event value="/4">
+                    <note pitch="D5"/>
+                </event>
+                <event value="/4">
+                    <note pitch="E5"/>
+                </event>
+                <event value="/4">
+                    <note pitch="G5"/>
+                </event>
+            </sequence>
+        </measure>
+        <measure>
+            <sequence>
+                <event value="/4">
+                    <note pitch="C5"/>
+                </event>
+                <event value="/4">
+                    <note pitch="D5"/>
+                </event>
+                <event value="/4">
+                    <note pitch="E5"/>
+                </event>
+                <event value="/4">
+                    <note pitch="C5"/>
+                </event>
+            </sequence>
+        </measure>
+    </part>
+    <part name="Harmony">
+        <measure>
+            <directions-part>
+                <clef line="2" sign="G"/>
+            </directions-part>
+            <sequence>
+                <beams>
+                    <beam events="event6 event7 event8 event9"/>
+                </beams>
+                <event value="/2">
+                    <rest/>
+                </event>
+                <event id="event6" value="/8">
+                    <note pitch="C5"/>
+                </event>
+                <event id="event7" value="/8">
+                    <note pitch="D5"/>
+                </event>
+                <event id="event8" value="/8">
+                    <note pitch="E5"/>
+                </event>
+                <event id="event9" value="/8">
+                    <note pitch="D5"/>
+                </event>
+            </sequence>
+        </measure>
+        <measure>
+            <sequence>
+                <event value="/2">
+                    <rest/>
+                </event>
+                <event value="/4">
+                    <note pitch="G5"/>
+                </event>
+                <event value="/4">
+                    <note pitch="E5"/>
+                </event>
+            </sequence>
+        </measure>
+    </part>
+</mnx>

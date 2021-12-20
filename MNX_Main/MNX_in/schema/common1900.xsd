@@ -49,9 +49,13 @@
             <xs:sequence>
                 <xs:element name="head" type="headType" minOccurs="0" maxOccurs="1"/>
                 <xs:element name="global" type="globalType" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="part" type="partType" minOccurs="1" maxOccurs="unbounded"/>
-                <xs:element name="systemLayout" type="systemLayoutType" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="score" type="scoreType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                    <xs:element name="part" type="partType"/>                    
+                </xs:sequence>
+                <xs:element name="layouts" type="layoutsType" minOccurs="0" maxOccurs="1" />
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="score" type="scoreType"/>                    
+                </xs:sequence>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -290,14 +294,18 @@
                 part-abbreviation and instrument-sound elements.
             </xs:documentation>
         </xs:annotation>
-        <xs:choice>
-            <xs:element name="measures" type="partMeasuresType"/>
-            <xs:element name="measure" type="partMeasureType"/>
-        </xs:choice>
-        <xs:attribute name="id" type="idValueType" use="required"/>
-        <xs:attribute name="name" type="xs:Name" use="required"/>
-        <xs:attribute name="instrumentType" type="idReferenceType" use="optional"/>
-        <xs:attribute name="partNumberInGroup" type="xs:nonNegativeInteger" use="optional"/>
+        <xs:sequence>
+            <xs:element name="part-abbreviation" type="xs:Name" minOccurs="0" maxOccurs="1"/>
+            <xs:sequence  minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="measure" type="partMeasureType"/>                
+            </xs:sequence>            
+        </xs:sequence>
+        <xs:attribute name="color" type="colorType" use="optional"/>
+        <xs:attribute name="id" type="idValueType" use="optional"/>
+        <xs:attribute name="name" type="xs:Name" use="optional"/>
+        <xs:attribute name="short-name" type="xs:Name" use="optional"/>
+        <xs:attribute name="smufl-font" type="xs:Name" use="optional"/>
+        <xs:attribute name="staves" type="xs:positiveInteger" default="1" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="partMeasureType">
@@ -536,6 +544,71 @@
         <xs:attribute name="startNote" type="idReferenceType" use="optional"/>
         <xs:attribute name="endNote" type="idReferenceType" use="optional"/>
     </xs:complexType>
+    
+    <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+    <!-- mnx/layouts -->
+    
+     <xs:complexType name="layoutsType">
+        <xs:annotation>
+            <xs:documentation>
+                The part-layout and staff-layout elements are optional
+                because they could be written directly inside system-layout.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="part-layout" type="partLayoutType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="staff-layout" type="staffLayoutType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="system-layout" type="systemLayoutType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType> 
+    
+    <xs:complexType name="systemLayoutType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="staffLayout" type="staffLayoutType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="staffLayoutType">
+        <xs:annotation>
+            <xs:documentation>
+                This element either has a staff-layout id attribute
+                or a sequence of part-layouts,
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="partLayout" type="partLayoutType"/>
+        </xs:sequence>
+        <xs:attribute name="layout" type="idReferenceType" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="partLayoutType">
+        <xs:annotation>
+            <xs:documentation>
+                This element either has a part-layout id attribute
+                or a part-layout definition.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <!-- part-layout definition-->
+        </xs:sequence>
+        <xs:attribute name="layout" type="idReferenceType" use="optional"/>
+    </xs:complexType>
+    
+    <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+    <!-- mnx/score -->
+    
+    <xs:complexType name="scoreType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        </xs:sequence>
+    </xs:complexType> 
 
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
     <!-- General ComplexTypes                                           -->
@@ -647,6 +720,18 @@
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
     <!-- Simple Types -->
 
+    <xs:simpleType name="colorType">
+        <xs:annotation>
+            <xs:documentation>
+                Examples: #000000 (black), #ff0000 (red)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="#[a-f0-9]{6}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    
     <xs:simpleType name="noteValueType">
         <xs:annotation>
             <xs:documentation>
@@ -926,13 +1011,12 @@
     <xs:simpleType name="idReferenceType">
         <xs:annotation>
             <xs:documentation>
-                All ID references are of this form. It is defined here as:
-                A string beginning with a '#' character
-                followed by an idValueType
+                All ID references are of this form.
+                (currently without a leading "#")
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:token">
-            <xs:pattern value="[#][a-zA-Z][a-zA-Z0-9\-_]*"/>
+            <xs:pattern value="[a-zA-Z][a-zA-Z0-9\-_]*"/>
         </xs:restriction>
     </xs:simpleType>
 

@@ -68,6 +68,37 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="MNX_in\form1Data\__0_helloTextBlock.f1d" />
+    <None Include="MNX_in\form1Data\__2_accidentals.f1d" />
+    <None Include="MNX_in\mnx\twoBarScale.mnx" />
+    <None Include="MNX_in\mnx\tuplets.mnx" />
+    <None Include="MNX_in\mnx\timeSignatures.mnx" />
+    <None Include="MNX_in\mnx\ties.mnx" />
+    <None Include="MNX_in\mnx\ThreeNoteChordAndRest.mnx" />
+    <None Include="MNX_in\mnx\tempoMarkings.mnx" />
+    <None Include="MNX_in\mnx\systemLayouts.mnx" />
+    <None Include="MNX_in\mnx\slursSpecificNotes.mnx" />
+    <None Include="MNX_in\mnx\slursIncomplete.mnx" />
+    <None Include="MNX_in\mnx\slursForChords.mnx" />
+    <None Include="MNX_in\mnx\slurs.mnx" />
+    <None Include="MNX_in\mnx\repeatsWithImpliedStart.mnx" />
+    <None Include="MNX_in\mnx\repeatsWithAlternateEndingsSimple.mnx" />
+    <None Include="MNX_in\mnx\repeatsWithAlternateEndingsAdvanced.mnx" />
+    <None Include="MNX_in\mnx\repeatsMoreThanOnce.mnx" />
+    <None Include="MNX_in\mnx\repeats.mnx" />
+    <None Include="MNX_in\mnx\parts.mnx" />
+    <None Include="MNX_in\mnx\octaveShifts.mnx" />
+    <None Include="MNX_in\mnx\multipleVoices.mnx" />
+    <None Include="MNX_in\mnx\keySignatures.mnx" />
+    <None Include="MNX_in\mnx\jumpsDalSegno.mnx" />
+    <None Include="MNX_in\mnx\jumpsDalSegnoAlFine.mnx" />
+    <None Include="MNX_in\mnx\graceNotesBeamed.mnx" />
+    <None Include="MNX_in\mnx\graceNote.mnx" />
+    <None Include="MNX_in\mnx\dottedNotes.mnx" />
+    <None Include="MNX_in\mnx\beamsWithInnerGraceNotes.mnx" />
+    <None Include="MNX_in\mnx\beamsSecondaryBeamBreaks.mnx" />
+    <None Include="MNX_in\mnx\beamsHooks.mnx" />
+    <None Include="MNX_in\mnx\beamsAcrossBarlines.mnx" />
     <None Include="MNX_in\form1Data\_10_beamhooks.f1d" />
     <None Include="MNX_in\form1Data\_11_tuplets.f1d" />
     <None Include="MNX_in\form1Data\_13a_crossSystemOctaves.f1d" />
@@ -91,44 +122,13 @@
     <None Include="MNX_in\form1Data\__3_chord.f1d" />
     <None Include="MNX_in\form1Data\__4_timesigs.f1d" />
     <None Include="MNX_in\form1Data\__5_keysigs.f1d" />
-    <None Include="MNX_in\form1Data\__6_accidentals.f1d" />
     <None Include="MNX_in\form1Data\__7_dots.f1d" />
     <None Include="MNX_in\form1Data\__8a_crossSystemTies.f1d" />
     <None Include="MNX_in\form1Data\__8_ties.f1d" />
     <None Include="MNX_in\form1Data\_19_repeats.f1d" />
     <None Include="MNX_in\form1Data\__9_beams.f1d" />
-    <None Include="MNX_in\mnx\_10_beamhooks.mnx" />
-    <None Include="MNX_in\mnx\_11_tuplets.mnx" />
-    <None Include="MNX_in\mnx\_12_voices.mnx" />
-    <None Include="MNX_in\mnx\_13a_crossSystemOctaves.mnx" />
-    <None Include="MNX_in\mnx\_13_octaves.mnx" />
-    <None Include="MNX_in\mnx\_14a_crossBarlineSlurs.mnx">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="MNX_in\mnx\_14_slurs.mnx">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="MNX_in\mnx\_15_slurchords.mnx" />
-    <None Include="MNX_in\mnx\_16_slurnotes.mnx" />
-    <None Include="MNX_in\mnx\_17_slurincomplete.mnx" />
-    <None Include="MNX_in\mnx\_18_parts.mnx" />
-    <None Include="MNX_in\mnx\_21_repeatsmorethanonce.mnx" />
-    <None Include="MNX_in\mnx\_23a_repeatsmidmeasure.mnx" />
-    <None Include="MNX_in\mnx\_25_jumpsdalsegnoalfine.mnx" />
-    <None Include="MNX_in\mnx\_24_jumpsdalsegno.mnx" />
-    <None Include="MNX_in\mnx\_23_repeatsadvancedalternateendings.mnx" />
-    <None Include="MNX_in\mnx\_22_repeatssimplealternateendings.mnx" />
-    <None Include="MNX_in\mnx\_20_repeatswithimpliedstart.mnx" />
-    <None Include="MNX_in\mnx\_19_repeats.mnx" />
-    <None Include="MNX_in\mnx\__2_cscale.mnx" />
-    <None Include="MNX_in\mnx\__3_chord.mnx" />
-    <None Include="MNX_in\mnx\__4_timesigs.mnx" />
-    <None Include="MNX_in\mnx\__5_keysigs.mnx" />
-    <None Include="MNX_in\mnx\__6_accidentals.mnx" />
-    <None Include="MNX_in\mnx\__7_dots.mnx" />
-    <None Include="MNX_in\mnx\__8a_crossSystemTies.mnx" />
-    <None Include="MNX_in\mnx\__8_ties.mnx" />
-    <None Include="MNX_in\mnx\__9_beams.mnx" />
+    <None Include="MNX_in\mnx\beams.mnx" />
+    <None Include="MNX_in\mnx\accidentals.mnx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

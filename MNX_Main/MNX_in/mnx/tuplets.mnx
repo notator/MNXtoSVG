@@ -1,0 +1,73 @@
+<mnx xmlns="https://github.com/notator/mnx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/notator/mnx ../schema/common1900.xsd">
+    <global>
+        <measure-global>
+            <directions-global>
+                <time signature="4/4"/>
+            </directions-global>
+        </measure-global>
+        <measure-global/>
+    </global>
+    <part name="Music">
+        <measure>
+            <directions-part>
+                <clef line="2" sign="G"/>
+            </directions-part>
+            <sequence>
+                <beams>
+                    <beam events="event3 event4 event5"/>
+                </beams>
+                <tuplet inner="3/8" outer="2/8">
+                    <event value="/4">
+                        <note pitch="C5"/>
+                    </event>
+                    <event value="/8">
+                        <note pitch="G4"/>
+                    </event>
+                </tuplet>
+                <tuplet inner="3/8" outer="2/8">
+                    <event id="event3" value="/8">
+                        <note pitch="E4"/>
+                    </event>
+                    <event id="event4" value="/8">
+                        <note pitch="F4"/>
+                    </event>
+                    <event id="event5" value="/8">
+                        <note pitch="G4"/>
+                    </event>
+                </tuplet>
+                <event value="/4">
+                    <note pitch="E5"/>
+                </event>
+                <event value="/4">
+                    <note pitch="D5"/>
+                </event>
+            </sequence>
+        </measure>
+        <measure>
+            <sequence>
+                <tuplet inner="6/4" outer="4/4">
+                    <event value="/4">
+                        <note pitch="C5"/>
+                    </event>
+                    <event value="/4">
+                        <note pitch="D5"/>
+                    </event>
+                    <event value="/4">
+                        <note pitch="C5"/>
+                    </event>
+                    <event value="/4">
+                        <note pitch="G4"/>
+                    </event>
+                    <event value="/4">
+                        <note pitch="E5"/>
+                    </event>
+                    <event value="/4">
+                        <note pitch="C5"/>
+                    </event>
+                </tuplet>
+            </sequence>
+        </measure>
+    </part>
+</mnx>

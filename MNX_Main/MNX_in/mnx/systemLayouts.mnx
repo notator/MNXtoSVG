@@ -1,0 +1,69 @@
+<mnx xmlns="https://github.com/notator/mnx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/notator/mnx ../schema/common1900.xsd">
+    <global>...</global>
+    <part id="fl1" name="Flute 1" short-name="1">...</part>
+    <part id="fl2" name="Flute 2" short-name="2">...</part>
+    <part id="fl3" name="Flute 3" short-name="3">...</part>
+    <part id="ob1" name="Oboe 1" short-name="1">...</part>
+    <part id="ob2" name="Oboe 2" short-name="2">...</part>
+    <part id="piano" name="Piano" staves="2">...</part>
+    <system-layout id="layout1">
+        <group-layout symbol="bracket">
+            <group-layout symbol="brace" label="Flutes">
+                <staff-layout labelref="short-name">
+                    <part-layout part="fl1"/>
+                    <part-layout part="fl2"/>
+                </staff-layout>
+                <staff-layout labelref="short-name">
+                    <part-layout part="fl3"/>
+                </staff-layout>
+            </group-layout>
+            <staff-layout label="Oboes" labelref="short-name">
+                <part-layout part="ob1"/>
+                <part-layout part="ob2"/>
+            </staff-layout>
+        </group-layout>
+        <group-layout symbol="brace" label="Piano">
+            <staff-layout>
+                <part-layout part="piano" staff="1"/>
+            </staff-layout>
+            <staff-layout>
+                <part-layout part="piano" staff="2"/>
+            </staff-layout>
+        </group-layout>
+    </system-layout>
+    <system-layout id="layout2">
+        <group-layout symbol="bracket">
+            <group-layout symbol="brace" label="Fl.">
+                <staff-layout labelref="short-name">
+                    <part-layout part="fl1"/>
+                </staff-layout>
+                <staff-layout labelref="short-name">
+                    <part-layout part="fl2"/>
+                </staff-layout>
+                <staff-layout labelref="short-name">
+                    <part-layout part="fl3"/>
+                </staff-layout>
+            </group-layout>
+            <staff-layout name="Ob." labelref="short-name">
+                <part-layout part="ob1"/>
+                <part-layout part="ob2"/>
+            </staff-layout>
+        </group-layout>
+        <group-layout symbol="brace" label="Piano">
+            <staff-layout>
+                <part-layout part="piano" staff="1"/>
+            </staff-layout>
+            <staff-layout>
+                <part-layout part="piano" staff="2"/>
+            </staff-layout>
+        </group-layout>
+    </system-layout>
+    <score name="Full score">
+        <page>
+            <system measure="1" layout="layout1"/>
+            <system measure="4" layout="layout2"/>
+        </page>
+    </score>
+</mnx>

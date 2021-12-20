@@ -1,4 +1,6 @@
-<mnx>
+<mnx xmlns="https://github.com/notator/mnx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/notator/mnx ../schema/common1900.xsd">
     <global>
         <measure-global barline="regular">
             <directions-global>

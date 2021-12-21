@@ -1,4 +1,5 @@
 ﻿using MNX.Globals;
+
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -14,7 +15,7 @@ namespace MNX.Common
         /// If null, this value should be set when the whole score has been read
         /// see https://w3c.github.io/mnx/specification/common/#the-measure-element
         /// </summary>
-        public int? Number = null;        
+        public int? Number = null;
 
         /// <summary>
         /// Contrary to https://w3c.github.io/mnx/specification/common/#the-measure-element
@@ -55,7 +56,7 @@ namespace MNX.Common
                 return _ticksDuration;
             }
         }
-        private int _ticksDuration = -1;
+        private readonly int _ticksDuration = -1;
 
         public Measure(XmlReader r, int measureIndex, TimeSignature currentTimeSig, int ticksPosInScore)
         {
@@ -201,7 +202,7 @@ namespace MNX.Common
                     }
                 }
             }
-        }            
+        }
 
         private static Event FindPreviousEvent(List<IHasTicks> eventsAndEventGroups, int graceIndex)
         {
@@ -278,7 +279,7 @@ namespace MNX.Common
                         break;
                     }
                     insertTicksPos = ticksPos;
-                    ticksPos += eegs[index].TicksDuration;              
+                    ticksPos += eegs[index].TicksDuration;
                 }
                 var eeg = eegs[eegIndex];
                 if(eeg is EventGroup eg)
@@ -293,7 +294,7 @@ namespace MNX.Common
                         }
                     }
                 }
-                else ((Event)eeg).TicksDuration += grace.TicksDuration;                
+                else ((Event)eeg).TicksDuration += grace.TicksDuration;
             }
         }
     }

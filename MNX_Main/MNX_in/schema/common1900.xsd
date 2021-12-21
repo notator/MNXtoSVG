@@ -39,10 +39,8 @@
         <xs:annotation>
             <xs:documentation>
                 the root element of an .mnx file
-                Both systemLayouts and systemLayout can be omitted only if the score contains
-                a single part on a single system.
-                Issue: The Draft Spec says that there can be more than one global element (enclosed
-                in a globals element). That does not seem necessary in this common1900 schema.
+                This schema is currently being compared with files that have no layouts or scores,
+                but I've included the optional layouts element and score elements anyway.
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
@@ -551,13 +549,15 @@
      <xs:complexType name="layoutsType">
         <xs:annotation>
             <xs:documentation>
-                The part-layout and staff-layout elements are optional
+                The part-layout, voice-layout, staff-layout and group-layout are optional
                 because they could be written directly inside system-layout.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
             <xs:element name="part-layout" type="partLayoutType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="voice-layout" type="voiceLayoutType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="staff-layout" type="staffLayoutType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="group-layout" type="groupLayoutType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="system-layout" type="systemLayoutType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType> 
@@ -568,11 +568,16 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
-            <xs:element name="staffLayout" type="staffLayoutType"/>
+            <xs:choice>
+                <xs:element name="partLayout" type="partLayoutType"/>
+                <xs:element name="staffLayout" type="staffLayoutType"/>
+                <xs:element name="groupLayout" type="groupLayoutType"/>                
+            </xs:choice>            
         </xs:sequence>
+        <xs:attribute name="id" type="idValueType" use="required"/>
     </xs:complexType>
-    
-    <xs:complexType name="staffLayoutType">
+
+    <xs:complexType name="groupLayoutType">
         <xs:annotation>
             <xs:documentation>
                 This element either has a staff-layout id attribute
@@ -582,20 +587,53 @@
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
             <xs:element name="partLayout" type="partLayoutType"/>
         </xs:sequence>
+        <xs:attribute name="id" type="idValueType" use="required"/>
         <xs:attribute name="layout" type="idReferenceType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="staffLayoutType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="partLayout" type="partLayoutType"/>
+            </xs:sequence>
+            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="voice-layout" type="voiceLayoutType"/>
+            </xs:sequence>            
+        </xs:choice>
+        <xs:attribute name="id" type="idValueType" use="optional"/>
+        <xs:attribute name="layout" type="idReferenceType" use="optional"/>
+        <xs:attribute name="part-staff" type="xs:positiveInteger" use="optional" default="1"/>
+    </xs:complexType>
+
+    <xs:complexType name="voiceLayoutType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="partLayout" type="partLayoutType"/>
+        </xs:sequence>
+        <xs:attribute name="stem" type="voiceStemDirectionType" use="optional" default="part"/>
+        <xs:attribute name="minimize-noteheads" type="yesNoType" use="optional" default="yes"/>
+        <!-- I currently think these are not necessary (ji)
+        <xs:attribute name="label" type="xs:Name"/>
+        <xs:attribute name="labelref" type="xs:Name"/>
+        -->
     </xs:complexType>
     
     <xs:complexType name="partLayoutType">
         <xs:annotation>
             <xs:documentation>
-                This element either has a part-layout id attribute
-                or a part-layout definition.
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence minOccurs="1" maxOccurs="unbounded">
-            <!-- part-layout definition-->
-        </xs:sequence>
-        <xs:attribute name="layout" type="idReferenceType" use="optional"/>
+        <xs:attribute name="id" type="idValueType" use="optional"/>
+        <xs:attribute name="part" type="idReferenceType" use="required"/>
+        <xs:attribute name="stem" type="partStemDirectionType" use="optional" default="float"/>
+        <xs:attribute name="part-voice" type="idReferenceType" use="optional"/>
     </xs:complexType>
     
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
@@ -886,15 +924,6 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="locationType">
-        <xs:annotation>
-            <xs:documentation>
-                EITHER an idReferenceType OR a simpleLocationType.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:union memberTypes="idReferenceType simpleLocationType"/>
-    </xs:simpleType>
-
     <xs:simpleType name="durationType">
         <xs:annotation>
             <xs:documentation>
@@ -926,6 +955,38 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="partStemDirectionType">
+        <xs:annotation>
+            <xs:documentation>
+                values for the part-voice stem attribute
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="up|down|float"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="voiceStemDirectionType">
+        <xs:annotation>
+            <xs:documentation>
+                values for the part-voice stem attribute
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="part|up|down|float"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="yesNoType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="yes|no"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="slurLocationType">
         <xs:annotation>
             <xs:documentation>
@@ -946,6 +1007,15 @@
         <xs:list itemType="xs:Name"/>
     </xs:simpleType>
 
+    <xs:simpleType name="locationType">
+        <xs:annotation>
+            <xs:documentation>
+                EITHER an idReferenceType OR a simpleLocationType.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="idReferenceType simpleLocationType"/>
+    </xs:simpleType>
+
     <xs:simpleType name="locationsListType">
         <xs:annotation>
             <xs:documentation>
@@ -963,27 +1033,6 @@
             </xs:documentation>
         </xs:annotation>
         <xs:list itemType="xs:positiveInteger"/>
-    </xs:simpleType>
-
-    <xs:simpleType name="directionClassListType">
-        <xs:annotation>
-            <xs:documentation>
-                A string containing a list of direction class names separated by whitespace.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:list itemType="directionClassType"/>
-    </xs:simpleType>
-
-    <xs:simpleType name="directionClassType">
-        <xs:annotation>
-            <xs:documentation>
-                A direction class name.
-                These names should match the names of the directions defined in globalMeasureDirectionsType.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:token">
-            <xs:pattern value="time|key|repeat|ending"/>
-        </xs:restriction>
     </xs:simpleType>
 
     <xs:simpleType name="idReferenceListType">

@@ -68,65 +68,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="MNX_in\form1Data\__0_helloTextBlock.f1d" />
-    <None Include="MNX_in\form1Data\__2_accidentals.f1d" />
-    <None Include="MNX_in\mnx\twoBarScale.mnx" />
     <None Include="MNX_in\mnx\tuplets.mnx" />
-    <None Include="MNX_in\mnx\timeSignatures.mnx" />
     <None Include="MNX_in\mnx\ties.mnx" />
-    <None Include="MNX_in\mnx\ThreeNoteChordAndRest.mnx" />
-    <None Include="MNX_in\mnx\tempoMarkings.mnx" />
-    <None Include="MNX_in\mnx\systemLayouts.mnx" />
-    <None Include="MNX_in\mnx\slursSpecificNotes.mnx" />
-    <None Include="MNX_in\mnx\slursIncomplete.mnx" />
-    <None Include="MNX_in\mnx\slursForChords.mnx" />
     <None Include="MNX_in\mnx\slurs.mnx" />
-    <None Include="MNX_in\mnx\repeatsWithImpliedStart.mnx" />
-    <None Include="MNX_in\mnx\repeatsWithAlternateEndingsSimple.mnx" />
-    <None Include="MNX_in\mnx\repeatsWithAlternateEndingsAdvanced.mnx" />
-    <None Include="MNX_in\mnx\repeatsMoreThanOnce.mnx" />
     <None Include="MNX_in\mnx\repeats.mnx" />
     <None Include="MNX_in\mnx\parts.mnx" />
-    <None Include="MNX_in\mnx\octaveShifts.mnx" />
-    <None Include="MNX_in\mnx\multipleVoices.mnx" />
-    <None Include="MNX_in\mnx\keySignatures.mnx" />
-    <None Include="MNX_in\mnx\jumpsDalSegno.mnx" />
-    <None Include="MNX_in\mnx\jumpsDalSegnoAlFine.mnx" />
-    <None Include="MNX_in\mnx\graceNotesBeamed.mnx" />
-    <None Include="MNX_in\mnx\graceNote.mnx" />
-    <None Include="MNX_in\mnx\dottedNotes.mnx" />
-    <None Include="MNX_in\mnx\beamsWithInnerGraceNotes.mnx" />
-    <None Include="MNX_in\mnx\beamsSecondaryBeamBreaks.mnx" />
-    <None Include="MNX_in\mnx\beamsHooks.mnx" />
-    <None Include="MNX_in\mnx\beamsAcrossBarlines.mnx" />
-    <None Include="MNX_in\form1Data\_10_beamhooks.f1d" />
-    <None Include="MNX_in\form1Data\_11_tuplets.f1d" />
-    <None Include="MNX_in\form1Data\_13a_crossSystemOctaves.f1d" />
-    <None Include="MNX_in\form1Data\_14a_crossBarlineSlurs.f1d" />
-    <None Include="MNX_in\form1Data\_18_parts.f1d" />
-    <None Include="MNX_in\form1Data\_12_voices.f1d" />
-    <None Include="MNX_in\form1Data\_13_octaves.f1d" />
-    <None Include="MNX_in\form1Data\_14_slurs.f1d" />
-    <None Include="MNX_in\form1Data\_15_slurchords.f1d" />
-    <None Include="MNX_in\form1Data\_16_slurnotes.f1d" />
-    <None Include="MNX_in\form1Data\_17_slurincomplete.f1d" />
-    <None Include="MNX_in\form1Data\_21_repeatsmorethanonce.f1d" />
-    <None Include="MNX_in\form1Data\_22_repeatssimplealternateendings.f1d" />
-    <None Include="MNX_in\form1Data\_23a_repeatsmidmeasure.f1d" />
-    <None Include="MNX_in\form1Data\_25_jumpsdalsegnoalfine.f1d" />
-    <None Include="MNX_in\form1Data\_24_jumpsdalsegno.f1d" />
-    <None Include="MNX_in\form1Data\_23_repeatsadvancedalternateendings.f1d" />
-    <None Include="MNX_in\form1Data\_20_repeatswithimpliedstart.f1d" />
-    <None Include="MNX_in\form1Data\__1_helloworld.f1d" />
-    <None Include="MNX_in\form1Data\__2_cscale.f1d" />
-    <None Include="MNX_in\form1Data\__3_chord.f1d" />
-    <None Include="MNX_in\form1Data\__4_timesigs.f1d" />
-    <None Include="MNX_in\form1Data\__5_keysigs.f1d" />
-    <None Include="MNX_in\form1Data\__7_dots.f1d" />
-    <None Include="MNX_in\form1Data\__8a_crossSystemTies.f1d" />
-    <None Include="MNX_in\form1Data\__8_ties.f1d" />
-    <None Include="MNX_in\form1Data\_19_repeats.f1d" />
-    <None Include="MNX_in\form1Data\__9_beams.f1d" />
     <None Include="MNX_in\mnx\beams.mnx" />
     <None Include="MNX_in\mnx\accidentals.mnx" />
     <None Include="packages.config" />
@@ -165,7 +111,9 @@
       <Name>Moritz.Xml</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="MNX_in\form1Data\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Issues.txt" />
     <Content Include="MNX_in\png\_19_repeats.png" />

@@ -9,16 +9,18 @@ namespace MNX.Common
     // https://w3c.github.io/mnx/specification/common/#elementdef-directions
     public class GlobalDirections : IGlobalMeasureComponent
     {
-        // These are just the elements used in the first set of examples.
-        // Other elements need to be added later.
-        public readonly TimeSignature TimeSignature;
-        public readonly Clef Clef;
-        public readonly KeySignature KeySignature;
-        public readonly OctaveShift OctaveShift;
+        // public readonly Ending Ending;
+        // public readonly Fine Fine;
+        public readonly Jump Jump;
+        // public readonly Key Key;
         /// A measure can contain any number of RepeatEnd and RepeatBegin symbols.
         /// They are kept here in order of their PositionInMeasure.Ticks.
         /// If two Repeats have the same ticksPosition, they are kept in order RepeatEnd, RepeatBegin
         public readonly List<Repeat> Repeats;
+        // public readonly Segno Segno;
+        // public readonly Tempo Tempo;
+        public readonly TimeSignature TimeSignature;
+
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -96,7 +98,7 @@ namespace MNX.Common
                             // TODO
                             break;
                         case "jump":
-                            // TODO
+                            Jump = new Jump(r, ticksPosInScore);
                             break;
                         case "fine":
                             // TODO

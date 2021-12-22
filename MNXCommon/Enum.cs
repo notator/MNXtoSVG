@@ -131,4 +131,11 @@
         up,
         down
     }
+
+    public enum JumpType
+    {
+        unknown,
+        segno,
+        dsalfine
+    }
 }

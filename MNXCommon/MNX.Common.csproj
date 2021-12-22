@@ -46,7 +46,7 @@
     <Compile Include="GlobalDirections.cs" />
     <Compile Include="Forward.cs" />
     <Compile Include="EventGroup.cs" />
-    <Compile Include="SequenceDirectionsComponent.cs" />
+    <Compile Include="PartDirectionsComponent.cs" />
     <Compile Include="PartDirections.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Global.cs" />
@@ -68,6 +68,7 @@
     <Compile Include="TextBlock.cs" />
     <Compile Include="Tied.cs" />
     <Compile Include="Repeat.cs" />
+    <Compile Include="Jump.cs" />
     <Compile Include="TimeSignature.cs" />
     <Compile Include="TupletDef.cs" />
     <Compile Include="CurrentTupletLevel.cs" />

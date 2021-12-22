@@ -7,7 +7,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#common-direction-attributes
     /// </summary>
-    public abstract class SequenceDirectionsComponent : ISequenceDirectionsComponent
+    public abstract class PartDirectionsComponent : IPartDirectionsComponent
     {
         /// <summary>
         /// https://w3c.github.io/mnx/specification/common/#measure-location
@@ -62,7 +62,7 @@ namespace MNX.Common
     /// <summary>
     /// A Span is an object like a Slur, Tie or OctaveShift.
     /// </summary>
-    public abstract class Span : SequenceDirectionsComponent
+    public abstract class Span : PartDirectionsComponent
     {
         #region IUniqueDef
         public override string ToString() => $"Span: MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";

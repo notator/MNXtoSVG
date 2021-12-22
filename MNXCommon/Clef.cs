@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class Clef : SequenceDirectionsComponent, IUniqueDef
+    public class Clef : PartDirectionsComponent, ISequenceDirectionsComponent, IUniqueDef
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }
@@ -17,7 +17,7 @@ namespace MNX.Common
         private readonly int TicksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"Clef: TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public string ToString() => $"Clef: TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         #endregion IUniqueDef
 
         public Clef(XmlReader r, int ticksPosInScore)

@@ -67,7 +67,7 @@ namespace Moritz.Symbols
                 foreach(var part in mnxCommon.Parts)
                 {
                     var measure = part.Measures[measureIndex];
-                    List<IUniqueDef> measureDirections = GetMeasureDirections(measure.Directions);
+                    List<IUniqueDef> measureDirections = GetMeasureDirections(measure.PartDirections);
                     var voicesPerStaff = part.VoicesPerStaff;
                     var nPartStaves = voicesPerStaff.Count;
 
@@ -173,7 +173,7 @@ namespace Moritz.Symbols
             }
         }
 
-        private List<IUniqueDef> GetMeasureDirections(Directions measureDirections)
+        private List<IUniqueDef> GetMeasureDirections(PartDirections measureDirections)
         {
             var rval = new List<IUniqueDef>();
             if(measureDirections != null)
@@ -185,14 +185,6 @@ namespace Moritz.Symbols
                 if(measureDirections.KeySignature != null)
                 {
                     rval.Add(measureDirections.KeySignature);
-                }
-                //if(measureDirections.TimeSignature != null)
-                //{
-                //    rval.Add(measureDirections.TimeSignature);
-                //}
-                if(measureDirections.OctaveShift != null)
-                {
-                    rval.Add(measureDirections.OctaveShift);
                 }
             }
 

@@ -7,20 +7,18 @@ using System.Xml;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#elementdef-directions
-    public class Directions : IPartMeasureComponent, ISeqComponent
+    public class PartDirections : IPartMeasureComponent
     {
         // These are just the elements used in the first set of examples.
         // Other elements need to be added later.
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
-        public readonly OctaveShift OctaveShift;
-        public readonly TextBlock TextBlock;
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
 
         #region IUniqueDef
-        public override string ToString() => $"Directions: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
+        public override string ToString() => $"PartDirections: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
 
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
@@ -57,7 +55,7 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Directions(XmlReader r, int ticksPosInScore)
+        public PartDirections(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "directions-part");
 
@@ -65,9 +63,9 @@ namespace MNX.Common
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
-            M.ReadToXmlElementTag(r, "clef", "key", "octave-shift", "text-block");
+            M.ReadToXmlElementTag(r, "clef", "key");
 
-            while(r.Name == "clef" || r.Name == "key" || r.Name == "octave-shift" || r.Name == "text-block")
+            while(r.Name == "clef" || r.Name == "key")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
@@ -80,15 +78,10 @@ namespace MNX.Common
                             // https://w3c.github.io/mnx/specification/common/#the-key-element
                             KeySignature = new KeySignature(r, ticksPosInScore);
                             break;
-                        case "octave-shift":
-                            OctaveShift = new OctaveShift(r, ticksPosInScore);
-                            break;
-                        case "text-block":
-                            TextBlock = new TextBlock(r, ticksPosInScore);
-                            break;
+
                     }
                 }
-                M.ReadToXmlElementTag(r, "clef", "key", "octave-shift", "text-block", "directions-part");
+                M.ReadToXmlElementTag(r, "clef", "key", "directions-part");
             }
 
             M.Assert(r.Name == "directions-part"); // end of "directions-part"

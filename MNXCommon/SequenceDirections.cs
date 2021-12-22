@@ -7,14 +7,18 @@ using System.Xml;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#elementdef-directions
-    public class GlobalDirections : IGlobalMeasureComponent
+    public class SequenceDirections : ISequenceComponent
     {
-        // These are just the elements used in the first set of examples.
-        // Other elements need to be added later.
-        public readonly TimeSignature TimeSignature;
         public readonly Clef Clef;
-        public readonly KeySignature KeySignature;
+        //public readonly Cresc Cresc;
+        //public readonly Dim Dim;
+        //public readonly Dynamics Dynamics;
+        //public readonly Expression Expression;
+        //public readonly Instruction Instruction;
         public readonly OctaveShift OctaveShift;
+        //public readonly Wedge Wedge;
+        public readonly TextBlock TextBlock;
+
         /// A measure can contain any number of RepeatEnd and RepeatBegin symbols.
         /// They are kept here in order of their PositionInMeasure.Ticks.
         /// If two Repeats have the same ticksPosition, they are kept in order RepeatEnd, RepeatBegin
@@ -24,7 +28,7 @@ namespace MNX.Common
         public const int TicksDuration = 0; // all directions have 0 ticks.
 
         #region IUniqueDef
-        public override string ToString() => $"GlobalDirections: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
+        public override string ToString() => $"SequenceDirections: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
 
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
@@ -61,56 +65,51 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public GlobalDirections(XmlReader r, TimeSignature currentTimeSignature, int ticksPosInScore)
+        public SequenceDirections(XmlReader r, TimeSignature currentTimeSignature, int ticksPosInScore)
         {
-            M.Assert(r.Name == "directions-global");
+            M.Assert(r.Name == "directions");
 
             TicksPosInScore = ticksPosInScore;
 
-            M.ReadToXmlElementTag(r, "time", "repeat", "ending", "segno", "jump", "fine", "key", "tempo");
+            M.ReadToXmlElementTag(r, "clef", "cresc", "dim", "dynamics", "expression", "instruction", "octave-shift", "wedge", "text-block");
 
-            while(r.Name == "time" || r.Name == "repeat" || r.Name == "ending" || r.Name == "segno"
-                || r.Name == "jump" || r.Name == "fine" || r.Name == "key" || r.Name == "tempo")
+            while(r.Name == "clef" || r.Name == "cresc" || r.Name == "dim" || r.Name == "dynamics"
+                || r.Name == "expression" || r.Name == "instruction" || r.Name == "octave-shift" || r.Name == "wedge" || r.Name == "text-block")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
                     {
-                        case "time":
-                            // https://w3c.github.io/mnx/specification/common/#the-time-element
-                            TimeSignature = new TimeSignature(r, ticksPosInScore);
-                            currentTimeSignature = TimeSignature;
+                        case "clef":
+                            Clef = new Clef(r, ticksPosInScore);
                             break;
-                        case "repeat":
-                            if(Repeats == null)
-                            {
-                                Repeats = new List<Repeat>();
-                            }
-                            Repeat repeat = GetRepeat(r);
-                            AddRepeatToRepeats(repeat, Repeats);
-                            break;
-                        case "ending":
+                        case "cresc":
                             // TODO
                             break;
-                        case "segno":
+                        case "dim":
                             // TODO
                             break;
-                        case "jump":
+                        case "dynamics":
                             // TODO
                             break;
-                        case "fine":
+                        case "expression":
                             // TODO
                             break;
-                        case "key":
-                            // https://w3c.github.io/mnx/specification/common/#the-key-element
-                            KeySignature = new KeySignature(r, ticksPosInScore);
-                            break;
-                        case "tempo":
+                        case "instruction":
                             // TODO
+                            break;
+                        case "octave-shift":
+                            OctaveShift = new OctaveShift(r, ticksPosInScore);
+                            break;
+                        case "wedge":
+                            // TODO
+                            break;
+                        case "text-block":
+                            TextBlock = new TextBlock(r, ticksPosInScore);
                             break;
                     }
                 }
-                M.ReadToXmlElementTag(r, "time", "repeat", "ending", "segno", "jump", "fine", "key", "tempo", "directions-global");
+                M.ReadToXmlElementTag(r, "clef", "cresc", "dim", "dynamics", "expression", "instruction", "octave-shift", "wedge", "text-block", "directions");
             }
 
             if(Repeats != null)
@@ -118,7 +117,7 @@ namespace MNX.Common
                 SetDefaultRepeatPositions(Repeats, currentTimeSignature);
             }
 
-            M.Assert(r.Name == "directions-global"); // end of "directions-global"
+            M.Assert(r.Name == "directions"); // end of "directions"
         }
 
         private void SetDefaultRepeatPositions(List<Repeat> repeats, TimeSignature currentTimeSignature)
@@ -185,7 +184,7 @@ namespace MNX.Common
         // returns either a RepeatBegin or RepeatEnd.
         private Repeat GetRepeat(XmlReader r)
         {
-            M.Assert(r.Name == "repeat");
+            M.Assert(r.Name == "cresc");
 
             bool? IsBegin = null;
             string Times = null;

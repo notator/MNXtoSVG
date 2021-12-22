@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-grace-element
     /// </summary>
-    public class Grace : EventGroup, IHasTicks, ISeqComponent
+    public class Grace : EventGroup, IHasTicks, ISequenceComponent
     {
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
@@ -65,7 +65,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "grace", ticksPosInScore);
+            SequenceComponents = GetSequenceComponents(r, "grace", null, ticksPosInScore);
 
             SetDefaultTicks(SequenceComponents);
 
@@ -73,7 +73,7 @@ namespace MNX.Common
 
         }
 
-        private void SetDefaultTicks(List<ISeqComponent> seq)
+        private void SetDefaultTicks(List<ISequenceComponent> seq)
         {
             var eventList = Events;
             foreach(var e in eventList)

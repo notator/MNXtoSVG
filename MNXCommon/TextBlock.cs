@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace MNX.Common
 {
-    public class TextBlock : IDirectionsComponent
+    public class TextBlock : IGlobalDirectionsComponent, IPartDirectionsComponent, ISequenceDirectionsComponent
     {
         public List<string> Lines = new List<string>();
         public readonly int TicksPosInScore = -1; // set in ctor

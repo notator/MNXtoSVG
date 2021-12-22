@@ -6,7 +6,7 @@ using Moritz.Spec;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-octave-shift-element
-    public class OctaveShift : Span, IDirectionsComponent, IUniqueDef
+    public class OctaveShift : Span, ISequenceDirectionsComponent, IUniqueDef
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }
@@ -38,7 +38,7 @@ namespace MNX.Common
         }
 
         public OctaveShiftType Type { get { return (OctaveShiftType)_octaveShiftType; } }
-        private OctaveShiftType? _octaveShiftType = null;
+        private readonly OctaveShiftType? _octaveShiftType = null;
         private readonly int TicksPosInScore;
         public int EndTicksPosInScore { get; internal set; }
 

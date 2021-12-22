@@ -109,7 +109,7 @@ namespace MNX.Common
                 {
                     foreach(var components in sequence.SequenceComponents)
                     {
-                        if(components is Directions directions && directions.OctaveShift != null)
+                        if(components is SequenceDirections directions && directions.OctaveShift != null)
                         {
                             var octaveShift = directions.OctaveShift;
                             var item1 = octaveShift.EndOctaveShiftPos.Item1;

@@ -7,7 +7,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-event-element
     /// </summary>
-    public class Forward : IHasTicks, ISeqComponent
+    public class Forward : IHasTicks, ISequenceComponent
     {
         #region MNX file attributes
         // Compulsory Attribute         

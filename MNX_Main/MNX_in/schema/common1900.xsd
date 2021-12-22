@@ -92,8 +92,8 @@
                 the mnx/global/measure-global element
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:element name="directions-global" type="globalMeasureDirectionsType" minOccurs="0"/>
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:element name="directions-global" type="globalMeasureDirectionsType"/>
         </xs:sequence>
         <xs:attribute name="barline" type="barlineType" use="optional"/>
         <xs:attribute name="index" type="xs:integer" use="optional"/>
@@ -239,8 +239,8 @@
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="bpm" type="xs:float" use="required" />
-        <xs:attribute name="value" type="noteValueType" use="optional" />
-        <xs:attribute name="location" use="required">
+        <xs:attribute name="value" type="noteValueType" use="required" />
+        <xs:attribute name="location" use="optional" default="0">
             <xs:simpleType>
                 <xs:restriction base="simpleLocationType" />
             </xs:simpleType>

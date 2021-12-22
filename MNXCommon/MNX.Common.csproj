@@ -42,11 +42,12 @@
   <ItemGroup>
     <Compile Include="Accidental.cs" />
     <Compile Include="Clef.cs" />
+    <Compile Include="SequenceDirections.cs" />
     <Compile Include="GlobalDirections.cs" />
     <Compile Include="Forward.cs" />
     <Compile Include="EventGroup.cs" />
-    <Compile Include="DirectionsComponent.cs" />
-    <Compile Include="Directions.cs" />
+    <Compile Include="SequenceDirectionsComponent.cs" />
+    <Compile Include="PartDirections.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Grace.cs" />

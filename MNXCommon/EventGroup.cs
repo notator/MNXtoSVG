@@ -57,7 +57,7 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public List<ISeqComponent> SequenceComponents = null;
+        public List<ISequenceComponent> SequenceComponents = null;
 
         public List<IHasTicks> EventsAndEventGroups
         {
@@ -134,15 +134,15 @@ namespace MNX.Common
         /// "directions occurring within sequence content must omit this ("location") attribute as their
         /// location is determined during the procedure of sequencing the content."
         /// </summary>
-        protected static List<ISeqComponent> GetSequenceComponents(XmlReader r, string caller, int seqTicksPosInScore)
+        protected static List<ISequenceComponent> GetSequenceComponents(XmlReader r, string caller, TimeSignature currentTimeSig, int seqTicksPosInScore)
         {
-            List<ISeqComponent> content = new List<ISeqComponent>();
+            List<ISequenceComponent> content = new List<ISequenceComponent>();
 
             int ticksPosInScore = seqTicksPosInScore;
 
             // Read to the first element inside the caller element.
             // These are all the elements that can occur inside sequence-like elements. (Some of them nest.)
-            M.ReadToXmlElementTag(r, "directions", "event", "grace", "tuplet", "forward");
+            M.ReadToXmlElementTag(r, "directions", "beams", "event", "forward", "grace", "tuplet");
 
             while(r.Name == "directions" || r.Name == "event" || r.Name == "grace" ||
                 r.Name == "tuplet" || r.Name == "forward" || r.Name == "sequence")
@@ -156,11 +156,7 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "directions":
-                            /// The spec says:
-                            /// "directions occurring within sequence content (i.e.when isGlobal is false) must omit
-                            /// this ("location") attribute as their location is determined during the procedure of
-                            /// sequencing the content."
-                            content.Add(new Directions(r, -1));
+                            content.Add(new SequenceDirections(r, currentTimeSig, ticksPosInScore));
                             break;
                         case "event":
                             Event e = new Event(r, ticksPosInScore);
@@ -185,7 +181,7 @@ namespace MNX.Common
                     }
                 }
 
-                M.ReadToXmlElementTag(r, "directions", "event", "grace", "tuplet", "forward", "sequence");
+                M.ReadToXmlElementTag(r, "directions", "beams", "event", "forward", "grace", "tuplet", "sequence");
             }
 
             M.Assert(r.Name == caller); // end of sequence content

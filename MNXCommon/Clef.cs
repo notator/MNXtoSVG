@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class Clef : DirectionsComponent, IUniqueDef
+    public class Clef : SequenceDirectionsComponent, IUniqueDef
     {
         // Instruction attributes
         public override PositionInMeasure Location { get; }

@@ -2,30 +2,44 @@
 namespace MNX.Common
 {
     /// <summary>
-    /// Directions.
+    /// GlobalDirections.
     /// </summary>
     public interface IGlobalMeasureComponent
     {
     }
 
     /// <summary>
-    /// TimeSignature, Clef, KeySignature, OctaveShift.
-    /// </summary>
-    public interface IDirectionsComponent
-    {
-    }
-
-    /// <summary>
-    /// Directions, Sequence.
+    /// PartDirections, Sequence.
     /// </summary>
     public interface IPartMeasureComponent
     {
     }
 
     /// <summary>
-    /// MNX Objects: Directions, Tuplet, Grace, Event, Forward  
+    /// Beams, SequenceDirections, Event, Forward, Grace, Tuplet
     /// </summary>
-    public interface ISeqComponent
+    public interface ISequenceComponent
+    {
+    }
+
+    /// <summary>
+    /// Ending, Fine, Jump, Key, Repeat, Segno, Tempo, Time
+    /// </summary>
+    public interface IGlobalDirectionsComponent
+    {
+    }
+
+    /// <summary>
+    /// Clef, Key
+    /// </summary>
+    public interface IPartDirectionsComponent
+    {
+    }
+
+    /// <summary>
+    /// Clef, Cresc, Dim, Dynamics, Expression, Instruction, OctaveShift, Wedge
+    /// </summary>
+    public interface ISequenceDirectionsComponent
     {
     }
 

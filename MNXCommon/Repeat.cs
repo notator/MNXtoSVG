@@ -6,7 +6,7 @@ using Moritz.Spec;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-time-element
-    public abstract class Repeat : IUniqueDef, IDirectionsComponent
+    public abstract class Repeat : IUniqueDef, IGlobalDirectionsComponent
     {
         // when null, this defaults to 0 for RepeatBegin, and measure duration (= current time signature) for RepeatEnd.
         public PositionInMeasure PositionInMeasure { get; protected set; } = null;

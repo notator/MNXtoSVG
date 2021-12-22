@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-tuplet-element
     /// </summary>
-    public class TupletDef : EventGroup, IHasTicks, ISeqComponent
+    public class TupletDef : EventGroup, IHasTicks, ISequenceComponent
     {
         /// Compulsory attributes:
         #region MNX file attributes
@@ -93,7 +93,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "tuplet", ticksPosInScore);
+            SequenceComponents = GetSequenceComponents(r, "tuplet", null, ticksPosInScore);
 
             if(C.CurrentTupletLevel == 1)
             {
@@ -113,10 +113,10 @@ namespace MNX.Common
         private void SetTicksInContent(int outerTicks, int localTupletLevel)
         {
             List<int> ticksInside = new List<int>();
-            List<ISeqComponent> components = new List<ISeqComponent>();
+            List<ISequenceComponent> components = new List<ISequenceComponent>();
             int stealGraceTicks = 0;
 
-            void GetObject(ISeqComponent component)
+            void GetObject(ISequenceComponent component)
             {
                 if(component is Event e)
                 {
@@ -165,7 +165,7 @@ namespace MNX.Common
 
             for(var i = 0; i < components.Count; i++)
             {
-                ISeqComponent component = components[i];
+                ISequenceComponent component = components[i];
                 int ticks = innerTicks[i];
                 if(component is TupletDef tuplet)
                 {

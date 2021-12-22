@@ -25,7 +25,7 @@ namespace MNX.Common
 
         public int MsPositionInScore { get; private set; }
 
-        public Sequence(XmlReader r, int measureindex, int ticksPosInScore, int sequenceIndex)
+        public Sequence(XmlReader r, TimeSignature currentTimeSig, int measureindex, int ticksPosInScore, int sequenceIndex)
         {
             M.Assert(r.Name == "sequence");
 
@@ -55,7 +55,7 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "sequence", ticksPosInScore);
+            SequenceComponents = GetSequenceComponents(r, "sequence", currentTimeSig, ticksPosInScore);
 
             M.Assert(r.Name == "sequence");
         }
@@ -94,7 +94,7 @@ namespace MNX.Common
 
             foreach(var seqObj in SequenceComponents)
             {
-                if(seqObj is Directions d)
+                if(seqObj is PartDirections d)
                 {
                     if(d.Clef != null)
                     {
@@ -103,10 +103,6 @@ namespace MNX.Common
                     if(d.KeySignature != null)
                     {
                         rval.Add(d.KeySignature as IUniqueDef);
-                    }
-                    if(d.OctaveShift != null)
-                    {
-                        octaveShift = d.OctaveShift; // set as Event or Grace attribute below
                     }
                 }
                 else if(seqObj is Event evt)
@@ -126,13 +122,6 @@ namespace MNX.Common
                             graceEvt.OctaveShift = octaveShift;
                             octaveShift = null;
                             rval.Add(graceEvt as IUniqueDef);
-                        }
-                        if(graceCompt is Directions graceDir)
-                        {
-                            if(graceDir.OctaveShift != null)
-                            {
-                                octaveShift = graceDir.OctaveShift;
-                            }
                         }
                     }
                 }
@@ -177,13 +166,6 @@ namespace MNX.Common
                 {
                     // recursive call
                     octaveShift = GetTupletComponents(tplet, iuds, octaveShift);
-                }
-                else if(component is Directions tupletDir)
-                {
-                    if(tupletDir.OctaveShift != null)
-                    {
-                        octaveShift = tupletDir.OctaveShift;
-                    }
                 }
             }
 

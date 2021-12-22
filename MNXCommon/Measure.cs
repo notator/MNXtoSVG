@@ -42,7 +42,7 @@ namespace MNX.Common
 
         public readonly BarlineType? Barline = null; // default
 
-        public readonly Directions Directions = null;
+        public readonly PartDirections PartDirections = null;
         public readonly List<Sequence> Sequences = new List<Sequence>();
 
         public int TicksDuration
@@ -106,10 +106,10 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "directions-part":
-                            Directions = new Directions(r, ticksPosInScore);
+                            PartDirections = new PartDirections(r, ticksPosInScore);
                             break;
                         case "sequence":
-                            Sequence sequence = new Sequence(r, measureIndex, ticksPosInScore, sequenceIndex++);
+                            Sequence sequence = new Sequence(r, currentTimeSig, measureIndex, ticksPosInScore, sequenceIndex++);
                             Sequences.Add(sequence);
                             break;
                     }

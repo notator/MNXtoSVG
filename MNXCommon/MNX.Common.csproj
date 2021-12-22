@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="Accidental.cs" />
     <Compile Include="Clef.cs" />
+    <Compile Include="Fine.cs" />
+    <Compile Include="Segno.cs" />
     <Compile Include="SequenceDirections.cs" />
     <Compile Include="GlobalDirections.cs" />
     <Compile Include="Forward.cs" />

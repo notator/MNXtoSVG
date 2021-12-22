@@ -17,7 +17,7 @@ namespace MNX.Common
         private readonly int TicksPosInScore;
 
         #region IUniqueDef
-        public string ToString() => $"Clef: TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public override string ToString() => $"Clef: TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         #endregion IUniqueDef
 
         public Clef(XmlReader r, int ticksPosInScore)

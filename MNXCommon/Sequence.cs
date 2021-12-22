@@ -55,9 +55,49 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "sequence", currentTimeSig, ticksPosInScore);
+            M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "directions", "beams", "forward");
 
-            M.Assert(r.Name == "sequence");
+            while(r.Name == "event" || r.Name == "tuplet" || r.Name == "grace" || r.Name == "directions" || 
+                r.Name == "beams" || r.Name == "forward")
+            {
+                if(r.NodeType != XmlNodeType.EndElement)
+                {
+                    switch(r.Name)
+                    {
+                        case "event":
+                            Event e = new Event(r, ticksPosInScore);
+                            ticksPosInScore += e.TicksDuration;
+                            SequenceComponents.Add(e);
+                            break;
+                        case "tuplet":
+                            TupletDef tupletDef = new TupletDef(r, ticksPosInScore);
+                            ticksPosInScore += tupletDef.TicksDuration;
+                            SequenceComponents.Add(tupletDef);
+                            break;
+                        case "grace":
+                            Grace grace = new Grace(r, ticksPosInScore);
+                            ticksPosInScore += grace.TicksDuration;
+                            SequenceComponents.Add(grace);
+                            break;
+                        case "directions":
+                            SequenceComponents.Add(new SequenceDirections(r, currentTimeSig, ticksPosInScore));
+                            break;
+                        case "beams":
+                            // TODO SequenceComponents.Add(new Beams(...));
+                            break;
+                        case "forward":
+                            Forward forward = new Forward(r, ticksPosInScore);
+                            ticksPosInScore += forward.TicksDuration;
+                            SequenceComponents.Add(forward);
+                            break;
+                    }
+                }
+
+                M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "directions", "beams", "forward", "sequence");
+            }
+
+            M.Assert(Events.Count > 0);
+            M.Assert(r.Name == "sequence"); // end of sequence content
         }
 
         /// <summary>

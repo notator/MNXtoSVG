@@ -5,7 +5,7 @@ using System.Xml;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-key-element
-    public class KeySignature : PartDirectionsComponent, IUniqueDef
+    public class KeySignature : PartDirectionsComponent, IGlobalDirectionsComponent, IUniqueDef
     {
         // Instruction attributes
         public override PositionInMeasure Location => new PositionInMeasure("0");

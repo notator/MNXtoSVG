@@ -93,7 +93,42 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "tuplet", null, ticksPosInScore);
+            M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "forward");
+
+            while(r.Name == "event" || r.Name == "tuplet" || r.Name == "grace" || r.Name == "forward")
+            {
+                if(r.NodeType != XmlNodeType.EndElement)
+                {
+                    switch(r.Name)
+                    {
+                        case "event":
+                            Event e = new Event(r, ticksPosInScore);
+                            ticksPosInScore += e.TicksDuration;
+                            SequenceComponents.Add(e);
+                            break;
+                        case "tuplet":
+                            TupletDef tupletDef = new TupletDef(r, ticksPosInScore);
+                            ticksPosInScore += tupletDef.TicksDuration;
+                            SequenceComponents.Add(tupletDef);
+                            break;
+                        case "grace":
+                            Grace grace = new Grace(r, ticksPosInScore);
+                            ticksPosInScore += grace.TicksDuration;
+                            SequenceComponents.Add(grace);
+                            break;
+                        case "forward":
+                            Forward forward = new Forward(r, ticksPosInScore);
+                            ticksPosInScore += forward.TicksDuration;
+                            SequenceComponents.Add(forward);
+                            break;
+                    }
+                }
+
+                M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "forward", "tuplet");
+            }
+
+            M.Assert(Events.Count > 0);
+            M.Assert(r.Name == "tuplet"); // end of (nested) tuplet content
 
             if(C.CurrentTupletLevel == 1)
             {
@@ -101,8 +136,6 @@ namespace MNX.Common
                 this.OuterDuration.Ticks = outerTicks;
                 SetTicksInContent(outerTicks, this.TupletLevel + 1);
             }
-
-            M.Assert(r.Name == "tuplet"); // end of (nested) tuplet
 
             C.CurrentTupletLevel--;
         }

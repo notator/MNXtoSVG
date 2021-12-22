@@ -5,14 +5,13 @@ using Moritz.Spec;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-time-element
-    public class Jump : IGlobalDirectionsComponent, IUniqueDef
+    public class Fine : IGlobalDirectionsComponent, IUniqueDef
     {
         public readonly PositionInMeasure PositionInMeasure;
-        public readonly JumpType JumpType;
         private readonly int TicksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"Type: {JumpType} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
+        public override string ToString() => $"TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -51,9 +50,9 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Jump(XmlReader r, int ticksPosInScore)
+        public Fine(XmlReader r, int ticksPosInScore)
         {
-            M.Assert(r.Name == "jump");
+            M.Assert(r.Name == "fine");
             TicksPosInScore = ticksPosInScore;
             TicksDuration = 0;
 
@@ -68,26 +67,12 @@ namespace MNX.Common
                             PositionInMeasure = new PositionInMeasure(r.Value);
                             break;
                         }
-                    case "type":
-                        switch(r.Value)
-                        {
-                            case "segno":
-                                JumpType = JumpType.segno;
-                                break;
-                            case "dsalfine":
-                                JumpType = JumpType.dsalfine;
-                                break;
-                            default:
-                                JumpType = JumpType.unknown;
-                                break;
-                        }                        
-                        break;
                     default:
-                        M.ThrowError("Unknown jump attribute.");
+                        M.ThrowError("Unknown fine attribute.");
                         break;
                 }
             }
-            // r.Name is now the name of the last jump attribute that has been read.
+            // r.Name is now the name of the last fine attribute that has been read.
         }
     }
 }

@@ -61,18 +61,6 @@ namespace MNX.Common
                 GlobalDirections globalDirections = GlobalMeasures[measureIndex].GlobalDirections;
                 if(globalDirections != null)
                 {
-                    if(globalDirections.KeySignature != null)
-                    {
-                        measureList.Add(globalDirections.KeySignature);
-                    }
-                    if(globalDirections.TimeSignature != null)
-                    {
-                        measureList.Add(globalDirections.TimeSignature);
-                    }
-                    if(globalDirections.OctaveShift != null)
-                    {
-                        measureList.Add(globalDirections.OctaveShift);
-                    }
                     List<Repeat> repeats = globalDirections.Repeats;
                     if(repeats != null)
                     {

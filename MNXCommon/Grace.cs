@@ -65,10 +65,27 @@ namespace MNX.Common
                 }
             }
 
-            SequenceComponents = GetSequenceComponents(r, "grace", null, ticksPosInScore);
+            M.ReadToXmlElementTag(r, "event");
+
+            while(r.Name == "event")
+            {
+                if(r.NodeType != XmlNodeType.EndElement)
+                {
+                    switch(r.Name)
+                    {
+                        case "event":
+                            Event e = new Event(r, ticksPosInScore);
+                            ticksPosInScore += e.TicksDuration;
+                            SequenceComponents.Add(e);
+                            break;
+                    }
+                }
+                M.ReadToXmlElementTag(r, "event", "grace");
+            }
 
             SetDefaultTicks(SequenceComponents);
 
+            M.Assert(Events.Count > 0);
             M.Assert(r.Name == "grace"); // end of grace
 
         }

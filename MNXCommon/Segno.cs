@@ -5,14 +5,14 @@ using Moritz.Spec;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-time-element
-    public class Jump : IGlobalDirectionsComponent, IUniqueDef
+    public class Segno : IGlobalDirectionsComponent, IUniqueDef
     {
         public readonly PositionInMeasure PositionInMeasure;
-        public readonly JumpType JumpType;
+        public readonly string SMuFLGlyphName = "none"; // optional attribute
         private readonly int TicksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"Type: {JumpType} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
+        public override string ToString() => $"SMuFLGlyphName: {SMuFLGlyphName} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -51,9 +51,9 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Jump(XmlReader r, int ticksPosInScore)
+        public Segno(XmlReader r, int ticksPosInScore)
         {
-            M.Assert(r.Name == "jump");
+            M.Assert(r.Name == "segno");
             TicksPosInScore = ticksPosInScore;
             TicksDuration = 0;
 
@@ -68,22 +68,11 @@ namespace MNX.Common
                             PositionInMeasure = new PositionInMeasure(r.Value);
                             break;
                         }
-                    case "type":
-                        switch(r.Value)
-                        {
-                            case "segno":
-                                JumpType = JumpType.segno;
-                                break;
-                            case "dsalfine":
-                                JumpType = JumpType.dsalfine;
-                                break;
-                            default:
-                                JumpType = JumpType.unknown;
-                                break;
-                        }                        
+                    case "glyph":
+                        SMuFLGlyphName = r.Value;                        
                         break;
                     default:
-                        M.ThrowError("Unknown jump attribute.");
+                        M.ThrowError("Unknown segno attribute.");
                         break;
                 }
             }

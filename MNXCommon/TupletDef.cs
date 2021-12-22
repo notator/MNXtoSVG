@@ -124,7 +124,7 @@ namespace MNX.Common
                     }
                 }
 
-                M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "forward", "tuplet");
+                M.ReadToXmlElementTag(r, "event", "grace", "forward", "tuplet");
             }
 
             M.Assert(Events.Count > 0);

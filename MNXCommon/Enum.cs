@@ -138,4 +138,10 @@
         segno,
         dsalfine
     }
+
+    public enum BeamHookDirection
+    {
+        left,
+        right
+    }
 }

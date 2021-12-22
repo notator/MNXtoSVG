@@ -83,7 +83,7 @@ namespace MNX.Common
                             SequenceComponents.Add(new SequenceDirections(r, currentTimeSig, ticksPosInScore));
                             break;
                         case "beams":
-                            // TODO SequenceComponents.Add(new Beams(...));
+                            SequenceComponents.Add(new Beams(r, ticksPosInScore));
                             break;
                         case "forward":
                             Forward forward = new Forward(r, ticksPosInScore);

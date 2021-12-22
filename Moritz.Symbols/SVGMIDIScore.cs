@@ -836,12 +836,15 @@ namespace Moritz.Symbols
                 {
                     foreach(var voiceDef in staffVoiceDefs)
                     {
-                        var iud = voiceDef.UniqueDefs[i];
-                        if(!(iud is Event))
+                        if(i < voiceDef.UniqueDefs.Count)
                         {
-                            if(!unSortedInitialIUDs.Contains(iud))
+                            var iud = voiceDef.UniqueDefs[i];
+                            if(!(iud is Event))
                             {
-                                unSortedInitialIUDs.Add(iud); // cloned later when inserted in the other voiceDef
+                                if(!unSortedInitialIUDs.Contains(iud))
+                                {
+                                    unSortedInitialIUDs.Add(iud); // cloned later when inserted in the other voiceDef
+                                }
                             }
                         }
                     }

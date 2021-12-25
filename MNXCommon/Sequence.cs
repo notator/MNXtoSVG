@@ -71,12 +71,13 @@ namespace MNX.Common
                             break;
                         case "tuplet":
                             TupletDef tupletDef = new TupletDef(r, ticksPosInScore);
-                            ticksPosInScore += tupletDef.TicksDuration;
+                            ticksPosInScore += tupletDef.TicksDuration; // the duration of the contained events
                             SequenceComponents.Add(tupletDef);
                             break;
                         case "grace":
                             Grace grace = new Grace(r, ticksPosInScore);
-                            ticksPosInScore += grace.TicksDuration;
+                            // All ticksPosInScore values are updated for grace notes
+                            // when the whole score has been read (in MNX.AdjustForGraceNotes())
                             SequenceComponents.Add(grace);
                             break;
                         case "directions":
@@ -84,6 +85,7 @@ namespace MNX.Common
                             break;
                         case "beams":
                             SequenceComponents.Add(new Beams(r, ticksPosInScore));
+                            // Contrary to tuplets, beams contain no new events, so dont change ticksPosInScore.
                             break;
                         case "forward":
                             Forward forward = new Forward(r, ticksPosInScore);

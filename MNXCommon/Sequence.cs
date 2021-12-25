@@ -171,6 +171,10 @@ namespace MNX.Common
                 {
                     octaveShift = GetTupletComponents(t, rval, octaveShift);
                 }
+                else if(seqObj is Beams beams)
+                {
+                    // TODO
+                }
                 else
                 {
                     throw new ApplicationException("unhandled SequenceComponent type.");

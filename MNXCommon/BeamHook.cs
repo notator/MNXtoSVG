@@ -7,14 +7,14 @@ namespace MNX.Common
     // https://w3c.github.io/mnx/specification/common/#the-time-element
     public class BeamHook : IUniqueDef
     {
-        public readonly PositionInMeasure PositionInMeasure;
         private readonly int TicksPosInScore;
 
         public readonly string EventID;
         public readonly BeamHookDirection BeamHookDirection;
+        public readonly int Depth;
 
         #region IUniqueDef
-        public override string ToString() => $"EventID={EventID} BeamHookDirection={BeamHookDirection} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
+        public override string ToString() => $"Depth={Depth} EventID={EventID} BeamHookDirection={BeamHookDirection}";
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -53,11 +53,12 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public BeamHook(XmlReader r, int ticksPosInScore)
+        public BeamHook(XmlReader r, int ticksPosInScore, int topLevelDepth)
         {
             M.Assert(r.Name == "beam-hook");
             TicksPosInScore = ticksPosInScore;
             TicksDuration = 0;
+            Depth = r.Depth - topLevelDepth;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -88,7 +89,9 @@ namespace MNX.Common
                         break;
                 }
             }
-            // r.Name is now the name of the last beam-hook attribute that has been read.
+
+            r.MoveToElement();
+            M.Assert(r.Name == "beam-hook");
         }
     }
 }

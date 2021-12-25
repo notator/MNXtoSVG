@@ -1,6 +1,7 @@
 ﻿using MNX.Globals;
 
 using System.Collections.Generic;
+using System.Text;
 using System.Xml;
 
 namespace MNX.Common
@@ -8,21 +9,29 @@ namespace MNX.Common
     public class Beam
     {
         public List<string> EventIDs = new List<string>();
-        public List<Beam> Beams = new List<Beam>();
-        public List<BeamHook> BeamHooks = new List<BeamHook>();
+        public int Depth;
+
+        public override string ToString()
+        {
+            StringBuilder idsSB = new StringBuilder();
+            foreach(string id in EventIDs)
+            {
+                idsSB.Append(id);
+                idsSB.Append(" ");
+            }
+            idsSB.Length--;
+
+            return $"Depth={Depth} EventIDs={idsSB}";
+        }
+
 
         public readonly int TicksPosInScore;
 
-        #region Runtime property
-        public readonly int BeamLevel;
-        #endregion Runtime property
-
-        public Beam(XmlReader r, int ticksPosInScore)
+        public Beam(XmlReader r, int ticksPosInScore, int topLevelDepth)
         {
-            BeamLevel = C.CurrentBeamLevel; // top level beam has beam level 0
             M.Assert(r.Name == "beam");
 
-            C.CurrentBeamLevel++;
+            Depth = r.Depth - topLevelDepth;
 
             TicksPosInScore = ticksPosInScore;
 
@@ -39,36 +48,8 @@ namespace MNX.Common
                 }
             }
 
-            // extend the contained elements as necessary..
-            M.ReadToXmlElementTag(r, "beam", "beam-hook");
-
-            while(r.Name == "beam" || r.Name == "beam-hook")
-            {
-                if(r.NodeType != XmlNodeType.EndElement)
-                {
-                    switch(r.Name)
-                    {
-                        case "beam":
-                            Beams.Add(new Beam(r, ticksPosInScore));
-                            break;
-                        case "beam-hook":
-                            BeamHooks.Add(new BeamHook(r, ticksPosInScore));
-                            break;
-                    }
-                }
-                M.ReadToXmlElementTag(r, "beam", "beam-hook");
-            }
-
-            M.Assert(r.Name == "beam"); // end of (nested) beam content
-
-            //if(C.CurrentBeamLevel == 1)
-            //{
-            //    int outerTicks = this.OuterDuration.GetDefaultTicks();
-            //    this.OuterDuration.Ticks = outerTicks;
-            //    SetTicksInContent(outerTicks, this.TupletLevel + 1);
-            //}
-
-            C.CurrentBeamLevel--;
+            r.MoveToElement();
+            M.Assert(r.Name == "beam");
         }
     }
 }

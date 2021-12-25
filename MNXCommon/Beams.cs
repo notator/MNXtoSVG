@@ -11,7 +11,8 @@ namespace MNX.Common
     /// </summary>
     public class Beams : ISequenceComponent
     {
-        public readonly List<Beam> ContainedBeams = new List<Beam>(); 
+        public readonly List<Beam> ContainedBeams = new List<Beam>();
+        public readonly List<BeamHook> ContainedBeamHooks = new List<BeamHook>();
 
         public Beams(XmlReader r, int ticksPosInScore)
         {
@@ -19,18 +20,27 @@ namespace MNX.Common
 
             M.ReadToXmlElementTag(r, "beam");
 
-            while(r.Name == "beam")
+            int topLevelDepth = r.Depth;
+
+            while(r.Name == "beam" || r.Name == "beam-hook")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
                     {
                         case "beam":
-                            ContainedBeams.Add(new Beam(r, ticksPosInScore));
-                            break;
-                    }
+                            {
+                                ContainedBeams.Add(new Beam(r, ticksPosInScore, topLevelDepth));
+                                break;
+                            }
+                        case "beam-hook":
+                            {
+                                ContainedBeamHooks.Add(new BeamHook(r, ticksPosInScore, topLevelDepth));
+                                break;
+                            }
+                    }                    
                 }
-                M.ReadToXmlElementTag(r, "beam", "beams");
+                M.ReadToXmlElementTag(r, "beam", "beam-hook", "beams");
             }
             M.Assert(r.Name == "beams"); // end of beams
         }

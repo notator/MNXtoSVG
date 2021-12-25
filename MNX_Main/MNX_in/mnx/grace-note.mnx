@@ -14,7 +14,7 @@
                 <clef sign="G" line="2"/>
             </directions-part>
             <sequence>
-                <grace>
+                <grace type="steal-following">
                     <event value="/8">
                         <note pitch="B4"/>
                     </event>

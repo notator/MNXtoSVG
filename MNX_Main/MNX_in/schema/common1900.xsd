@@ -426,6 +426,7 @@
                 <xs:element name="event" type="eventType"/>
             </xs:choice>
         </xs:sequence>
+        <xs:attribute name="type" type="graceStealType" />
     </xs:complexType>
 
     <xs:complexType name="beamsType">
@@ -984,6 +985,17 @@
         </xs:annotation>
         <xs:restriction base="xs:token">
             <xs:pattern value="yes|no"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:simpleType name="graceStealType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="steal-previous|steal-following|make-time"/>
         </xs:restriction>
     </xs:simpleType>
 

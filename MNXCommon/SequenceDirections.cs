@@ -19,16 +19,18 @@ namespace MNX.Common
         //public readonly Wedge Wedge;
         public readonly TextBlock TextBlock;
 
+        public readonly List<ISequenceDirectionsComponent> Components = new List<ISequenceDirectionsComponent>();
+
         /// A measure can contain any number of RepeatEnd and RepeatBegin symbols.
         /// They are kept here in order of their PositionInMeasure.Ticks.
         /// If two Repeats have the same ticksPosition, they are kept in order RepeatEnd, RepeatBegin
         public readonly List<Repeat> Repeats;
 
-        public readonly int TicksPosInScore = -1; // set in ctor
-        public const int TicksDuration = 0; // all directions have 0 ticks.
+        public int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"SequenceDirections: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
+        public override string ToString() => $"SequenceDirections: TicksPosInScore={TicksPosInScore}";
 
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
@@ -69,7 +71,7 @@ namespace MNX.Common
         {
             M.Assert(r.Name == "directions");
 
-            TicksPosInScore = ticksPosInScore;
+            _ticksPosInScore = ticksPosInScore;
 
             M.ReadToXmlElementTag(r, "clef", "cresc", "dim", "dynamics", "expression", "instruction", "octave-shift", "wedge", "text-block");
 
@@ -82,6 +84,7 @@ namespace MNX.Common
                     {
                         case "clef":
                             Clef = new Clef(r, ticksPosInScore);
+                            Components.Add(Clef);
                             break;
                         case "cresc":
                             // TODO
@@ -100,12 +103,14 @@ namespace MNX.Common
                             break;
                         case "octave-shift":
                             OctaveShift = new OctaveShift(r, ticksPosInScore);
+                            Components.Add(OctaveShift);
                             break;
                         case "wedge":
                             // TODO
                             break;
                         case "text-block":
                             TextBlock = new TextBlock(r, ticksPosInScore);
+                            Components.Add(TextBlock);
                             break;
                     }
                 }
@@ -119,6 +124,8 @@ namespace MNX.Common
 
             M.Assert(r.Name == "directions"); // end of "directions"
         }
+
+        public SequenceDirections() { } // Used in Sequence, contains an empty Components list
 
         private void SetDefaultRepeatPositions(List<Repeat> repeats, TimeSignature currentTimeSignature)
         {
@@ -182,7 +189,7 @@ namespace MNX.Common
         }
 
         // returns either a RepeatBegin or RepeatEnd.
-        private Repeat GetRepeat(XmlReader r)
+        private Repeat GetRepeat(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "cresc");
 
@@ -237,12 +244,12 @@ namespace MNX.Common
             {
                 case true:
                 {
-                    rval = new RepeatBegin(PositionInMeasure);
+                    rval = new RepeatBegin(PositionInMeasure, ticksPosInScore);
                     break;
                 }
                 case false:
                 {
-                    rval = new RepeatEnd(PositionInMeasure, Times);
+                    rval = new RepeatEnd(PositionInMeasure, Times, ticksPosInScore);
                     break;
                 }
                 default: // null

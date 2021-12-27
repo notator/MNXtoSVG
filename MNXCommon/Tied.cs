@@ -13,6 +13,9 @@ namespace MNX.Common
         // Span attribute
         public override string TargetID { get; }
         public override PositionInMeasure End { get; }
+        public override int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
+
         // New attribute (like Slur) -- ji 04.11.2020
         public readonly Orientation? Side = null;
 
@@ -20,9 +23,10 @@ namespace MNX.Common
         public override string ToString() => $"Tied: Target={TargetID} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         #endregion IUniqueDef
 
-        public Tied(XmlReader r)
-        {            
+        public Tied(XmlReader r, int ticksPosInScore)
+        {
             M.Assert(r.Name == "tied");
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -55,7 +59,7 @@ namespace MNX.Common
                             case "down":
                                 Side = Orientation.down;
                                 break;
-                        }                        
+                        }
                         break;
                 }
             }

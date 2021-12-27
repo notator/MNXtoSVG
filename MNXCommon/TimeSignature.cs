@@ -9,7 +9,8 @@ namespace MNX.Common
     {
         public readonly string Signature;
         public readonly string Measure;
-        private readonly int TicksPosInScore;
+        public int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
         public override string ToString() => $"TimeSignature: {Signature} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
@@ -54,7 +55,7 @@ namespace MNX.Common
         public TimeSignature(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "time");
-            TicksPosInScore = ticksPosInScore;
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

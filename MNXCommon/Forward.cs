@@ -83,7 +83,6 @@ namespace MNX.Common
 
         public Forward(XmlReader r, int ticksPosInScore)
         {
-            TupletLevel = C.CurrentTupletLevel;
             TicksPosInScore = ticksPosInScore;
 
             M.Assert(r.Name == "forward");

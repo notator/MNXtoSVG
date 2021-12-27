@@ -194,7 +194,7 @@ namespace MNX.Common
                             {
                                 Notes = new List<Note>();
                             }
-                            Notes.Add(new Note(r));
+                            Notes.Add(new Note(r, ticksPosInScore));
                             break;
                         case "rest":
                             if(Notes == null && Rest == null)
@@ -207,7 +207,7 @@ namespace MNX.Common
                             {
                                 SlurDefs = new List<SlurDef>();
                             }
-                            SlurDefs.Add(new SlurDef(r));
+                            SlurDefs.Add(new SlurDef(r, ticksPosInScore));
                             break;
                     }
                 }

@@ -9,7 +9,8 @@ namespace MNX.Common
     {
         public readonly PositionInMeasure PositionInMeasure;
         public readonly JumpType JumpType;
-        private readonly int TicksPosInScore;
+        public int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
         public override string ToString() => $"Type: {JumpType} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
@@ -45,8 +46,6 @@ namespace MNX.Common
             }
         }
 
-        public int TicksDuration { get; }
-
         private int _msPositionReFirstIUD = 0;
 
         #endregion IUniqueDef
@@ -54,8 +53,7 @@ namespace MNX.Common
         public Jump(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "jump");
-            TicksPosInScore = ticksPosInScore;
-            TicksDuration = 0;
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

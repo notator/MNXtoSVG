@@ -16,13 +16,13 @@ namespace Moritz.Spec
     ///     CautionaryChordDef
     ///     ClefDef
     /// and the MNX objects (27.04.2020):
-    ///   ISeqComponents:
+    ///   SequenceComponents:
     ///     Tuplet,
     ///     Beamed,
     ///     Grace,
     ///     Event,
     ///     Forward
-    ///   DirectionsComponents:
+    ///   PartDirectionsComponents:
     ///     Clef,
     ///     KeySignature
     ///</summary>

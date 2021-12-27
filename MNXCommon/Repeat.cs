@@ -47,8 +47,12 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        protected Repeat()
+        public int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
+
+        protected Repeat(int ticksPosInScore)
         {
+            _ticksPosInScore = ticksPosInScore;
         }
 
         internal abstract void SetDefaultPositionInMeasure(TimeSignature currentTimeSignature);
@@ -56,7 +60,8 @@ namespace MNX.Common
 
     public class RepeatBegin : Repeat
     {
-        public RepeatBegin(PositionInMeasure positionInMeasure)
+        public RepeatBegin(PositionInMeasure positionInMeasure, int ticksPosInScore)
+            : base(ticksPosInScore)
         {
             PositionInMeasure = positionInMeasure; // can be null
         }
@@ -75,7 +80,8 @@ namespace MNX.Common
 
     public class RepeatEnd : Repeat
     {
-        public RepeatEnd(PositionInMeasure positionInMeasure, string times)
+        public RepeatEnd(PositionInMeasure positionInMeasure, string times, int ticksPosInScore)
+             : base(ticksPosInScore)
         {
             PositionInMeasure = positionInMeasure; // can be null
             Times = times;
@@ -105,6 +111,7 @@ namespace MNX.Common
     public class RepeatEndBegin : Repeat
     {
         public RepeatEndBegin(RepeatEnd repeatEnd, RepeatBegin repeatBegin)
+           : base(repeatBegin.TicksPosInScore)
         {
             M.Assert(repeatEnd.PositionInMeasure == repeatBegin.PositionInMeasure);
 

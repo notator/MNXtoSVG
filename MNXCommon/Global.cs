@@ -41,7 +41,7 @@ namespace MNX.Common
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     GlobalMeasure globalMeasure = new GlobalMeasure(r, measureIndex++, currentTimeSig, currentTicksPosInScore);
-                    currentTimeSig = (globalMeasure.GlobalDirections != null && globalMeasure.GlobalDirections.TimeSignature != null) ? globalMeasure.GlobalDirections.TimeSignature : currentTimeSig;
+                    currentTimeSig = globalMeasure.GlobalDirections.CurrentTimeSignature;
                     currentTicksPosInScore += currentTimeSig.TicksDuration;
                     GlobalMeasures.Add(globalMeasure);
                 }
@@ -52,27 +52,37 @@ namespace MNX.Common
             M.Assert(GlobalMeasures.Count > 0);
         }
 
-        public List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
-        {
-            var rval = new List<List<IUniqueDef>>();
-            for(var measureIndex = 0; measureIndex < GlobalMeasures.Count; measureIndex++)
-            {
-                List<IUniqueDef> measureList = new List<IUniqueDef>();
-                GlobalDirections globalDirections = GlobalMeasures[measureIndex].GlobalDirections;
-                if(globalDirections != null)
-                {
-                    List<Repeat> repeats = globalDirections.Repeats;
-                    if(repeats != null)
-                    {
-                        foreach(var repeat in repeats)
-                        {
-                            measureList.Add(repeat);
-                        }
-                    }
-                }
-                rval.Add(measureList);
-            }
-            return rval;
-        }
+        //public List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
+        //{
+        //    var rval = new List<List<IUniqueDef>>();
+        //    for(var measureIndex = 0; measureIndex < GlobalMeasures.Count; measureIndex++)
+        //    {
+        //        List<IUniqueDef> measureList = new List<IUniqueDef>();
+        //        GlobalDirections globalDirections = GlobalMeasures[measureIndex].GlobalDirections;
+        //        if(globalDirections != null)
+        //        {
+        //            KeySignature keySignature = globalDirections.KeySignature;
+        //            if(keySignature != null)
+        //            {
+        //                measureList.Add(keySignature);
+        //            }
+        //            TimeSignature timeSignature = globalDirections.TimeSignature;
+        //            if(timeSignature != null)
+        //            {
+        //                measureList.Add(timeSignature);
+        //            }
+        //            List<Repeat> repeats = globalDirections.Repeats;
+        //            if(repeats != null)
+        //            {
+        //                foreach(var repeat in repeats)
+        //                {
+        //                    measureList.Add(repeat);
+        //                }
+        //            }
+        //        }
+        //        rval.Add(measureList);
+        //    }
+        //    return rval;
+        //}
     }
 }

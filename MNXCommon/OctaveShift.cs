@@ -23,7 +23,7 @@ namespace MNX.Common
         {
             get
             {
-                Tuple<int?, int> rval = null;
+                Tuple<int?, int> rval;
                 
                 if(End.MeasureNumber == null)
                 {
@@ -39,7 +39,8 @@ namespace MNX.Common
 
         public OctaveShiftType Type { get { return (OctaveShiftType)_octaveShiftType; } }
         private readonly OctaveShiftType? _octaveShiftType = null;
-        private readonly int TicksPosInScore;
+        public override int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
         public int EndTicksPosInScore { get; internal set; }
 
         #region IUniqueDef
@@ -50,7 +51,7 @@ namespace MNX.Common
             : base()
         {            
             M.Assert(r.Name == "octave-shift");
-            TicksPosInScore = ticksPosInScore;
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -73,7 +74,7 @@ namespace MNX.Common
                         Location = new PositionInMeasure(r.Value);
                         break;
                     case "staff-index":
-                        int staffIndex = 0;
+                        int staffIndex;
                         int.TryParse(r.Value, out staffIndex);
                         StaffIndex = staffIndex;
                         break;

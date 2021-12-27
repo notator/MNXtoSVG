@@ -21,7 +21,8 @@ namespace MNX.Common
         public override Orientation? Orient { get { return null; } }
         // other attributes
         public readonly int Fifths = 0; // default
-        private readonly int TicksPosInScore;
+        public override int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
         public override string ToString() => $"KeySignature: ticksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
@@ -30,7 +31,7 @@ namespace MNX.Common
         public KeySignature(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "key");
-            TicksPosInScore = ticksPosInScore;
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

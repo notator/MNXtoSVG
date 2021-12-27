@@ -14,6 +14,8 @@ namespace MNX.Common
         public readonly string VoiceID = null; // default
         public readonly int Index = -1; // 0-based, always set by ctor.
 
+        public readonly SequenceDirections Directions = new SequenceDirections(); // contains an empty Components list.
+
         public override string ToString() => $"Sequence: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         /// <summary>
@@ -30,7 +32,7 @@ namespace MNX.Common
             M.Assert(r.Name == "sequence");
 
             Index = sequenceIndex;
-            TicksPosInScore = ticksPosInScore;
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -67,30 +69,30 @@ namespace MNX.Common
                         case "event":
                             Event e = new Event(r, ticksPosInScore);
                             ticksPosInScore += e.TicksDuration;
-                            SequenceComponents.Add(e);
+                            Components.Add(e);
                             break;
                         case "tuplet":
                             TupletDef tupletDef = new TupletDef(r, ticksPosInScore);
                             ticksPosInScore += tupletDef.TicksDuration; // the duration of the contained events
-                            SequenceComponents.Add(tupletDef);
+                            Components.Add(tupletDef);
                             break;
                         case "grace":
                             Grace grace = new Grace(r, ticksPosInScore);
                             // All ticksPosInScore values are updated for grace notes
                             // when the whole score has been read (in MNX.AdjustForGraceNotes())
-                            SequenceComponents.Add(grace);
+                            Components.Add(grace);
                             break;
                         case "directions":
-                            SequenceComponents.Add(new SequenceDirections(r, currentTimeSig, ticksPosInScore));
+                            Directions = new SequenceDirections(r, currentTimeSig, ticksPosInScore);
                             break;
                         case "beams":
-                            SequenceComponents.Add(new Beams(r, ticksPosInScore));
+                            Components.Add(new Beams(r, ticksPosInScore));
                             // Contrary to tuplets, beams contain no new events, so dont change ticksPosInScore.
                             break;
                         case "forward":
                             Forward forward = new Forward(r, ticksPosInScore);
                             ticksPosInScore += forward.TicksDuration;
-                            SequenceComponents.Add(forward);
+                            Components.Add(forward);
                             break;
                     }
                 }
@@ -109,7 +111,7 @@ namespace MNX.Common
         internal int TickPositionInSeq(IHasTicks ticksObject)
         {
             int rval = 0;
-            foreach(var seqObj in SequenceComponents)
+            foreach(var seqObj in Components)
             {
                 if(seqObj is IHasTicks tObj)
                 {
@@ -124,65 +126,90 @@ namespace MNX.Common
             return rval;
         }
 
-        public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(int seqMsPositionInScore, double millisecondsPerTick)
-        {
-            List<Event> events = this.Events;
-            MsPositionInScore = seqMsPositionInScore;
+        //public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(int seqMsPositionInScore, double millisecondsPerTick)
+        //{
+        //    List<Event> events = this.Events;
+        //    MsPositionInScore = seqMsPositionInScore;
 
-            SetMsDurations(seqMsPositionInScore, events, millisecondsPerTick);
+        //    SetMsDurations(seqMsPositionInScore, events, millisecondsPerTick);
 
-            var rval = new List<IUniqueDef>();
-            OctaveShift octaveShift = null;
+        //    var rval = new List<IUniqueDef>();
+        //    OctaveShift octaveShift = null;
 
-            foreach(var seqObj in SequenceComponents)
-            {
-                if(seqObj is PartDirections d)
-                {
-                    if(d.Clef != null)
-                    {
-                        rval.Add(d.Clef as IUniqueDef);
-                    }
-                    if(d.KeySignature != null)
-                    {
-                        rval.Add(d.KeySignature as IUniqueDef);
-                    }
-                }
-                else if(seqObj is Event evt)
-                {
-                    evt.OctaveShift = octaveShift;
-                    octaveShift = null;
-                    rval.Add(evt as IUniqueDef);
-                }
-                else if(seqObj is Grace g)
-                {
-                    var graceComponents = g.SequenceComponents;
-                    foreach(var graceCompt in graceComponents)
-                    {
-                        // Assuming that Grace groups can only contain Events and Directions...
-                        if(graceCompt is Event graceEvt)
-                        {
-                            graceEvt.OctaveShift = octaveShift;
-                            octaveShift = null;
-                            rval.Add(graceEvt as IUniqueDef);
-                        }
-                    }
-                }
-                else if(seqObj is TupletDef t)
-                {
-                    octaveShift = GetTupletComponents(t, rval, octaveShift);
-                }
-                else if(seqObj is Beams beams)
-                {
-                    // TODO
-                }
-                else
-                {
-                    throw new ApplicationException("unhandled SequenceComponent type.");
-                    //rval.Add(seqObj as IUniqueDef);
-                }
-            }
-            return rval;
-        }
+        //    // SequenceComponents includes the SequenceDirectionComponents (see the Sequence constructor above)
+        //    foreach(var seqObj in Components)
+        //    {
+        //        if(seqObj is SequenceDirections d)
+        //        {
+        //            if(d.Clef != null)
+        //            {
+        //                rval.Add(d.Clef as IUniqueDef); // mid staff clef change
+        //            }
+        //            //if(d.Cresc != null)
+        //            //{
+        //            //    rval.Add(d.Cresc as IUniqueDef);
+        //            //}
+        //            //if(d.Dim != null)
+        //            //{
+        //            //    rval.Add(d.Cim as IUniqueDef);
+        //            //}
+        //            //if(d.Dynamic != null)
+        //            //{
+        //            //    rval.Add(d.Dynamic as IUniqueDef);
+        //            //}
+        //            //if(d.Expression != null)
+        //            //{
+        //            //    rval.Add(d.Expression as IUniqueDef);
+        //            //}
+        //            //if(d.Instruction != null)
+        //            //{
+        //            //    rval.Add(d.Instruction as IUniqueDef);
+        //            //}
+        //            if(d.OctaveShift != null)
+        //            {
+        //                rval.Add(d.OctaveShift as IUniqueDef);
+        //            }
+        //            //if(d.Wedge != null)
+        //            //{
+        //            //    rval.Add(d.Wedge as IUniqueDef);
+        //            //}
+        //        }
+        //        else if(seqObj is Event evt)
+        //        {
+        //            evt.OctaveShift = octaveShift;
+        //            octaveShift = null;
+        //            rval.Add(evt as IUniqueDef);
+        //        }
+        //        else if(seqObj is Grace g)
+        //        {
+        //            var graceComponents = g.Components;
+        //            foreach(var graceCompt in graceComponents)
+        //            {
+        //                // Assuming that Grace groups can only contain Events and Directions...
+        //                if(graceCompt is Event graceEvt)
+        //                {
+        //                    graceEvt.OctaveShift = octaveShift;
+        //                    octaveShift = null;
+        //                    rval.Add(graceEvt as IUniqueDef);
+        //                }
+        //            }
+        //        }
+        //        else if(seqObj is TupletDef t)
+        //        {
+        //            octaveShift = GetTupletComponents(t, rval, octaveShift);
+        //        }
+        //        else if(seqObj is Beams beams)
+        //        {
+        //            // TODO
+        //        }
+        //        else
+        //        {
+        //            throw new ApplicationException("unhandled SequenceComponent type.");
+        //            //rval.Add(seqObj as IUniqueDef);
+        //        }
+        //    }
+        //    return rval;
+        //}
 
         /// <summary>
         /// recursive function (for nested tuplets)
@@ -193,7 +220,7 @@ namespace MNX.Common
         /// <returns>current octave shift (can be null)</returns>
         private static OctaveShift GetTupletComponents(TupletDef tupletDef, List<IUniqueDef> iuds, OctaveShift octaveShift)
         {
-            var tupletComponents = tupletDef.SequenceComponents;
+            var tupletComponents = tupletDef.Components;
             Event firstEvent = (Event)tupletComponents.Find(e => e is Event);
             if(firstEvent.TupletDefs == null)
             {
@@ -218,7 +245,7 @@ namespace MNX.Common
             return octaveShift;
         }
 
-        private void SetMsDurations(int seqMsPositionInScore, List<Event> events, double millisecondsPerTick)
+        public void SetMsDurations(int seqMsPositionInScore, double millisecondsPerTick)
         {
             var tickPositions = new List<int>();
             int currentTickPosition = 0;
@@ -236,7 +263,8 @@ namespace MNX.Common
             }
 
             int seqMsDuration = 0;
-            int evtMsPositionInScore = seqMsPositionInScore;
+            int evtMsPositionInScore = this.MsPosInScore;
+            List<Event> events = this.Events;
             for(var i = 1; i < msPositions.Count; i++)
             {
                 int msDuration = msPositions[i] - msPositions[i - 1];

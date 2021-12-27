@@ -86,7 +86,7 @@ namespace MNX.Common
                             break;
                         case "measure":
                             GlobalDirections globalDirections = globalMeasures[measureIndex].GlobalDirections;
-                            currentTimeSig = (globalDirections == null || globalDirections.TimeSignature == null) ? currentTimeSig : globalDirections.TimeSignature;
+                            currentTimeSig = globalDirections.CurrentTimeSignature;
                             Measure measure = new Measure(r, measureIndex++, currentTimeSig, ticksPosInScore);
                             ticksPosInScore += currentTimeSig.TicksDuration;
                             Measures.Add(measure);
@@ -107,7 +107,7 @@ namespace MNX.Common
                 var measure = measures[measureIndex];
                 foreach(var sequence in measure.Sequences)
                 {
-                    foreach(var components in sequence.SequenceComponents)
+                    foreach(var components in sequence.Components)
                     {
                         if(components is SequenceDirections directions && directions.OctaveShift != null)
                         {

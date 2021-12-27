@@ -12,11 +12,13 @@ namespace MNX.Common
     public class TextBlock : IGlobalDirectionsComponent, IPartDirectionsComponent, ISequenceDirectionsComponent
     {
         public List<string> Lines = new List<string>();
-        public readonly int TicksPosInScore = -1; // set in ctor
+        public int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
 
         public TextBlock(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "text-block");
+            _ticksPosInScore = ticksPosInScore;
 
             var xmlContent = r.ReadInnerXml();
 

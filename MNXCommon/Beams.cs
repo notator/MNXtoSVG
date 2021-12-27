@@ -13,10 +13,14 @@ namespace MNX.Common
     {
         public readonly List<Beam> ContainedBeams = new List<Beam>();
         public readonly List<BeamHook> ContainedBeamHooks = new List<BeamHook>();
+        public int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
 
         public Beams(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "beams");
+            
+            _ticksPosInScore = ticksPosInScore;
 
             M.ReadToXmlElementTag(r, "beam");
 

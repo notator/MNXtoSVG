@@ -10,9 +10,11 @@ namespace MNX.Common
     public class PartDirections : IPartMeasureComponent
     {
         // These are just the elements used in the first set of examples.
-        // Other elements need to be added later.
+        // Other elements may need to be added later.
         public readonly Clef Clef;
         public readonly KeySignature KeySignature;
+
+        public readonly List<IPartDirectionsComponent> Components = new List<IPartDirectionsComponent>();
 
         public readonly int TicksPosInScore = -1; // set in ctor
         public const int TicksDuration = 0; // all directions have 0 ticks.
@@ -26,14 +28,6 @@ namespace MNX.Common
         public object Clone()
         {
             return this;
-        }
-        /// <summary>
-        /// Multiplies the MsDuration by the given factor.
-        /// </summary>
-        /// <param name="factor"></param>
-        public void AdjustMsDuration(double factor)
-        {
-            MsDuration = 0;
         }
 
         public int MsDuration { get { return 0; } set { M.Assert(false, "Application Error."); } }
@@ -73,10 +67,12 @@ namespace MNX.Common
                     {
                         case "clef":
                             Clef = new Clef(r, ticksPosInScore);
+                            Components.Add(Clef);
                             break;
                         case "key":
                             // https://w3c.github.io/mnx/specification/common/#the-key-element
                             KeySignature = new KeySignature(r, ticksPosInScore);
+                            Components.Add(KeySignature);
                             break;
 
                     }

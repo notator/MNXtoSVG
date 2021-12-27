@@ -9,24 +9,17 @@ namespace MNX.Common
     // https://w3c.github.io/mnx/specification/common/#elementdef-directions
     public class GlobalDirections : IGlobalMeasureComponent
     {
-        // public readonly Ending Ending;
-        public readonly Fine Fine;
-        public readonly Jump Jump;
-        public readonly KeySignature KeySignature;
-        /// A measure can contain any number of RepeatEnd and RepeatBegin symbols.
-        /// They are kept here in order of their PositionInMeasure.Ticks.
-        /// If two Repeats have the same ticksPosition, they are kept in order RepeatEnd, RepeatBegin
-        public readonly List<Repeat> Repeats;
-        public readonly Segno Segno;
-        // public readonly Tempo Tempo;
-        public readonly TimeSignature TimeSignature;
-
+        public readonly List<IGlobalDirectionsComponent> Components = new List<IGlobalDirectionsComponent>();
+        /// <summary>
+        /// The CurrentTimeSignature is continuously updated while the GlobalDirections are being constructed,
+        /// and is the final time signature when the Global directions are complete. 
+        /// </summary>
+        public readonly TimeSignature CurrentTimeSignature;
 
         public readonly int TicksPosInScore = -1; // set in ctor
-        public const int TicksDuration = 0; // all directions have 0 ticks.
 
         #region IUniqueDef
-        public override string ToString() => $"GlobalDirections: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
+        public override string ToString() => $"GlobalDirections: TicksPosInScore={TicksPosInScore}";
 
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
@@ -34,14 +27,6 @@ namespace MNX.Common
         public object Clone()
         {
             return this;
-        }
-        /// <summary>
-        /// Multiplies the MsDuration by the given factor.
-        /// </summary>
-        /// <param name="factor"></param>
-        public void AdjustMsDuration(double factor)
-        {
-            MsDuration = 0;
         }
 
         public int MsDuration { get { return 0; } set { M.Assert(false, "Application Error."); } }
@@ -66,7 +51,7 @@ namespace MNX.Common
         public GlobalDirections(XmlReader r, TimeSignature currentTimeSignature, int ticksPosInScore)
         {
             M.Assert(r.Name == "directions-global");
-
+            CurrentTimeSignature = currentTimeSignature;
             TicksPosInScore = ticksPosInScore;
 
             M.ReadToXmlElementTag(r, "time", "repeat", "ending", "segno", "jump", "fine", "key", "tempo");
@@ -80,31 +65,26 @@ namespace MNX.Common
                     {
                         case "time":
                             // https://w3c.github.io/mnx/specification/common/#the-time-element
-                            TimeSignature = new TimeSignature(r, ticksPosInScore);
-                            currentTimeSignature = TimeSignature;
+                            CurrentTimeSignature = new TimeSignature(r, ticksPosInScore);
+                            Components.Add(CurrentTimeSignature);
                             break;
                         case "repeat":
-                            if(Repeats == null)
-                            {
-                                Repeats = new List<Repeat>();
-                            }
-                            Repeat repeat = GetRepeat(r);
-                            AddRepeatToRepeats(repeat, Repeats);
+                            Components.Add(GetRepeat(r, ticksPosInScore));
                             break;
                         case "ending":
                             // TODO
                             break;
                         case "segno":
-                            Segno = new Segno(r, ticksPosInScore);
+                            Components.Add(new Segno(r, ticksPosInScore));
                             break;
                         case "jump":
-                            Jump = new Jump(r, ticksPosInScore);
+                            Components.Add(new Jump(r, ticksPosInScore));
                             break;
                         case "fine":
-                            Fine = new Fine(r, ticksPosInScore);
+                            Components.Add(new Fine(r, ticksPosInScore));
                             break;
                         case "key":
-                            KeySignature = new KeySignature(r, ticksPosInScore);
+                            Components.Add(new KeySignature(r, ticksPosInScore));
                             break;
                         case "tempo":
                             // TODO
@@ -114,77 +94,18 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "time", "repeat", "ending", "segno", "jump", "fine", "key", "tempo", "directions-global");
             }
 
-            if(Repeats != null)
-            {
-                SetDefaultRepeatPositions(Repeats, currentTimeSignature);
-            }
-
             M.Assert(r.Name == "directions-global"); // end of "directions-global"
         }
 
-        private void SetDefaultRepeatPositions(List<Repeat> repeats, TimeSignature currentTimeSignature)
+        public GlobalDirections(TimeSignature currentTimeSignature, int ticksPosInScore)
         {
-            M.Assert(currentTimeSignature != null);
-            foreach(var repeat in repeats)
-            {
-                repeat.SetDefaultPositionInMeasure(currentTimeSignature);
-            }
+            CurrentTimeSignature = currentTimeSignature;
+            TicksPosInScore = ticksPosInScore;
+            // Components is an empty list
         }
 
-        private void AddRepeatToRepeats(Repeat repeat, List<Repeat> repeats)
-        {
-            if((repeats.Count == 0) || (repeat is RepeatEnd && repeat.PositionInMeasure == null))
-            {
-                repeats.Add(repeat);
-            }
-            else if(repeat is RepeatBegin && repeat.PositionInMeasure == null)
-            {
-                repeats.Insert(0, repeat);
-            }
-            else // mid-measure repeat symbols
-            {
-                int newTicksPos = repeat.PositionInMeasure.TickPositionInMeasure;
-                for(int i = 0; i < repeats.Count; ++i)
-                {
-                    int existingTicksPos = repeats[i].PositionInMeasure.TickPositionInMeasure;
-                    if(existingTicksPos < newTicksPos)
-                    {
-                        if(i == repeats.Count - 1)
-                        {
-                            repeats.Add(repeat);
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-                    else if(existingTicksPos == newTicksPos)
-                    {
-                        M.Assert((repeat is RepeatEnd && repeats[i] is RepeatBegin) || (repeat is RepeatBegin && repeats[i] is RepeatEnd));
-                        RepeatEndBegin repeatEndBegin;
-                        if(repeat is RepeatEnd)
-                        {
-                            repeatEndBegin = new RepeatEndBegin(repeat as RepeatEnd, repeats[i] as RepeatBegin);
-                        }
-                        else
-                        {
-                            repeatEndBegin = new RepeatEndBegin(repeats[i] as RepeatEnd, repeat as RepeatBegin);
-                        }
-                        repeats.RemoveAt(i);
-                        repeats.Insert(i, repeatEndBegin);
-                        break;
-                    }
-                    else if(existingTicksPos > newTicksPos)
-                    {
-                        repeats.Insert(i, repeat);
-                        break;
-                    }
-                }
-            }
-        }
-
-        // returns either a RepeatBegin or RepeatEnd.
-        private Repeat GetRepeat(XmlReader r)
+        // returns either a RepeatBegin, RepeatEnd.
+        private Repeat GetRepeat(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "repeat");
 
@@ -212,7 +133,6 @@ namespace MNX.Common
                             default:
                                 M.ThrowError("Unknown repeat type.");
                                 break;
-
                         }
                         break;
                     }
@@ -239,12 +159,12 @@ namespace MNX.Common
             {
                 case true:
                 {
-                    rval = new RepeatBegin(PositionInMeasure);
+                    rval = new RepeatBegin(PositionInMeasure, ticksPosInScore);
                     break;
                 }
                 case false:
                 {
-                    rval = new RepeatEnd(PositionInMeasure, Times);
+                    rval = new RepeatEnd(PositionInMeasure, Times, ticksPosInScore);
                     break;
                 }
                 default: // null

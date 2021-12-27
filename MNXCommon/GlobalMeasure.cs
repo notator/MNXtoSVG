@@ -36,6 +36,8 @@ namespace MNX.Common
             TicksDuration = (currentTimeSig != null) ? currentTimeSig.TicksDuration : -1; // overridden below if the time sig changes.
             TicksPosInScore = ticksPosInScore; // ji: 13.12.2020
 
+            GlobalDirections = new GlobalDirections(currentTimeSig, ticksPosInScore); // default
+
             if(!r.IsEmptyElement)
             {
                 int count = r.AttributeCount;
@@ -71,7 +73,7 @@ namespace MNX.Common
                         {
                             case "directions-global":
                                 GlobalDirections = new GlobalDirections(r, currentTimeSig, ticksPosInScore);
-                                currentTimeSig = (GlobalDirections.TimeSignature != null) ? GlobalDirections.TimeSignature : currentTimeSig;
+                                currentTimeSig = GlobalDirections.CurrentTimeSignature;
                                 TicksDuration = currentTimeSig.TicksDuration;
                                 break;
                         }
@@ -82,6 +84,37 @@ namespace MNX.Common
 
             M.Assert(r.Name == "measure-global"); // end of measure-global
         }
+
+        //public List<IGlobalDirectionsComponent> GetSortedGlobalDirectionsComponents()
+        //{
+        //    List<IGlobalDirectionsComponent> rval = new List<IGlobalDirectionsComponent>();
+
+        //    if(GlobalDirections != null)
+        //    {
+        //        KeySignature keySignature = GlobalDirections.KeySignature;
+        //        if(keySignature != null)
+        //        {
+        //            rval.Add(keySignature);
+        //        }
+        //        TimeSignature timeSignature = GlobalDirections.TimeSignature;
+        //        if(timeSignature != null)
+        //        {
+        //            rval.Add(timeSignature);
+        //        }
+        //        List<Repeat> repeats = GlobalDirections.Repeats;
+        //        if(repeats != null)
+        //        {
+        //            foreach(var repeat in repeats)
+        //            {
+        //                rval.Add(repeat);
+        //            }
+        //        }
+        //    }
+
+        //    // Sort
+
+        //    return rval;
+        //}
 
         private BarlineType GetBarlineType(string value)
         {
@@ -139,7 +172,7 @@ namespace MNX.Common
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            Event previousEvent = null;
+            Event previousEvent;
             if(previousObject is EventGroup eg)
             {
                 List<Event> events = eg.Events;
@@ -164,7 +197,7 @@ namespace MNX.Common
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            Event nextEvent = null;
+            Event nextEvent;
             if(nextObject is EventGroup eg)
             {
                 List<Event> events = eg.Events;
@@ -177,5 +210,7 @@ namespace MNX.Common
 
             return nextEvent;
         }
+
+
     }
 }

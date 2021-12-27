@@ -41,20 +41,18 @@ namespace MNX.Common
         public readonly TupletBracketDisplay Bracket = TupletBracketDisplay.auto; // spec default
         #endregion MNX file attributes
 
-        #region Runtime property
-        public readonly int TupletLevel;
-        #endregion Runtime property
+        public int Depth;
 
         public override string ToString() => $"Tuplet: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
-        public TupletDef(XmlReader r, int ticksPosInScore)
+        public TupletDef(XmlReader r, int ticksPosInScore, int depth = 1)
         {
-            TupletLevel = C.CurrentTupletLevel; // top level tuplet has tuplet level 0
-            TicksPosInScore = ticksPosInScore;
-
-            C.CurrentTupletLevel++;
-
             M.Assert(r.Name == "tuplet");
+
+            _ticksPosInScore = ticksPosInScore;
+
+            C.CurrentTupletLevel = depth;
+            Depth = depth;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -97,6 +95,10 @@ namespace MNX.Common
 
             while(r.Name == "event" || r.Name == "tuplet" || r.Name == "grace" || r.Name == "forward")
             {
+                if(Depth == 1 && r.Name == "tuplet" && r.NodeType == XmlNodeType.EndElement)
+                {
+                    break;
+                }
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
@@ -104,22 +106,22 @@ namespace MNX.Common
                         case "event":
                             Event e = new Event(r, ticksPosInScore);
                             ticksPosInScore += e.TicksDuration;
-                            SequenceComponents.Add(e);
+                            Components.Add(e);
                             break;
                         case "tuplet":
-                            TupletDef tupletDef = new TupletDef(r, ticksPosInScore);
+                            TupletDef tupletDef = new TupletDef(r, ticksPosInScore, depth + 1);
                             ticksPosInScore += tupletDef.TicksDuration;
-                            SequenceComponents.Add(tupletDef);
+                            Components.Add(tupletDef);
                             break;
                         case "grace":
                             Grace grace = new Grace(r, ticksPosInScore);
                             ticksPosInScore += grace.TicksDuration;
-                            SequenceComponents.Add(grace);
+                            Components.Add(grace);
                             break;
                         case "forward":
                             Forward forward = new Forward(r, ticksPosInScore);
                             ticksPosInScore += forward.TicksDuration;
-                            SequenceComponents.Add(forward);
+                            Components.Add(forward);
                             break;
                     }
                 }
@@ -134,7 +136,7 @@ namespace MNX.Common
             {
                 int outerTicks = this.OuterDuration.GetDefaultTicks();
                 this.OuterDuration.Ticks = outerTicks;
-                SetTicksInContent(outerTicks, this.TupletLevel + 1);
+                SetTicksInContent(outerTicks, this.Depth);
             }
 
             C.CurrentTupletLevel--;
@@ -174,7 +176,7 @@ namespace MNX.Common
                 else if(component is TupletDef t)
                 {
                     // a nested tuplet
-                    M.Assert(t.TupletLevel == localTupletLevel);
+                    M.Assert(t.Depth == localTupletLevel);
                    
                     MNXDurationSymbol d = t.OuterDuration;
                     int basicTicks = d.GetDefaultTicks();
@@ -189,7 +191,7 @@ namespace MNX.Common
 
             // Get 1. the outer ticks of Events and Tuplets at this tuplet level
             // and 2. a list of nested tuplets
-            foreach(var component in SequenceComponents)
+            foreach(var component in Components)
             {
                 GetObject(component);
             }
@@ -203,7 +205,7 @@ namespace MNX.Common
                 if(component is TupletDef tuplet)
                 {
                     tuplet.OuterDuration.Ticks = ticks;
-                    tuplet.SetTicksInContent(tuplet.OuterDuration.Ticks, tuplet.TupletLevel + 1);
+                    tuplet.SetTicksInContent(tuplet.OuterDuration.Ticks, tuplet.Depth + 1);
                 }
                 else
                 {

@@ -46,7 +46,7 @@ namespace MNX.Common
         {            
             M.Assert(r.Name == "grace");
 
-            TicksPosInScore = ticksPosInScore;
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -76,14 +76,14 @@ namespace MNX.Common
                         case "event":
                             Event e = new Event(r, ticksPosInScore);
                             ticksPosInScore += e.TicksDuration;
-                            SequenceComponents.Add(e);
+                            Components.Add(e);
                             break;
                     }
                 }
                 M.ReadToXmlElementTag(r, "event", "grace");
             }
 
-            SetDefaultTicks(SequenceComponents);
+            SetDefaultTicks(Components);
 
             M.Assert(Events.Count > 0);
             M.Assert(r.Name == "grace"); // end of grace

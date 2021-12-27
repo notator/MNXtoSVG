@@ -57,14 +57,14 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public List<ISequenceComponent> SequenceComponents = new List<ISequenceComponent>();
+        public List<ISequenceComponent> Components = new List<ISequenceComponent>();
 
         public List<IHasTicks> EventsAndEventGroups
         {
             get
             {
                 List<IHasTicks> eventsAndEventGroups = new List<IHasTicks>();
-                foreach(var item in SequenceComponents)
+                foreach(var item in Components)
                 {
                     if(item is IHasTicks iht)
                     {
@@ -84,7 +84,7 @@ namespace MNX.Common
             get
             {
                 List<Event> rval = new List<Event>();
-                foreach(var item in SequenceComponents)
+                foreach(var item in Components)
                 {
                     if(item is EventGroup eg)
                     {
@@ -123,7 +123,8 @@ namespace MNX.Common
                 M.ThrowError("Application Error: This function should never be called.");       
             }
         }
-        public int TicksPosInScore { get; protected set; }
+        public int TicksPosInScore { get { return _ticksPosInScore; } }
+        protected int _ticksPosInScore = 0;
 
     }
 }

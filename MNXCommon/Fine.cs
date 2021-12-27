@@ -8,7 +8,8 @@ namespace MNX.Common
     public class Fine : IGlobalDirectionsComponent, IUniqueDef
     {
         public readonly PositionInMeasure PositionInMeasure;
-        private readonly int TicksPosInScore;
+        public int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
         public override string ToString() => $"TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
@@ -44,8 +45,6 @@ namespace MNX.Common
             }
         }
 
-        public int TicksDuration { get; }
-
         private int _msPositionReFirstIUD = 0;
 
         #endregion IUniqueDef
@@ -53,8 +52,7 @@ namespace MNX.Common
         public Fine(XmlReader r, int ticksPosInScore)
         {
             M.Assert(r.Name == "fine");
-            TicksPosInScore = ticksPosInScore;
-            TicksDuration = 0;
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

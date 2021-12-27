@@ -174,7 +174,7 @@ namespace MNX.Common
                     if(eventsAndEventGroups[eegIndex] is Grace grace)
                     {
                         int graceIndex = eegIndex;
-                        int stealableTicks = 0;
+                        int stealableTicks;
                         switch(grace.Type)
                         {
                             case GraceType.stealPrevious:
@@ -215,7 +215,7 @@ namespace MNX.Common
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            Event previousEvent = null;
+            Event previousEvent;
             if(previousObject is EventGroup eg)
             {
                 List<Event> events = eg.Events;
@@ -240,7 +240,7 @@ namespace MNX.Common
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            Event nextEvent = null;
+            Event nextEvent;
             if(nextObject is EventGroup eg)
             {
                 List<Event> events = eg.Events;

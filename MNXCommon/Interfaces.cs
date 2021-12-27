@@ -20,6 +20,7 @@ namespace MNX.Common
     /// </summary>
     public interface ISequenceComponent
     {
+        int TicksPosInScore { get; }
     }
 
     /// <summary>
@@ -27,6 +28,7 @@ namespace MNX.Common
     /// </summary>
     public interface IGlobalDirectionsComponent
     {
+        int TicksPosInScore { get; }
     }
 
     /// <summary>
@@ -34,6 +36,7 @@ namespace MNX.Common
     /// </summary>
     public interface IPartDirectionsComponent
     {
+        int TicksPosInScore { get; }
     }
 
     /// <summary>
@@ -41,6 +44,7 @@ namespace MNX.Common
     /// </summary>
     public interface ISequenceDirectionsComponent
     {
+        int TicksPosInScore { get; }
     }
 
     /// <summary>

@@ -14,7 +14,8 @@ namespace MNX.Common
         public readonly int Line = 0; // 0 means uninitialised. Line must start at 1 (the bottom line of the staff)
         public readonly int Octave = 0; // Default. Octave can be set to any positive or negative integer.
         public readonly ClefType? Sign = null;
-        private readonly int TicksPosInScore;
+        public override int TicksPosInScore { get { return _ticksPosInScore; } }
+        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
         public override string ToString() => $"Clef: TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
@@ -24,7 +25,7 @@ namespace MNX.Common
         {
             // https://w3c.github.io/mnx/specification/common/#the-clef-element
             M.Assert(r.Name == "clef");
-            TicksPosInScore = ticksPosInScore;
+            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -47,7 +48,7 @@ namespace MNX.Common
                         Location = new PositionInMeasure(r.Value);
                         break;
                     case "staff-index":
-                        int staffIndex = 0;
+                        int staffIndex;
                         int.TryParse(r.Value, out staffIndex);
                         StaffIndex = staffIndex;
                         break;

@@ -130,7 +130,7 @@
                 classes. They are not IDs, so don't have '#' prefixes.
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="signature" type="multipleNoteValueType" use="required"/>
+        <xs:attribute name="signature" type="noteValueQuantityType" use="required"/>
         <xs:attribute name="staffGroupClasses" type="namesListType" default=""/>
     </xs:complexType>
 
@@ -401,16 +401,19 @@
                 N.B.: beams are not defined here.
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element name="directions" type="sequenceDirectionsType"/>
-                <xs:element name="event" type="eventType"/>
-                <xs:element name="tuplet" type="tupletType"/>
-                <xs:element name="grace" type="graceType"/>
-            </xs:choice>
-        </xs:sequence>
-        <xs:attribute name="outer" type="multipleNoteValueType" use="required"/>
-        <xs:attribute name="inner" type="multipleNoteValueType" use="required"/>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="directions" type="sequenceDirectionsType"/>
+            <xs:element name="event" type="eventType"/>
+            <xs:element name="tuplet" type="tupletType"/>
+            <xs:element name="grace" type="graceType"/>
+        </xs:choice>
+        <xs:attribute name="outer" type="noteValueQuantityType" use="required"/>
+        <xs:attribute name="inner" type="noteValueQuantityType" use="required"/>
+        <xs:attribute name="bracket" type="yesNoAutoType" use="optional"/>
+        <xs:attribute name="orient" type="upDownType" use="optional"/>
+        <xs:attribute name="show-number" type="tupletDisplaySettingType" use="optional"/>
+        <xs:attribute name="show-value" type="tupletDisplaySettingType" use="optional"/>
+        <xs:attribute name="staff" type="xs:positiveInteger" use="optional"/>        
     </xs:complexType>
 
     <xs:complexType name="graceType">
@@ -420,12 +423,10 @@
                 N.B.: tuplet, grace and beams elements are not allowed here.
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element name="directions" type="sequenceDirectionsType"/>
-                <xs:element name="event" type="eventType"/>
-            </xs:choice>
-        </xs:sequence>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="directions" type="sequenceDirectionsType"/>
+            <xs:element name="event" type="eventType"/>
+        </xs:choice>
         <xs:attribute name="type" type="graceStealType" />
     </xs:complexType>
 
@@ -489,9 +490,15 @@
             </xs:choice>
             <xs:element name="rest" type="xs:string" fixed=""/>
         </xs:choice>
-        <xs:attribute name="value" type="noteValueType" use="required"/>
+        <xs:attribute name="value" type="noteValueType" use="required"/>   
+        <xs:attribute name="color" type="colorType" use="optional"/>
+        <xs:attribute name="duration" type="noteValueQuantityType" use="optional"/>        
         <xs:attribute name="id" type="idValueType" use="optional"/>
-        <xs:attribute name="staff" type="xs:positiveInteger" use="optional"/>
+        <xs:attribute name="measure" type="yesNoType" use="optional"/>
+        <xs:attribute name="orient" type="upDownType" use="optional"/>        
+        <xs:attribute name="smufl-font" type="xs:token" use="optional"/>        
+        <xs:attribute name="staff" type="xs:positiveInteger" use="optional"/>        
+        <xs:attribute name="stem-direction" type="upDownType" use="optional"/>    
     </xs:complexType>
 
     <xs:complexType name="noteType">
@@ -537,11 +544,13 @@
                 the part/measures/measure/sequence/event/slur element
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="side" type="upDownType" use="required"/>
-        <xs:attribute name="target" type="idReferenceType" use="optional"/>
+        <xs:attribute name="end-note" type="idReferenceType" use="optional"/>
+        <xs:attribute name="line-type" type="lineType" use="optional"/>
         <xs:attribute name="location" type="slurLocationType" use="optional"/>
-        <xs:attribute name="startNote" type="idReferenceType" use="optional"/>
-        <xs:attribute name="endNote" type="idReferenceType" use="optional"/>
+        <xs:attribute name="side" type="upDownType" use="optional"/>
+        <xs:attribute name="side-end" type="upDownType" use="optional"/>
+        <xs:attribute name="start-note" type="idReferenceType" use="optional"/>
+        <xs:attribute name="target" type="idReferenceType" use="optional"/>
     </xs:complexType>
     
     <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
@@ -770,7 +779,7 @@
         </xs:restriction>
     </xs:simpleType>
 
-    
+
     <xs:simpleType name="noteValueType">
         <xs:annotation>
             <xs:documentation>
@@ -790,15 +799,22 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="multipleNoteValueType">
+    <xs:simpleType name="noteValueQuantityType">
         <xs:annotation>
             <xs:documentation>
-                A string that does not begin with 0, but that has an unlimited number of digits,
-                followed by a noteValueType.
+                An optional string of numeric characters
+                followed by
+                {
+                EITHER  (breve, long, maxima)
+                a compulsory "*" character followed by one of the strings "2", "4", "8"
+                OR (semibreve to 1024th)
+                a compulsory "/" character followed by one of the strings "1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024"
+                }
+                followed by zero or more "d" characters.
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:token">
-            <xs:pattern value="([1-9][0-9]*)((\*(8|4|2))|(/(1|2|4|8|16|32|64|128|256|512|1024)))(d*)"/>
+            <xs:pattern value="([1-9][0-9]*)?((\*(8|4|2))|(/(1|2|4|8|16|32|64|128|256|512|1024)))(d*)"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -809,7 +825,7 @@
                 EITHER
                 { a decimal floating-point number indicating the positive number of whole-notes after the start of the measure }
                 OR
-                { a multipleNoteValueType (2/4, 3/8, 4/2 6/1d etc.}
+                { a noteValueQuantityType (2/4, 3/8, 4/2 6/1d etc.}
                 Issue: I think it would be better if the _measure_ component was _relative_ to the measure in which this
                 simpleLocation is defined. (Not absolute as defined in the Draft Spec.) That would keep the numbers down, and
                 be easier to check. For example: 1:2/4 would always mean 2 quarter-notes after the beginning of the following measure.
@@ -928,10 +944,10 @@
     <xs:simpleType name="durationType">
         <xs:annotation>
             <xs:documentation>
-                EITHER a multipleNoteValueType OR a tickDurationType.
+                EITHER a noteValueQuantityType OR a tickDurationType.
             </xs:documentation>
         </xs:annotation>
-        <xs:union memberTypes="multipleNoteValueType tickDurationType"/>
+        <xs:union memberTypes="noteValueQuantityType tickDurationType"/>
     </xs:simpleType>
 
     <xs:simpleType name="tickDurationType">
@@ -953,6 +969,17 @@
         </xs:annotation>
         <xs:restriction base="xs:token">
             <xs:pattern value="incoming|outgoing"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="lineType">
+        <xs:annotation>
+            <xs:documentation>
+                 values are those of MusicXML
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="dashed|dotted|solid|wavy"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -988,6 +1015,26 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="yesNoAutoType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="yes|no|auto"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:simpleType name="tupletDisplaySettingType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="none|inner|both"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:simpleType name="graceStealType">
         <xs:annotation>

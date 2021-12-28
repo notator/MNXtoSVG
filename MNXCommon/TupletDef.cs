@@ -95,10 +95,6 @@ namespace MNX.Common
 
             while(r.Name == "event" || r.Name == "tuplet" || r.Name == "grace" || r.Name == "forward")
             {
-                if(Depth == 1 && r.Name == "tuplet" && r.NodeType == XmlNodeType.EndElement)
-                {
-                    break;
-                }
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
@@ -124,6 +120,11 @@ namespace MNX.Common
                             Components.Add(forward);
                             break;
                     }
+                }
+
+                if(r.Name == "tuplet" && r.NodeType == XmlNodeType.EndElement)
+                {
+                    break;
                 }
 
                 M.ReadToXmlElementTag(r, "event", "grace", "forward", "tuplet");

@@ -68,6 +68,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="MNX_in\mnx\_tupletsNestedTest.mnx" />
     <None Include="MNX_in\mnx\tuplets.mnx" />
     <None Include="MNX_in\mnx\ties.mnx" />
     <None Include="MNX_in\mnx\slurs.mnx" />

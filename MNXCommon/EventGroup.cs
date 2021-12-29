@@ -123,8 +123,6 @@ namespace MNX.Common
                 M.ThrowError("Application Error: This function should never be called.");       
             }
         }
-        public int TicksPosInScore { get { return _ticksPosInScore; } }
-        protected int _ticksPosInScore = 0;
-
+        public int TicksPosInScore { get; set; }
     }
 }

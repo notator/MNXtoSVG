@@ -44,19 +44,23 @@ namespace MNX.Common
         //    2: The Event is contained in a Tuplet nested in a Tuplet.
         //    etc. (This app copes with arbitrarily nested tuplets.)
         public readonly int TupletLevel;
-        public int TicksPosInScore { get; }
+
+        /// <summary>
+        /// TicksPosInScore can be changed when adding grace notes.
+        /// </summary>
+        public int TicksPosInScore { get; set; }
 
         public int TicksDuration
         {
             get
             {
-                return MNXDurationSymbol.Ticks;
+                return MNXDurationSymbol.TicksDuration;
             }
             set
             {
                 // this function is used when setting tuplet event ticks and when stealing ticks for Grace.
                 M.Assert(value >= M.MinimumEventTicks);
-                MNXDurationSymbol.Ticks = value;
+                MNXDurationSymbol.TicksDuration = value;
             }
         }
 

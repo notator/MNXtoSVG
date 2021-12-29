@@ -397,15 +397,15 @@
     <xs:complexType name="tupletType">
         <xs:annotation>
             <xs:documentation>
-                the part/measures/measure/sequence/tuplet element (recursive)
+                the part/measures/measure/sequence/tuplet element
                 N.B.: beams are not defined here.
             </xs:documentation>
         </xs:annotation>
         <xs:choice maxOccurs="unbounded">
             <xs:element name="directions" type="sequenceDirectionsType"/>
             <xs:element name="event" type="eventType"/>
-            <xs:element name="tuplet" type="tupletType"/>
             <xs:element name="grace" type="graceType"/>
+            <xs:element name="forward" type="forwardType"/>
         </xs:choice>
         <xs:attribute name="outer" type="noteValueQuantityType" use="required"/>
         <xs:attribute name="inner" type="noteValueQuantityType" use="required"/>
@@ -430,6 +430,16 @@
         <xs:attribute name="type" type="graceStealType" />
     </xs:complexType>
 
+    <xs:complexType name="forwardType">
+        <xs:annotation>
+            <xs:documentation>
+                the part/measures/measure/sequence/forward element
+                N.B.: tuplet, grace and beams elements are not allowed here.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="duration" type="noteValueQuantityType" />
+    </xs:complexType>
+    
     <xs:complexType name="beamsType">
         <xs:annotation>
             <xs:documentation>

@@ -6,7 +6,7 @@ namespace MNX.Common
 {
     /// <summary>
     /// The duration of DurationSymbols is measured in ticks.
-    /// The default number of ticks per (undotted) MNXDurationSymbol are:
+    /// The default number of ticks per (undotted, single) MNXDurationSymbol are:
     ///          noteDoubleWhole_breve: 8192 ticks
     ///            noteWhole_semibreve: 4096 ticks
     ///                 noteHalf_minim: 2048 ticks
@@ -33,9 +33,8 @@ namespace MNX.Common
         public readonly int? NAugmentationDots = null;
         public readonly int Tupletlevel = -1;
 
-        // MNXDurationSymbol is not an ITicks object, its an implementation detail of ITicks objects.
-        // ITicks objects, except Event and Grace, do not implement Ticks.set.
-        public int Ticks { get; set; }
+        // MNXDurationSymbol does not implement TicksPositionInScore.
+        public int TicksDuration { get; set; }
 
         /// <summary>
         /// The value argument is the MNXCommon duration symbol string ("/2", "/4", "/8d" etc.)
@@ -55,7 +54,7 @@ namespace MNX.Common
             DurationSymbolTyp = analysis.Item2;
             NAugmentationDots = analysis.Item3;
 
-            Ticks = GetDefaultTicks(); // can be 0!
+            TicksDuration = GetDefaultTicks(); // can be 0!
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ namespace MNX.Common
             get
             {
                 M.Assert(Position != null);
-                return Position.Ticks;
+                return Position.TicksDuration;
             }
         }
 
@@ -40,7 +40,7 @@ namespace MNX.Common
         {
             get
             {
-                int rval = (Position == null) ? 0 : Position.Ticks;
+                int rval = (Position == null) ? 0 : Position.TicksDuration;
                 return rval;
             }
         }

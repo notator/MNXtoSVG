@@ -11,7 +11,8 @@ namespace MNX.Common
         /// Used while parsing.
         /// The value 0 means that there are no tuplets currently active.
         /// This value is incremented at the beginning of a Tuplet constructor,
-        /// and decremented when it ends. 
+        /// and decremented when it ends.
+        /// Tuplets are no longer recursive, so this value is only either 0 or 1.
         /// </summary>
         internal static int CurrentTupletLevel = 0;
     }

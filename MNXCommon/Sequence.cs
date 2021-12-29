@@ -32,7 +32,7 @@ namespace MNX.Common
             M.Assert(r.Name == "sequence");
 
             Index = sequenceIndex;
-            _ticksPosInScore = ticksPosInScore;
+            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

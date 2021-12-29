@@ -46,7 +46,7 @@ namespace MNX.Common
         {            
             M.Assert(r.Name == "grace");
 
-            _ticksPosInScore = ticksPosInScore;
+            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -95,8 +95,8 @@ namespace MNX.Common
             var eventList = Events;
             foreach(var e in eventList)
             {
-                int nTicks = e.MNXDurationSymbol.Ticks / 3;
-                e.MNXDurationSymbol.Ticks = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
+                int nTicks = e.MNXDurationSymbol.TicksDuration / 3;
+                e.MNXDurationSymbol.TicksDuration = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
             }
         }
 

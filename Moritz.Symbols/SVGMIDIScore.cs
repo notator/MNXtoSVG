@@ -132,7 +132,9 @@ namespace Moritz.Symbols
                                                         List<IPartDirectionsComponent> measureDirections, 
                                                         List<IGlobalDirectionsComponent> globalDirections)
         {
-            throw new NotImplementedException();
+            var rval = new List<IUniqueDef>();
+
+            return rval;
         }
 
         /// <summary>

@@ -72,7 +72,7 @@ namespace MNX.Common
                             Components.Add(e);
                             break;
                         case "tuplet":
-                            TupletDef tupletDef = new TupletDef(r, ticksPosInScore);
+                            TupletDef tupletDef = new TupletDef(r, ticksPosInScore, true);
                             ticksPosInScore += tupletDef.TicksDuration; // the duration of the contained events
                             Components.Add(tupletDef);
                             break;

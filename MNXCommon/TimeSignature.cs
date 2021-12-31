@@ -75,7 +75,7 @@ namespace MNX.Common
                 }
             }
 
-            MNXDurationSymbol mds = new MNXDurationSymbol(Signature, 0);
+            MNXDurationSymbol mds = new MNXDurationSymbol(Signature);
             TicksDuration = mds.TicksDuration;
 
             // r.Name is now the name of the last time attribute that has been read.

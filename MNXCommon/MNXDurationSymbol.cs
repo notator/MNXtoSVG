@@ -31,7 +31,6 @@ namespace MNX.Common
         public readonly int? Multiple = null;
         public readonly DurationSymbolType? DurationSymbolTyp = null;
         public readonly int? NAugmentationDots = null;
-        public readonly int Tupletlevel = -1;
 
         // MNXDurationSymbol does not implement TicksPositionInScore.
         public int TicksDuration { get; set; }
@@ -41,13 +40,11 @@ namespace MNX.Common
         /// It can also be a floating point number (the fraction of a wholeNote).
         /// I assume that this string can have an arbitrary number of 'd's corresponding to the number of dots.
         /// </summary>
-        public MNXDurationSymbol(string value, int currentTupletLevel)
+        public MNXDurationSymbol(string value)
         {
             // https://w3c.github.io/mnx/specification/common/#note-value
             // https://w3c.github.io/mnx/specification/common/#base-note-values
             // https://w3c.github.io/mnx/specification/common/#ref-for-note-value%E2%91%A0
-
-            Tupletlevel = currentTupletLevel;
 
             Tuple<int, DurationSymbolType, int> analysis = StringAnalysis(value);
             Multiple = analysis.Item1;

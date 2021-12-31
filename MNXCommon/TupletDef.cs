@@ -43,13 +43,14 @@ namespace MNX.Common
 
         public override string ToString() => $"Tuplet: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
-        public TupletDef(XmlReader r, int ticksPosInScore)
+        private bool _isTopLevel;
+
+        public TupletDef(XmlReader r, int ticksPosInScore, bool isTopLevel)
         {
             M.Assert(r.Name == "tuplet");
 
             TicksPosInScore = ticksPosInScore;
-
-            C.CurrentTupletLevel = 1;
+            _isTopLevel = isTopLevel;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -58,10 +59,10 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "outer":
-                        OuterDuration = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
+                        OuterDuration = new MNXDurationSymbol(r.Value);
                         break;
                     case "inner":
-                        InnerDuration = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
+                        InnerDuration = new MNXDurationSymbol(r.Value);
                         break;
                     case "orient":
                         Orient = GetMNXOrientation(r.Value);
@@ -88,10 +89,15 @@ namespace MNX.Common
                 }
             }
 
-            M.ReadToXmlElementTag(r, "event", "grace", "forward");
+            M.ReadToXmlElementTag(r, "event", "grace", "forward", "tuplet");
 
-            while(r.Name == "event" || r.Name == "grace" || r.Name == "forward" )
+            while(r.Name == "event" || r.Name == "grace" || r.Name == "forward" || r.Name == "tuplet")
             {
+                if(r.Name == "tuplet" && r.NodeType == XmlNodeType.EndElement)
+                {
+                    break; //  pop 1 level
+                }
+
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
                     switch(r.Name)
@@ -107,10 +113,15 @@ namespace MNX.Common
                             Components.Add(grace);
                             break;
                         case "forward":
-                            Forward forward = new Forward(r, ticksPosInScore);
-                            ticksPosInScore += forward.TicksDuration;
-                            Components.Add(forward);
-                            break;
+                        Forward forward = new Forward(r, ticksPosInScore);
+                        ticksPosInScore += forward.TicksDuration;
+                        Components.Add(forward);
+                        break;
+                        case "tuplet":
+                        TupletDef tuplet = new TupletDef(r, ticksPosInScore, false);
+                        ticksPosInScore += tuplet.TicksDuration;
+                        Components.Add(tuplet);
+                        break;
                     }
                 }
 
@@ -120,11 +131,12 @@ namespace MNX.Common
             M.Assert(Events.Count > 0);
             M.Assert(r.Name == "tuplet"); // end of (nested) tuplet content
 
-            int outerTicks = this.OuterDuration.GetDefaultTicks();
-            this.OuterDuration.TicksDuration = outerTicks;
-            SetTicksInContent(outerTicks);
-
-            C.CurrentTupletLevel = 0;
+            if(_isTopLevel)
+            {
+                //int outerTicks = this.OuterDuration.GetDefaultTicks();
+                //this.OuterDuration.TicksDuration = outerTicks;
+                //SetTicksInContent(outerTicks);
+            }
         }
 
         private void SetTicksInContent(int outerTicks)

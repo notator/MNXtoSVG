@@ -48,7 +48,6 @@
     <Compile Include="Clef.cs" />
     <Compile Include="Beams.cs" />
     <Compile Include="BeamHook.cs" />
-    <Compile Include="CurrentTupletLevel.cs" />
     <Compile Include="Fine.cs" />
     <Compile Include="Segno.cs" />
     <Compile Include="SequenceDirections.cs" />

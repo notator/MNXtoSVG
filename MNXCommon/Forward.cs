@@ -88,7 +88,7 @@ namespace MNX.Common
             M.Assert(r.Name == "forward");
 
             r.MoveToAttribute("duration");
-            DSymbol = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
+            DSymbol = new MNXDurationSymbol(r.Value);
 
             M.ReadToXmlElementTag(r, "forward");
 

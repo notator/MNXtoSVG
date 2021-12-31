@@ -39,8 +39,6 @@
         <xs:annotation>
             <xs:documentation>
                 the root element of an .mnx file
-                This schema is currently being compared with files that have no layouts or scores,
-                but I've included the optional layouts element and score elements anyway.
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
@@ -166,7 +164,7 @@
             </xs:annotation>
             <xs:simpleType>
                 <xs:restriction base="xs:token">
-                    <xs:pattern value="[1-9,\.]*"/>
+                    <xs:pattern value="^([1-9]*[,? ?([1-9]*]*\.?)$"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
@@ -406,6 +404,7 @@
             <xs:element name="event" type="eventType"/>
             <xs:element name="grace" type="graceType"/>
             <xs:element name="forward" type="forwardType"/>
+            <xs:element name="tuplet" type="tupletType"/>
         </xs:choice>
         <xs:attribute name="outer" type="noteValueQuantityType" use="required"/>
         <xs:attribute name="inner" type="noteValueQuantityType" use="required"/>
@@ -805,7 +804,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:token">
-            <xs:pattern value="(1)?((\*(8|4|2))|(/(1|2|4|8|16|32|64|128|256|512|1024)))(d*)"/>
+            <xs:pattern value="(1)?((\*(8|4|2))|(\/(1024|512|256|128|64|32|16|8|4|2|1)))(d*)"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -824,7 +823,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:token">
-            <xs:pattern value="([1-9][0-9]*)?((\*(8|4|2))|(/(1|2|4|8|16|32|64|128|256|512|1024)))(d*)"/>
+            <xs:pattern value="([1-9][0-9]*)?((\*(8|4|2))|(\/(1024|512|256|128|64|32|16|8|4|2|1)))(d*)"/>
         </xs:restriction>
     </xs:simpleType>
 

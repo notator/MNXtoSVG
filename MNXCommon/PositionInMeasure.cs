@@ -75,7 +75,7 @@ namespace MNX.Common
                         Short = ShortTieOrSlur.outgoing;
                         break;
                     default:
-                        Position = new MNXDurationSymbol(value, C.CurrentTupletLevel);
+                        Position = new MNXDurationSymbol(value);
                         break;
                 }
             }
@@ -85,7 +85,7 @@ namespace MNX.Common
                 string[] mStrs = value.Split(separator, System.StringSplitOptions.None);
                 int.TryParse(mStrs[0], out int measureNumber);
                 MeasureNumber = measureNumber;
-                Position = new MNXDurationSymbol(mStrs[1], C.CurrentTupletLevel);
+                Position = new MNXDurationSymbol(mStrs[1]);
             }
         }
     }

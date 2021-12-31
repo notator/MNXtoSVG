@@ -38,12 +38,6 @@ namespace MNX.Common
         // Either Notes or Rest must be non-null;
         public readonly Rest Rest = null;
         public readonly List<SlurDef> SlurDefs = null;
-        // TupletLevel is used when setting Duration.Ticks. It has the following meaning:
-        //    0: The Event is not contained in a Tuplet.
-        //    1: The Event is contained in a Tuplet.
-        //    2: The Event is contained in a Tuplet nested in a Tuplet.
-        //    etc. (This app copes with arbitrarily nested tuplets.)
-        public readonly int TupletLevel;
 
         /// <summary>
         /// TicksPosInScore can be changed when adding grace notes.
@@ -151,8 +145,6 @@ namespace MNX.Common
 
         public Event(XmlReader r, int ticksPosInScore)
         {
-            TupletLevel = C.CurrentTupletLevel;
-
             M.Assert(r.Name == "event");
 
             TicksPosInScore = ticksPosInScore;
@@ -164,7 +156,7 @@ namespace MNX.Common
                 switch(r.Name)
                 {
                     case "value":
-                        MNXDurationSymbol = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
+                        MNXDurationSymbol = new MNXDurationSymbol(r.Value);
                         break;
                     case "measure":
                         M.ThrowError("Not Implemented");
@@ -176,7 +168,7 @@ namespace MNX.Common
                         M.ThrowError("Not Implemented");
                         break;
                     case "duration":
-                        TicksOverride = new MNXDurationSymbol(r.Value, C.CurrentTupletLevel);
+                        TicksOverride = new MNXDurationSymbol(r.Value);
                         break;
                     case "id":
                         ID = r.Value;

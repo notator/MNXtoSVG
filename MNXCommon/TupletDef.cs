@@ -41,6 +41,20 @@ namespace MNX.Common
         public readonly TupletBracketDisplay Bracket = TupletBracketDisplay.auto; // spec default
         #endregion MNX file attributes
 
+        public override int TicksDuration
+        {
+            get
+            {
+                return OuterDuration.TicksDuration;
+            }
+            set
+            {
+                // this function is used when setting tuplet event ticks when dealing with nested tuplets.
+                M.Assert(value >= M.MinimumEventTicks);
+                OuterDuration.TicksDuration = value;
+            }
+        }
+
         public override string ToString() => $"Tuplet: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         private bool _isTopLevel;
@@ -133,13 +147,17 @@ namespace MNX.Common
 
             if(_isTopLevel)
             {
-                //int outerTicks = this.OuterDuration.GetDefaultTicks();
-                //this.OuterDuration.TicksDuration = outerTicks;
-                //SetTicksInContent(outerTicks);
+                int outerTicks = this.OuterDuration.GetDefaultTicks();
+                this.OuterDuration.TicksDuration = outerTicks;
+                SetTicksInContent(TicksPosInScore, outerTicks);
             }
         }
 
-        private void SetTicksInContent(int outerTicks)
+        /// <summary>
+        /// This function is called recursively.
+        /// </summary>
+        /// <param name="outerTicks"></param>
+        public void SetTicksInContent(int ticksPosInScore, int outerTicks)
         {
             int GetBasicTicks(IHasTicks component)
             {
@@ -154,46 +172,135 @@ namespace MNX.Common
                 {
                     rval = f.TicksDuration;
                 }
+                else if(component is TupletDef t)
+                {
+                    rval = t.OuterDuration.GetDefaultTicks();
+                }
                 return rval;
             }
 
-            void SetGraceTicksDuration(Grace g, int graceIndex, List<int> localInnerTicks)
+            void SetGraceTicksDuration(Grace g, int graceIndex)
             {
+                int GetPreviousEventOrForwardTicksDuration()
+                {
+                    IHasTicks GetFinalTupletComponent(TupletDef tuplet, int finalIndex)
+                    {
+                        IHasTicks finalComponent = (IHasTicks)tuplet.Components[finalIndex];
+                        if(finalComponent is TupletDef nestedT)
+                        {
+                            GetFinalTupletComponent(nestedT, nestedT.Components.Count - 1);
+                        }
+                        return finalComponent;
+                    }
+
+                    int index = graceIndex - 1;
+                    IHasTicks previousEventOrForward = null;
+                    if(Components[index] is TupletDef t)
+                    {
+                        previousEventOrForward = GetFinalTupletComponent(t, t.Components.Count - 1);
+                    }
+                    else
+                    {
+                        previousEventOrForward = (IHasTicks)Components[index];
+                    }
+
+                    M.Assert(previousEventOrForward is Event || previousEventOrForward is Forward);
+
+                    return previousEventOrForward.TicksDuration;
+                }
+
+                int GetNextEventOrForwardTicksDuration()
+                {
+                    IHasTicks GetInitialTupletComponent(TupletDef tuplet)
+                    {
+                        IHasTicks initialComponent = (IHasTicks)tuplet.Components[0];
+                        if(initialComponent is TupletDef nestedT)
+                        {
+                            GetInitialTupletComponent(nestedT);
+                        }
+                        return initialComponent;
+                    }
+
+                    int index = graceIndex + 1;
+                    IHasTicks nextEventOrForward = null;
+                    if(Components[index] is TupletDef t)
+                    {
+                        nextEventOrForward = GetInitialTupletComponent(t);
+                    }
+                    else
+                    {
+                        nextEventOrForward = (IHasTicks)Components[index];
+                    }
+
+                    M.Assert(nextEventOrForward is Event || nextEventOrForward is Forward);
+
+                    return nextEventOrForward.TicksDuration;
+                }
+
                 switch(g.Type)
                 {
                     case GraceType.stealPrevious:
                     {
                         M.Assert(graceIndex > 0, "Error in MNX file.");
-                        g.TicksDuration = localInnerTicks[graceIndex - 1] / 3;
+                        g.TicksDuration = GetPreviousEventOrForwardTicksDuration() / 3;
                         break;
                     }
                     case GraceType.stealFollowing:
                     {
-                        M.Assert(graceIndex < localInnerTicks.Count, "Error in MNX file.");
-                        g.TicksDuration = localInnerTicks[graceIndex] / 3;
+                        M.Assert(graceIndex < Components.Count - 1, "Error in MNX file.");
+                        g.TicksDuration = GetNextEventOrForwardTicksDuration() / 3;
                         break;
                     }
                     case GraceType.makeTime:
                     {
-                        M.Assert(graceIndex < localInnerTicks.Count, "Error in MNX file.");
-                        g.TicksDuration = localInnerTicks[graceIndex] / 3;
+                        M.Assert(graceIndex < Components.Count, "Error in MNX file.");
+                        // default TicksDuration is set in the Grace constructor.
                         break;
                     }
                 }
             }
 
-            List<int> eventAndForwardBasicTicks = new List<int>();
+            List<int> eventForwardTupletBasicTicks = new List<int>();
+            List<IHasTicks> eventForwardTuplets = new List<IHasTicks>();
 
-            // Get 1. the outer ticks of each Event and Forward component.
+            // Get the default outer ticks of each contained Event, Forward and TupletDef component.
             foreach(IHasTicks component in Components )
             {
-                if(component is Event || component is Forward)
+                if(component is Event || component is Forward || component is TupletDef)
                 {
-                    eventAndForwardBasicTicks.Add(GetBasicTicks(component));
+                    eventForwardTupletBasicTicks.Add(GetBasicTicks(component));
+                    eventForwardTuplets.Add(component);
                 }
             }
 
-            List<int> innerTicks = M.IntDivisionSizes(outerTicks, eventAndForwardBasicTicks);
+            List<int> innerTicks = M.IntDivisionSizes(outerTicks, eventForwardTupletBasicTicks);
+
+            // Set the default outer ticks of each contained Event, Forward and TupletDef component.
+            for(int i = 0; i < eventForwardTuplets.Count; i++)
+            {
+                IHasTicks eventForwardTuplet = eventForwardTuplets[i];
+                int ticks = innerTicks[i];
+                if(eventForwardTuplet is Event e)
+                {
+                    e.TicksDuration = innerTicks[i];
+                    e.TicksPosInScore = ticksPosInScore;
+                    ticksPosInScore += e.TicksDuration;
+                }
+                if(eventForwardTuplet is Forward f)
+                {
+                    f.TicksDuration = innerTicks[i];
+                    f.TicksPosInScore = ticksPosInScore;
+                    ticksPosInScore += f.TicksDuration;
+                }
+                if(eventForwardTuplet is TupletDef t)
+                {
+                    t.TicksDuration = innerTicks[i];
+                    t.TicksPosInScore = ticksPosInScore;
+                    ticksPosInScore += t.TicksDuration;
+
+                    t.SetTicksInContent(t.TicksPosInScore, t.TicksDuration);
+                }
+            }
 
             for(int i = Components.Count - 1; i >= 0; i--)
             {
@@ -207,36 +314,12 @@ namespace MNX.Common
             {
                 if(Components[i] is Grace g)
                 {
-                    SetGraceTicksDuration(g, i, innerTicks);
+                    SetGraceTicksDuration(g, i);
                 }
             }
 
-            // All ticksPosInScore values are updated again for grace notes
+            // The ticksPosInScore values are updated for grace notes
             // when the whole score has been read (in MNX.AdjustForGraceNotes())
-
-            int ticksPosInScore = this.TicksPosInScore;
-
-            for(int i = 0; i < Components.Count; i++)
-            {
-                if(Components[i] is Event e)
-                {
-                    e.TicksDuration = innerTicks[i];
-                    e.TicksPosInScore = ticksPosInScore;
-                    ticksPosInScore += e.TicksDuration;
-                }
-                if(Components[i] is Grace g)
-                {
-                    g.TicksDuration = innerTicks[i];
-                    g.TicksPosInScore = ticksPosInScore;
-                    ticksPosInScore += g.TicksDuration;
-                }
-                if(Components[i] is Forward f)
-                {
-                    f.TicksDuration = innerTicks[i];
-                    f.TicksPosInScore = ticksPosInScore;
-                    ticksPosInScore += f.TicksDuration;
-                }
-            }
         }
 
 

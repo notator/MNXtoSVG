@@ -78,7 +78,7 @@ namespace MNX.Common
                             break;
                         case "grace":
                             Grace grace = new Grace(r, ticksPosInScore);
-                            // All ticksPosInScore values are updated for grace notes
+                            // All ticksPosInScore and ticksDuration values are updated for grace notes
                             // when the whole score has been read (in MNX.AdjustForGraceNotes())
                             Components.Add(grace);
                             break;

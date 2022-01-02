@@ -20,7 +20,7 @@ namespace MNX.Common
     /// </summary>
     public interface ISequenceComponent
     {
-        int TicksPosInScore { get; }
+        int TicksPosInScore { get; set; }
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ namespace MNX.Common
     /// </summary>
     public interface IGlobalDirectionsComponent
     {
-        int TicksPosInScore { get; }
+        int TicksPosInScore { get; set; }
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ namespace MNX.Common
     /// </summary>
     public interface IPartDirectionsComponent
     {
-        int TicksPosInScore { get; }
+        int TicksPosInScore { get; set; }
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ namespace MNX.Common
     /// </summary>
     public interface ISequenceDirectionsComponent
     {
-        int TicksPosInScore { get; }
+        int TicksPosInScore { get; set; }
     }
 
     /// <summary>
@@ -69,6 +69,16 @@ namespace MNX.Common
     public interface IHasTicks
     {
         int TicksDuration { get; }
+        int TicksPosInScore { get; }
+    }
+
+    /// <summary>
+    /// Grace, Event, Forward, Tuplet
+    /// (Rest is an implementation detail of Event.) 
+    /// </summary>
+    public interface IHasSettableTickDuration
+    {
+        int TicksDuration { get; set; }
         int TicksPosInScore { get; }
     }
 }

@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-tuplet-element
     /// </summary>
-    public class TupletDef : EventGroup, IHasTicks, ISequenceComponent
+    public class TupletDef : EventGroup, IHasSettableTickDuration, IHasTicks, ISequenceComponent
     {
         /// Compulsory attributes:
         #region MNX file attributes

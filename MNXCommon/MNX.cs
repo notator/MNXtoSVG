@@ -101,8 +101,15 @@ namespace MNX.Common
             return (partIndex, measureIndex, sequenceIndex, eventIndex);
         }
 
+        /// <summary>
+        /// Grace objects currently have their correct ticksPosInScore, but ticksDuration = 0.
+        /// </summary>
         private void AdjustForGraceNotes()
         {
+            if(SetAllTicksDurationsForMakeTimeGraces())
+            {
+                ResetTicksPositionsinScore();
+            }
             for(var partIndex = 0; partIndex < Parts.Count; partIndex++)
             {
                 List<Measure> measures = Parts[partIndex].Measures;
@@ -112,6 +119,103 @@ namespace MNX.Common
                     measure.AdjustForGraceNotes();
                 }
             }
+        }
+
+        private void ResetTicksPositionsinScore()
+        {
+            foreach(Part part in Parts)
+            {
+                foreach(var measure in part.Measures)
+                {
+                    foreach(var sequence in measure.Sequences)
+                    {
+                        int ticksPosInScore = 0;
+                        foreach(var component in sequence.Components)
+                        {
+                            component.TicksPosInScore = ticksPosInScore;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns false if there are no MakeTime graces in the file, otherwise true.
+        /// </summary>
+        /// <returns></returns>
+        private bool SetAllTicksDurationsForMakeTimeGraces()
+        {
+            bool durationsHaveChanged = false;
+            SortedDictionary<int, List<Grace>> ticksPosMakeTimeGraces = new SortedDictionary<int, List<Grace>>();
+            foreach(Part part in Parts)
+            {
+                foreach(var measure in part.Measures)
+                {
+                    foreach(var sequence in measure.Sequences)
+                    {
+                        foreach(var component in sequence.Components)
+                        {
+                            if(component is Grace g && g.Type == GraceType.makeTime)
+                            {
+                                int ticksPos = g.TicksPosInScore;
+                                if(ticksPosMakeTimeGraces.ContainsKey(ticksPos) == false)
+                                {
+                                    ticksPosMakeTimeGraces[ticksPos] = new List<Grace>();
+                                }
+                                ticksPosMakeTimeGraces[ticksPos].Add(g);  
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(ticksPosMakeTimeGraces.Count > 0)
+            {
+                SortedDictionary<int, int> ticksPosTicksToAdd = new SortedDictionary<int, int>();
+                foreach(var tickPos in ticksPosMakeTimeGraces.Keys)
+                {
+                    int maxTicksDuration = 0;
+                    foreach(var grace in ticksPosMakeTimeGraces[tickPos])
+                    {
+                        maxTicksDuration = (maxTicksDuration > grace.DefaultDuration) ? maxTicksDuration : grace.DefaultDuration;
+                    }
+                    foreach(var grace in ticksPosMakeTimeGraces[tickPos])
+                    {
+                        grace.TicksDuration = maxTicksDuration;
+                    }
+                    ticksPosTicksToAdd.Add(tickPos, maxTicksDuration);
+                }
+
+                foreach(var tickPos in ticksPosTicksToAdd.Keys)
+                {
+                    int ticksToAdd = ticksPosTicksToAdd[tickPos];
+
+                    List<IHasSettableTickDuration> objectsToStretch = new List<IHasSettableTickDuration>();
+                    foreach(Part part in Parts)
+                    {
+                        foreach(var measure in part.Measures)
+                        {
+                            foreach(var sequence in measure.Sequences)
+                            {
+                                foreach(var component in sequence.Components)
+                                {
+                                    if(component is IHasSettableTickDuration hasSettableTickDuration)
+                                    {
+                                        objectsToStretch.Add(hasSettableTickDuration);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    foreach(var objectToStretch in objectsToStretch)
+                    {
+                        objectToStretch.TicksDuration += ticksToAdd;
+                    }
+                }
+
+                durationsHaveChanged = true;
+            }
+            return durationsHaveChanged;
         }
 
         public List<List<int>> VoicesPerStaffPerPart

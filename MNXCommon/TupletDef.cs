@@ -139,7 +139,7 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "event", "grace", "forward", "tuplet");
             }
 
-            M.Assert(EventsAndForwards.Count > 0);
+            M.Assert(EventsGracesAndForwards.Count > 0);
             M.Assert(r.Name == "tuplet"); // end of (nested) tuplet content
 
             if(_isTopLevel)

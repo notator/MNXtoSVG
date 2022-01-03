@@ -79,9 +79,9 @@ namespace MNX.Common
                     for(var sIndex = 0; sIndex < measure.Sequences.Count; ++sIndex)
                     {
                         var sequence = measure.Sequences[sIndex];
-                        for(var eIndex = 0; eIndex < sequence.EventsAndForwards.Count; ++eIndex)
+                        for(var eIndex = 0; eIndex < sequence.EventsGracesAndForwards.Count; ++eIndex)
                         {
-                            var evt = sequence.EventsAndForwards[eIndex];
+                            var evt = sequence.EventsGracesAndForwards[eIndex];
                             if(evt is Event e && eventID.Equals(e.ID)) // Forward objects have no ID, and are ignored here.
                             {
                                 partIndex = pIndex;

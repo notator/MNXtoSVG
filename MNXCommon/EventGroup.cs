@@ -76,21 +76,21 @@ namespace MNX.Common
         }
 
         /// <summary>
-        /// Returns a flat sequence of Event and Forward objects.
-        /// Ignores Grace objects (which are EventGroups)
+        /// Returns a flat sequence of Event, Grace and Forward objects.
+        /// (The Grace objects are still complete EventGroups)
         /// </summary>
-        public List<IHasTicks> EventsAndForwards
+        public List<IHasTicks> EventsGracesAndForwards
         {
             get
             {
-                List<IHasTicks> GetEventsOrForwards(EventGroup eventGroup)
+                List<IHasTicks> GetEventsGracesOrForwards(EventGroup eventGroup)
                 {
                     List<IHasTicks> localRval = new List<IHasTicks>();
                     foreach(var item in eventGroup.Components)
                     {
                         if(item is EventGroup eg && !(eg is Grace))
                         {
-                            localRval.AddRange(GetEventsOrForwards(eg)); // recursive call
+                            localRval.AddRange(GetEventsGracesOrForwards(eg)); // recursive call
                         }
                         else if(item is Event e)
                         {
@@ -99,6 +99,10 @@ namespace MNX.Common
                         else if(item is Forward f)
                         {
                             localRval.Add(f);
+                        }
+                        else if(item is Grace g)
+                        {
+                            localRval.Add(g);
                         }
                     }
 
@@ -109,7 +113,7 @@ namespace MNX.Common
                 {
                     if(item is EventGroup eg && !(eg is Grace))
                     {
-                        var eventList = GetEventsOrForwards(eg);
+                        var eventList = GetEventsGracesOrForwards(eg);
                         rval.AddRange(eventList);
                     }
                     else if(item is Event e)
@@ -120,6 +124,10 @@ namespace MNX.Common
                     {
                         rval.Add(f);
                     }
+                    else if(item is Grace g)
+                    {
+                        rval.Add(g);
+                    }
                 }
                 return rval;
             }
@@ -129,7 +137,7 @@ namespace MNX.Common
         {
             get
             {
-                var eventList = EventsAndForwards;
+                var eventList = EventsGracesAndForwards;
                 int rval = 0;
                 foreach(var e in eventList)
                 {

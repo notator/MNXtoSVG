@@ -26,11 +26,11 @@ namespace MNX.Common
             set
             {
                 int outerTicks = value;
-                List<IHasTicks> events = EventsAndForwards;
+                List<IHasTicks> events = EventsGracesAndForwards;
                 List<int> innerTicks = new List<int>();
-                foreach(var ev in EventsAndForwards)
+                foreach(var ev in EventsGracesAndForwards)
                 {
-                    innerTicks.Add(ev.TicksDuration);
+                    innerTicks.Add(1);
                 }
 
                 List<int> newTicks = M.IntDivisionSizes(outerTicks, innerTicks);
@@ -83,29 +83,8 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "event", "grace");
             }
 
-            SetDefaultTicks(Components);
-
-            M.Assert(EventsAndForwards.Count > 0);
+            M.Assert(EventsGracesAndForwards.Count > 0);
             M.Assert(r.Name == "grace"); // end of grace
-
-        }
-
-        private void SetDefaultTicks(List<ISequenceComponent> seq)
-        {
-            List<IHasTicks> eventList = EventsAndForwards;
-            foreach(var fe in eventList)
-            {
-                if(fe is Event e)
-                {
-                    int nTicks = e.MNXDurationSymbol.TicksDuration / 3;
-                    e.MNXDurationSymbol.TicksDuration = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
-                }
-                else if(fe is Forward f)
-                {
-                    int nTicks = f.MNXDurationSymbol.TicksDuration / 3;
-                    f.MNXDurationSymbol.TicksDuration = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
-                }
-            }
         }
 
         private GraceType GetGraceType(string value)

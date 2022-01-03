@@ -75,6 +75,8 @@ namespace MNX.Common
                             break;
                         case "grace":
                             Grace grace = new Grace(r);
+                            // Grace notes are initially given the normal TickDuration for their MNXDurationSymbol,
+                            // so that the different grace duration classes have different, proportional sizes.
                             // All ticksPosInScore and ticksDuration values are updated for grace notes
                             // when the whole score has been read (in MNX.AdjustForGraceNotes())
                             Components.Add(grace);
@@ -84,7 +86,6 @@ namespace MNX.Common
                             break;
                         case "beams":
                             Components.Add(new Beams(r));
-                            // Contrary to tuplets, beams contain no new events, so dont change ticksPosInScore.
                             break;
                         case "forward":
                             Forward forward = new Forward(r);
@@ -96,7 +97,7 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "directions", "beams", "forward", "sequence");
             }
 
-            M.Assert(EventsAndForwards.Count > 0);
+            M.Assert(EventsGracesAndForwards.Count > 0);
             M.Assert(r.Name == "sequence"); // end of sequence content
         }
 
@@ -244,7 +245,7 @@ namespace MNX.Common
         {
             var tickPositions = new List<int>();
             int currentTickPosition = 0;
-            foreach(var evt in EventsAndForwards)
+            foreach(var evt in EventsGracesAndForwards)
             {
                 tickPositions.Add(currentTickPosition);
                 currentTickPosition += evt.TicksDuration;
@@ -259,7 +260,7 @@ namespace MNX.Common
 
             int seqMsDuration = 0;
             int evtMsPositionInScore = this.MsPosInScore;
-            List<IHasTicks> events = this.EventsAndForwards;
+            List<IHasTicks> events = this.EventsGracesAndForwards;
             for(var i = 1; i < msPositions.Count; i++)
             {
                 int msDuration = msPositions[i] - msPositions[i - 1];

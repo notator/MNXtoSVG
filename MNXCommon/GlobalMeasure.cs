@@ -170,7 +170,7 @@ namespace MNX.Common
             IHasTicks previousEvent;
             if(previousObject is EventGroup eg)
             {
-                List<IHasTicks> events = eg.EventsAndForwards;
+                List<IHasTicks> events = eg.EventsGracesAndForwards;
                 previousEvent = events[events.Count - 1];
             }
             else
@@ -195,7 +195,7 @@ namespace MNX.Common
             IHasTicks nextEvent;
             if(nextObject is EventGroup eg)
             {
-                List<IHasTicks> events = eg.EventsAndForwards;
+                List<IHasTicks> events = eg.EventsGracesAndForwards;
                 nextEvent = events[0];
             }
             else

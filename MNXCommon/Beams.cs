@@ -13,14 +13,10 @@ namespace MNX.Common
     {
         public readonly List<Beam> ContainedBeams = new List<Beam>();
         public readonly List<BeamHook> ContainedBeamHooks = new List<BeamHook>();
-        public int TicksPosInScore { get { return _ticksPosInScore; } }
-        private readonly int _ticksPosInScore;
 
-        public Beams(XmlReader r, int ticksPosInScore)
+        public Beams(XmlReader r)
         {
             M.Assert(r.Name == "beams");
-            
-            _ticksPosInScore = ticksPosInScore;
 
             M.ReadToXmlElementTag(r, "beam");
 
@@ -34,12 +30,12 @@ namespace MNX.Common
                     {
                         case "beam":
                             {
-                                ContainedBeams.Add(new Beam(r, ticksPosInScore, topLevelDepth));
+                                ContainedBeams.Add(new Beam(r, topLevelDepth));
                                 break;
                             }
                         case "beam-hook":
                             {
-                                ContainedBeamHooks.Add(new BeamHook(r, ticksPosInScore, topLevelDepth));
+                                ContainedBeamHooks.Add(new BeamHook(r, topLevelDepth));
                                 break;
                             }
                     }                    

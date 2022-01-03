@@ -24,16 +24,11 @@ namespace MNX.Common
             return $"Depth={Depth} EventIDs={idsSB}";
         }
 
-
-        public readonly int TicksPosInScore;
-
-        public Beam(XmlReader r, int ticksPosInScore, int topLevelDepth)
+        public Beam(XmlReader r, int topLevelDepth)
         {
             M.Assert(r.Name == "beam");
 
             Depth = r.Depth - topLevelDepth;
-
-            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

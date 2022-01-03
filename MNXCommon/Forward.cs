@@ -7,27 +7,33 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-event-element
     /// </summary>
-    public class Forward : IHasSettableTicksDuration, IHasTicks, ISequenceComponent
+    public class Forward : IHasTicks, ISequenceComponent
     {
         #region MNX file attributes
         // Compulsory Attribute         
         //   the notated metrical duration of this event  ( /2, /4, /8 etc)
-        public readonly MNXDurationSymbol DSymbol = null;
+        public readonly MNXDurationSymbol MNXDurationSymbol = null;
+
         #endregion  MNX file attributes
 
-        #region runtime properties
-        // TupletLevel is used when setting Duration.Ticks. It has the following meaning:
-        //    0: The Forward is not contained in a Tuplet.
-        //    1: The Forward is contained in a Tuplet.
-        //    2: The Forward is contained in a Tuplet nested in a Tuplet.
-        //    etc. (This app copes with arbitrarily nested tuplets.)
-        public readonly int TupletLevel;
-
-        public int TicksDuration { get { return DSymbol.TicksDuration; } set { DSymbol.TicksDuration = value; } }
         public int TicksPosInScore { get; set; }
+        public int TicksDuration
+        {
+            get
+            {
+                return MNXDurationSymbol.TicksDuration;
+            }
+            set
+            {
+                // this function is used when setting tuplet event ticks and when stealing ticks for Grace.
+                M.Assert(value >= M.MinimumEventTicks);
+                MNXDurationSymbol.TicksDuration = value;
+            }
+        }
+
         public int MsPosInScore = -1;
         public override string ToString() => $"Forward: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
-        #endregion runtime properties
+
 
         #region IUniqueDef
         /// <summary>
@@ -37,15 +43,6 @@ namespace MNX.Common
         public object Clone()
         {
             return this;
-        }
-        /// <summary>
-        /// Multiplies the MsDuration by the given factor.
-        /// </summary>
-        /// <param name="factor"></param>
-        public void AdjustMsDuration(double factor)
-        {
-            MsDuration = (int)(MsDuration * factor);
-            M.Assert(MsDuration > 0, "A Forward's MsDuration may not be set to zero!");
         }
 
         public int MsDuration
@@ -81,14 +78,19 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Forward(XmlReader r, int ticksPosInScore)
+        public Forward(XmlReader r)
         {
-            TicksPosInScore = ticksPosInScore;
+            // TicksDuration is initally be related to the default ticksDuration of the MNXDurationSymbol,
+            // but it changes if this event is part of a tuplet, and again when the file has been completely
+            // read, to accomodate Grace notes.
+            // TicksPosInScore is set correctly when the complete file has been parsed.
+            TicksPosInScore = 0;
 
             M.Assert(r.Name == "forward");
 
             r.MoveToAttribute("duration");
-            DSymbol = new MNXDurationSymbol(r.Value);
+            MNXDurationSymbol = new MNXDurationSymbol(r.Value);
+
 
             M.ReadToXmlElementTag(r, "forward");
 

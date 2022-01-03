@@ -16,11 +16,8 @@ namespace MNX.Common
 
         public readonly List<IPartDirectionsComponent> Components = new List<IPartDirectionsComponent>();
 
-        public readonly int TicksPosInScore = -1; // set in ctor
-        public const int TicksDuration = 0; // all directions have 0 ticks.
-
         #region IUniqueDef
-        public override string ToString() => $"PartDirections: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
+        public override string ToString() => $"PartDirections";
 
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
@@ -49,11 +46,9 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public PartDirections(XmlReader r, int ticksPosInScore)
+        public PartDirections(XmlReader r)
         {
             M.Assert(r.Name == "directions-part");
-
-            TicksPosInScore = ticksPosInScore;
 
             // These are just the elements used in the first set of examples.
             // Other elements need to be added later.
@@ -66,12 +61,12 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "clef":
-                            Clef = new Clef(r, ticksPosInScore);
+                            Clef = new Clef(r);
                             Components.Add(Clef);
                             break;
                         case "key":
                             // https://w3c.github.io/mnx/specification/common/#the-key-element
-                            KeySignature = new KeySignature(r, ticksPosInScore);
+                            KeySignature = new KeySignature(r);
                             Components.Add(KeySignature);
                             break;
 

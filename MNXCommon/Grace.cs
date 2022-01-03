@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-grace-element
     /// </summary>
-    public class Grace : EventGroup, IHasSettableTicksDuration, IHasTicks, ISequenceComponent
+    public class Grace : EventGroup, IHasTicks, ISequenceComponent
     {
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
@@ -26,9 +26,9 @@ namespace MNX.Common
             set
             {
                 int outerTicks = value;
-                List<Event> events = Events;
+                List<IHasTicks> events = EventsAndForwards;
                 List<int> innerTicks = new List<int>();
-                foreach(var ev in Events)
+                foreach(var ev in EventsAndForwards)
                 {
                     innerTicks.Add(ev.TicksDuration);
                 }
@@ -42,11 +42,12 @@ namespace MNX.Common
             }
         }
 
-        public Grace(XmlReader r, int ticksPosInScore)
+        public Grace(XmlReader r)
         {            
             M.Assert(r.Name == "grace");
 
-            TicksPosInScore = ticksPosInScore;
+            TicksDuration = 0;
+            TicksPosInScore = 0; // Set correctly when the complete file has been parsed.
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -74,8 +75,7 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "event":
-                            Event e = new Event(r, ticksPosInScore);
-                            ticksPosInScore += e.TicksDuration;
+                            Event e = new Event(r);
                             Components.Add(e);
                             break;
                     }
@@ -85,18 +85,26 @@ namespace MNX.Common
 
             SetDefaultTicks(Components);
 
-            M.Assert(Events.Count > 0);
+            M.Assert(EventsAndForwards.Count > 0);
             M.Assert(r.Name == "grace"); // end of grace
 
         }
 
         private void SetDefaultTicks(List<ISequenceComponent> seq)
         {
-            var eventList = Events;
-            foreach(var e in eventList)
+            List<IHasTicks> eventList = EventsAndForwards;
+            foreach(var fe in eventList)
             {
-                int nTicks = e.MNXDurationSymbol.TicksDuration / 3;
-                e.MNXDurationSymbol.TicksDuration = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
+                if(fe is Event e)
+                {
+                    int nTicks = e.MNXDurationSymbol.TicksDuration / 3;
+                    e.MNXDurationSymbol.TicksDuration = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
+                }
+                else if(fe is Forward f)
+                {
+                    int nTicks = f.MNXDurationSymbol.TicksDuration / 3;
+                    f.MNXDurationSymbol.TicksDuration = (nTicks < M.MinimumEventTicks) ? M.MinimumEventTicks : nTicks;
+                }
             }
         }
 

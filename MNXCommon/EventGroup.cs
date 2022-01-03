@@ -76,27 +76,49 @@ namespace MNX.Common
         }
 
         /// <summary>
-        /// Returns a flat sequence of Events constructed from
-        /// any contained Events and EventGroups. 
+        /// Returns a flat sequence of Event and Forward objects.
+        /// Ignores Grace objects (which are EventGroups)
         /// </summary>
-        public List<Event> Events
+        public List<IHasTicks> EventsAndForwards
         {
             get
             {
-                List<Event> rval = new List<Event>();
+                List<IHasTicks> GetEventsOrForwards(EventGroup eventGroup)
+                {
+                    List<IHasTicks> localRval = new List<IHasTicks>();
+                    foreach(var item in eventGroup.Components)
+                    {
+                        if(item is EventGroup eg && !(eg is Grace))
+                        {
+                            localRval.AddRange(GetEventsOrForwards(eg)); // recursive call
+                        }
+                        else if(item is Event e)
+                        {
+                            localRval.Add(e);
+                        }
+                        else if(item is Forward f)
+                        {
+                            localRval.Add(f);
+                        }
+                    }
+
+                    return localRval;
+                }
+                List<IHasTicks> rval = new List<IHasTicks>();
                 foreach(var item in Components)
                 {
-                    if(item is EventGroup eg)
+                    if(item is EventGroup eg && !(eg is Grace))
                     {
-                        var eventList = eg.Events;
-                        foreach(var e in eventList)
-                        {
-                            rval.Add(e);
-                        }
+                        var eventList = GetEventsOrForwards(eg);
+                        rval.AddRange(eventList);
                     }
                     else if(item is Event e)
                     {
                         rval.Add(e);
+                    }
+                    else if(item is Forward f)
+                    {
+                        rval.Add(f);
                     }
                 }
                 return rval;
@@ -107,7 +129,7 @@ namespace MNX.Common
         {
             get
             {
-                var eventList = Events;
+                var eventList = EventsAndForwards;
                 int rval = 0;
                 foreach(var e in eventList)
                 {
@@ -117,12 +139,14 @@ namespace MNX.Common
             }
             set
             {
-                // EventGroup Ticks is virtual so that it can be overriden by Grace.
-                // Grace.Ticks implements Ticks.set, so that it can flexiby steal Ticks from Event.
-                // Event also implements Ticks.set.
-                M.ThrowError("Application Error: This function should never be called.");       
+                // EventGroup TicksDuration is virtual so that it can be overriden by Grace and Tuplet.
+                // Grace.TicksDuration implements Ticks.set, so that it can flexiby steal Ticks from Event.
+                // Event and Forward (which are not EventGroups) also implements TicksDuration.set.
+                // This default implementation is
+                M.ThrowError("Application Error: This function should never be called.");
             }
         }
-        public int TicksPosInScore { get; set; }
+
+        public virtual int TicksPosInScore { get; set; }
     }
 }

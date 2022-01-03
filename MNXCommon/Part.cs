@@ -68,7 +68,6 @@ namespace MNX.Common
 
             int measureIndex = 0;
             TimeSignature currentTimeSig = null;
-            int ticksPosInScore = 0;
             while(r.Name == "part-name" || r.Name == "part-abbreviation" || r.Name == "instrument-sound" || r.Name == "measure")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
@@ -87,8 +86,7 @@ namespace MNX.Common
                         case "measure":
                             GlobalDirections globalDirections = globalMeasures[measureIndex].GlobalDirections;
                             currentTimeSig = globalDirections.CurrentTimeSignature;
-                            Measure measure = new Measure(r, measureIndex++, currentTimeSig, ticksPosInScore);
-                            ticksPosInScore += currentTimeSig.TicksDuration;
+                            Measure measure = new Measure(r, measureIndex++, currentTimeSig);
                             Measures.Add(measure);
                             break;
                     }

@@ -9,11 +9,9 @@ namespace MNX.Common
     {
         public readonly string Signature;
         public readonly string Measure;
-        public int TicksPosInScore { get { return _ticksPosInScore; } }
-        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"TimeSignature: {Signature} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
+        public override string ToString() => $"TimeSignature: {Signature} MsPositionReFirstIUD={MsPositionReFirstUD} MsDuration={MsDuration}";
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -46,16 +44,13 @@ namespace MNX.Common
             }
         }
 
-        public int TicksDuration { get; }
-
         private int _msPositionReFirstIUD = 0;
 
         #endregion IUniqueDef
 
-        public TimeSignature(XmlReader r, int ticksPosInScore)
+        public TimeSignature(XmlReader r)
         {
             M.Assert(r.Name == "time");
-            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -76,7 +71,6 @@ namespace MNX.Common
             }
 
             MNXDurationSymbol mds = new MNXDurationSymbol(Signature);
-            TicksDuration = mds.TicksDuration;
 
             // r.Name is now the name of the last time attribute that has been read.
         }

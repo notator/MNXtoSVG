@@ -25,14 +25,14 @@ namespace MNX.Common
 
         public readonly GlobalDirections GlobalDirections = null;
 
-        public GlobalMeasure(XmlReader r, int measureIndex, TimeSignature currentTimeSig, int ticksPosInScore)
+        public GlobalMeasure(XmlReader r, int measureIndex, TimeSignature currentTimeSig)
         {
             M.Assert(r.Name == "measure-global");
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
 
             Index = measureIndex; // ji: 23.06.2020
 
-            GlobalDirections = new GlobalDirections(currentTimeSig, ticksPosInScore); // default
+            GlobalDirections = new GlobalDirections(currentTimeSig); // default
 
             if(!r.IsEmptyElement)
             {
@@ -68,7 +68,7 @@ namespace MNX.Common
                         switch(r.Name)
                         {
                             case "directions-global":
-                                GlobalDirections = new GlobalDirections(r, currentTimeSig, ticksPosInScore);
+                                GlobalDirections = new GlobalDirections(r, currentTimeSig);
                                 currentTimeSig = GlobalDirections.CurrentTimeSignature;
                                 break;
                         }
@@ -156,7 +156,7 @@ namespace MNX.Common
             return rval;
         }
 
-        private static Event FindPreviousEvent(List<IHasTicks> eventsAndEventGroups, int graceIndex)
+        private static IHasTicks FindPreviousEventOrForward(List<IHasTicks> eventsAndEventGroups, int graceIndex)
         {
             if(graceIndex == 0)
             {
@@ -167,10 +167,10 @@ namespace MNX.Common
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            Event previousEvent;
+            IHasTicks previousEvent;
             if(previousObject is EventGroup eg)
             {
-                List<Event> events = eg.Events;
+                List<IHasTicks> events = eg.EventsAndForwards;
                 previousEvent = events[events.Count - 1];
             }
             else
@@ -181,7 +181,7 @@ namespace MNX.Common
             return previousEvent;
         }
 
-        private static Event FindNextEvent(List<IHasTicks> eventsAndEventGroups, int graceIndex)
+        private static IHasTicks FindNextEventOrForward(List<IHasTicks> eventsAndEventGroups, int graceIndex)
         {
             if(graceIndex == (eventsAndEventGroups.Count - 1))
             {
@@ -192,10 +192,10 @@ namespace MNX.Common
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            Event nextEvent;
+            IHasTicks nextEvent;
             if(nextObject is EventGroup eg)
             {
-                List<Event> events = eg.Events;
+                List<IHasTicks> events = eg.EventsAndForwards;
                 nextEvent = events[0];
             }
             else

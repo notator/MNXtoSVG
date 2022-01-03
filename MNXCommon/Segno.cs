@@ -9,11 +9,9 @@ namespace MNX.Common
     {
         public readonly PositionInMeasure PositionInMeasure;
         public readonly string SMuFLGlyphName = "none"; // optional attribute
-        public int TicksPosInScore { get { return _ticksPosInScore; } }
-        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"SMuFLGlyphName: {SMuFLGlyphName} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
+        public override string ToString() => $"SMuFLGlyphName: {SMuFLGlyphName} MsPositionReFirstIUD={MsPositionReFirstUD}";
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -46,17 +44,13 @@ namespace MNX.Common
             }
         }
 
-        public int TicksDuration { get; }
-
         private int _msPositionReFirstIUD = 0;
 
         #endregion IUniqueDef
 
-        public Segno(XmlReader r, int ticksPosInScore)
+        public Segno(XmlReader r)
         {
             M.Assert(r.Name == "segno");
-            _ticksPosInScore = ticksPosInScore;
-            TicksDuration = 0;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

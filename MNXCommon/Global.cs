@@ -17,7 +17,6 @@ namespace MNX.Common
             // https://w3c.github.io/mnx/specification/common/#the-global-element
 
             TimeSignature currentTimeSig = null;
-            int currentTicksPosInScore = 0;
 
             // can have a "parts" attribute
             int count = r.AttributeCount;
@@ -40,9 +39,8 @@ namespace MNX.Common
             {
                 if(r.NodeType != XmlNodeType.EndElement)
                 {
-                    GlobalMeasure globalMeasure = new GlobalMeasure(r, measureIndex++, currentTimeSig, currentTicksPosInScore);
+                    GlobalMeasure globalMeasure = new GlobalMeasure(r, measureIndex++, currentTimeSig);
                     currentTimeSig = globalMeasure.GlobalDirections.CurrentTimeSignature;
-                    currentTicksPosInScore += currentTimeSig.TicksDuration;
                     GlobalMeasures.Add(globalMeasure);
                 }
                 M.ReadToXmlElementTag(r, "measure-global", "global");

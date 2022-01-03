@@ -22,8 +22,6 @@ namespace MNX.Common
         public abstract int StaffIndex { get; }
         public abstract Orientation? Orient { get; }
 
-        public abstract int TicksPosInScore { get; }
-
         #region IUniqueDef
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)

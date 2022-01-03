@@ -14,9 +14,6 @@ namespace MNX.Common
         public override string TargetID { get; }
         public override PositionInMeasure End { get; }
 
-        public override int TicksPosInScore { get { return _ticksPosInScore; } }
-        private readonly int _ticksPosInScore;
-
         // Other attributes
         public readonly string StartNoteID = null; // an ID
         public readonly string EndNoteID = null; // an ID
@@ -24,11 +21,10 @@ namespace MNX.Common
         public readonly Orientation? Side = null;
         public readonly Orientation? SideEnd = null;
 
-        public SlurDef(XmlReader r, int ticksPosInScore)
+        public SlurDef(XmlReader r)
         {
             // https://w3c.github.io/mnx/specification/common/#the-slur-element
             M.Assert(r.Name == "slur");
-            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

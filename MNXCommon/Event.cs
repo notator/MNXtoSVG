@@ -9,7 +9,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-event-element
     /// </summary>
-    public class Event : IHasSettableTicksDuration, IHasTicks, ISequenceComponent, IUniqueDef
+    public class Event : IHasTicks, ISequenceComponent, IUniqueDef
     {
         #region MNX file attributes
         // Compulsory Attribute         
@@ -143,11 +143,15 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Event(XmlReader r, int ticksPosInScore)
+        public Event(XmlReader r)
         {
             M.Assert(r.Name == "event");
 
-            TicksPosInScore = ticksPosInScore;
+            // TicksDuration is initally be related to the default ticksDuration of the MNXDurationSymbol,
+            // but it changes if this event is part of a tuplet, and again when the file has been completely
+            // read, to accomodate Grace notes.
+            // TicksPosInScore is set correctly when the complete file has been parsed.
+            TicksPosInScore = 0;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -190,7 +194,7 @@ namespace MNX.Common
                             {
                                 Notes = new List<Note>();
                             }
-                            Notes.Add(new Note(r, ticksPosInScore));
+                            Notes.Add(new Note(r));
                             break;
                         case "rest":
                             if(Notes == null && Rest == null)
@@ -203,7 +207,7 @@ namespace MNX.Common
                             {
                                 SlurDefs = new List<SlurDef>();
                             }
-                            SlurDefs.Add(new SlurDef(r, ticksPosInScore));
+                            SlurDefs.Add(new SlurDef(r));
                             break;
                     }
                 }

@@ -269,7 +269,7 @@ namespace Moritz.Symbols
                                     yMax = (yMax > rightChord.ChordMetrics.Bottom) ? yMax : rightChord.ChordMetrics.Bottom;
                                     yMin = (yMin < rightChord.ChordMetrics.Top) ? yMin : rightChord.ChordMetrics.Top;
 
-                                    if(rightChord.TicksPosInScore == leftChord.OctaveShift.EndTicksPosInScore)
+                                    if(rightChord.EventID == leftChord.OctaveShift.TargetID)
                                     {
                                         var y = (leftChord.OctaveShift.Orient == Orientation.up) ? yMin : yMax;
                                         // an octaveShiftExtender with endmarker, that ends in this voice.

@@ -26,11 +26,8 @@ namespace MNX.Common
         /// If two Repeats have the same ticksPosition, they are kept in order RepeatEnd, RepeatBegin
         public readonly List<Repeat> Repeats;
 
-        public int TicksPosInScore { get { return _ticksPosInScore; } }
-        private readonly int _ticksPosInScore;
-
         #region IUniqueDef
-        public override string ToString() => $"SequenceDirections: TicksPosInScore={TicksPosInScore}";
+        public override string ToString() => $"SequenceDirections:";
 
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
@@ -67,11 +64,9 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public SequenceDirections(XmlReader r, TimeSignature currentTimeSignature, int ticksPosInScore)
+        public SequenceDirections(XmlReader r, TimeSignature currentTimeSignature)
         {
             M.Assert(r.Name == "directions");
-
-            _ticksPosInScore = ticksPosInScore;
 
             M.ReadToXmlElementTag(r, "clef", "cresc", "dim", "dynamics", "expression", "instruction", "octave-shift", "wedge", "text-block");
 
@@ -83,7 +78,7 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "clef":
-                            Clef = new Clef(r, ticksPosInScore);
+                            Clef = new Clef(r);
                             Components.Add(Clef);
                             break;
                         case "cresc":
@@ -102,14 +97,14 @@ namespace MNX.Common
                             // TODO
                             break;
                         case "octave-shift":
-                            OctaveShift = new OctaveShift(r, ticksPosInScore);
+                            OctaveShift = new OctaveShift(r);
                             Components.Add(OctaveShift);
                             break;
                         case "wedge":
                             // TODO
                             break;
                         case "text-block":
-                            TextBlock = new TextBlock(r, ticksPosInScore);
+                            TextBlock = new TextBlock(r);
                             Components.Add(TextBlock);
                             break;
                     }
@@ -189,7 +184,7 @@ namespace MNX.Common
         }
 
         // returns either a RepeatBegin or RepeatEnd.
-        private Repeat GetRepeat(XmlReader r, int ticksPosInScore)
+        private Repeat GetRepeat(XmlReader r)
         {
             M.Assert(r.Name == "cresc");
 
@@ -244,12 +239,12 @@ namespace MNX.Common
             {
                 case true:
                 {
-                    rval = new RepeatBegin(PositionInMeasure, ticksPosInScore);
+                    rval = new RepeatBegin(PositionInMeasure);
                     break;
                 }
                 case false:
                 {
-                    rval = new RepeatEnd(PositionInMeasure, Times, ticksPosInScore);
+                    rval = new RepeatEnd(PositionInMeasure, Times);
                     break;
                 }
                 default: // null

@@ -79,10 +79,10 @@ namespace MNX.Common
                     for(var sIndex = 0; sIndex < measure.Sequences.Count; ++sIndex)
                     {
                         var sequence = measure.Sequences[sIndex];
-                        for(var eIndex = 0; eIndex < sequence.Events.Count; ++eIndex)
+                        for(var eIndex = 0; eIndex < sequence.EventsAndForwards.Count; ++eIndex)
                         {
-                            var evt = sequence.Events[eIndex];
-                            if(eventID.Equals(evt.ID))
+                            var evt = sequence.EventsAndForwards[eIndex];
+                            if(evt is Event e && eventID.Equals(e.ID)) // Forward objects have no ID, and are ignored here.
                             {
                                 partIndex = pIndex;
                                 measureIndex = mIndex;
@@ -132,7 +132,7 @@ namespace MNX.Common
                         int ticksPosInScore = 0;
                         foreach(var component in sequence.Components)
                         {
-                            if(component is IHasSettableTicksDuration t)
+                            if(component is IHasTicks t)
                             {
                                 t.TicksPosInScore = ticksPosInScore;
                                 ticksPosInScore += t.TicksDuration;
@@ -194,7 +194,7 @@ namespace MNX.Common
                 {
                     int ticksToAdd = ticksPosTicksToAdd[tickPos];
 
-                    List<IHasSettableTicksDuration> objectsToStretch = new List<IHasSettableTicksDuration>();
+                    List<IHasTicks> objectsToStretch = new List<IHasTicks>();
                     foreach(Part part in Parts)
                     {
                         foreach(var measure in part.Measures)
@@ -203,7 +203,7 @@ namespace MNX.Common
                             {
                                 foreach(var component in sequence.Components)
                                 {
-                                    if(component is IHasSettableTicksDuration hasSettableTickDuration)
+                                    if(component is IHasTicks hasSettableTickDuration)
                                     {
                                         objectsToStretch.Add(hasSettableTickDuration);
                                     }

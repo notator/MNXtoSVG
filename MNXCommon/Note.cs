@@ -29,7 +29,7 @@ namespace MNX.Common
         // 6.5.2. The fret element
         // 6.5.3. The string element
 
-        public Note(XmlReader r, int ticksPosInScore)
+        public Note(XmlReader r)
         {
             // https://w3c.github.io/mnx/specification/common/#elementdef-note
             M.Assert(r.Name == "note");
@@ -77,7 +77,7 @@ namespace MNX.Common
                         switch(r.Name)
                         {
                             case "tied":
-                                Tied = new Tied(r, ticksPosInScore);
+                                Tied = new Tied(r);
                                 break;
                             case "notehead":
                                 M.ThrowError("Error: Not implemented yet.");

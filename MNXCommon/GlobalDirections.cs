@@ -16,10 +16,8 @@ namespace MNX.Common
         /// </summary>
         public readonly TimeSignature CurrentTimeSignature;
 
-        public readonly int TicksPosInScore = -1; // set in ctor
-
         #region IUniqueDef
-        public override string ToString() => $"GlobalDirections: TicksPosInScore={TicksPosInScore}";
+        public override string ToString() => $"GlobalDirections";
 
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
@@ -48,11 +46,10 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public GlobalDirections(XmlReader r, TimeSignature currentTimeSignature, int ticksPosInScore)
+        public GlobalDirections(XmlReader r, TimeSignature currentTimeSignature)
         {
             M.Assert(r.Name == "directions-global");
             CurrentTimeSignature = currentTimeSignature;
-            TicksPosInScore = ticksPosInScore;
 
             M.ReadToXmlElementTag(r, "time", "repeat", "ending", "segno", "jump", "fine", "key", "tempo");
 
@@ -65,26 +62,26 @@ namespace MNX.Common
                     {
                         case "time":
                             // https://w3c.github.io/mnx/specification/common/#the-time-element
-                            CurrentTimeSignature = new TimeSignature(r, ticksPosInScore);
+                            CurrentTimeSignature = new TimeSignature(r);
                             Components.Add(CurrentTimeSignature);
                             break;
                         case "repeat":
-                            Components.Add(GetRepeat(r, ticksPosInScore));
+                            Components.Add(GetRepeat(r));
                             break;
                         case "ending":
                             // TODO
                             break;
                         case "segno":
-                            Components.Add(new Segno(r, ticksPosInScore));
+                            Components.Add(new Segno(r));
                             break;
                         case "jump":
-                            Components.Add(new Jump(r, ticksPosInScore));
+                            Components.Add(new Jump(r));
                             break;
                         case "fine":
-                            Components.Add(new Fine(r, ticksPosInScore));
+                            Components.Add(new Fine(r));
                             break;
                         case "key":
-                            Components.Add(new KeySignature(r, ticksPosInScore));
+                            Components.Add(new KeySignature(r));
                             break;
                         case "tempo":
                             // TODO
@@ -97,15 +94,14 @@ namespace MNX.Common
             M.Assert(r.Name == "directions-global"); // end of "directions-global"
         }
 
-        public GlobalDirections(TimeSignature currentTimeSignature, int ticksPosInScore)
+        public GlobalDirections(TimeSignature currentTimeSignature)
         {
             CurrentTimeSignature = currentTimeSignature;
-            TicksPosInScore = ticksPosInScore;
             // Components is an empty list
         }
 
         // returns either a RepeatBegin, RepeatEnd.
-        private Repeat GetRepeat(XmlReader r, int ticksPosInScore)
+        private Repeat GetRepeat(XmlReader r)
         {
             M.Assert(r.Name == "repeat");
 
@@ -159,12 +155,12 @@ namespace MNX.Common
             {
                 case true:
                 {
-                    rval = new RepeatBegin(PositionInMeasure, ticksPosInScore);
+                    rval = new RepeatBegin(PositionInMeasure);
                     break;
                 }
                 case false:
                 {
-                    rval = new RepeatEnd(PositionInMeasure, Times, ticksPosInScore);
+                    rval = new RepeatEnd(PositionInMeasure, Times);
                     break;
                 }
                 default: // null

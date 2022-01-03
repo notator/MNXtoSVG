@@ -8,7 +8,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-tuplet-element
     /// </summary>
-    public class TupletDef : EventGroup, IHasSettableTicksDuration, IHasTicks, ISequenceComponent
+    public class TupletDef : EventGroup, ISequenceComponent
     {
         /// Compulsory attributes:
         #region MNX file attributes
@@ -59,11 +59,12 @@ namespace MNX.Common
 
         private bool _isTopLevel;
 
-        public TupletDef(XmlReader r, int ticksPosInScore, bool isTopLevel)
+        public TupletDef(XmlReader r, bool isTopLevel)
         {
             M.Assert(r.Name == "tuplet");
 
-            TicksPosInScore = ticksPosInScore;
+            TicksPosInScore = 0;
+
             _isTopLevel = isTopLevel;
 
             int count = r.AttributeCount;
@@ -117,23 +118,19 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "event":
-                            Event e = new Event(r, ticksPosInScore);
-                            ticksPosInScore += e.TicksDuration;
+                            Event e = new Event(r);
                             Components.Add(e);
                             break;
                         case "grace":
-                            Grace grace = new Grace(r, ticksPosInScore);
-                            ticksPosInScore += grace.TicksDuration;
+                            Grace grace = new Grace(r);
                             Components.Add(grace);
                             break;
                         case "forward":
-                        Forward forward = new Forward(r, ticksPosInScore);
-                        ticksPosInScore += forward.TicksDuration;
+                        Forward forward = new Forward(r);
                         Components.Add(forward);
                         break;
                         case "tuplet":
-                        TupletDef tuplet = new TupletDef(r, ticksPosInScore, false);
-                        ticksPosInScore += tuplet.TicksDuration;
+                        TupletDef tuplet = new TupletDef(r, false);
                         Components.Add(tuplet);
                         break;
                     }
@@ -142,7 +139,7 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "event", "grace", "forward", "tuplet");
             }
 
-            M.Assert(Events.Count > 0);
+            M.Assert(EventsAndForwards.Count > 0);
             M.Assert(r.Name == "tuplet"); // end of (nested) tuplet content
 
             if(_isTopLevel)

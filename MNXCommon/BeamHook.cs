@@ -7,8 +7,6 @@ namespace MNX.Common
     // https://w3c.github.io/mnx/specification/common/#the-time-element
     public class BeamHook : IUniqueDef
     {
-        private readonly int TicksPosInScore;
-
         public readonly string EventID;
         public readonly BeamHookDirection BeamHookDirection;
         public readonly int Depth;
@@ -47,17 +45,14 @@ namespace MNX.Common
             }
         }
 
-        public int TicksDuration { get; }
-
         private int _msPositionReFirstIUD = 0;
 
         #endregion IUniqueDef
 
-        public BeamHook(XmlReader r, int ticksPosInScore, int topLevelDepth)
+        public BeamHook(XmlReader r, int topLevelDepth)
         {
             M.Assert(r.Name == "beam-hook");
-            TicksPosInScore = ticksPosInScore;
-            TicksDuration = 0;
+
             Depth = r.Depth - topLevelDepth;
 
             int count = r.AttributeCount;

@@ -9,11 +9,9 @@ namespace MNX.Common
     {
         public readonly PositionInMeasure PositionInMeasure;
         public readonly JumpType JumpType;
-        public int TicksPosInScore { get { return _ticksPosInScore; } }
-        private readonly int _ticksPosInScore;
 
         #region IUniqueDef
-        public override string ToString() => $"Type: {JumpType} TicksPosInScore={TicksPosInScore} MsPositionReFirstIUD={MsPositionReFirstUD}";
+        public override string ToString() => $"Type: {JumpType} MsPositionReFirstIUD={MsPositionReFirstUD}";
         /// <summary>
         /// (?) See IUniqueDef Interface definition. (?)
         /// </summary>
@@ -50,10 +48,9 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Jump(XmlReader r, int ticksPosInScore)
+        public Jump(XmlReader r)
         {
             M.Assert(r.Name == "jump");
-            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

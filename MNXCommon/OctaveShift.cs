@@ -39,19 +39,15 @@ namespace MNX.Common
 
         public OctaveShiftType Type { get { return (OctaveShiftType)_octaveShiftType; } }
         private readonly OctaveShiftType? _octaveShiftType = null;
-        public override int TicksPosInScore { get { return _ticksPosInScore; } }
-        private readonly int _ticksPosInScore;
-        public int EndTicksPosInScore { get; internal set; }
 
         #region IUniqueDef
-        public override string ToString() => $"OctaveShift: TicksPosInScore={TicksPosInScore} EndTicksPos={EndTicksPosInScore}";
+        public override string ToString() => $"OctaveShift:";
         #endregion IUniqueDef
 
-        public OctaveShift(XmlReader r, int ticksPosInScore)
+        public OctaveShift(XmlReader r)
             : base()
         {            
             M.Assert(r.Name == "octave-shift");
-            _ticksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

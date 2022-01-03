@@ -65,18 +65,11 @@ namespace MNX.Common
     public interface IHasTicks
     {
         /// <summary>
-        /// Measure and Sequence calculate the returned duration dynamically.
+        /// Sequence, Grace and Tuplet override get: calculate the returned duration dynamically,
+        /// Sequence throws an exception if set is called.
+        /// Grace and Tuplet are EventGroups. They both override set to
+        /// set the TicksDuration of their individual Components.
         /// </summary>
-        int TicksDuration { get; }
-        int TicksPosInScore { get; }
-    }
-
-    /// <summary>
-    /// Grace, Event, Forward, Tuplet
-    /// (Rest is an implementation detail of Event.) 
-    /// </summary>
-    public interface IHasSettableTicksDuration
-    {
         int TicksDuration { get; set; }
         int TicksPosInScore { get; set; }
     }

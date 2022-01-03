@@ -27,12 +27,11 @@ namespace MNX.Common
 
         public int MsPositionInScore { get; private set; }
 
-        public Sequence(XmlReader r, TimeSignature currentTimeSig, int measureindex, int ticksPosInScore, int sequenceIndex)
+        public Sequence(XmlReader r, TimeSignature currentTimeSig, int measureindex, int sequenceIndex)
         {
             M.Assert(r.Name == "sequence");
 
             Index = sequenceIndex;
-            TicksPosInScore = ticksPosInScore;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)
@@ -67,31 +66,28 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "event":
-                            Event e = new Event(r, ticksPosInScore);
-                            ticksPosInScore += e.TicksDuration;
+                            Event e = new Event(r);
                             Components.Add(e);
                             break;
                         case "tuplet":
-                            TupletDef tupletDef = new TupletDef(r, ticksPosInScore, true);
-                            ticksPosInScore += tupletDef.TicksDuration; // the duration of the contained events
+                            TupletDef tupletDef = new TupletDef(r, true);
                             Components.Add(tupletDef);
                             break;
                         case "grace":
-                            Grace grace = new Grace(r, ticksPosInScore);
+                            Grace grace = new Grace(r);
                             // All ticksPosInScore and ticksDuration values are updated for grace notes
                             // when the whole score has been read (in MNX.AdjustForGraceNotes())
                             Components.Add(grace);
                             break;
                         case "directions":
-                            Directions = new SequenceDirections(r, currentTimeSig, ticksPosInScore);
+                            Directions = new SequenceDirections(r, currentTimeSig);
                             break;
                         case "beams":
-                            Components.Add(new Beams(r, ticksPosInScore));
+                            Components.Add(new Beams(r));
                             // Contrary to tuplets, beams contain no new events, so dont change ticksPosInScore.
                             break;
                         case "forward":
-                            Forward forward = new Forward(r, ticksPosInScore);
-                            ticksPosInScore += forward.TicksDuration;
+                            Forward forward = new Forward(r);
                             Components.Add(forward);
                             break;
                     }
@@ -100,7 +96,7 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "directions", "beams", "forward", "sequence");
             }
 
-            M.Assert(Events.Count > 0);
+            M.Assert(EventsAndForwards.Count > 0);
             M.Assert(r.Name == "sequence"); // end of sequence content
         }
 
@@ -248,7 +244,7 @@ namespace MNX.Common
         {
             var tickPositions = new List<int>();
             int currentTickPosition = 0;
-            foreach(var evt in Events)
+            foreach(var evt in EventsAndForwards)
             {
                 tickPositions.Add(currentTickPosition);
                 currentTickPosition += evt.TicksDuration;
@@ -263,12 +259,20 @@ namespace MNX.Common
 
             int seqMsDuration = 0;
             int evtMsPositionInScore = this.MsPosInScore;
-            List<Event> events = this.Events;
+            List<IHasTicks> events = this.EventsAndForwards;
             for(var i = 1; i < msPositions.Count; i++)
             {
                 int msDuration = msPositions[i] - msPositions[i - 1];
-                events[i - 1].MsDuration = msDuration;
-                events[i - 1].MsPosInScore = evtMsPositionInScore;
+                if(events[i - 1] is Event e)
+                {
+                    e.MsDuration = msDuration;
+                    e.MsPosInScore = evtMsPositionInScore;
+                }
+                else if(events[i - 1] is Forward f)
+                {
+                    f.MsDuration = msDuration;
+                    f.MsPosInScore = evtMsPositionInScore;
+                }
                 evtMsPositionInScore += msDuration;
                 seqMsDuration += msDuration;
             }

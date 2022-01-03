@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class GlobalMeasure : IHasTicks
+    public class GlobalMeasure
     {
         /// <summary>
         /// If null, this value should be set when the whole score has been read
@@ -18,10 +18,8 @@ namespace MNX.Common
         /// this (0-based) attribute is always set by the constructor.
         /// </summary>
         public int Index { get; private set; } = -1;
-        public int TicksDuration { get; private set; } = -1;
-        public int TicksPosInScore { get; private set; } = -1;
 
-        public override string ToString() => $"GlobalMeasure: Index={Index} TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
+        public override string ToString() => $"GlobalMeasure: Index={Index}";
 
         public readonly BarlineType? Barline = null; // default
 
@@ -33,8 +31,6 @@ namespace MNX.Common
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
 
             Index = measureIndex; // ji: 23.06.2020
-            TicksDuration = (currentTimeSig != null) ? currentTimeSig.TicksDuration : -1; // overridden below if the time sig changes.
-            TicksPosInScore = ticksPosInScore; // ji: 13.12.2020
 
             GlobalDirections = new GlobalDirections(currentTimeSig, ticksPosInScore); // default
 
@@ -74,7 +70,6 @@ namespace MNX.Common
                             case "directions-global":
                                 GlobalDirections = new GlobalDirections(r, currentTimeSig, ticksPosInScore);
                                 currentTimeSig = GlobalDirections.CurrentTimeSignature;
-                                TicksDuration = currentTimeSig.TicksDuration;
                                 break;
                         }
                     }

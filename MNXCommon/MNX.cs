@@ -132,7 +132,11 @@ namespace MNX.Common
                         int ticksPosInScore = 0;
                         foreach(var component in sequence.Components)
                         {
-                            component.TicksPosInScore = ticksPosInScore;
+                            if(component is IHasSettableTicksDuration t)
+                            {
+                                t.TicksPosInScore = ticksPosInScore;
+                                ticksPosInScore += t.TicksDuration;
+                            }
                         }
                     }
                 }
@@ -177,7 +181,7 @@ namespace MNX.Common
                     int maxTicksDuration = 0;
                     foreach(var grace in ticksPosMakeTimeGraces[tickPos])
                     {
-                        maxTicksDuration = (maxTicksDuration > grace.DefaultDuration) ? maxTicksDuration : grace.DefaultDuration;
+                        //maxTicksDuration = (maxTicksDuration > grace.DefaultDuration) ? maxTicksDuration : grace.DefaultDuration;
                     }
                     foreach(var grace in ticksPosMakeTimeGraces[tickPos])
                     {
@@ -190,7 +194,7 @@ namespace MNX.Common
                 {
                     int ticksToAdd = ticksPosTicksToAdd[tickPos];
 
-                    List<IHasSettableTickDuration> objectsToStretch = new List<IHasSettableTickDuration>();
+                    List<IHasSettableTicksDuration> objectsToStretch = new List<IHasSettableTicksDuration>();
                     foreach(Part part in Parts)
                     {
                         foreach(var measure in part.Measures)
@@ -199,7 +203,7 @@ namespace MNX.Common
                             {
                                 foreach(var component in sequence.Components)
                                 {
-                                    if(component is IHasSettableTickDuration hasSettableTickDuration)
+                                    if(component is IHasSettableTicksDuration hasSettableTickDuration)
                                     {
                                         objectsToStretch.Add(hasSettableTickDuration);
                                     }

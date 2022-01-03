@@ -114,8 +114,9 @@ namespace MNX.Common
                             var octaveShift = directions.OctaveShift;
                             var item1 = octaveShift.EndOctaveShiftPos.Item1;
                             int endMeasureIndex = (item1 == null) ? measureIndex : (int)item1;
-                            var tickPosInMeasure = octaveShift.EndOctaveShiftPos.Item2;
-                            octaveShift.EndTicksPosInScore = measures[endMeasureIndex].TicksPosInScore + tickPosInMeasure;
+                            // TODO 02.01.22
+                            //var tickPosInMeasure = octaveShift.EndOctaveShiftPos.Item2;
+                            //octaveShift.EndTicksPosInScore = measures[endMeasureIndex].TicksPosInScore + tickPosInMeasure;
                         }
                     }
                 }

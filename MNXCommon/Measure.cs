@@ -9,7 +9,7 @@ namespace MNX.Common
     /// <summary>
     /// A Measure in a Part. Global Measures have class GlobalMeasure.
     /// </summary>
-    public class Measure : IHasTicks
+    public class Measure
     {
         /// <summary>
         /// If null, this value should be set when the whole score has been read
@@ -22,41 +22,13 @@ namespace MNX.Common
         /// this (0-based) attribute is always set by the constructor.
         /// </summary>
         public readonly int Index = -1;
-        public int TicksPosInScore
-        {
-            get
-            {
-                if(_ticksPosInScore == -1)
-                {
-                    throw new ApplicationException("A Global Measure has no TicksPosInScore");
-                }
-                else
-                {
-                    return _ticksPosInScore;
-                }
-            }
-        }
-        private readonly int _ticksPosInScore;
 
-        public override string ToString() => $"Measure: Index={Index} TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration}";
+        public override string ToString() => $"Measure: Index={Index}";
 
         public readonly BarlineType? Barline = null; // default
 
         public readonly PartDirections PartDirections = null;
         public readonly List<Sequence> Sequences = new List<Sequence>();
-
-        public int TicksDuration
-        {
-            get
-            {
-                for(var i = 1; i < Sequences.Count; i++)
-                {
-                    M.Assert(Sequences[i].TicksDuration == _ticksDuration);
-                }
-                return _ticksDuration;
-            }
-        }
-        private readonly int _ticksDuration = -1;
 
         public Measure(XmlReader r, int measureIndex, TimeSignature currentTimeSig, int ticksPosInScore)
         {
@@ -69,8 +41,6 @@ namespace MNX.Common
             }
 
             Index = measureIndex; // ji: 23.06.2020
-            _ticksDuration = currentTimeSig.TicksDuration;
-            _ticksPosInScore = ticksPosInScore; // ji: 23.06.2020
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

@@ -1,7 +1,9 @@
 using MNX.Common;
 using MNX.Globals;
+
 using Moritz.Spec;
 using Moritz.Xml;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -52,33 +54,22 @@ namespace Moritz.Symbols
         private List<Bar> GetBars(MNX.Common.MNX mnxCommon)
         {
             var bars = new List<Bar>();
-            ///
-            ///List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
-            ///
+            List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
+
             var midiChannelsPerStaff = M.PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;
 
-            var nMeasures = mnxCommon.NumberOfMeasures;
             var seqMsPositionInScore = 0;
-            for(var measureIndex = 0; measureIndex < nMeasures; measureIndex++)
+            for(var measureIndex = 0; measureIndex < globalIUDsPerMeasure.Count; measureIndex++)
             {
-                List<IGlobalDirectionsComponent> globalDirections = mnxCommon.Global.GlobalMeasures[measureIndex].GlobalDirections.Components;
-
                 var midiChannelIndexPerOutputVoice = new List<int>();
                 List<Trk> trks = new List<Trk>();
-                ///List<IUniqueDef> globalDirections = globalIUDsPerMeasure[measureIndex];
+                List<IUniqueDef> globalDirections = globalIUDsPerMeasure[measureIndex];
                 var systemStaffIndex = 0;
                 foreach(var part in mnxCommon.Parts)
                 {
                     var measure = part.Measures[measureIndex];
-                    ///
-                    ///List<IUniqueDef> partMeasureDirections = GetPartMeasureDirections(measure.PartDirections);
-                    ///
-
-                    List<IPartDirectionsComponent> measureDirections = measure.PartDirections.Components;
-
-
-
+                    List<IUniqueDef> measureDirections = GetMeasureDirections(measure.PartDirections);
                     var voicesPerStaff = part.VoicesPerStaff;
                     var nPartStaves = voicesPerStaff.Count;
 
@@ -89,27 +80,14 @@ namespace Moritz.Symbols
                         for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
                         {
                             Sequence sequence = measure.Sequences[voiceIndex];
-                            ///
-                            ///List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, M.PageFormat.MillisecondsPerTick);
-                            ///
+                            List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, M.PageFormat.MillisecondsPerTick);
 
-
-                            //sequence.SetMsDurations()
-
-                            List<ISequenceDirectionsComponent> sequenceDirections = sequence.Directions.Components;
-                            List<ISequenceComponent> sequenceComponents = sequence.Components;
-
-
-
-                            List<IUniqueDef> iudSequence = GetMeasureIUDSequence(sequenceComponents, sequenceDirections, measureDirections, globalDirections);
-
-
-
-                            //InsertDirectionsInSeqIUDs(seqIUDs, partMeasureDirections, globalDirections);
+                            // TODO add Repeats as IUDs here
+                            InsertDirectionsInSeqIUDs(seqIUDs, measureDirections, globalDirections);
 
                             var midiChannel = midiChannelsPerStaff[systemStaffIndex][voiceIndex];
                             midiChannelIndexPerOutputVoice.Add(midiChannel);
-                            Trk trk = new Trk(midiChannel, 0, iudSequence);
+                            Trk trk = new Trk(midiChannel, 0, seqIUDs);
                             trks.Add(trk);
                         }
                         systemStaffIndex++;
@@ -125,16 +103,6 @@ namespace Moritz.Symbols
             AdjustNoteheadPitchesForOctaveShifts(bars);
 
             return bars;
-        }
-
-        private List<IUniqueDef> GetMeasureIUDSequence(List<ISequenceComponent> sequenceComponents, 
-                                                        List<ISequenceDirectionsComponent> sequenceDirections, 
-                                                        List<IPartDirectionsComponent> measureDirections, 
-                                                        List<IGlobalDirectionsComponent> globalDirections)
-        {
-            var rval = new List<IUniqueDef>();
-
-            return rval;
         }
 
         /// <summary>
@@ -154,7 +122,7 @@ namespace Moritz.Symbols
                 for(var voiceIndex = 0; voiceIndex < bar.VoiceDefs.Count; voiceIndex++)
                 {
                     var voiceDef = bar.VoiceDefs[voiceIndex];
-                    if(voiceIndex > (barsPerVoice.Count - 1) )
+                    if(voiceIndex > (barsPerVoice.Count - 1))
                     {
                         barsPerVoice.Add(new List<VoiceDef>());
                     }
@@ -179,7 +147,7 @@ namespace Moritz.Symbols
                             if(evt.OctaveShift != null)
                             {
                                 octaveShift = evt.OctaveShift;
-                                Tuple<int?, int> eosp = octaveShift.EndOctaveShiftPos;                                
+                                Tuple<int?, int> eosp = octaveShift.EndOctaveShiftPos;
                                 if(eosp.Item1 == null)
                                 {
                                     endOctaveShiftPos = new Tuple<int, int>(barIndex, eosp.Item2);
@@ -207,7 +175,7 @@ namespace Moritz.Symbols
             }
         }
 
-        private List<IUniqueDef> GetPartMeasureDirections(PartDirections measureDirections)
+        private List<IUniqueDef> GetMeasureDirections(PartDirections measureDirections)
         {
             var rval = new List<IUniqueDef>();
             if(measureDirections != null)
@@ -227,65 +195,52 @@ namespace Moritz.Symbols
 
         private void InsertDirectionsInSeqIUDs(List<IUniqueDef> seqIUDs, List<IUniqueDef> measureDirections, List<IUniqueDef> globalDirections)
         {
-            //foreach(IUniqueDef iud in measureDirections)
-            //{
-            //    IPartDirectionsComponent pdc = iud as IPartDirectionsComponent;
-            //    if(pdc != null)
-            //    {
-            //        int tickPos = pdc.TicksPosInScore;
-            //        int index = seqIUDs.FindIndex(x => x.T)
-            //        if(pdc is Clef clef)
-            //        {
-            //            seqIUDs.Insert(0, (IUniqueDef) clef);
-            //        }
-            //    }
-            //}
-            MNX.Common.Clef initialClef = Find<MNX.Common.Clef>(seqIUDs, measureDirections, globalDirections);
-            MNX.Common.KeySignature initialKeySignature = Find<MNX.Common.KeySignature>(seqIUDs, measureDirections, globalDirections);
-            MNX.Common.TimeSignature initialTimeSignature = Find<MNX.Common.TimeSignature>(seqIUDs, measureDirections, globalDirections);
+            MNX.Common.Clef clef = Find<MNX.Common.Clef>(seqIUDs, measureDirections, globalDirections);
+            MNX.Common.KeySignature keySignature = Find<MNX.Common.KeySignature>(seqIUDs, measureDirections, globalDirections);
+            MNX.Common.TimeSignature timeSignature = Find<MNX.Common.TimeSignature>(seqIUDs, measureDirections, globalDirections);
 
-            //#region insert repeats
-            //List<Repeat> repeats = new List<Repeat>();
-            //foreach(var iud in globalDirections)
-            //{
-            //    if(iud is Repeat repeat)
-            //    {
-            //        repeats.Add(repeat);
-            //    }
-            //}
-            //Dictionary<IUniqueDef, int> ticksPositionsInMeasure = new Dictionary<IUniqueDef, int>();
-            //int ticksPosInMeasure = 0;
-            //foreach(var iud in seqIUDs)
-            //{
-            //    if(iud is Event evnt)
-            //    {
-            //        ticksPositionsInMeasure.Add(evnt, ticksPosInMeasure);
-            //        ticksPosInMeasure += evnt.TicksDuration;
-            //    }
-            //}
-            //for(int i = seqIUDs.Count - 1; i >= 0; --i)
-            //{
-            //    var iud = seqIUDs[i];
-            //    if(iud is Event evnt)
-            //    {
-            //        for(var ri = repeats.Count - 1; ri >= 0; --ri)
-            //        {
-            //            var repeat = repeats[ri];
-            //            var tickPositionInMeasure = ticksPositionsInMeasure[iud];
-            //            if(repeat.PositionInMeasure.TickPositionInMeasure > tickPositionInMeasure)
-            //            {
-            //                seqIUDs.Insert(i + 1, repeat);
-            //                repeats.RemoveAt(ri);
-            //            }
-            //            else if(repeat.PositionInMeasure.TickPositionInMeasure == tickPositionInMeasure)
-            //            {
-            //                seqIUDs.Insert(i, repeat);
-            //                repeats.RemoveAt(ri);
-            //            }
-            //        }
-            //    }
-            //}
-            //#endregion insert repeats
+            #region insert repeats
+            List<Repeat> repeats = new List<Repeat>();
+            foreach(var iud in globalDirections)
+            {
+                if(iud is Repeat repeat)
+                {
+                    repeats.Add(repeat);
+                }
+            }
+            Dictionary<IUniqueDef, int> ticksPositionsInMeasure = new Dictionary<IUniqueDef, int>();
+            int ticksPosInMeasure = 0;
+            foreach(var iud in seqIUDs)
+            {
+                if(iud is Event evnt)
+                {
+                    ticksPositionsInMeasure.Add(evnt, ticksPosInMeasure);
+                    ticksPosInMeasure += evnt.TicksDuration;
+                }
+            }
+            for(int i = seqIUDs.Count - 1; i >= 0; --i)
+            {
+                var iud = seqIUDs[i];
+                if(iud is Event evnt)
+                {
+                    for(var ri = repeats.Count - 1; ri >= 0; --ri)
+                    {
+                        var repeat = repeats[ri];
+                        var tickPositionInMeasure = ticksPositionsInMeasure[iud];
+                        if(repeat.PositionInMeasure.TickPositionInMeasure > tickPositionInMeasure)
+                        {
+                            seqIUDs.Insert(i + 1, repeat);
+                            repeats.RemoveAt(ri);
+                        }
+                        else if(repeat.PositionInMeasure.TickPositionInMeasure == tickPositionInMeasure)
+                        {
+                            seqIUDs.Insert(i, repeat);
+                            repeats.RemoveAt(ri);
+                        }
+                    }
+                }
+            }
+            #endregion insert repeats
 
             for(int i = 2; i >= 0; i--)
             {
@@ -298,17 +253,17 @@ namespace Moritz.Symbols
                     }
                 }
             }
-            if(initialTimeSignature != null)
+            if(timeSignature != null)
             {
-                seqIUDs.Insert(0, (IUniqueDef)initialTimeSignature.Clone());
+                seqIUDs.Insert(0, (IUniqueDef)timeSignature.Clone());
             }
-            if(initialKeySignature != null)
+            if(keySignature != null)
             {
-                seqIUDs.Insert(0, (IUniqueDef)initialKeySignature.Clone());
+                seqIUDs.Insert(0, (IUniqueDef)keySignature.Clone());
             }
-            if(initialClef != null)
+            if(clef != null)
             {
-                seqIUDs.Insert(0, (IUniqueDef)initialClef.Clone());
+                seqIUDs.Insert(0, (IUniqueDef)clef.Clone());
             }
         }
 
@@ -739,7 +694,7 @@ namespace Moritz.Symbols
                         }
                         voiceListList[voiceListIndex++].Add(voice);
                     }
-                }                       
+                }
             }
             foreach(var voiceList in voiceListList)
             {
@@ -971,15 +926,15 @@ namespace Moritz.Symbols
             {
                 if(iud is MNX.Common.Clef clef && initialClef == null)
                 {
-                    initialClef = (MNX.Common.Clef) clef;
+                    initialClef = (MNX.Common.Clef)clef;
                 }
                 if(iud is MNX.Common.KeySignature keySig && initialKeySig == null)
                 {
-                    initialKeySig = (MNX.Common.KeySignature) keySig;
+                    initialKeySig = (MNX.Common.KeySignature)keySig;
                 }
                 if(iud is MNX.Common.TimeSignature timeSig && initialTimeSig == null)
                 {
-                    initialTimeSig = (MNX.Common.TimeSignature) timeSig;
+                    initialTimeSig = (MNX.Common.TimeSignature)timeSig;
                 }
             }
             M.Assert(initialClef != null);
@@ -1106,172 +1061,172 @@ namespace Moritz.Symbols
             return rval;
         }
 
-		private void CheckBars(List<Bar> bars)
-		{
-            string errorString = null;
-			if(bars.Count == 0)
-				errorString = "The algorithm has not created any bars!";
-			else
-			{
-				errorString = BasicChecks(bars);
-			}
-			if(string.IsNullOrEmpty(errorString))
-			{
-				errorString = CheckCCSettings(bars);
-			}
-			M.Assert(string.IsNullOrEmpty(errorString), errorString);
-		}
-		#region private to CheckBars(...)
-		private string BasicChecks(List<Bar> bars)
+        private void CheckBars(List<Bar> bars)
         {
-			string errorString = null;
-			//List<int> visibleLowerVoiceIndices = new List<int>();
-			//Dictionary<int, string> upperVoiceClefDict = GetUpperVoiceClefDict(bars[0], PageFormat, /*sets*/ visibleLowerVoiceIndices);
+            string errorString = null;
+            if(bars.Count == 0)
+                errorString = "The algorithm has not created any bars!";
+            else
+            {
+                errorString = BasicChecks(bars);
+            }
+            if(string.IsNullOrEmpty(errorString))
+            {
+                errorString = CheckCCSettings(bars);
+            }
+            M.Assert(string.IsNullOrEmpty(errorString), errorString);
+        }
+        #region private to CheckBars(...)
+        private string BasicChecks(List<Bar> bars)
+        {
+            string errorString = null;
+            //List<int> visibleLowerVoiceIndices = new List<int>();
+            //Dictionary<int, string> upperVoiceClefDict = GetUpperVoiceClefDict(bars[0], PageFormat, /*sets*/ visibleLowerVoiceIndices);
 
-			for (int barIndex = 0; barIndex < bars.Count; ++barIndex)
-			{
-				Bar bar = bars[barIndex];
-				IReadOnlyList<VoiceDef> voiceDefs = bar.VoiceDefs;
-				string barNumber = (barIndex + 1).ToString();
+            for(int barIndex = 0; barIndex < bars.Count; ++barIndex)
+            {
+                Bar bar = bars[barIndex];
+                IReadOnlyList<VoiceDef> voiceDefs = bar.VoiceDefs;
+                string barNumber = (barIndex + 1).ToString();
 
-				if(voiceDefs.Count == 0)
-				{
-					errorString = $"Bar {barNumber} contains no voices.";
-					break;
-				}
-				if(!(voiceDefs[0] is Trk))
-				{
-					errorString = "The top (first) voice in every bar must be an output voice.";
-					break;
-				}
+                if(voiceDefs.Count == 0)
+                {
+                    errorString = $"Bar {barNumber} contains no voices.";
+                    break;
+                }
+                if(!(voiceDefs[0] is Trk))
+                {
+                    errorString = "The top (first) voice in every bar must be an output voice.";
+                    break;
+                }
 
-				for(int voiceIndex = 0; voiceIndex < voiceDefs.Count; ++voiceIndex)
-				{
-					VoiceDef voiceDef = voiceDefs[voiceIndex];
-					string voiceNumber = (voiceIndex + 1).ToString();
-					if(voiceDef.UniqueDefs.Count == 0)
-					{
-						errorString = $"Voice number {voiceNumber} in Bar {barNumber} has an empty UniqueDefs list.";
-						break;
-					}
-				}
+                for(int voiceIndex = 0; voiceIndex < voiceDefs.Count; ++voiceIndex)
+                {
+                    VoiceDef voiceDef = voiceDefs[voiceIndex];
+                    string voiceNumber = (voiceIndex + 1).ToString();
+                    if(voiceDef.UniqueDefs.Count == 0)
+                    {
+                        errorString = $"Voice number {voiceNumber} in Bar {barNumber} has an empty UniqueDefs list.";
+                        break;
+                    }
+                }
 
-				errorString = CheckThatLowerVoicesHaveNoSmallClefs(voiceDefs);
+                errorString = CheckThatLowerVoicesHaveNoSmallClefs(voiceDefs);
 
-				if(!string.IsNullOrEmpty(errorString))
-					break;
-			}
-			return errorString;
-		}
+                if(!string.IsNullOrEmpty(errorString))
+                    break;
+            }
+            return errorString;
+        }
 
-		private string CheckThatLowerVoicesHaveNoSmallClefs(IReadOnlyList<VoiceDef> voiceDefs)
-		{
-			string errorString = "";
+        private string CheckThatLowerVoicesHaveNoSmallClefs(IReadOnlyList<VoiceDef> voiceDefs)
+        {
+            string errorString = "";
 
-			List<int> lowerVoiceIndices = GetLowerVoiceIndices();
+            List<int> lowerVoiceIndices = GetLowerVoiceIndices();
 
-			foreach(int lowerVoiceIndex in lowerVoiceIndices)
-			{
-				var uniqueDefs = voiceDefs[lowerVoiceIndex].UniqueDefs;
-				foreach(IUniqueDef iud in uniqueDefs)
-				{
-					if(iud is ClefDef)
-					{
-						errorString = "Small Clefs may not be defined for lower voices on a staff.";
-						break;
-					}
-				}
-				if(!string.IsNullOrEmpty(errorString))
-					break;
-			}
+            foreach(int lowerVoiceIndex in lowerVoiceIndices)
+            {
+                var uniqueDefs = voiceDefs[lowerVoiceIndex].UniqueDefs;
+                foreach(IUniqueDef iud in uniqueDefs)
+                {
+                    if(iud is ClefDef)
+                    {
+                        errorString = "Small Clefs may not be defined for lower voices on a staff.";
+                        break;
+                    }
+                }
+                if(!string.IsNullOrEmpty(errorString))
+                    break;
+            }
 
-			return errorString;
-		}
+            return errorString;
+        }
 
-		private List<int> GetLowerVoiceIndices()
-		{
-			List<int> lowerVoiceIndices = new List<int>();
-			int voiceIndex = 0;
-			
-			IReadOnlyList<IReadOnlyList<int>> outputChPerStaff = M.PageFormat.MIDIChannelsPerStaff;
+        private List<int> GetLowerVoiceIndices()
+        {
+            List<int> lowerVoiceIndices = new List<int>();
+            int voiceIndex = 0;
 
-			for(int staffIndex = 0; staffIndex < outputChPerStaff.Count; ++staffIndex)
-			{
-				if(outputChPerStaff[staffIndex].Count > 1)
-				{
-					voiceIndex++;
-					lowerVoiceIndices.Add(voiceIndex);
-				}
-				voiceIndex++;
-			}
+            IReadOnlyList<IReadOnlyList<int>> outputChPerStaff = M.PageFormat.MIDIChannelsPerStaff;
 
-			return lowerVoiceIndices;
-		}
+            for(int staffIndex = 0; staffIndex < outputChPerStaff.Count; ++staffIndex)
+            {
+                if(outputChPerStaff[staffIndex].Count > 1)
+                {
+                    voiceIndex++;
+                    lowerVoiceIndices.Add(voiceIndex);
+                }
+                voiceIndex++;
+            }
 
-		private int NOutputVoices(List<VoiceDef> bar1)
-		{
-			int nOutputVoices = 0;
-			foreach(VoiceDef voiceDef in bar1)
-			{
-				if(voiceDef is Trk)
-				{
-					nOutputVoices++;
-				}
-			}
-			return nOutputVoices;
-		}
+            return lowerVoiceIndices;
+        }
 
-		/// <summary>
-		/// Synchronous continuous controller settings (ccSettings) are not allowed.
-		/// </summary>
-		private string CheckCCSettings(List<Bar> bars)
-		{
-			string errorString = null;
-			List<int> ccSettingsMsPositions = new List<int>();
-			foreach(Bar bar in bars)
-			{
-				ccSettingsMsPositions.Clear();
+        private int NOutputVoices(List<VoiceDef> bar1)
+        {
+            int nOutputVoices = 0;
+            foreach(VoiceDef voiceDef in bar1)
+            {
+                if(voiceDef is Trk)
+                {
+                    nOutputVoices++;
+                }
+            }
+            return nOutputVoices;
+        }
 
-				if(!string.IsNullOrEmpty(errorString))
-				{
-					break;
-				}
-			}
+        /// <summary>
+        /// Synchronous continuous controller settings (ccSettings) are not allowed.
+        /// </summary>
+        private string CheckCCSettings(List<Bar> bars)
+        {
+            string errorString = null;
+            List<int> ccSettingsMsPositions = new List<int>();
+            foreach(Bar bar in bars)
+            {
+                ccSettingsMsPositions.Clear();
 
-			return errorString;
-		}
+                if(!string.IsNullOrEmpty(errorString))
+                {
+                    break;
+                }
+            }
 
-		#endregion
+            return errorString;
+        }
 
-		/// <summary>
-		/// Check that each output track index (top to bottom) is the same as its MidiChannel (error is fatal)
-		/// </summary>
-		/// <param name="systems"></param>
-		private void CheckSystems(List<SvgSystem> systems)
-		{
-			var outputTrackMidiChannels = new List<int>();
-			for(int systemIndex = 0; systemIndex < systems.Count; systemIndex++)
-			{
-				var staves = systems[systemIndex].Staves;
-				outputTrackMidiChannels.Clear();
-				for (int staffIndex = 0; staffIndex < staves.Count; staffIndex++)
-				{
-					var voices = staves[staffIndex].Voices;
-					foreach(var voice in voices)
-					{
-						if(voice is OutputVoice)
-						{
-							outputTrackMidiChannels.Add(voice.MidiChannel);
-						}
-						else break;
-					} 
-				}
-				for (int trackIndex = 0; trackIndex < outputTrackMidiChannels.Count; trackIndex++)
-				{
-					M.Assert(trackIndex == outputTrackMidiChannels[trackIndex], "Track index and MidiChannel must be identical.");
-				}
-			}
-		}
+        #endregion
+
+        /// <summary>
+        /// Check that each output track index (top to bottom) is the same as its MidiChannel (error is fatal)
+        /// </summary>
+        /// <param name="systems"></param>
+        private void CheckSystems(List<SvgSystem> systems)
+        {
+            var outputTrackMidiChannels = new List<int>();
+            for(int systemIndex = 0; systemIndex < systems.Count; systemIndex++)
+            {
+                var staves = systems[systemIndex].Staves;
+                outputTrackMidiChannels.Clear();
+                for(int staffIndex = 0; staffIndex < staves.Count; staffIndex++)
+                {
+                    var voices = staves[staffIndex].Voices;
+                    foreach(var voice in voices)
+                    {
+                        if(voice is OutputVoice)
+                        {
+                            outputTrackMidiChannels.Add(voice.MidiChannel);
+                        }
+                        else break;
+                    }
+                }
+                for(int trackIndex = 0; trackIndex < outputTrackMidiChannels.Count; trackIndex++)
+                {
+                    M.Assert(trackIndex == outputTrackMidiChannels[trackIndex], "Track index and MidiChannel must be identical.");
+                }
+            }
+        }
 
         /// <summary>
         /// Creates one System per bar (=list of VoiceDefs) in the argument.
@@ -1313,9 +1268,9 @@ namespace Moritz.Symbols
                     system.Staves.Add(outputStaff);
                 }
             }
-		}
+        }
 
-		private string StaffName(int systemIndex, int staffIndex)
+        private string StaffName(int systemIndex, int staffIndex)
         {
             if(systemIndex == 0)
             {

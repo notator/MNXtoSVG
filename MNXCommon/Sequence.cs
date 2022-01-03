@@ -7,7 +7,7 @@ using Moritz.Spec;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-sequence-element
-    public class Sequence : EventGroup, IHasTicks, IPartMeasureComponent
+    public class Sequence : EventGroup, IPartMeasureComponent
     {
         public readonly Orientation? Orient = null; // default
         public readonly int? StaffIndex = null; // default
@@ -16,7 +16,7 @@ namespace MNX.Common
 
         public readonly SequenceDirections Directions = new SequenceDirections(); // contains an empty Components list.
 
-        public override string ToString() => $"Sequence: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
+        public override string ToString() => $"Sequence: MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         /// <summary>
         /// This value is set by the Part constructor, once the Part as a whole has been read.
@@ -126,90 +126,89 @@ namespace MNX.Common
             return rval;
         }
 
-        //public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(int seqMsPositionInScore, double millisecondsPerTick)
-        //{
-        //    List<Event> events = this.Events;
-        //    MsPositionInScore = seqMsPositionInScore;
+        public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(int seqMsPositionInScore, double millisecondsPerTick)
+        {
+            MsPositionInScore = seqMsPositionInScore;
 
-        //    SetMsDurations(seqMsPositionInScore, events, millisecondsPerTick);
+            SetMsDurations(seqMsPositionInScore, millisecondsPerTick);
 
-        //    var rval = new List<IUniqueDef>();
-        //    OctaveShift octaveShift = null;
+            var rval = new List<IUniqueDef>();
+            OctaveShift octaveShift = null;
 
-        //    // SequenceComponents includes the SequenceDirectionComponents (see the Sequence constructor above)
-        //    foreach(var seqObj in Components)
-        //    {
-        //        if(seqObj is SequenceDirections d)
-        //        {
-        //            if(d.Clef != null)
-        //            {
-        //                rval.Add(d.Clef as IUniqueDef); // mid staff clef change
-        //            }
-        //            //if(d.Cresc != null)
-        //            //{
-        //            //    rval.Add(d.Cresc as IUniqueDef);
-        //            //}
-        //            //if(d.Dim != null)
-        //            //{
-        //            //    rval.Add(d.Cim as IUniqueDef);
-        //            //}
-        //            //if(d.Dynamic != null)
-        //            //{
-        //            //    rval.Add(d.Dynamic as IUniqueDef);
-        //            //}
-        //            //if(d.Expression != null)
-        //            //{
-        //            //    rval.Add(d.Expression as IUniqueDef);
-        //            //}
-        //            //if(d.Instruction != null)
-        //            //{
-        //            //    rval.Add(d.Instruction as IUniqueDef);
-        //            //}
-        //            if(d.OctaveShift != null)
-        //            {
-        //                rval.Add(d.OctaveShift as IUniqueDef);
-        //            }
-        //            //if(d.Wedge != null)
-        //            //{
-        //            //    rval.Add(d.Wedge as IUniqueDef);
-        //            //}
-        //        }
-        //        else if(seqObj is Event evt)
-        //        {
-        //            evt.OctaveShift = octaveShift;
-        //            octaveShift = null;
-        //            rval.Add(evt as IUniqueDef);
-        //        }
-        //        else if(seqObj is Grace g)
-        //        {
-        //            var graceComponents = g.Components;
-        //            foreach(var graceCompt in graceComponents)
-        //            {
-        //                // Assuming that Grace groups can only contain Events and Directions...
-        //                if(graceCompt is Event graceEvt)
-        //                {
-        //                    graceEvt.OctaveShift = octaveShift;
-        //                    octaveShift = null;
-        //                    rval.Add(graceEvt as IUniqueDef);
-        //                }
-        //            }
-        //        }
-        //        else if(seqObj is TupletDef t)
-        //        {
-        //            octaveShift = GetTupletComponents(t, rval, octaveShift);
-        //        }
-        //        else if(seqObj is Beams beams)
-        //        {
-        //            // TODO
-        //        }
-        //        else
-        //        {
-        //            throw new ApplicationException("unhandled SequenceComponent type.");
-        //            //rval.Add(seqObj as IUniqueDef);
-        //        }
-        //    }
-        //    return rval;
-        //}
+            // SequenceComponents includes the SequenceDirectionComponents (see the Sequence constructor above)
+            foreach(var seqObj in Components)
+            {
+                if(seqObj is SequenceDirections d)
+                {
+                    if(d.Clef != null)
+                    {
+                        rval.Add(d.Clef as IUniqueDef); // mid staff clef change
+                    }
+                    //if(d.Cresc != null)
+                    //{
+                    //    rval.Add(d.Cresc as IUniqueDef);
+                    //}
+                    //if(d.Dim != null)
+                    //{
+                    //    rval.Add(d.Cim as IUniqueDef);
+                    //}
+                    //if(d.Dynamic != null)
+                    //{
+                    //    rval.Add(d.Dynamic as IUniqueDef);
+                    //}
+                    //if(d.Expression != null)
+                    //{
+                    //    rval.Add(d.Expression as IUniqueDef);
+                    //}
+                    //if(d.Instruction != null)
+                    //{
+                    //    rval.Add(d.Instruction as IUniqueDef);
+                    //}
+                    if(d.OctaveShift != null)
+                    {
+                        rval.Add(d.OctaveShift as IUniqueDef);
+                    }
+                    //if(d.Wedge != null)
+                    //{
+                    //    rval.Add(d.Wedge as IUniqueDef);
+                    //}
+                }
+                else if(seqObj is Event evt)
+                {
+                    evt.OctaveShift = octaveShift;
+                    octaveShift = null;
+                    rval.Add(evt as IUniqueDef);
+                }
+                else if(seqObj is Grace g)
+                {
+                    var graceComponents = g.Components;
+                    foreach(var graceCompt in graceComponents)
+                    {
+                        // Assuming that Grace groups can only contain Events and Directions...
+                        if(graceCompt is Event graceEvt)
+                        {
+                            graceEvt.OctaveShift = octaveShift;
+                            octaveShift = null;
+                            rval.Add(graceEvt as IUniqueDef);
+                        }
+                    }
+                }
+                else if(seqObj is TupletDef t)
+                {
+                    octaveShift = GetTupletComponents(t, rval, octaveShift);
+                }
+                else if(seqObj is Beams beams)
+                {
+                    // TODO
+                }
+                else
+                {
+                    throw new ApplicationException("unhandled SequenceComponent type.");
+                    //rval.Add(seqObj as IUniqueDef);
+                }
+            }
+            return rval;
+        }
 
         /// <summary>
         /// recursive function (for nested tuplets)

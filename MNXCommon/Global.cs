@@ -52,37 +52,55 @@ namespace MNX.Common
             M.Assert(GlobalMeasures.Count > 0);
         }
 
-        //public List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
-        //{
-        //    var rval = new List<List<IUniqueDef>>();
-        //    for(var measureIndex = 0; measureIndex < GlobalMeasures.Count; measureIndex++)
-        //    {
-        //        List<IUniqueDef> measureList = new List<IUniqueDef>();
-        //        GlobalDirections globalDirections = GlobalMeasures[measureIndex].GlobalDirections;
-        //        if(globalDirections != null)
-        //        {
-        //            KeySignature keySignature = globalDirections.KeySignature;
-        //            if(keySignature != null)
-        //            {
-        //                measureList.Add(keySignature);
-        //            }
-        //            TimeSignature timeSignature = globalDirections.TimeSignature;
-        //            if(timeSignature != null)
-        //            {
-        //                measureList.Add(timeSignature);
-        //            }
-        //            List<Repeat> repeats = globalDirections.Repeats;
-        //            if(repeats != null)
-        //            {
-        //                foreach(var repeat in repeats)
-        //                {
-        //                    measureList.Add(repeat);
-        //                }
-        //            }
-        //        }
-        //        rval.Add(measureList);
-        //    }
-        //    return rval;
-        //}
+        public List<List<IUniqueDef>> GetGlobalIUDsPerMeasure()
+        {
+            var rval = new List<List<IUniqueDef>>();
+            for(var measureIndex = 0; measureIndex < GlobalMeasures.Count; measureIndex++)
+            {
+                List<IUniqueDef> measureList = new List<IUniqueDef>();
+                GlobalDirections globalDirections = GlobalMeasures[measureIndex].GlobalDirections;
+                if(globalDirections != null)
+                {
+                    var components = globalDirections.Components;
+                    KeySignature keySignature = components.Find(x => x is KeySignature) as KeySignature;
+                    if(keySignature != null)
+                    {
+                        measureList.Add(keySignature);
+                    }
+                    TimeSignature timeSignature = components.Find(x => x is TimeSignature) as TimeSignature;
+                    if(timeSignature != null)
+                    {
+                        measureList.Add(timeSignature);
+                    }
+                    RepeatBegin repeatBegin = components.Find(x => x is RepeatBegin) as RepeatBegin;
+                    if(repeatBegin != null)
+                    {
+                        measureList.Add(repeatBegin);
+                    }
+                    RepeatEnd repeatEnd = components.Find(x => x is RepeatEnd) as RepeatEnd;
+                    if(repeatEnd != null)
+                    {
+                        measureList.Add(repeatEnd);
+                    }
+                    Segno segno = components.Find(x => x is Segno) as Segno;
+                    if(segno != null)
+                    {
+                        measureList.Add(segno);
+                    }
+                    Jump jump = components.Find(x => x is Jump) as Jump;
+                    if(jump != null)
+                    {
+                        measureList.Add(jump);
+                    }
+                    Fine fine = components.Find(x => x is Fine) as Fine;
+                    if(fine != null)
+                    {
+                        measureList.Add(fine);
+                    }
+                }
+                rval.Add(measureList);
+            }
+            return rval;
+        }
     }
 }

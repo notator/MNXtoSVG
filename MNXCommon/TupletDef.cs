@@ -126,13 +126,13 @@ namespace MNX.Common
                             Components.Add(grace);
                             break;
                         case "forward":
-                        Forward forward = new Forward(r);
-                        Components.Add(forward);
-                        break;
+                            Forward forward = new Forward(r);
+                            Components.Add(forward);
+                            break;
                         case "tuplet":
-                        TupletDef tuplet = new TupletDef(r, false);
-                        Components.Add(tuplet);
-                        break;
+                            TupletDef tuplet = new TupletDef(r, false);
+                            Components.Add(tuplet);
+                            break;
                     }
                 }
 
@@ -146,18 +146,18 @@ namespace MNX.Common
             {
                 int outerTicks = this.OuterDuration.GetDefaultTicks();
                 this.OuterDuration.TicksDuration = outerTicks;
-                SetTicksInContent(TicksPosInScore, outerTicks);
+                SetTicksDurationsInContent(outerTicks);
             }
         }
 
         /// <summary>
-        /// This function is called recursively.
+        /// This function is called recursively. TicksPosInScore is not set.
         /// Grace groups are ignored.
         /// TicksPosInScore and TicksDurations are updated for grace notes
         /// when the whole score has been read (in MNX.AdjustForGraceNotes()).
         /// </summary>
         /// <param name="outerTicks"></param>
-        public void SetTicksInContent(int ticksPosInScore, int outerTicks)
+        public void SetTicksDurationsInContent(int outerTicks)
         {
             int GetBasicTicks(IHasTicks component)
             {
@@ -283,22 +283,16 @@ namespace MNX.Common
                 if(eventForwardTuplet is Event e)
                 {
                     e.TicksDuration = innerTicks[i];
-                    e.TicksPosInScore = ticksPosInScore;
-                    ticksPosInScore += e.TicksDuration;
                 }
                 if(eventForwardTuplet is Forward f)
                 {
                     f.TicksDuration = innerTicks[i];
-                    f.TicksPosInScore = ticksPosInScore;
-                    ticksPosInScore += f.TicksDuration;
                 }
                 if(eventForwardTuplet is TupletDef t)
                 {
                     t.TicksDuration = innerTicks[i];
-                    t.TicksPosInScore = ticksPosInScore;
-                    ticksPosInScore += t.TicksDuration;
 
-                    t.SetTicksInContent(t.TicksPosInScore, t.TicksDuration);
+                    t.SetTicksDurationsInContent(t.TicksDuration);
                 }
             }
 

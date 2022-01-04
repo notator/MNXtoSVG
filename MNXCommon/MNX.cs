@@ -48,7 +48,7 @@ namespace MNX.Common
 
                 NumberOfMeasures = Global.GlobalMeasures.Count;
 
-                AdjustForGraceNotes();
+                //AdjustForGraceNotes(); M.Assert(value >= M.MinimumEventTicks);
 
                 M.Assert(r.Name == "mnx"); // end of "mnx"
 

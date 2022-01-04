@@ -26,11 +26,13 @@ namespace MNX.Common
     /// if it is part of a Tuplet or Grace.
     /// Ticks can be converted to milliseconds when a tempo is provided.
     /// </summary>
-    public class MNXDurationSymbol // N.B. This is not an ITicks. (See Ticks below)
+    public class MNXDurationSymbol // N.B. This is not an IHasTicks. (See Ticks below)
     {
+        public readonly string Symbol = null;
         public readonly int? Multiple = null;
         public readonly DurationSymbolType? DurationSymbolTyp = null;
         public readonly int? NAugmentationDots = null;
+        public override string ToString() => $"Symbol={Symbol} TicksDuration={TicksDuration}";
 
         // MNXDurationSymbol does not implement TicksPositionInScore.
         public int TicksDuration { get; set; }
@@ -45,6 +47,8 @@ namespace MNX.Common
             // https://w3c.github.io/mnx/specification/common/#note-value
             // https://w3c.github.io/mnx/specification/common/#base-note-values
             // https://w3c.github.io/mnx/specification/common/#ref-for-note-value%E2%91%A0
+
+            Symbol = value;
 
             Tuple<int, DurationSymbolType, int> analysis = StringAnalysis(value);
             Multiple = analysis.Item1;

@@ -53,7 +53,7 @@ namespace MNX.Common
             set
             {
                 // this function is used when setting tuplet event ticks and when stealing ticks for Grace.
-                M.Assert(value >= M.MinimumEventTicks);
+                //M.Assert(value >= M.MinimumEventTicks);
                 MNXDurationSymbol.TicksDuration = value;
             }
         }

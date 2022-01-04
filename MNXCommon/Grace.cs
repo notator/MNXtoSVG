@@ -46,7 +46,6 @@ namespace MNX.Common
         {            
             M.Assert(r.Name == "grace");
 
-            TicksDuration = 0;
             TicksPosInScore = 0; // Set correctly when the complete file has been parsed.
 
             int count = r.AttributeCount;
@@ -76,6 +75,7 @@ namespace MNX.Common
                     {
                         case "event":
                             Event e = new Event(r);
+                            e.TicksDuration = 0; // Set correctly when the complete file has been parsed.
                             Components.Add(e);
                             break;
                     }

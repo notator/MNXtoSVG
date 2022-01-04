@@ -23,6 +23,11 @@
                         <event value="/8">
                             <note pitch="C5"/>
                         </event>
+                        <grace type="steal-following">
+                            <event value="/8">
+                                <note pitch="D5"/>
+                            </event>
+                        </grace>
                         <event value="/8">
                             <note pitch="C5"/>
                         </event>

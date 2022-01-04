@@ -59,22 +59,6 @@ namespace MNX.Common
 
         public List<ISequenceComponent> Components = new List<ISequenceComponent>();
 
-        public List<IHasTicks> EventsAndEventGroups
-        {
-            get
-            {
-                List<IHasTicks> eventsAndEventGroups = new List<IHasTicks>();
-                foreach(var item in Components)
-                {
-                    if(item is IHasTicks iht)
-                    {
-                        eventsAndEventGroups.Add(iht);
-                    }
-                }
-                return eventsAndEventGroups;
-            }
-        }
-
         /// <summary>
         /// Returns a flat sequence of Event, Grace and Forward objects.
         /// (The Grace objects are still complete EventGroups)

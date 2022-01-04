@@ -138,7 +138,7 @@ namespace MNX.Common
         {
             for(var sequenceIndex = 0; sequenceIndex < Sequences.Count; sequenceIndex++)
             {
-                List<IHasTicks> eventsAndEventGroups = Sequences[sequenceIndex].EventsAndEventGroups;
+                List<IHasTicks> eventsAndEventGroups = Sequences[sequenceIndex].EventsGracesAndForwards;
                 for(var eegIndex = 0; eegIndex < eventsAndEventGroups.Count; eegIndex++)
                 {
                     if(eventsAndEventGroups[eegIndex] is Grace grace)
@@ -238,7 +238,7 @@ namespace MNX.Common
             foreach(var sequence in this.Sequences)
             {
                 int ticksPos = 0;
-                List<IHasTicks> eegs = sequence.EventsAndEventGroups;
+                List<IHasTicks> eegs = sequence.EventsGracesAndForwards;
                 int eegIndex = 0;
                 int insertTicksPos = 0;
                 for(var index = 0; index < eegs.Count; index++)

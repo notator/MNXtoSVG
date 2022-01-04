@@ -9,7 +9,7 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-event-element
     /// </summary>
-    public class Event : IHasTicks, ISequenceComponent, IUniqueDef
+    public class Event : IHasTicksDuration, IHasTicksPosition, ISequenceComponent, IUniqueDef
     {
         #region MNX file attributes
         // Compulsory Attribute         

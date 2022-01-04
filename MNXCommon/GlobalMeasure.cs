@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class GlobalMeasure
+    public class GlobalMeasure : IHasTicksDuration
     {
         /// <summary>
         /// If null, this value should be set when the whole score has been read
@@ -25,7 +25,7 @@ namespace MNX.Common
 
         public readonly GlobalDirections GlobalDirections = null;
 
-        public int TicksDuration; // The TicksDuration changes if there are make-time Grace notes present.
+        public int TicksDuration { get; set; } // The TicksDuration changes if there are make-time Grace notes present.
 
         public GlobalMeasure(XmlReader r, int measureIndex, TimeSignature currentTimeSig)
         {
@@ -129,21 +129,21 @@ namespace MNX.Common
             return rval;
         }
 
-        private static IHasTicks FindPreviousEventOrForward(List<IHasTicks> eventsAndEventGroups, int graceIndex)
+        private static IHasTicksDuration FindPreviousEventOrForward(List<IHasTicksDuration> eventsAndEventGroups, int graceIndex)
         {
             if(graceIndex == 0)
             {
                 M.ThrowError("Can't steal ticks from the previous measure.");
             }
-            IHasTicks previousObject = eventsAndEventGroups[graceIndex - 1];
+            IHasTicksDuration previousObject = eventsAndEventGroups[graceIndex - 1];
             if(previousObject is Grace)
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            IHasTicks previousEvent;
+            IHasTicksDuration previousEvent;
             if(previousObject is EventGroup eg)
             {
-                List<IHasTicks> events = eg.EventsGracesAndForwards;
+                List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
                 previousEvent = events[events.Count - 1];
             }
             else
@@ -154,21 +154,21 @@ namespace MNX.Common
             return previousEvent;
         }
 
-        private static IHasTicks FindNextEventOrForward(List<IHasTicks> eventsAndEventGroups, int graceIndex)
+        private static IHasTicksDuration FindNextEventOrForward(List<IHasTicksDuration> eventsAndEventGroups, int graceIndex)
         {
             if(graceIndex == (eventsAndEventGroups.Count - 1))
             {
                 M.ThrowError("Can't steal ticks from the next measure.");
             }
-            IHasTicks nextObject = eventsAndEventGroups[graceIndex + 1];
+            IHasTicksDuration nextObject = eventsAndEventGroups[graceIndex + 1];
             if(nextObject is Grace)
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            IHasTicks nextEvent;
+            IHasTicksDuration nextEvent;
             if(nextObject is EventGroup eg)
             {
-                List<IHasTicks> events = eg.EventsGracesAndForwards;
+                List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
                 nextEvent = events[0];
             }
             else

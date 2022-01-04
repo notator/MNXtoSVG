@@ -101,28 +101,6 @@ namespace MNX.Common
             M.Assert(r.Name == "sequence"); // end of sequence content
         }
 
-        /// <summary>
-        /// If the ticksObject is not found, this function returns the current length of the sequence.
-        /// </summary>
-        /// <returns></returns>
-        internal int TickPositionInSeq(IHasTicks ticksObject)
-        {
-            int rval = 0;
-            foreach(var seqObj in Components)
-            {
-                if(seqObj is IHasTicks tObj)
-                {
-                    if(tObj == ticksObject)
-                    {
-                        break;
-                    }
-                    rval += tObj.TicksDuration;
-                }
-            }
-
-            return rval;
-        }
-
         public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(int seqMsPositionInScore, double millisecondsPerTick)
         {
             MsPositionInScore = seqMsPositionInScore;
@@ -260,7 +238,7 @@ namespace MNX.Common
 
             int seqMsDuration = 0;
             int evtMsPositionInScore = this.MsPosInScore;
-            List<IHasTicks> events = this.EventsGracesAndForwards;
+            List<IHasTicksDuration> events = this.EventsGracesAndForwards;
             for(var i = 1; i < msPositions.Count; i++)
             {
                 int msDuration = msPositions[i] - msPositions[i - 1];

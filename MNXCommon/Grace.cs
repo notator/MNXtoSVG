@@ -8,11 +8,11 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-grace-element
     /// </summary>
-    public class Grace : EventGroup, IHasTicks, ISequenceComponent
+    public class Grace : EventGroup, IHasTicksDuration, ISequenceComponent
     {
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
-        public override string ToString() => $"Grace: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
+        public override string ToString() => $"Grace: TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         /// <summary>
         /// Grace and Event implement Ticks.set so that grace can steal.
@@ -26,7 +26,7 @@ namespace MNX.Common
             set
             {
                 int outerTicks = value;
-                List<IHasTicks> events = EventsGracesAndForwards;
+                List<IHasTicksDuration> events = EventsGracesAndForwards;
                 List<int> innerTicks = new List<int>();
                 foreach(var ev in EventsGracesAndForwards)
                 {
@@ -45,8 +45,6 @@ namespace MNX.Common
         public Grace(XmlReader r)
         {            
             M.Assert(r.Name == "grace");
-
-            TicksPosInScore = 0; // Set correctly when the complete file has been parsed.
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

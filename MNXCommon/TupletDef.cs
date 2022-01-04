@@ -55,15 +55,13 @@ namespace MNX.Common
             }
         }
 
-        public override string ToString() => $"Tuplet: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
+        public override string ToString() => $"Tuplet: TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         private bool _isTopLevel;
 
         public TupletDef(XmlReader r, bool isTopLevel)
         {
             M.Assert(r.Name == "tuplet");
-
-            TicksPosInScore = 0;
 
             _isTopLevel = isTopLevel;
 
@@ -159,7 +157,7 @@ namespace MNX.Common
         /// <param name="outerTicks"></param>
         private void SetTicksDurationsInContentIgnoringGraces(int outerTicks)
         {
-            int GetBasicTicks(IHasTicks component)
+            int GetBasicTicks(IHasTicksDuration component)
             {
                 int rval = 0;
                 if(component is Event e)
@@ -180,10 +178,10 @@ namespace MNX.Common
             }
 
             List<int> eventForwardTupletBasicTicks = new List<int>();
-            List<IHasTicks> eventForwardTuplets = new List<IHasTicks>();
+            List<IHasTicksDuration> eventForwardTuplets = new List<IHasTicksDuration>();
 
             // Get the default outer ticks of each contained Event, Forward and TupletDef component.
-            foreach(IHasTicks component in Components )
+            foreach(IHasTicksDuration component in Components )
             {
                 if(component is Event || component is Forward || component is TupletDef)
                 {
@@ -197,7 +195,7 @@ namespace MNX.Common
             // Set the default outer ticks of each contained Event, Forward and TupletDef component.
             for(int i = 0; i < eventForwardTuplets.Count; i++)
             {
-                IHasTicks eventForwardTuplet = eventForwardTuplets[i];
+                IHasTicksDuration eventForwardTuplet = eventForwardTuplets[i];
                 int ticks = innerTicks[i];
                 if(eventForwardTuplet is Event e)
                 {

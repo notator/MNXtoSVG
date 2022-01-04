@@ -102,8 +102,8 @@ namespace MNX.Common
         }
 
         /// <summary>
-        /// This function sets Grace.TickDuration values, adjusting Event and Forward TickDuration
-        /// values accordingly.
+        /// This function sets Grace.TicksDuration values,
+        /// adjusting Event, Forward and GlobalMeasure TicksDuration values accordingly.
         /// It then sets TickPosInScore for all Event and Forward objects, including those inside Grace and TupletDef objects.
         /// <para>Checked Preconditions: All Objects currently have TicksPosInScore=0.
         /// Grace objects currently have TickDuration=0.
@@ -133,7 +133,7 @@ namespace MNX.Common
         /// All Objects currently have TicksPosInScore=0.
         /// Grace objects currently have TickDuration=0.
         /// Event and Forward objects have TickDurations that sum to
-        /// each Measure's TicksDuration (as defined by its CurrentTimeSignature).
+        /// their Measure's TicksDuration.
         private void AssertPreconditions()
         {
             foreach(Part part in Parts)
@@ -148,17 +148,14 @@ namespace MNX.Common
                         int sequenceTicksSum = 0;
                         foreach(var component in sequence.Components)
                         {
-                            if(component is IHasTicks iHasTicks)
-                            {
-                                M.Assert(iHasTicks.TicksPosInScore == 0);
-                                
+                            if(component is IHasTicksDuration iHasTicks)
+                            {                        
                                 if(iHasTicks is Grace g)
                                 {
                                     var efs = g.EventsGracesAndForwards;
                                     foreach(var ef in efs)
                                     {
                                         M.Assert(! (ef is Grace));
-                                        M.Assert(ef.TicksPosInScore == 0);
                                         M.Assert(ef.TicksDuration == 0);
                                     }
                                 }
@@ -167,7 +164,6 @@ namespace MNX.Common
                                     var efs = td.EventsGracesAndForwards;
                                     foreach(var ef in efs)
                                     {
-                                        M.Assert(ef.TicksPosInScore == 0);
                                         sequenceTicksSum += ef.TicksDuration;
                                     }
                                 }
@@ -197,35 +193,42 @@ namespace MNX.Common
                         var seqTicksDuration = 0;
                         foreach(var component in sequence.Components)
                         {
-                            if(component is IHasTicks iHasTicks)
+                            if(component is IHasTicksDuration iHasTicksDuration)
                             {
-                                M.Assert(iHasTicks.TicksPosInScore == 0);
-
-                                if(iHasTicks is Grace g)
+                                if(iHasTicksDuration is Grace g)
                                 {
-                                    var efs = g.EventsGracesAndForwards;
+                                    var efs = g.EventsGracesAndForwards;                                    
                                     foreach(var ef in efs)
                                     {
-                                        ef.TicksPosInScore = ticksPosInScore;
-                                        ticksPosInScore += ef.TicksDuration;
-                                        seqTicksDuration += ef.TicksDuration;
+                                        if(ef is IHasTicksPosition ihtp)
+                                        {
+                                            ihtp.TicksPosInScore = ticksPosInScore;
+                                            ticksPosInScore += ihtp.TicksDuration;
+                                            seqTicksDuration += ihtp.TicksDuration;
+                                        }
                                     }
                                 }
-                                else if(iHasTicks is TupletDef td)
+                                else if(iHasTicksDuration is TupletDef td)
                                 {
                                     var efs = td.EventsGracesAndForwards;
                                     foreach(var ef in efs)
                                     {
-                                        ef.TicksPosInScore = ticksPosInScore;
-                                        ticksPosInScore += ef.TicksDuration;
-                                        seqTicksDuration += ef.TicksDuration;
+                                        if(ef is IHasTicksPosition ihtp)
+                                        {
+                                            ihtp.TicksPosInScore = ticksPosInScore;
+                                            ticksPosInScore += ihtp.TicksDuration;
+                                            seqTicksDuration += ihtp.TicksDuration;
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    iHasTicks.TicksPosInScore = ticksPosInScore;
-                                    ticksPosInScore += iHasTicks.TicksDuration;
-                                    seqTicksDuration += iHasTicks.TicksDuration;
+                                    if(iHasTicksDuration is IHasTicksPosition ihtp)
+                                    {
+                                        ihtp.TicksPosInScore = ticksPosInScore;
+                                        ticksPosInScore += ihtp.TicksDuration;
+                                        seqTicksDuration += ihtp.TicksDuration;
+                                    }
                                 }
                             }
                         }
@@ -235,6 +238,9 @@ namespace MNX.Common
             }
         }
 
+        /// <summary>
+        /// Adds ticks to the relevant Event, Forward and GlobalMeasure objects to accomodate make-time Grace objects.
+        /// </summary>
         private void SetAllTicksDurationsForMakeTimeGraces()
         {
             SortedDictionary<int, List<Grace>> ticksPosMakeTimeGraces = new SortedDictionary<int, List<Grace>>();
@@ -248,12 +254,12 @@ namespace MNX.Common
                         {
                             if(component is Grace g && g.Type == GraceType.makeTime)
                             {
-                                int ticksPos = g.TicksPosInScore;
-                                if(ticksPosMakeTimeGraces.ContainsKey(ticksPos) == false)
-                                {
-                                    ticksPosMakeTimeGraces[ticksPos] = new List<Grace>();
-                                }
-                                ticksPosMakeTimeGraces[ticksPos].Add(g);  
+                                //int ticksPos = g.TicksPosInScore;
+                                //if(ticksPosMakeTimeGraces.ContainsKey(ticksPos) == false)
+                                //{
+                                //    ticksPosMakeTimeGraces[ticksPos] = new List<Grace>();
+                                //}
+                                //ticksPosMakeTimeGraces[ticksPos].Add(g);  
                             }
                         }
                     }
@@ -281,7 +287,7 @@ namespace MNX.Common
                 {
                     int ticksToAdd = ticksPosTicksToAdd[tickPos];
 
-                    List<IHasTicks> objectsToStretch = new List<IHasTicks>();
+                    List<IHasTicksDuration> objectsToStretch = new List<IHasTicksDuration>();
                     foreach(Part part in Parts)
                     {
                         foreach(var measure in part.Measures)
@@ -290,7 +296,7 @@ namespace MNX.Common
                             {
                                 foreach(var component in sequence.Components)
                                 {
-                                    if(component is IHasTicks hasSettableTickDuration)
+                                    if(component is IHasTicksDuration hasSettableTickDuration)
                                     {
                                         objectsToStretch.Add(hasSettableTickDuration);
                                     }

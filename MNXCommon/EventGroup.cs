@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public abstract class EventGroup : IHasTicks
+    public abstract class EventGroup : IHasTicksDuration
     {
         #region IUniqueDef
         /// <summary>
@@ -63,13 +63,13 @@ namespace MNX.Common
         /// Returns a flat sequence of Event, Grace and Forward objects.
         /// (The Grace objects are still complete EventGroups)
         /// </summary>
-        public List<IHasTicks> EventsGracesAndForwards
+        public List<IHasTicksDuration> EventsGracesAndForwards
         {
             get
             {
-                List<IHasTicks> GetEventsGracesOrForwards(EventGroup eventGroup)
+                List<IHasTicksDuration> GetEventsGracesOrForwards(EventGroup eventGroup)
                 {
-                    List<IHasTicks> localRval = new List<IHasTicks>();
+                    List<IHasTicksDuration> localRval = new List<IHasTicksDuration>();
                     foreach(var item in eventGroup.Components)
                     {
                         if(item is EventGroup eg && !(eg is Grace))
@@ -92,7 +92,7 @@ namespace MNX.Common
 
                     return localRval;
                 }
-                List<IHasTicks> rval = new List<IHasTicks>();
+                List<IHasTicksDuration> rval = new List<IHasTicksDuration>();
                 foreach(var item in Components)
                 {
                     if(item is EventGroup eg && !(eg is Grace))
@@ -138,7 +138,5 @@ namespace MNX.Common
                 M.ThrowError("Application Error: This function should never be called.");
             }
         }
-
-        public virtual int TicksPosInScore { get; set; }
     }
 }

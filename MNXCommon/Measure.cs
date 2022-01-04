@@ -138,7 +138,7 @@ namespace MNX.Common
         {
             for(var sequenceIndex = 0; sequenceIndex < Sequences.Count; sequenceIndex++)
             {
-                List<IHasTicks> eventsAndEventGroups = Sequences[sequenceIndex].EventsGracesAndForwards;
+                List<IHasTicksDuration> eventsAndEventGroups = Sequences[sequenceIndex].EventsGracesAndForwards;
                 for(var eegIndex = 0; eegIndex < eventsAndEventGroups.Count; eegIndex++)
                 {
                     if(eventsAndEventGroups[eegIndex] is Grace grace)
@@ -148,7 +148,7 @@ namespace MNX.Common
                         switch(grace.Type)
                         {
                             case GraceType.stealPrevious:
-                                IHasTicks previousEvent = FindPreviousEventOrForward(eventsAndEventGroups, graceIndex);
+                                IHasTicksDuration previousEvent = FindPreviousEventOrForward(eventsAndEventGroups, graceIndex);
                                 stealableTicks = (previousEvent.TicksDuration - M.MinimumEventTicks);
                                 if(grace.TicksDuration > stealableTicks)
                                 {
@@ -157,7 +157,7 @@ namespace MNX.Common
                                 previousEvent.TicksDuration -= grace.TicksDuration;
                                 break;
                             case GraceType.stealFollowing:
-                                IHasTicks nextEvent = FindNextEventOrForward(eventsAndEventGroups, graceIndex);
+                                IHasTicksDuration nextEvent = FindNextEventOrForward(eventsAndEventGroups, graceIndex);
                                 stealableTicks = (nextEvent.TicksDuration - M.MinimumEventTicks);
                                 if(grace.TicksDuration > stealableTicks)
                                 {
@@ -174,21 +174,21 @@ namespace MNX.Common
             }
         }
 
-        private static IHasTicks FindPreviousEventOrForward(List<IHasTicks> eventsAndEventGroups, int graceIndex)
+        private static IHasTicksDuration FindPreviousEventOrForward(List<IHasTicksDuration> eventsAndEventGroups, int graceIndex)
         {
             if(graceIndex == 0)
             {
                 M.ThrowError("Can't steal ticks from the previous measure.");
             }
-            IHasTicks previousObject = eventsAndEventGroups[graceIndex - 1];
+            IHasTicksDuration previousObject = eventsAndEventGroups[graceIndex - 1];
             if(previousObject is Grace)
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            IHasTicks previousEvent;
+            IHasTicksDuration previousEvent;
             if(previousObject is EventGroup eg)
             {
-                List<IHasTicks> events = eg.EventsGracesAndForwards;
+                List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
                 previousEvent = events[events.Count - 1];
             }
             else
@@ -199,21 +199,21 @@ namespace MNX.Common
             return previousEvent;
         }
 
-        private static IHasTicks FindNextEventOrForward(List<IHasTicks> eventsAndEventGroups, int graceIndex)
+        private static IHasTicksDuration FindNextEventOrForward(List<IHasTicksDuration> eventsAndEventGroups, int graceIndex)
         {
             if(graceIndex == (eventsAndEventGroups.Count - 1))
             {
                 M.ThrowError("Can't steal ticks from the next measure.");
             }
-            IHasTicks nextObject = eventsAndEventGroups[graceIndex + 1];
+            IHasTicksDuration nextObject = eventsAndEventGroups[graceIndex + 1];
             if(nextObject is Grace)
             {
                 M.ThrowError("Can't steal ticks from a Grace.");
             }
-            IHasTicks nextEvent;
+            IHasTicksDuration nextEvent;
             if(nextObject is EventGroup eg)
             {
-                List<IHasTicks> events = eg.EventsGracesAndForwards;
+                List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
                 nextEvent = events[0];
             }
             else
@@ -224,7 +224,7 @@ namespace MNX.Common
             return nextEvent;
         }
 
-        private void MakeTime(List<IHasTicks> eventsAndEventGroups, Grace grace)
+        private void MakeTime(List<IHasTicksDuration> eventsAndEventGroups, Grace grace)
         {
             int graceTicksPostion = 0;
             foreach(var obj in eventsAndEventGroups)
@@ -238,7 +238,7 @@ namespace MNX.Common
             foreach(var sequence in this.Sequences)
             {
                 int ticksPos = 0;
-                List<IHasTicks> eegs = sequence.EventsGracesAndForwards;
+                List<IHasTicksDuration> eegs = sequence.EventsGracesAndForwards;
                 int eegIndex = 0;
                 int insertTicksPos = 0;
                 for(var index = 0; index < eegs.Count; index++)
@@ -254,7 +254,7 @@ namespace MNX.Common
                 var eeg = eegs[eegIndex];
                 if(eeg is EventGroup eg)
                 {
-                    List<IHasTicks> events = eg.EventsGracesAndForwards;
+                    List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
                     for(var i = 0; i < events.Count; i++)
                     {
                         if(insertTicksPos >= graceTicksPostion || i == (events.Count - 1))

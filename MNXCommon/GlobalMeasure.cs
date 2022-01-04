@@ -25,12 +25,14 @@ namespace MNX.Common
 
         public readonly GlobalDirections GlobalDirections = null;
 
+        public int TicksDuration; // The TicksDuration changes if there are make-time Grace notes present.
+
         public GlobalMeasure(XmlReader r, int measureIndex, TimeSignature currentTimeSig)
         {
             M.Assert(r.Name == "measure-global");
             // https://w3c.github.io/mnx/specification/common/#the-measure-element
 
-            Index = measureIndex; // ji: 23.06.2020
+            Index = measureIndex; // ji: 23.06.2020           
 
             GlobalDirections = new GlobalDirections(currentTimeSig); // default
 
@@ -77,39 +79,10 @@ namespace MNX.Common
                 }
             }
 
+            TicksDuration = new MNXDurationSymbol(currentTimeSig.Signature).GetDefaultTicks();
+
             M.Assert(r.Name == "measure-global"); // end of measure-global
         }
-
-        //public List<IGlobalDirectionsComponent> GetSortedGlobalDirectionsComponents()
-        //{
-        //    List<IGlobalDirectionsComponent> rval = new List<IGlobalDirectionsComponent>();
-
-        //    if(GlobalDirections != null)
-        //    {
-        //        KeySignature keySignature = GlobalDirections.KeySignature;
-        //        if(keySignature != null)
-        //        {
-        //            rval.Add(keySignature);
-        //        }
-        //        TimeSignature timeSignature = GlobalDirections.TimeSignature;
-        //        if(timeSignature != null)
-        //        {
-        //            rval.Add(timeSignature);
-        //        }
-        //        List<Repeat> repeats = GlobalDirections.Repeats;
-        //        if(repeats != null)
-        //        {
-        //            foreach(var repeat in repeats)
-        //            {
-        //                rval.Add(repeat);
-        //            }
-        //        }
-        //    }
-
-        //    // Sort
-
-        //    return rval;
-        //}
 
         private BarlineType GetBarlineType(string value)
         {

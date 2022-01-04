@@ -48,7 +48,7 @@ namespace MNX.Common
 
                 NumberOfMeasures = Global.GlobalMeasures.Count;
 
-                //AdjustForGraceNotes(); M.Assert(value >= M.MinimumEventTicks);
+                AdjustForGraceNotes(); //M.Assert(value >= M.MinimumEventTicks);
 
                 M.Assert(r.Name == "mnx"); // end of "mnx"
 
@@ -102,54 +102,141 @@ namespace MNX.Common
         }
 
         /// <summary>
-        /// Grace objects currently have their correct ticksPosInScore, but ticksDuration = 0.
+        /// This function sets Grace.TickDuration values, adjusting Event and Forward TickDuration
+        /// values accordingly.
+        /// It then sets TickPosInScore for all Event and Forward objects, including those inside Grace and TupletDef objects.
+        /// <para>Checked Preconditions: All Objects currently have TicksPosInScore=0.
+        /// Grace objects currently have TickDuration=0.
+        /// Event and Forward objects have TickDurations that sum to
+        /// each Measure's DefaultTickDuration (as defined by its CurrentTimeSignature).
+        /// </para>
         /// </summary>
         private void AdjustForGraceNotes()
         {
-            if(SetAllTicksDurationsForMakeTimeGraces())
-            {
-                ResetTicksPositionsinScore();
-            }
-            for(var partIndex = 0; partIndex < Parts.Count; partIndex++)
-            {
-                List<Measure> measures = Parts[partIndex].Measures;
-                for(var measureIndex = 0; measureIndex < measures.Count; measureIndex++)
-                {
-                    Measure measure = measures[measureIndex];
-                    measure.AdjustForGraceNotes();
-                }
-            }
+            AssertPreconditions();
+
+            //SetAllTicksDurationsForMakeTimeGraces();
+            
+            //for(var partIndex = 0; partIndex < Parts.Count; partIndex++)
+            //{
+            //    List<Measure> measures = Parts[partIndex].Measures;
+            //    for(var measureIndex = 0; measureIndex < measures.Count; measureIndex++)
+            //    {
+            //        Measure measure = measures[measureIndex];
+            //        measure.AdjustForGraceNotes();
+            //    }
+            //}
+
+            SetTicksPositionsInScore();
         }
 
-        private void ResetTicksPositionsinScore()
+        /// All Objects currently have TicksPosInScore=0.
+        /// Grace objects currently have TickDuration=0.
+        /// Event and Forward objects have TickDurations that sum to
+        /// each Measure's TicksDuration (as defined by its CurrentTimeSignature).
+        private void AssertPreconditions()
         {
             foreach(Part part in Parts)
             {
-                foreach(var measure in part.Measures)
+                for(int j = 0; j < part.Measures.Count; j++)
                 {
-                    foreach(var sequence in measure.Sequences)
+                    var measure = part.Measures[j];
+                    var measureTicksDuration = Global.GlobalMeasures[j].TicksDuration;
+                    for(int i = 0; i < measure.Sequences.Count; i++)
                     {
-                        int ticksPosInScore = 0;
+                        var sequence = measure.Sequences[i];
+                        int sequenceTicksSum = 0;
                         foreach(var component in sequence.Components)
                         {
-                            if(component is IHasTicks t)
+                            if(component is IHasTicks iHasTicks)
                             {
-                                t.TicksPosInScore = ticksPosInScore;
-                                ticksPosInScore += t.TicksDuration;
+                                M.Assert(iHasTicks.TicksPosInScore == 0);
+                                
+                                if(iHasTicks is Grace g)
+                                {
+                                    var efs = g.EventsGracesAndForwards;
+                                    foreach(var ef in efs)
+                                    {
+                                        M.Assert(! (ef is Grace));
+                                        M.Assert(ef.TicksPosInScore == 0);
+                                        M.Assert(ef.TicksDuration == 0);
+                                    }
+                                }
+                                else if(iHasTicks is TupletDef td)
+                                {
+                                    var efs = td.EventsGracesAndForwards;
+                                    foreach(var ef in efs)
+                                    {
+                                        M.Assert(ef.TicksPosInScore == 0);
+                                        sequenceTicksSum += ef.TicksDuration;
+                                    }
+                                }
+                                else
+                                {
+                                    sequenceTicksSum += iHasTicks.TicksDuration;
+                                }
                             }
                         }
+                        M.Assert(measureTicksDuration == sequenceTicksSum);
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Returns false if there are no MakeTime graces in the file, otherwise true.
-        /// </summary>
-        /// <returns></returns>
-        private bool SetAllTicksDurationsForMakeTimeGraces()
+        private void SetTicksPositionsInScore()
         {
-            bool durationsHaveChanged = false;
+            foreach(Part part in Parts)
+            {
+                for(int j = 0; j < part.Measures.Count; j++)
+                {
+                    int ticksPosInScore = 0;
+                    var measure = part.Measures[j];
+                    var measureTicksDuration = Global.GlobalMeasures[j].TicksDuration;
+                    foreach(var sequence in measure.Sequences)
+                    {
+                        var seqTicksDuration = 0;
+                        foreach(var component in sequence.Components)
+                        {
+                            if(component is IHasTicks iHasTicks)
+                            {
+                                M.Assert(iHasTicks.TicksPosInScore == 0);
+
+                                if(iHasTicks is Grace g)
+                                {
+                                    var efs = g.EventsGracesAndForwards;
+                                    foreach(var ef in efs)
+                                    {
+                                        ef.TicksPosInScore = ticksPosInScore;
+                                        ticksPosInScore += ef.TicksDuration;
+                                        seqTicksDuration += ef.TicksDuration;
+                                    }
+                                }
+                                else if(iHasTicks is TupletDef td)
+                                {
+                                    var efs = td.EventsGracesAndForwards;
+                                    foreach(var ef in efs)
+                                    {
+                                        ef.TicksPosInScore = ticksPosInScore;
+                                        ticksPosInScore += ef.TicksDuration;
+                                        seqTicksDuration += ef.TicksDuration;
+                                    }
+                                }
+                                else
+                                {
+                                    iHasTicks.TicksPosInScore = ticksPosInScore;
+                                    ticksPosInScore += iHasTicks.TicksDuration;
+                                    seqTicksDuration += iHasTicks.TicksDuration;
+                                }
+                            }
+                        }
+                        M.Assert(measureTicksDuration == seqTicksDuration);
+                    }
+                }
+            }
+        }
+
+        private void SetAllTicksDurationsForMakeTimeGraces()
+        {
             SortedDictionary<int, List<Grace>> ticksPosMakeTimeGraces = new SortedDictionary<int, List<Grace>>();
             foreach(Part part in Parts)
             {
@@ -216,10 +303,7 @@ namespace MNX.Common
                         objectToStretch.TicksDuration += ticksToAdd;
                     }
                 }
-
-                durationsHaveChanged = true;
             }
-            return durationsHaveChanged;
         }
 
         public List<List<int>> VoicesPerStaffPerPart

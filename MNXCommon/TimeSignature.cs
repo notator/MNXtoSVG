@@ -70,8 +70,6 @@ namespace MNX.Common
                 }
             }
 
-            MNXDurationSymbol mds = new MNXDurationSymbol(Signature);
-
             // r.Name is now the name of the last time attribute that has been read.
         }
     }

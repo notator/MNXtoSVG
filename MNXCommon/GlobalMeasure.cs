@@ -143,7 +143,7 @@ namespace MNX.Common
             IHasTicksDuration previousEvent;
             if(previousObject is EventGroup eg)
             {
-                List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
+                List<IHasTicksDuration> events = eg.IEventsAndGraces;
                 previousEvent = events[events.Count - 1];
             }
             else
@@ -168,7 +168,7 @@ namespace MNX.Common
             IHasTicksDuration nextEvent;
             if(nextObject is EventGroup eg)
             {
-                List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
+                List<IHasTicksDuration> events = eg.IEventsAndGraces;
                 nextEvent = events[0];
             }
             else

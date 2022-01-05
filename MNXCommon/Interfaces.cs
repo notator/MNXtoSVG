@@ -76,7 +76,7 @@ namespace MNX.Common
     /// <summary>
     /// Event, Forward (Rest is an implementation detail of Event.) 
     /// </summary>
-    public interface IHasTicksPosition
+    public interface IEvent
     {
         int TicksDuration { get; set; }
         int TicksPosInScore { get; set; }

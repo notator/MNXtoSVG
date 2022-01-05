@@ -112,7 +112,7 @@ namespace Moritz.Symbols
         private List<NoteObject> GetTupletChordsAndRests(List<NoteObject> noteObjects, int noteObjectIndex, TupletDef tupletDef)
         {
             List<NoteObject> chordsAndRests = new List<NoteObject>();
-            int nEvents = tupletDef.EventsGracesAndForwards.FindAll(e => e is Event).Count; // I think tuplets can also include Grace notes
+            int nEvents = tupletDef.IEventsAndGraces.FindAll(e => e is Event).Count; // TODO: Tuplets can now nest and include Grace notes
 
             for(int i = noteObjectIndex; i < noteObjects.Count; ++i)
             {

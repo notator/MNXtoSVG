@@ -59,7 +59,7 @@ namespace MNX.Globals
         #region ticks
 
         /// <summary>
-        /// The minimum number of Ticks in an ITicks object.
+        /// The minimum number of Ticks in an IHasTicksDuration object.
         /// </summary>
         public static readonly int MinimumEventTicks = 4;
 

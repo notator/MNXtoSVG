@@ -25,6 +25,25 @@ namespace MNX.Common
         /// </summary>
         public int IndexID;
 
+        public override int TicksDuration
+        {
+            get
+            {
+                var eventList = base.IEventsAndGraces;
+                int rval = 0;
+                foreach(var e in eventList)
+                {
+                    rval += e.TicksDuration;
+                }
+                return rval;
+            }
+            set
+            {
+                M.ThrowError("Application Error: This function should never be called.");
+            }
+        }
+
+
         public int MsPositionInScore { get; private set; }
 
         public Sequence(XmlReader r, TimeSignature currentTimeSig, int measureindex, int sequenceIndex)
@@ -97,7 +116,7 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "directions", "beams", "forward", "sequence");
             }
 
-            M.Assert(EventsGracesAndForwards.Count > 0);
+            M.Assert(IEventsAndGraces.Count > 0);
             M.Assert(r.Name == "sequence"); // end of sequence content
         }
 
@@ -223,7 +242,7 @@ namespace MNX.Common
         {
             var tickPositions = new List<int>();
             int currentTickPosition = 0;
-            foreach(var evt in EventsGracesAndForwards)
+            foreach(var evt in IEventsAndGraces)
             {
                 tickPositions.Add(currentTickPosition);
                 currentTickPosition += evt.TicksDuration;
@@ -238,7 +257,7 @@ namespace MNX.Common
 
             int seqMsDuration = 0;
             int evtMsPositionInScore = this.MsPosInScore;
-            List<IHasTicksDuration> events = this.EventsGracesAndForwards;
+            List<IHasTicksDuration> events = this.IEventsAndGraces;
             for(var i = 1; i < msPositions.Count; i++)
             {
                 int msDuration = msPositions[i] - msPositions[i - 1];

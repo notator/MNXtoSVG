@@ -21,23 +21,36 @@ namespace MNX.Common
         {
             get
             {
-                return base.TicksDuration; // returns the sum of the inner ticks.
+                // Graces don't nest, and dont contain Forward objects
+                var eventList = IEventsAndGraces;
+                int rval = 0;
+                foreach(var e in eventList)
+                {
+                    M.Assert(e is Event);
+                    rval += e.TicksDuration;
+                }
+                return rval;
             }
             set
             {
                 int outerTicks = value;
-                List<IHasTicksDuration> events = EventsGracesAndForwards;
+
+                // Graces don't nest, and dont contain Forward objects
+                List<IHasTicksDuration> events = IEventsAndGraces;
                 List<int> innerTicks = new List<int>();
-                foreach(var ev in EventsGracesAndForwards)
+                foreach(Event e in events)
                 {
-                    innerTicks.Add(1);
+                    int ticks = e.MNXDurationSymbol.GetDefaultTicks();
+                    innerTicks.Add(ticks);
                 }
 
                 List<int> newTicks = M.IntDivisionSizes(outerTicks, innerTicks);
 
                 for(var i = 0; i < newTicks.Count; i++)
                 {
-                    events[i].TicksDuration = newTicks[i];
+                    int ticks = newTicks[i];
+                    M.Assert(ticks >= M.MinimumEventTicks);
+                    events[i].TicksDuration = ticks;
                 }
             }
         }
@@ -81,7 +94,7 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "event", "grace");
             }
 
-            M.Assert(EventsGracesAndForwards.Count > 0);
+            M.Assert(IEventsAndGraces.Count > 0);
             M.Assert(r.Name == "grace"); // end of grace
         }
 

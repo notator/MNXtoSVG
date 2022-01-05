@@ -79,9 +79,9 @@ namespace MNX.Common
                     for(var sIndex = 0; sIndex < measure.Sequences.Count; ++sIndex)
                     {
                         var sequence = measure.Sequences[sIndex];
-                        for(var eIndex = 0; eIndex < sequence.EventsGracesAndForwards.Count; ++eIndex)
+                        for(var eIndex = 0; eIndex < sequence.IEventsAndGraces.Count; ++eIndex)
                         {
-                            var evt = sequence.EventsGracesAndForwards[eIndex];
+                            var evt = sequence.IEventsAndGraces[eIndex];
                             if(evt is Event e && eventID.Equals(e.ID)) // Forward objects have no ID, and are ignored here.
                             {
                                 partIndex = pIndex;
@@ -148,20 +148,20 @@ namespace MNX.Common
                         int sequenceTicksSum = 0;
                         foreach(var component in sequence.Components)
                         {
-                            if(component is IHasTicksDuration iHasTicks)
+                            if(component is IHasTicksDuration iHasTicksDuration)
                             {                        
-                                if(iHasTicks is Grace g)
+                                if(iHasTicksDuration is Grace g)
                                 {
-                                    var efs = g.EventsGracesAndForwards;
+                                    var efs = g.IEventsAndGraces;
                                     foreach(var ef in efs)
                                     {
                                         M.Assert(! (ef is Grace));
                                         M.Assert(ef.TicksDuration == 0);
                                     }
                                 }
-                                else if(iHasTicks is TupletDef td)
+                                else if(iHasTicksDuration is TupletDef td)
                                 {
-                                    var efs = td.EventsGracesAndForwards;
+                                    var efs = td.IEventsAndGraces;
                                     foreach(var ef in efs)
                                     {
                                         sequenceTicksSum += ef.TicksDuration;
@@ -169,7 +169,7 @@ namespace MNX.Common
                                 }
                                 else
                                 {
-                                    sequenceTicksSum += iHasTicks.TicksDuration;
+                                    sequenceTicksSum += iHasTicksDuration.TicksDuration;
                                 }
                             }
                         }
@@ -197,37 +197,37 @@ namespace MNX.Common
                             {
                                 if(iHasTicksDuration is Grace g)
                                 {
-                                    var efs = g.EventsGracesAndForwards;                                    
+                                    var efs = g.IEventsAndGraces;                                    
                                     foreach(var ef in efs)
                                     {
-                                        if(ef is IHasTicksPosition ihtp)
+                                        if(ef is IEvent iEvent)
                                         {
-                                            ihtp.TicksPosInScore = ticksPosInScore;
-                                            ticksPosInScore += ihtp.TicksDuration;
-                                            seqTicksDuration += ihtp.TicksDuration;
+                                            iEvent.TicksPosInScore = ticksPosInScore;
+                                            ticksPosInScore += iEvent.TicksDuration;
+                                            seqTicksDuration += iEvent.TicksDuration;
                                         }
                                     }
                                 }
                                 else if(iHasTicksDuration is TupletDef td)
                                 {
-                                    var efs = td.EventsGracesAndForwards;
+                                    var efs = td.IEventsAndGraces;
                                     foreach(var ef in efs)
                                     {
-                                        if(ef is IHasTicksPosition ihtp)
+                                        if(ef is IEvent iEvent)
                                         {
-                                            ihtp.TicksPosInScore = ticksPosInScore;
-                                            ticksPosInScore += ihtp.TicksDuration;
-                                            seqTicksDuration += ihtp.TicksDuration;
+                                            iEvent.TicksPosInScore = ticksPosInScore;
+                                            ticksPosInScore += iEvent.TicksDuration;
+                                            seqTicksDuration += iEvent.TicksDuration;
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    if(iHasTicksDuration is IHasTicksPosition ihtp)
+                                    if(iHasTicksDuration is IEvent iEvent)
                                     {
-                                        ihtp.TicksPosInScore = ticksPosInScore;
-                                        ticksPosInScore += ihtp.TicksDuration;
-                                        seqTicksDuration += ihtp.TicksDuration;
+                                        iEvent.TicksPosInScore = ticksPosInScore;
+                                        ticksPosInScore += iEvent.TicksDuration;
+                                        seqTicksDuration += iEvent.TicksDuration;
                                     }
                                 }
                             }

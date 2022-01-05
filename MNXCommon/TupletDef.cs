@@ -45,11 +45,11 @@ namespace MNX.Common
         {
             get
             {
-                return OuterDuration.TicksDuration;
+                return OuterDuration.TicksDuration; // can change when inserting make-time Grace durations.
             }
             set
             {
-                // this function is used when setting tuplet event ticks when dealing with nested tuplets.
+                // this function is used when setting tuplet event ticks when constructing nested tuplets.
                 M.Assert(value >= M.MinimumEventTicks);
                 OuterDuration.TicksDuration = value;
             }
@@ -137,7 +137,7 @@ namespace MNX.Common
                 M.ReadToXmlElementTag(r, "event", "grace", "forward", "tuplet");
             }
 
-            M.Assert(EventsGracesAndForwards.Count > 0);
+            M.Assert(IEventsAndGraces.Count > 0);
             M.Assert(r.Name == "tuplet"); // end of (nested) tuplet content
 
             if(_isTopLevel)

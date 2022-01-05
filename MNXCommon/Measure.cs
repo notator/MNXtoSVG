@@ -138,7 +138,7 @@ namespace MNX.Common
         {
             for(var sequenceIndex = 0; sequenceIndex < Sequences.Count; sequenceIndex++)
             {
-                List<IHasTicksDuration> eventsAndEventGroups = Sequences[sequenceIndex].EventsGracesAndForwards;
+                List<IHasTicksDuration> eventsAndEventGroups = Sequences[sequenceIndex].IEventsAndGraces;
                 for(var eegIndex = 0; eegIndex < eventsAndEventGroups.Count; eegIndex++)
                 {
                     if(eventsAndEventGroups[eegIndex] is Grace grace)
@@ -188,7 +188,7 @@ namespace MNX.Common
             IHasTicksDuration previousEvent;
             if(previousObject is EventGroup eg)
             {
-                List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
+                List<IHasTicksDuration> events = eg.IEventsAndGraces;
                 previousEvent = events[events.Count - 1];
             }
             else
@@ -213,7 +213,7 @@ namespace MNX.Common
             IHasTicksDuration nextEvent;
             if(nextObject is EventGroup eg)
             {
-                List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
+                List<IHasTicksDuration> events = eg.IEventsAndGraces;
                 nextEvent = events[0];
             }
             else
@@ -238,7 +238,7 @@ namespace MNX.Common
             foreach(var sequence in this.Sequences)
             {
                 int ticksPos = 0;
-                List<IHasTicksDuration> eegs = sequence.EventsGracesAndForwards;
+                List<IHasTicksDuration> eegs = sequence.IEventsAndGraces;
                 int eegIndex = 0;
                 int insertTicksPos = 0;
                 for(var index = 0; index < eegs.Count; index++)
@@ -254,7 +254,7 @@ namespace MNX.Common
                 var eeg = eegs[eegIndex];
                 if(eeg is EventGroup eg)
                 {
-                    List<IHasTicksDuration> events = eg.EventsGracesAndForwards;
+                    List<IHasTicksDuration> events = eg.IEventsAndGraces;
                     for(var i = 0; i < events.Count; i++)
                     {
                         if(insertTicksPos >= graceTicksPostion || i == (events.Count - 1))

@@ -55,6 +55,19 @@ namespace MNX.Common
             }
         }
 
+        internal int GetDefaultMakeTimeGraceTicksDuration()
+        {
+            M.Assert(this.Type == GraceType.makeTime);
+            int rval = 0;
+            // Graces don't nest, and dont contain Forward objects
+            List<IHasTicksDuration> events = IEventsAndGraces;
+            foreach(Event e in events)
+            {
+                rval += e.MNXDurationSymbol.GetDefaultTicks() / 4;
+            }
+            return rval;
+        }
+
         public Grace(XmlReader r)
         {            
             M.Assert(r.Name == "grace");

@@ -22,14 +22,7 @@ namespace MNX.Common
             get
             {
                 // Graces don't nest, and dont contain Forward objects
-                var eventList = IEventsAndGraces;
-                int rval = 0;
-                foreach(var e in eventList)
-                {
-                    M.Assert(e is Event);
-                    rval += e.TicksDuration;
-                }
-                return rval;
+                return base.TicksDuration;
             }
             set
             {

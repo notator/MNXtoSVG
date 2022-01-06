@@ -25,25 +25,6 @@ namespace MNX.Common
         /// </summary>
         public int IndexID;
 
-        public override int TicksDuration
-        {
-            get
-            {
-                var eventList = base.IEventsAndGraces;
-                int rval = 0;
-                foreach(var e in eventList)
-                {
-                    rval += e.TicksDuration;
-                }
-                return rval;
-            }
-            set
-            {
-                M.ThrowError("Application Error: This function should never be called.");
-            }
-        }
-
-
         public int MsPositionInScore { get; private set; }
 
         public Sequence(XmlReader r, TimeSignature currentTimeSig, int measureindex, int sequenceIndex)

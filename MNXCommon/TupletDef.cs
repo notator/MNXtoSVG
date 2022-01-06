@@ -45,7 +45,7 @@ namespace MNX.Common
         {
             get
             {
-                return OuterDuration.TicksDuration; // can change when inserting make-time Grace durations.
+                return base.TicksDuration;
             }
             set
             {
@@ -207,8 +207,7 @@ namespace MNX.Common
                 }
                 if(eventForwardTuplet is TupletDef t)
                 {
-                    t.TicksDuration = innerTicks[i];
-                    t.SetTicksDurationsInContentIgnoringGraces(t.TicksDuration); // recursive call
+                    t.SetTicksDurationsInContentIgnoringGraces(innerTicks[i]); // recursive call
                 }
             }
         }

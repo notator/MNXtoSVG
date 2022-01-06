@@ -122,6 +122,23 @@ namespace MNX.Common
             }
         }
 
-        public abstract int TicksDuration { get; set; }
+        public virtual int TicksDuration
+        {
+            get
+            {
+                var iEventsAndGraces = IEventsAndGraces;
+                int rval = 0;
+                foreach(var e in iEventsAndGraces)
+                {
+                    rval += e.TicksDuration;
+                }
+                return rval;
+            }
+            set
+            {
+                M.ThrowError("Application Error: This function should never be called.");
+            }
+
+        }
     }
 }

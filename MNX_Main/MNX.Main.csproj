@@ -68,6 +68,66 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="MNX_in\form1Data\accidentals.f1d" />
+    <None Include="MNX_in\form1Data\beam-hooks.f1d" />
+    <None Include="MNX_in\form1Data\beams-across-barlines.f1d" />
+    <None Include="MNX_in\form1Data\beams-inner-grace-notes.f1d" />
+    <None Include="MNX_in\form1Data\beams-secondary-beam-breaks.f1d" />
+    <None Include="MNX_in\form1Data\beams.f1d" />
+    <None Include="MNX_in\form1Data\dotted-notes.f1d" />
+    <None Include="MNX_in\form1Data\grace-note.f1d" />
+    <None Include="MNX_in\form1Data\grace-notes-beamed.f1d" />
+    <None Include="MNX_in\form1Data\hello-world.f1d" />
+    <None Include="MNX_in\form1Data\jumps-dal-segno.f1d" />
+    <None Include="MNX_in\form1Data\jumps-ds-al-fine.f1d" />
+    <None Include="MNX_in\form1Data\key-signatures.f1d" />
+    <None Include="MNX_in\form1Data\multiple-voices.f1d" />
+    <None Include="MNX_in\form1Data\octave-shifts-8va.f1d" />
+    <None Include="MNX_in\form1Data\parts.f1d" />
+    <None Include="MNX_in\form1Data\repeats-alternate-endings-advanced.f1d" />
+    <None Include="MNX_in\form1Data\repeats-alternate-endings-simple.f1d" />
+    <None Include="MNX_in\form1Data\repeats-implied-start-repeat.f1d" />
+    <None Include="MNX_in\form1Data\repeats-more-once-repeated.f1d" />
+    <None Include="MNX_in\form1Data\repeats.f1d" />
+    <None Include="MNX_in\form1Data\slurs-chords.f1d" />
+    <None Include="MNX_in\form1Data\slurs-incomplete-slurs.f1d" />
+    <None Include="MNX_in\form1Data\slurs-targeting-specific-notes.f1d" />
+    <None Include="MNX_in\form1Data\slurs.f1d" />
+    <None Include="MNX_in\form1Data\system-layouts.f1d" />
+    <None Include="MNX_in\form1Data\tempo-markings.f1d" />
+    <None Include="MNX_in\form1Data\three-note-chord-and-half-rest.f1d" />
+    <None Include="MNX_in\form1Data\ties.f1d" />
+    <None Include="MNX_in\form1Data\time-signatures.f1d" />
+    <None Include="MNX_in\form1Data\tuplets.f1d" />
+    <None Include="MNX_in\form1Data\two-bar-c-major-scale.f1d" />
+    <None Include="MNX_in\form1Data\_helloTextBlock.f1d" />
+    <None Include="MNX_in\form1Data\_tupletsNested.f1d" />
+    <None Include="MNX_in\mnx\beam-hooks.mnx" />
+    <None Include="MNX_in\mnx\beams-across-barlines.mnx" />
+    <None Include="MNX_in\mnx\beams-inner-grace-notes.mnx" />
+    <None Include="MNX_in\mnx\beams-secondary-beam-breaks.mnx" />
+    <None Include="MNX_in\mnx\dotted-notes.mnx" />
+    <None Include="MNX_in\mnx\grace-note.mnx" />
+    <None Include="MNX_in\mnx\grace-notes-beamed.mnx" />
+    <None Include="MNX_in\mnx\hello-world.mnx" />
+    <None Include="MNX_in\mnx\jumps-dal-segno.mnx" />
+    <None Include="MNX_in\mnx\jumps-ds-al-fine.mnx" />
+    <None Include="MNX_in\mnx\key-signatures.mnx" />
+    <None Include="MNX_in\mnx\multiple-voices.mnx" />
+    <None Include="MNX_in\mnx\octave-shifts-8va.mnx" />
+    <None Include="MNX_in\mnx\repeats-alternate-endings-advanced.mnx" />
+    <None Include="MNX_in\mnx\repeats-alternate-endings-simple.mnx" />
+    <None Include="MNX_in\mnx\repeats-implied-start-repeat.mnx" />
+    <None Include="MNX_in\mnx\repeats-more-once-repeated.mnx" />
+    <None Include="MNX_in\mnx\slurs-chords.mnx" />
+    <None Include="MNX_in\mnx\slurs-incomplete-slurs.mnx" />
+    <None Include="MNX_in\mnx\slurs-targeting-specific-notes.mnx" />
+    <None Include="MNX_in\mnx\system-layouts.mnx" />
+    <None Include="MNX_in\mnx\tempo-markings.mnx" />
+    <None Include="MNX_in\mnx\three-note-chord-and-half-rest.mnx" />
+    <None Include="MNX_in\mnx\time-signatures.mnx" />
+    <None Include="MNX_in\mnx\two-bar-c-major-scale.mnx" />
+    <None Include="MNX_in\mnx\_helloTextBlock.mnx" />
     <None Include="MNX_in\mnx\_tupletsNested.mnx" />
     <None Include="MNX_in\mnx\tuplets.mnx" />
     <None Include="MNX_in\mnx\ties.mnx" />
@@ -113,7 +173,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MNX_in\form1Data\" />
     <Folder Include="SVG_temp\" />
   </ItemGroup>
   <ItemGroup>

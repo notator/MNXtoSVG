@@ -176,11 +176,7 @@
                 the global/measure/directions-global/segno element
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="location" use="required">
-            <xs:simpleType>
-                <xs:restriction base="simpleLocationType" />
-            </xs:simpleType>
-        </xs:attribute>
+        <xs:attribute name="location" type="simpleLocationType" use="required"/>
         <xs:attribute name="glyph" type="xs:Name" use="optional" />
     </xs:complexType>
 
@@ -190,11 +186,7 @@
                 the global/measure/directions-global/jump element
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="location" use="required">
-            <xs:simpleType>
-                <xs:restriction base="simpleLocationType" />
-            </xs:simpleType>
-        </xs:attribute>
+        <xs:attribute name="location" type="simpleLocationType" use="required"/>
         <xs:attribute name="type" use="required">
             <xs:simpleType>
                 <xs:restriction base="xs:token">
@@ -210,11 +202,7 @@
                 the global/measure/directions-global/fine element
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="location" use="required">
-            <xs:simpleType>
-                <xs:restriction base="simpleLocationType" />
-            </xs:simpleType>
-        </xs:attribute>
+        <xs:attribute name="location" type="simpleLocationType" use="required" />
     </xs:complexType>
 
     <xs:complexType name="keySigType">
@@ -238,11 +226,7 @@
         </xs:annotation>
         <xs:attribute name="bpm" type="xs:float" use="required" />
         <xs:attribute name="value" type="noteValueType" use="required" />
-        <xs:attribute name="location" use="optional" default="0">
-            <xs:simpleType>
-                <xs:restriction base="simpleLocationType" />
-            </xs:simpleType>
-        </xs:attribute>
+        <xs:attribute name="location" type="simpleLocationType" use="optional" default="0" />
     </xs:complexType>
 
     <xs:complexType name="emptyElementType">
@@ -788,7 +772,6 @@
         </xs:restriction>
     </xs:simpleType>
 
-
     <xs:simpleType name="noteValueType">
         <xs:annotation>
             <xs:documentation>
@@ -1033,7 +1016,6 @@
             <xs:pattern value="yes|no|auto"/>
         </xs:restriction>
     </xs:simpleType>
-
 
     <xs:simpleType name="tupletDisplaySettingType">
         <xs:annotation>

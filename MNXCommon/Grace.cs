@@ -12,7 +12,7 @@ namespace MNX.Common
     {
         public readonly GraceType Type = GraceType.stealPrevious; // spec says this is the default.
         public readonly bool? Slash = null;
-        public override string ToString() => $"Grace: TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
+        public override string ToString() => $"Grace: TicksDuration={TicksDuration} TicksPosInScore={TicksPosInScore} Type={Type} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         /// <summary>
         /// Grace and Event implement Ticks.set so that grace can steal.
@@ -48,6 +48,18 @@ namespace MNX.Common
             }
         }
 
+        /// <summary>
+        /// Grace is not an IEvent. This is just for debugging (intellisense) purposes.
+        /// </summary>
+        public int TicksPosInScore
+        {
+            get
+            {
+                Event e = IEventsAndGraces[0] as Event;
+                return e.TicksPosInScore;
+            }
+        }
+
         internal int GetDefaultMakeTimeGraceTicksDuration()
         {
             M.Assert(this.Type == GraceType.makeTime);
@@ -56,7 +68,9 @@ namespace MNX.Common
             List<IHasTicksDuration> events = IEventsAndGraces;
             foreach(Event e in events)
             {
-                rval += e.MNXDurationSymbol.GetDefaultTicks() / 4;
+                int eventTickSize = (int)(e.MNXDurationSymbol.GetDefaultTicks() * M.MakeTimeGraceDefaultTickSize);
+                M.Assert(eventTickSize >= M.MinimumEventTicks);
+                rval += eventTickSize;
             }
             return rval;
         }
@@ -109,6 +123,9 @@ namespace MNX.Common
             GraceType rval = GraceType.stealPrevious; // default (spec)
             switch(value)
             {
+                case "steal-previous":
+                    rval = GraceType.stealPrevious;
+                    break;
                 case "steal-following":
                     rval = GraceType.stealFollowing;
                     break;

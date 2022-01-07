@@ -19,7 +19,7 @@ namespace MNX.Common
         /// </summary>
         public int Index { get; private set; } = -1;
 
-        public override string ToString() => $"GlobalMeasure: Index={Index}";
+        public override string ToString() => $"GlobalMeasure: TicksDuration={TicksDuration} Index={Index}";
 
         public readonly BarlineType? Barline = null; // default
 

@@ -84,7 +84,7 @@ namespace MNX.Common
 
         #region IUniqueDef
         
-        public override string ToString() => $"Event: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
+        public override string ToString() => $"Event: TicksDuration={TicksDuration} TicksPosInScore={TicksPosInScore} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
         /// <summary>
         /// (?) ISeqComponent objects are already unique, so no Clone is required. (?)

@@ -62,6 +62,8 @@ namespace MNX.Globals
         /// The minimum number of Ticks in an IHasTicksDuration object.
         /// </summary>
         public static readonly int MinimumEventTicks = 4;
+        public static readonly double GraceStealProportion = 0.25;
+        public static readonly double MakeTimeGraceDefaultTickSize = 0.25;
 
         // This value could be raised by any power of 2.
         public static int TicksPerCrotchet = 1024;

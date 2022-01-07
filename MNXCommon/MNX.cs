@@ -116,11 +116,32 @@ namespace MNX.Common
         {
             AssertPreconditions();
 
-            var tickPositionMakeTimeGraces = GetTickPositionGraces(GraceType.makeTime);
+            var tickPosMakeTimeGraces = GetTickPosGraces(GraceType.makeTime);
 
-            if(tickPositionMakeTimeGraces.Count > 0)
+            if(tickPosMakeTimeGraces.Count > 0)
             {
-                SetAllTicksDurationsForMakeTimeGraces(tickPositionMakeTimeGraces);
+                SetAllTicksDurationsForMakeTimeGraces(tickPosMakeTimeGraces);
+            }
+
+            var tickPosStealingGraces = GetTickPosGraces(GraceType.stealPrevious);
+            var tickPosStealFollowingGraces = GetTickPosGraces(GraceType.stealFollowing);
+            foreach(var key in tickPosStealFollowingGraces.Keys)
+            {
+                if(tickPosStealingGraces.ContainsKey(key) == false)
+                {
+                    tickPosStealingGraces.Add(key, new List<Grace>());
+                }
+
+                var graceList = tickPosStealFollowingGraces[key];
+                foreach(var grace in graceList)
+                {
+                    tickPosStealingGraces[key].Add(grace);
+                }
+            }
+
+            if(tickPosStealingGraces.Count > 0)
+            {
+                SetTicksDurationsForStealingGraces(tickPosStealingGraces);
             }
         }
 
@@ -172,7 +193,7 @@ namespace MNX.Common
             }
         }
 
-        private SortedDictionary<int, List<Grace>> GetTickPositionGraces(GraceType getGraceType)
+        private SortedDictionary<int, List<Grace>> GetTickPosGraces(GraceType getGraceType)
         {
             SortedDictionary<int, List<Grace>> ticksPosGraces= new SortedDictionary<int, List<Grace>>();
             int nMeasures = Parts[0].Measures.Count;
@@ -280,10 +301,9 @@ namespace MNX.Common
                             int oldTicksDuration = iEventOrGrace.TicksDuration;
                             bool incrementAddTickPosition = false;
 
-                            if(iEventOrGrace is Grace g)
+                            if(iEventOrGrace is Grace g && g.Type == GraceType.makeTime)
                             {
                                 M.Assert(g.TicksDuration == 0);
-                                M.Assert(g.Type == GraceType.makeTime);
                                 if(localTicksPosInScore == addTickPosition)
                                 {
                                     g.TicksDuration = ticksToAdd;
@@ -339,7 +359,59 @@ namespace MNX.Common
             #endregion
 
         }
+        private void SetTicksDurationsForStealingGraces(SortedDictionary<int, List<Grace>> tickPosStealingGraces)
+        {
+            void SetGraceDurationAndStealFrom(Grace grace, IEvent victim)
+            {
+                M.Assert(victim != null);
+                int toSteal = (int)(victim.TicksDuration * M.GraceStealProportion);
+                M.Assert(toSteal >= M.MinimumEventTicks);
+                grace.TicksDuration = toSteal;
+                victim.TicksDuration -= toSteal;
+                M.Assert(victim.TicksDuration >= M.MinimumEventTicks);
+            }
 
+            foreach(Part part in Parts)
+            {
+                foreach(Measure measure in part.Measures)
+                {
+                    foreach(Sequence sequence in measure.Sequences)
+                    {
+                        var iEventsAndGraces = sequence.IEventsAndGraces;
+                        for(int i = 0; i < iEventsAndGraces.Count; i++)
+                        {
+                            IEvent previous = null;
+                            IEvent following = null;
+                            if(iEventsAndGraces[i] is Grace grace && grace.Type != GraceType.makeTime)
+                            {
+                                if(grace.Type == GraceType.stealPrevious)
+                                {
+                                    if(i > 0)
+                                    {
+                                        previous = iEventsAndGraces[i - 1] as IEvent;
+                                    }
+                                    SetGraceDurationAndStealFrom(grace, previous);
+                                }
+                                else if(grace.Type == GraceType.stealFollowing)
+                                {
+                                    if(i < iEventsAndGraces.Count - 1)
+                                    {
+                                        following = iEventsAndGraces[i + 1] as IEvent;
+                                    }
+                                    SetGraceDurationAndStealFrom(grace, following);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the TickPositionInScore for all IEvents in the score.
+        /// The IEvents are Event and Forward objects contained at the lowest level in (nested) TupletDefs and Grace objects.
+        /// Grace objects do not nest, and only contain a flat list of Event objects. They don't contain Forward objects.
+        /// </summary>
         private void SetIEventTicksPositionsInScore()
         {
             foreach(Part part in Parts)

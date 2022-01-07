@@ -32,7 +32,7 @@ namespace MNX.Common
         }
 
         public int MsPosInScore = -1;
-        public override string ToString() => $"Forward: TicksPosInScore={TicksPosInScore} TicksDuration={TicksDuration} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
+        public override string ToString() => $"Forward: TicksDuration={TicksDuration} TicksPosInScore={TicksPosInScore} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
 
 
         #region IUniqueDef

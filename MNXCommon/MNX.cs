@@ -371,7 +371,7 @@ namespace MNX.Common
                                 }
                                 else if(iHasTicksDuration is TupletDef td)
                                 {
-                                    var efs = td.IEventsAndGraces;
+                                    var efs = td.IEventsAndGraces; // copes with nesting TupletDefs.
                                     foreach(var ef in efs)
                                     {
                                         if(ef is IEvent iEvent)
@@ -382,7 +382,7 @@ namespace MNX.Common
                                         }
                                         else if(ef is Grace grace)
                                         {
-                                            var gefgs = grace.IEventsAndGraces;
+                                            var gefgs = grace.IEventsAndGraces; // Grace objects don't nest, so only contain IEvents
                                             foreach(var gefg in gefgs)
                                             {
                                                 if(gefg is IEvent ie)

@@ -58,7 +58,7 @@ namespace MNX.Common
 
             M.ReadToXmlElementTag(r, "event", "tuplet", "grace", "directions", "beams", "forward");
 
-            while(r.Name == "event" || r.Name == "tuplet" || r.Name == "grace" || r.Name == "directions" || 
+            while(r.Name == "event" || r.Name == "tuplet" || r.Name == "grace" || r.Name == "directions" ||
                 r.Name == "beams" || r.Name == "forward")
             {
                 if(r.NodeType != XmlNodeType.EndElement)
@@ -192,7 +192,7 @@ namespace MNX.Common
         /// <param name="iuds"></param>
         /// <param name="octaveShift"></param>
         /// <returns>current octave shift (can be null)</returns>
-        private static OctaveShift GetTupletComponents(TupletDef tupletDef, List<IUniqueDef> iuds, OctaveShift octaveShift)
+        private OctaveShift GetTupletComponents(TupletDef tupletDef, List<IUniqueDef> iuds, OctaveShift octaveShift)
         {
             var tupletComponents = tupletDef.Components;
             Event firstEvent = (Event)tupletComponents.Find(e => e is Event);
@@ -208,6 +208,20 @@ namespace MNX.Common
                     tupletEvt.OctaveShift = octaveShift;
                     octaveShift = null;
                     iuds.Add(tupletEvt as IUniqueDef);
+                }
+                else if(component is Grace g)
+                {
+                    var graceComponents = g.Components;
+                    foreach(var graceCompt in graceComponents)
+                    {
+                        // Assuming that Grace groups can only contain Events and Directions...
+                        if(graceCompt is Event graceEvt)
+                        {
+                            graceEvt.OctaveShift = octaveShift;
+                            octaveShift = null;
+                            iuds.Add(graceEvt as IUniqueDef);
+                        }
+                    }
                 }
                 else if(component is TupletDef tplet)
                 {

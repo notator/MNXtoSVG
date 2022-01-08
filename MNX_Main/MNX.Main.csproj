@@ -136,6 +136,12 @@
     <None Include="MNX_in\mnx\parts.mnx" />
     <None Include="MNX_in\mnx\beams.mnx" />
     <None Include="MNX_in\mnx\accidentals.mnx" />
+    <None Include="MNX_in\schema\common1900.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="MNX_in\schema\xhtml.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

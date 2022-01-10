@@ -217,7 +217,7 @@ namespace Moritz.Symbols
             {
                 if(noteObject is OutputChordSymbol chord)
                 {
-                    if(chord.IsBeamStart)
+                    if(chord.BeamBlockDef != null)
                     {
                         M.Assert(currentClef != null);
                         beamedGroup = beamedGroups[groupIndex++];
@@ -247,6 +247,7 @@ namespace Moritz.Symbols
         private List<List<OutputChordSymbol>> GetBeamedGroups()
         {
             List<List<OutputChordSymbol>> beamedGroups = new List<List<OutputChordSymbol>>();
+
 
             bool inGroup = false;
             List<OutputChordSymbol> beamedGroup = null;
@@ -297,31 +298,31 @@ namespace Moritz.Symbols
         /// </summary>
         public void FinalizeBeamBlocks()
         {
-            HashSet<BeamBlock> beamBlocks = FindBeamBlocks();
-            foreach(BeamBlock beamBlock in beamBlocks)
+            HashSet<ChordSymbol> chordSymbolsThatStartBeamBlocks = FindChordSymbolsThatStartBeamBlocks();
+            foreach(var chordSymbol in chordSymbolsThatStartBeamBlocks)
             {
-                beamBlock.FinalizeBeamBlock();
+                chordSymbol.FinalizeBeamBlock();
             }
         }
 
         public void RemoveBeamBlockBeams()
         {
-            HashSet<BeamBlock> beamBlocks = FindBeamBlocks();
-            foreach(BeamBlock beamBlock in beamBlocks)
+            HashSet<ChordSymbol> chordSymbolsThatStartBeamBlocks = FindChordSymbolsThatStartBeamBlocks();
+            foreach(var chordSymbol in chordSymbolsThatStartBeamBlocks)
             {
-                beamBlock.Beams.Clear();
+                chordSymbol.BeamBlock.Beams.Clear();
             }
         }
 
-        private HashSet<BeamBlock> FindBeamBlocks()
+        private HashSet<ChordSymbol> FindChordSymbolsThatStartBeamBlocks()
         {
-            HashSet<BeamBlock> beamBlocks = new HashSet<BeamBlock>();
+            HashSet<ChordSymbol> chordSymbolsThatStartBeamBlocks = new HashSet<ChordSymbol>();
             foreach(ChordSymbol chord in ChordSymbols)
             {
-                if(chord.BeamBlock != null)
-                    beamBlocks.Add(chord.BeamBlock);
+                if(chord.BeamBlockDef != null)
+                    chordSymbolsThatStartBeamBlocks.Add(chord);
             }
-            return beamBlocks;
+            return chordSymbolsThatStartBeamBlocks;
         }
 
         #region Enumerators

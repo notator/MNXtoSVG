@@ -147,11 +147,14 @@ namespace Moritz.Symbols
         ///  4. moves the stem tips and related objects (dynamics, ornament numbers) to their correct positions wrt the outer beam.
         /// Especially note that neither this beam Block or its contained beams ever move _horizontally_.
         /// </summary>
-        public void FinalizeBeamBlock()
+        public void FinalizeBeamBlock(MNX.Common.BeamBlock beamBlockDef)
         {
             #region create the individual beams all with top edge horizontal at 0F.
             HashSet<DurationClass> durationClasses = new HashSet<DurationClass>()
             {
+                DurationClass.eightFlags,
+                DurationClass.sevenFlags,
+                DurationClass.sixFlags,
                 DurationClass.fiveFlags,
                 DurationClass.fourFlags,
                 DurationClass.threeFlags,
@@ -161,7 +164,7 @@ namespace Moritz.Symbols
 
             foreach(DurationClass durationClass in durationClasses)
             {
-                List<Beam> beams = CreateBeams(durationClass);
+                List<Beam> beams = CreateBeams(durationClass, beamBlockDef);
                 _left = double.MaxValue;
                 _right = double.MinValue;
                 foreach(Beam beam in beams)
@@ -425,49 +428,108 @@ namespace Moritz.Symbols
             _originY = _top;
         }
 
-        private List<Beam> CreateBeams(DurationClass durationClass)
+        /// <summary>
+        /// Returns a list of beams having depth corresponding to the durationClass.
+        /// The beams' left and right edge coordinates are set.
+        /// </summary>
+        /// <param name="durationClass"></param>
+        /// <param name="beamBlockDef"></param>
+        /// <returns></returns>
+        private List<Beam> CreateBeams(DurationClass durationClass, MNX.Common.BeamBlock beamBlockDef)
         {
             List<Beam> newBeams = new List<Beam>();
-            bool inBeam = false;
-            double beamLeft = -1;
-            double beamRight = -1;
 
-            ChordMetrics rightMostChordMetrics = (ChordMetrics)Chords[Chords.Count - 1].Metrics;
-            double rightMostStemX = rightMostChordMetrics.StemMetrics.OriginX;
-
-            int stemNumber = 1;
-            foreach(ChordSymbol chord in Chords)
+            List<MNX.Common.Beam> beamDefs = GetBeamDefs(beamBlockDef, durationClass);
+            for(int i = 0; i < beamDefs.Count; i++)
             {
-                ChordMetrics chordMetrics = (ChordMetrics)chord.Metrics;
-                double stemX = chordMetrics.StemMetrics.OriginX;
+                MNX.Common.Beam beamDef = beamDefs[i];
+                double beamLeft = double.MaxValue;
+                double beamRight = double.MinValue;
 
-                bool hasLessThanOrEqualBeams = HasLessThanOrEqualBeams(durationClass, chord.DurationClass);
-                if(!inBeam && hasLessThanOrEqualBeams)
+                List<ChordSymbol> chordsInBeam = GetChordsInBeam(Chords, beamDef);
+
+                foreach(ChordSymbol chord in chordsInBeam)
                 {
-                    beamLeft = stemX;
-                    beamRight = stemX;
-                    inBeam = true;
-                }
-                else if(inBeam && hasLessThanOrEqualBeams)
-                {
-                    beamRight = stemX;
+                    ChordMetrics chordMetrics = (ChordMetrics)chord.Metrics;
+                    double stemX = chordMetrics.StemMetrics.OriginX;
+
+                    beamLeft = (beamLeft < stemX) ? beamLeft : stemX;
+                    beamRight = (beamRight > stemX) ? beamRight : stemX;
                 }
 
-                if(inBeam && ((!hasLessThanOrEqualBeams) || stemX == rightMostStemX)) // different durationClass or end of beamBlock
-                {
-                    // BeamStubs are initially created with LeftX == RightX == stemX.
-                    // They are replaced by proper beamStubs when the BeamBlock is complete
-                    // (See SetBeamStubs() above.)
-                    bool isStub = (beamLeft == beamRight) ? true : false;
+                // BeamStubs are initially created with LeftX == RightX == stemX.
+                // They are replaced by proper beamStubs when the BeamBlock is complete
+                // (See SetBeamStubs() above.)
+                bool isStub = (beamLeft == beamRight) ? true : false;
 
-                    Beam newBeam = NewBeam(durationClass, beamLeft, beamRight, isStub);
-                    newBeams.Add(newBeam);
-                    inBeam = false;
-                }
-                stemNumber++;
+                Beam newBeam = NewBeam(durationClass, beamLeft, beamRight, isStub);
+                newBeams.Add(newBeam);
             }
 
             return newBeams;
+        }
+
+        private List<ChordSymbol> GetChordsInBeam(List<ChordSymbol> allBeamBlockChords, MNX.Common.Beam beamDef)
+        {
+            List<ChordSymbol> chordsInBeam = new List<ChordSymbol>();
+            foreach(var eventID in beamDef.EventIDs)
+            {
+                ChordSymbol cs = allBeamBlockChords.Find(x => x.EventID == eventID);
+                chordsInBeam.Add(cs);
+            }
+            return chordsInBeam;
+        }
+
+        private List<MNX.Common.Beam> GetBeamDefs(MNX.Common.BeamBlock beamBlockDef, DurationClass durationClass)
+        {
+            List<MNX.Common.Beam> beamDefs = new List<MNX.Common.Beam>();
+            int depth = GetDepth(durationClass);
+
+            foreach(var beamDef in beamBlockDef.ContainedBeams)
+            {
+                if(beamDef.Depth == depth)
+                {
+                    beamDefs.Add(beamDef);
+                }
+            }
+
+            return beamDefs;
+        }
+
+        private int GetDepth(DurationClass durationClass)
+        {
+            int depth = 0;
+            switch(durationClass)
+            {
+                case DurationClass.quaver:
+                    depth = 0;
+                    break;
+                case DurationClass.semiquaver:
+                    depth = 1;
+                    break;
+                case DurationClass.threeFlags:
+                    depth = 2;
+                    break;
+                case DurationClass.fourFlags:
+                    depth = 3;
+                    break;
+                case DurationClass.fiveFlags:
+                    depth = 4;
+                    break;
+                case DurationClass.sixFlags:
+                    depth = 5;
+                    break;
+                case DurationClass.sevenFlags:
+                    depth = 6;
+                    break;
+                case DurationClass.eightFlags:
+                    depth = 7;
+                    break;
+                default:
+                    M.Assert(false, "This duration class has no beams!");
+                    break;
+            }
+            return depth;
         }
 
         /// <summary>

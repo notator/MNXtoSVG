@@ -396,6 +396,14 @@ namespace Moritz.Symbols
             #endregion Head is G
             return useSharpsOrNull;
         }
+
+        internal void FinalizeBeamBlock()
+        {
+            M.Assert(this.BeamBlock != null);
+            M.Assert(this.BeamBlockDef != null);
+
+            BeamBlock.FinalizeBeamBlock(BeamBlockDef);
+        }
         #endregion private
 
         /// <summary>
@@ -465,12 +473,15 @@ namespace Moritz.Symbols
         public readonly bool IsBeamStart;
         public readonly bool IsBeamEnd;
 
+        public MNX.Common.BeamBlock BeamBlockDef { get; internal set; }
+        public BeamBlock BeamBlock = null; // defaults
+
         public readonly OctaveShift OctaveShift;
         public readonly OctaveShift EndOctaveShift;
         public readonly int TicksPosInScore;
         public readonly int TicksDuration;
         public Stem Stem = null; // defaults
-        public BeamBlock BeamBlock = null; // defaults
+        
         public List<Head> HeadsTopDown = new List<Head>(); // Heads are in top-down order.
         public List<SlurDef> SlurDefs = null; // definitions from MNX file
         public readonly string EventID = null;  // ID from MNX file

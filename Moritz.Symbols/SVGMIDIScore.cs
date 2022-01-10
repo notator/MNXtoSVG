@@ -82,6 +82,25 @@ namespace Moritz.Symbols
                             Sequence sequence = measure.Sequences[voiceIndex];
                             List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, M.PageFormat.MillisecondsPerTick);
 
+                            // SetBeamBlockBoundaryEvents(seqIUDs); ?Do this here?
+                            var cBeamBlocks = seqIUDs.FindAll(x => x is MNX.Common.BeamBlock);
+                            foreach(MNX.Common.BeamBlock bb in cBeamBlocks)
+                            {
+                                var quaverbeam = bb.ContainedBeams[0];
+                                Event beamStartEvent = (Event) seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[0]));
+                                beamStartEvent.IsBeamStart = true;
+                                Event beamEndEvent = (Event) seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[quaverbeam.EventIDs.Count -1]));
+                                beamEndEvent.IsBeamEnd = true;
+
+                                //for(int i = 1; i < quaverbeam.EventIDs.Count-1; i++)
+                                //{
+                                //    var beamContinuesEvent = seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[i]));
+                                //    beamContinuesEvent.beamContinues = true;
+
+                                //}
+
+                            }
+
                             // TODO add Repeats as IUDs here
                             InsertDirectionsInSeqIUDs(seqIUDs, measureDirections, globalDirections);
 

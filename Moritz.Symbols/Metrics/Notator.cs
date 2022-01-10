@@ -66,40 +66,62 @@ namespace Moritz.Symbols
                         msPositionReVoiceDef = 0;
 						List<IUniqueDef> iuds = voice.VoiceDef.UniqueDefs;
 						M.Assert(iuds[0] is ClefDef || iuds[0] is MNX.Common.Clef); /** <-------------- **/
+                        List<MNX.Common.BeamBlock> beamBlockDefs = new List<MNX.Common.BeamBlock>();
 
 						for (int iudIndex = 0; iudIndex < iuds.Count; ++ iudIndex)
                         {
-							IUniqueDef iud = voice.VoiceDef.UniqueDefs[iudIndex];
-                            int absMsPosition = systemAbsMsPos + msPositionReVoiceDef;
+                            var iud = voice.VoiceDef.UniqueDefs[iudIndex];
+                            
+                            if(iud is MNX.Common.BeamBlock bbDef)
+                            {
+                                beamBlockDefs.Add(bbDef);
+                            }
+                            else
+                            {
+                                int absMsPosition = systemAbsMsPos + msPositionReVoiceDef;
 
-                            NoteObject noteObject =
-                                SymbolSet.GetNoteObject(voice, absMsPosition, iud, iudIndex, ref currentChannelVelocities[staffIndex]);
+                                NoteObject noteObject =
+                                    SymbolSet.GetNoteObject(voice, absMsPosition, iud, iudIndex, ref currentChannelVelocities[staffIndex]);
 
-							if(noteObject is SmallClef smallClef)
-							{
-								if(voiceIndex == 0)
-								{
-									if(staff.Voices.Count > 1)
-									{
-										topVoiceSmallClefs.Add(smallClef);
-									}
-								}
-								else
-								{
-									throw new Exception("SmallClefs may not be defined for a lower voice. They will be copied from the top voice");
-								}
-							}
+                                if(noteObject is OutputChordSymbol ocs && beamBlockDefs.Count > 0)
+                                {
+                                    for(int i = beamBlockDefs.Count - 1; i >= 0; i--)
+                                    {
+                                        if(ocs.EventID == beamBlockDefs[i].ContainedBeams[0].EventIDs[0])
+                                        {
+                                            ocs.BeamBlockDef = beamBlockDefs[i];
+                                            beamBlockDefs.RemoveAt(i);
+                                        }
+                                    }
+                                }
 
-							if(iud is IUniqueSplittableChordDef iscd && iscd.MsDurationToNextBarline != null)
-							{
-								msPositionReVoiceDef += (int)iscd.MsDurationToNextBarline;
-							}
-							else
-							{
-								msPositionReVoiceDef += iud.MsDuration;
-							}
 
-							voice.NoteObjects.Add(noteObject);
+                                if(noteObject is SmallClef smallClef)
+                                {
+                                    if(voiceIndex == 0)
+                                    {
+                                        if(staff.Voices.Count > 1)
+                                        {
+                                            topVoiceSmallClefs.Add(smallClef);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("SmallClefs may not be defined for a lower voice. They will be copied from the top voice");
+                                    }
+                                }
+
+                                if(iud is IUniqueSplittableChordDef iscd && iscd.MsDurationToNextBarline != null)
+                                {
+                                    msPositionReVoiceDef += (int)iscd.MsDurationToNextBarline;
+                                }
+                                else
+                                {
+                                    msPositionReVoiceDef += iud.MsDuration;
+                                }
+
+                                voice.NoteObjects.Add(noteObject);
+                            }
                         }
                     }
 

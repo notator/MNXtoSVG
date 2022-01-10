@@ -24,6 +24,16 @@ namespace MNX.Common
             return $"Depth={Depth} EventIDs={idsSB}";
         }
 
+        public Beam(List<string> eventIDs, int depth)
+        {
+            foreach(var id in eventIDs)
+            {
+                EventIDs.Add(id);
+            }
+            
+            Depth = depth;
+        }
+
         public Beam(XmlReader r, int topLevelDepth)
         {
             M.Assert(r.Name == "beam");

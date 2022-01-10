@@ -85,7 +85,7 @@ namespace MNX.Common
                             Directions = new SequenceDirections(r, currentTimeSig);
                             break;
                         case "beams":
-                            Components.Add(new Beams(r));
+                            Components.Add(new BeamBlocks(r));
                             break;
                         case "forward":
                             Forward forward = new Forward(r);
@@ -172,9 +172,12 @@ namespace MNX.Common
                 {
                     octaveShift = GetTupletComponents(t, rval, octaveShift);
                 }
-                else if(seqObj is Beams beams)
+                else if(seqObj is BeamBlocks beamBlocks)
                 {
-                    // TODO
+                    foreach(var beamBlock in beamBlocks.Blocks)
+                    {
+                        rval.Add(beamBlock as IUniqueDef);
+                    }
                 }
                 else
                 {

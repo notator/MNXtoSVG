@@ -45,8 +45,9 @@
   <ItemGroup>
     <Compile Include="Accidental.cs" />
     <Compile Include="Beam.cs" />
+    <Compile Include="BeamBlock.cs" />
     <Compile Include="Clef.cs" />
-    <Compile Include="Beams.cs" />
+    <Compile Include="BeamBlocks.cs" />
     <Compile Include="BeamHook.cs" />
     <Compile Include="Fine.cs" />
     <Compile Include="Segno.cs" />

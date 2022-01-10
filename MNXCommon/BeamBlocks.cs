@@ -9,16 +9,17 @@ namespace MNX.Common
     /// <summary>
     /// https://w3c.github.io/mnx/specification/common/#the-event-element
     /// </summary>
-    public class Beams : ISequenceComponent
+    public class BeamBlocks : ISequenceComponent
     {
-        public readonly List<Beam> ContainedBeams = new List<Beam>();
-        public readonly List<BeamHook> ContainedBeamHooks = new List<BeamHook>();
+        public readonly List<BeamBlock> Blocks = new List<BeamBlock>();
 
-        public Beams(XmlReader r)
+        public BeamBlocks(XmlReader r)
         {
             M.Assert(r.Name == "beams");
 
             M.ReadToXmlElementTag(r, "beam");
+
+            BeamBlock currentBeamBlock = null;
 
             int topLevelDepth = r.Depth;
 
@@ -30,12 +31,17 @@ namespace MNX.Common
                     {
                         case "beam":
                             {
-                                ContainedBeams.Add(new Beam(r, topLevelDepth));
+                                if(r.Depth == topLevelDepth)
+                                {
+                                    currentBeamBlock = new BeamBlock();
+                                    Blocks.Add(currentBeamBlock);
+                                }
+                                currentBeamBlock.ContainedBeams.Add(new Beam(r, topLevelDepth));
                                 break;
                             }
                         case "beam-hook":
                             {
-                                ContainedBeamHooks.Add(new BeamHook(r, topLevelDepth));
+                                currentBeamBlock.ContainedBeamHooks.Add(new BeamHook(r, topLevelDepth));
                                 break;
                             }
                     }                    

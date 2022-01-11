@@ -141,6 +141,7 @@
 
     public enum BeamHookDirection
     {
+        none, // value used for ordinary beams
         left,
         right
     }

@@ -5,11 +5,11 @@ using Moritz.Spec;
 namespace MNX.Common
 {
     // https://w3c.github.io/mnx/specification/common/#the-time-element
-    public class BeamHook
+    public class BeamHook : IBeamBlockComponent
     {
         public readonly string EventID;
         public readonly BeamHookDirection BeamHookDirection;
-        public readonly int Depth;
+        public int Depth { get; }
 
         public override string ToString() => $"Depth={Depth} EventID={EventID} BeamHookDirection={BeamHookDirection}";
 

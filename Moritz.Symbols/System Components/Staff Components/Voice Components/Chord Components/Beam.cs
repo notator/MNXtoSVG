@@ -1,22 +1,27 @@
 
+using MNX.Globals;
 using Moritz.Xml;
 
 namespace Moritz.Symbols
 {
 	public abstract class Beam
 	{
+        public MNX.Common.BeamHookDirection BeamHookDirection = MNX.Common.BeamHookDirection.none;
+
         /// <summary>
         /// Creates a horizontal Beam whose top edge is at 0F.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <param name="y"></param>
-        public Beam(double left, double right)
+        public Beam(double left, double right, MNX.Common.BeamHookDirection beamHookDirection = MNX.Common.BeamHookDirection.none)
         {
             LeftX = left;
             RightX = right;
             _leftTopY = 0;
             _rightTopY = 0;
+
+            BeamHookDirection = beamHookDirection; // is none for an ordinary beam
         }
 
         public void MoveYs(double dLeftY, double dRightY)
@@ -51,9 +56,9 @@ namespace Moritz.Symbols
         }
 
         /// <summary>
-        /// Exposed as public function by each IBeamStub
+        /// Exposed as public function by each IBeamHook
         /// </summary>
-        protected void ShearStub(double shearAxis, double tanAlpha, double stemX)
+        protected void ShearHook(double shearAxis, double tanAlpha, double stemX)
         {
             if(LeftX == stemX || RightX == stemX)
             {
@@ -88,8 +93,8 @@ namespace Moritz.Symbols
     }
     internal class SemiquaverBeam : Beam
     {
-        public SemiquaverBeam(double left, double right)
-            : base(left, right)
+        public SemiquaverBeam(double left, double right, MNX.Common.BeamHookDirection beamHookDirection)
+            : base(left, right, beamHookDirection)
         {
         }
 
@@ -101,8 +106,8 @@ namespace Moritz.Symbols
     }
     internal class ThreeFlagsBeam : Beam
     {
-        public ThreeFlagsBeam(double left, double right)
-            : base(left, right)
+        public ThreeFlagsBeam(double left, double right, MNX.Common.BeamHookDirection beamHookDirection)
+            : base(left, right, beamHookDirection)
         {
         }
 
@@ -114,8 +119,8 @@ namespace Moritz.Symbols
     }
     internal class FourFlagsBeam : Beam
     {
-        public FourFlagsBeam(double left, double right)
-            : base(left, right)
+        public FourFlagsBeam(double left, double right, MNX.Common.BeamHookDirection beamHookDirection)
+            : base(left, right, beamHookDirection)
         {
         }
 
@@ -127,8 +132,8 @@ namespace Moritz.Symbols
     }
     internal class FiveFlagsBeam : Beam
     {
-        public FiveFlagsBeam(double left, double right)
-            : base(left, right)
+        public FiveFlagsBeam(double left, double right, MNX.Common.BeamHookDirection beamHookDirection)
+            : base(left, right, beamHookDirection)
         {
         }
 
@@ -139,64 +144,64 @@ namespace Moritz.Symbols
     }
 
 	/**********************************************************************************************/
-	public interface IBeamStub
+	public interface IBeamHook
 	{
 		DurationClass DurationClass { get; }
-        void ShearBeamStub(double shearAxis, double tanAlpha, double stemX);
+        void ShearBeamHook(double shearAxis, double tanAlpha, double stemX);
     }
 
-	internal class SemiquaverBeamStub : SemiquaverBeam, IBeamStub
+	internal class SemiquaverBeamHook : SemiquaverBeam, IBeamHook
 	{
-		public SemiquaverBeamStub(double left, double right)
-			: base(left, right)
+		public SemiquaverBeamHook(double leftRightX, MNX.Common.BeamHookDirection beamHookDirection)
+            : base(leftRightX, leftRightX, beamHookDirection)
 		{
 		}
 
-		public void ShearBeamStub(double shearAxis, double tanAlpha, double stemX)
+		public void ShearBeamHook(double shearAxis, double tanAlpha, double stemX)
 		{
-			base.ShearStub(shearAxis, tanAlpha, stemX);
+			base.ShearHook(shearAxis, tanAlpha, stemX);
 		}
 
 		public DurationClass DurationClass { get { return DurationClass.semiquaver; } }
 	}
-    internal class ThreeFlagsBeamStub : ThreeFlagsBeam, IBeamStub
+    internal class ThreeFlagsBeamHook : ThreeFlagsBeam, IBeamHook
     {
-        public ThreeFlagsBeamStub(double left, double right)
-            : base(left, right)
+        public ThreeFlagsBeamHook(double leftRightX, MNX.Common.BeamHookDirection beamHookDirection)
+            : base(leftRightX, leftRightX, beamHookDirection)
         {
         }
 
-        public void ShearBeamStub(double shearAxis, double tanAlpha, double stemX)
+        public void ShearBeamHook(double shearAxis, double tanAlpha, double stemX)
         {
-            base.ShearStub(shearAxis, tanAlpha, stemX);
+            base.ShearHook(shearAxis, tanAlpha, stemX);
         }
 
 		public DurationClass DurationClass { get { return DurationClass.threeFlags; } }
 	}
-    internal class FourFlagsBeamStub : FourFlagsBeam, IBeamStub
+    internal class FourFlagsBeamHook : FourFlagsBeam, IBeamHook
     {
-        public FourFlagsBeamStub(double left, double right)
-            : base(left, right)
+        public FourFlagsBeamHook(double leftRightX, MNX.Common.BeamHookDirection beamHookDirection)
+            : base(leftRightX, leftRightX, beamHookDirection)
         {
         }
 
-        public void ShearBeamStub(double shearAxis, double tanAlpha, double stemX)
+        public void ShearBeamHook(double shearAxis, double tanAlpha, double stemX)
         {
-            base.ShearStub(shearAxis, tanAlpha, stemX);
+            base.ShearHook(shearAxis, tanAlpha, stemX);
         }
 
 		public DurationClass DurationClass { get { return DurationClass.fourFlags; } }
 	}
-    internal class FiveFlagsBeamStub : FiveFlagsBeam, IBeamStub
+    internal class FiveFlagsBeamHook : FiveFlagsBeam, IBeamHook
     {
-        public FiveFlagsBeamStub(double left, double right)
-            : base(left, right)
+        public FiveFlagsBeamHook(double leftRightX, MNX.Common.BeamHookDirection beamHookDirection)
+            :base(leftRightX, leftRightX, beamHookDirection )
         {
         }
 
-        public void ShearBeamStub(double shearAxis, double tanAlpha, double stemX)
+        public void ShearBeamHook(double shearAxis, double tanAlpha, double stemX)
         {
-            base.ShearStub(shearAxis, tanAlpha, stemX);
+            base.ShearHook(shearAxis, tanAlpha, stemX);
         }
 
 		public DurationClass DurationClass { get { return DurationClass.fiveFlags; } }

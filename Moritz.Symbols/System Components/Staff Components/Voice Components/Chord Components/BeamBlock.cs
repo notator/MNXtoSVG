@@ -152,9 +152,6 @@ namespace Moritz.Symbols
             #region create the individual beams all with top edge horizontal at 0F.
             HashSet<DurationClass> durationClasses = new HashSet<DurationClass>()
             {
-                DurationClass.eightFlags,
-                DurationClass.sevenFlags,
-                DurationClass.sixFlags,
                 DurationClass.fiveFlags,
                 DurationClass.fourFlags,
                 DurationClass.threeFlags,
@@ -176,7 +173,7 @@ namespace Moritz.Symbols
                 _originX = _left;
                 // _left, _right and _originX never change again after they have been set here
             }
-            SetBeamStubs(Beams);
+            SetBeamHooks(Beams);
             SetVerticalBounds();
             #endregion
             Dictionary<DurationClass, double> durationClassBeamThicknesses = GetBeamThicknessesPerDurationClass(durationClasses);
@@ -347,31 +344,31 @@ namespace Moritz.Symbols
             return beamTan;
         }
 
-        private void SetBeamStubs(HashSet<Beam> beamsHash)
+        private void SetBeamHooks(HashSet<Beam> beamsHash)
         {
             List<Beam> beams = new List<Beam>(beamsHash);
-            double stubWidth = _gap * 1.2;
+            double hookWidth = _gap * 1.2;
 
             for(int i = 0; i < beams.Count; ++i)
             {
                 Beam beam = beams[i];
-                if(beam is IBeamStub)
+                if(beam.BeamHookDirection != MNX.Common.BeamHookDirection.none)
                 {
-                    Beam leftEndLongBeam = LeftEndLongBeam(beams, beam.LeftX);
                     beamsHash.Remove(beam);
-                    DurationClass durationClass = (beam as IBeamStub).DurationClass;
-                    Beam newBeamStub;
-                    if(leftEndLongBeam.LeftX == beam.LeftX)
+                    DurationClass durationClass = (beam as IBeamHook).DurationClass;
+                    Beam newBeamHook;
+                    if(beam.BeamHookDirection == MNX.Common.BeamHookDirection.right)
                     {
-                        // add a beamStub to the right of the stem
-                        newBeamStub = NewBeam(durationClass, beam.LeftX, beam.LeftX + stubWidth, true);
+                        // add a short beam to the right of the stem
+                        newBeamHook = NewBeam(durationClass, beam.LeftX, beam.LeftX + hookWidth, MNX.Common.BeamHookDirection.none);
                     }
                     else
                     {
-                        newBeamStub = NewBeam(durationClass, beam.LeftX - stubWidth, beam.LeftX, true);
+                        // add a short beam to the left of the stem
+                        newBeamHook = NewBeam(durationClass, beam.LeftX - hookWidth, beam.LeftX, MNX.Common.BeamHookDirection.none);
                     }
 
-                    beamsHash.Add(newBeamStub);
+                    beamsHash.Add(newBeamHook);
                 }
             }
         }
@@ -383,7 +380,7 @@ namespace Moritz.Symbols
 
             foreach(Beam beam in beams)
             {
-                if(!(beam is IBeamStub) && beam.LeftX < leftX)
+                if(!(beam is IBeamHook) && beam.LeftX < leftX)
                 {
                     rval = beam;
                     leftX = beam.LeftX;
@@ -392,13 +389,13 @@ namespace Moritz.Symbols
 
             foreach(Beam beam in beams)
             {
-                if(stemX == beam.LeftX && !(beam is IBeamStub) && !(rval == beam))
+                if(stemX == beam.LeftX && !(beam is IBeamHook) && !(rval == beam))
                 {
                     rval = beam;
                 }
             }
 
-            M.Assert(!(rval is IBeamStub));
+            M.Assert(!(rval is IBeamHook));
 
             return rval;
         }
@@ -439,57 +436,75 @@ namespace Moritz.Symbols
         {
             List<Beam> newBeams = new List<Beam>();
 
-            List<MNX.Common.Beam> beamDefs = GetBeamDefs(beamBlockDef, durationClass);
-            for(int i = 0; i < beamDefs.Count; i++)
+            List<MNX.Common.IBeamBlockComponent> beamBlockComponents = GetBeamDefs(beamBlockDef, durationClass);
+            for(int i = 0; i < beamBlockComponents.Count; i++)
             {
-                MNX.Common.Beam beamDef = beamDefs[i];
-                double beamLeft = double.MaxValue;
-                double beamRight = double.MinValue;
+                MNX.Common.IBeamBlockComponent beamBlockComponent = beamBlockComponents[i];
+                double beamLeftX = double.MaxValue;
+                double beamRightX = double.MinValue;
 
-                List<ChordSymbol> chordsInBeam = GetChordsInBeam(Chords, beamDef);
+                List<ChordSymbol> chordsInBeam = GetChordsInBeam(Chords, beamBlockComponent);
 
                 foreach(ChordSymbol chord in chordsInBeam)
                 {
                     ChordMetrics chordMetrics = (ChordMetrics)chord.Metrics;
                     double stemX = chordMetrics.StemMetrics.OriginX;
 
-                    beamLeft = (beamLeft < stemX) ? beamLeft : stemX;
-                    beamRight = (beamRight > stemX) ? beamRight : stemX;
+                    beamLeftX = (beamLeftX < stemX) ? beamLeftX : stemX;
+                    beamRightX = (beamRightX > stemX) ? beamRightX : stemX;
                 }
 
-                // BeamStubs are initially created with LeftX == RightX == stemX.
-                // They are replaced by proper beamStubs when the BeamBlock is complete
-                // (See SetBeamStubs() above.)
-                bool isStub = (beamLeft == beamRight) ? true : false;
-
-                Beam newBeam = NewBeam(durationClass, beamLeft, beamRight, isStub);
+                // BeamHooks are initially created as Beams having LeftX == RightX == stemX.
+                // They are replaced by Beams having the proper width when the BeamBlock is complete.
+                // (See SetBeamHooks() above.)
+                Beam newBeam = null; ;
+                if(beamBlockComponent is MNX.Common.BeamHook beamHook)
+                {
+                    M.Assert(beamLeftX == beamRightX);
+                    newBeam = NewBeam(durationClass, beamLeftX, beamRightX, beamHook.BeamHookDirection);
+                }
+                else
+                {
+                    newBeam = NewBeam(durationClass, beamLeftX, beamRightX, MNX.Common.BeamHookDirection.none);
+                }
                 newBeams.Add(newBeam);
             }
 
             return newBeams;
         }
 
-        private List<ChordSymbol> GetChordsInBeam(List<ChordSymbol> allBeamBlockChords, MNX.Common.Beam beamDef)
+        private List<ChordSymbol> GetChordsInBeam(List<ChordSymbol> allBeamBlockEvents, MNX.Common.IBeamBlockComponent bbComponent)
         {
             List<ChordSymbol> chordsInBeam = new List<ChordSymbol>();
-            foreach(var eventID in beamDef.EventIDs)
+            if(bbComponent is MNX.Common.Beam beamDef)
             {
-                ChordSymbol cs = allBeamBlockChords.Find(x => x.EventID == eventID);
+                foreach(var eventID in beamDef.EventIDs)
+                {
+                    ChordSymbol cs = allBeamBlockEvents.Find(x => x.EventID == eventID);
+                    if(cs != null) // is null if the Event was a rest 
+                    {
+                        chordsInBeam.Add(cs);
+                    }
+                }
+            }
+            else if(bbComponent is MNX.Common.BeamHook beamHook)
+            {
+                ChordSymbol cs = allBeamBlockEvents.Find(x => x.EventID == beamHook.EventID);
                 chordsInBeam.Add(cs);
             }
             return chordsInBeam;
         }
 
-        private List<MNX.Common.Beam> GetBeamDefs(MNX.Common.BeamBlock beamBlockDef, DurationClass durationClass)
+        private List<MNX.Common.IBeamBlockComponent> GetBeamDefs(MNX.Common.BeamBlock beamBlockDef, DurationClass durationClass)
         {
-            List<MNX.Common.Beam> beamDefs = new List<MNX.Common.Beam>();
+            List<MNX.Common.IBeamBlockComponent> beamDefs = new List<MNX.Common.IBeamBlockComponent>();
             int depth = GetDepth(durationClass);
 
-            foreach(var beamDef in beamBlockDef.ContainedBeams)
+            foreach(var component in beamBlockDef.Components)
             {
-                if(beamDef.Depth == depth)
+                if(component.Depth == depth)
                 {
-                    beamDefs.Add(beamDef);
+                    beamDefs.Add(component);
                 }
             }
 
@@ -576,34 +591,35 @@ namespace Moritz.Symbols
             }
             return hasLessThanOrEqualBeams;
         }
-        private Beam NewBeam(DurationClass durationClass, double leftX, double rightX, bool isStub)
+        private Beam NewBeam(DurationClass durationClass, double leftX, double rightX, MNX.Common.BeamHookDirection beamHookDirection)
         {
             Beam newBeam = null;
+            bool isBeamHook = beamHookDirection != MNX.Common.BeamHookDirection.none;
             switch(durationClass)
             {
                 case DurationClass.fiveFlags:
-                    if(isStub)
-                        newBeam = new FiveFlagsBeamStub(leftX, rightX);
+                    if(isBeamHook)
+                        newBeam = new FiveFlagsBeamHook(leftX, beamHookDirection);
                     else
-                        newBeam = new FiveFlagsBeam(leftX, rightX);
+                        newBeam = new FiveFlagsBeam(leftX, rightX, MNX.Common.BeamHookDirection.none);
                     break;
                 case DurationClass.fourFlags:
-                    if(isStub)
-                        newBeam = new FourFlagsBeamStub(leftX, rightX);
+                    if(isBeamHook)
+                        newBeam = new FourFlagsBeamHook(leftX, beamHookDirection);
                     else
-                        newBeam = new FourFlagsBeam(leftX, rightX);
+                        newBeam = new FourFlagsBeam(leftX, rightX, MNX.Common.BeamHookDirection.none);
                     break;
                 case DurationClass.threeFlags:
-                    if(isStub)
-                        newBeam = new ThreeFlagsBeamStub(leftX, rightX);
+                    if(isBeamHook)
+                        newBeam = new ThreeFlagsBeamHook(leftX, beamHookDirection);
                     else
-                        newBeam = new ThreeFlagsBeam(leftX, rightX);
+                        newBeam = new ThreeFlagsBeam(leftX, rightX, MNX.Common.BeamHookDirection.none);
                     break;
                 case DurationClass.semiquaver:
-                    if(isStub)
-                        newBeam = new SemiquaverBeamStub(leftX, rightX);
+                    if(isBeamHook)
+                        newBeam = new SemiquaverBeamHook(leftX, beamHookDirection);
                     else
-                        newBeam = new SemiquaverBeam(leftX, rightX);
+                        newBeam = new SemiquaverBeam(leftX, rightX, MNX.Common.BeamHookDirection.none);
                     break;
                 case DurationClass.quaver:
                     newBeam = new QuaverBeam(leftX, rightX);
@@ -614,7 +630,6 @@ namespace Moritz.Symbols
             }
             return newBeam;
         }
-
         public void Move(double dy)
         {
             foreach(Beam beam in Beams)
@@ -795,9 +810,9 @@ namespace Moritz.Symbols
                 double dy = width * tanAlpha;
                 foreach(Beam beam in Beams)
                 {
-                    if(beam is IBeamStub beamStub)
+                    if(beam is IBeamHook beamHook)
                     {
-                        beamStub.ShearBeamStub(shearAxis, tanAlpha, stemX);
+                        beamHook.ShearBeamHook(shearAxis, tanAlpha, stemX);
                     }
                     else
                     {
@@ -1127,7 +1142,7 @@ namespace Moritz.Symbols
             foreach(ChordSymbol chord in Chords)
             {
                 double stemX = chord.ChordMetrics.StemMetrics.OriginX;
-                if(stemX == beam.LeftX || stemX == beam.RightX) // rightX can be a beam stub
+                if(stemX == beam.LeftX || stemX == beam.RightX) // rightX can be a beam hook
                 {
                     beamBeginAbsMsPosition = chord.AbsMsPosition;
                     break;
@@ -1145,7 +1160,7 @@ namespace Moritz.Symbols
             {
                 ChordSymbol chord = Chords[i];
                 double stemX = chord.ChordMetrics.StemMetrics.OriginX;
-                if(stemX == beam.LeftX || stemX == beam.RightX) // rightX can be a beam stub
+                if(stemX == beam.LeftX || stemX == beam.RightX) // rightX can be a beam hook
                 {
                     beamEndAbsMsPosition = chord.AbsMsPosition;
                     break;

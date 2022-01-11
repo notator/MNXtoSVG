@@ -17,15 +17,19 @@ namespace MNX.Common
         public object Clone()
         {
             BeamBlock clone = new BeamBlock();
-            foreach(var beam in ContainedBeams)
+            foreach(var component in Components)
             {
-                var beamClone = new Beam(beam.EventIDs, beam.Depth);
-                clone.ContainedBeams.Add(beamClone);
-            }
-            foreach(var beamHook in ContainedBeamHooks)
-            {
-                var beamHookClone = new BeamHook(beamHook.EventID, beamHook.BeamHookDirection, beamHook.Depth);
-                clone.ContainedBeamHooks.Add(beamHookClone);
+                if(component is Beam beam)
+                {
+                    var beamClone = new Beam(beam.EventIDs, component.Depth);
+                    clone.Components.Add(beamClone);
+                }
+                else if(component is BeamHook beamHook)
+                {
+                    var beamHookClone = new BeamHook(beamHook.EventID, beamHook.BeamHookDirection, beamHook.Depth);
+                    clone.Components.Add(beamHookClone);
+
+                }
             }
 
             return clone;
@@ -39,8 +43,7 @@ namespace MNX.Common
         public int MsDuration { get { return 0; } set { } }
         public int MsPositionReFirstUD { get; set; }
         #endregion
-        public readonly List<Beam> ContainedBeams = new List<Beam>();
-        public readonly List<BeamHook> ContainedBeamHooks = new List<BeamHook>();
+        public readonly List<IBeamBlockComponent> Components = new List<IBeamBlockComponent>();
 
         public BeamBlock()
         {

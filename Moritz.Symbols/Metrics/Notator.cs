@@ -87,7 +87,7 @@ namespace Moritz.Symbols
                                 {
                                     for(int i = beamBlockDefs.Count - 1; i >= 0; i--)
                                     {
-                                        if(ocs.EventID == beamBlockDefs[i].ContainedBeams[0].EventIDs[0])
+                                        if(ocs.EventID == ((MNX.Common.Beam)beamBlockDefs[i].Components[0]).EventIDs[0])
                                         {
                                             ocs.BeamBlockDef = beamBlockDefs[i];
                                             beamBlockDefs.RemoveAt(i);

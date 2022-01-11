@@ -36,12 +36,12 @@ namespace MNX.Common
                                     currentBeamBlock = new BeamBlock();
                                     Blocks.Add(currentBeamBlock);
                                 }
-                                currentBeamBlock.ContainedBeams.Add(new Beam(r, topLevelDepth));
+                                currentBeamBlock.Components.Add(new Beam(r, topLevelDepth));
                                 break;
                             }
                         case "beam-hook":
                             {
-                                currentBeamBlock.ContainedBeamHooks.Add(new BeamHook(r, topLevelDepth));
+                                currentBeamBlock.Components.Add(new BeamHook(r, topLevelDepth));
                                 break;
                             }
                     }                    

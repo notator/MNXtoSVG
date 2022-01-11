@@ -81,5 +81,13 @@ namespace MNX.Common
         int TicksDuration { get; set; }
         int TicksPosInScore { get; set; }
     }
+
+    /// <summary>
+    /// Beam, BeamHook
+    /// </summary>
+    public interface IBeamBlockComponent
+    {
+        int Depth { get; }
+    }
 }
 

@@ -6,10 +6,10 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class Beam
+    public class Beam : IBeamBlockComponent
     {
         public List<string> EventIDs = new List<string>();
-        public int Depth;
+        public int Depth { get; }
 
         public override string ToString()
         {

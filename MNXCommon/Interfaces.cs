@@ -16,7 +16,7 @@ namespace MNX.Common
     }
 
     /// <summary>
-    /// Beams, SequenceDirections, Event, Forward, Grace, Tuplet
+    /// BeamBlocks, SequenceDirections, Event, Forward, Grace, Tuplet
     /// </summary>
     public interface ISequenceComponent
     {

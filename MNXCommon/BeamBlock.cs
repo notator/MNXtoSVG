@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace MNX.Common
 {
-    public class BeamBlock : IUniqueDef
+    public class BeamBlock
     {
         #region IUniqueDef interface
         public override string ToString() {return "BeamBlock";}

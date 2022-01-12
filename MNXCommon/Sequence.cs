@@ -174,10 +174,10 @@ namespace MNX.Common
                 }
                 else if(seqObj is BeamBlocks beamBlocks)
                 {
-                    foreach(var beamBlock in beamBlocks.Blocks)
-                    {
-                        rval.Add(beamBlock as IUniqueDef);
-                    }
+                    //foreach(var beamBlock in beamBlocks.Blocks)
+                    //{
+                    //    rval.Add(beamBlock as IUniqueDef);
+                    //}
                 }
                 else
                 {

@@ -9,14 +9,15 @@ namespace Moritz.Symbols
 {
     public abstract class ChordSymbol : DurationSymbol
     {
-        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.Event mnxEventDef, double fontSize, bool beamContinues)
+        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, MNX.Common.Event mnxEventDef, double fontSize)
             : base(voice, msDuration, absMsPosition, mnxEventDef.MNXDurationSymbol, fontSize)
         {
             // note that all chord symbols have a stem! 
             // Even cautionary, semibreves and breves need a stem direction in order to set chord Metrics correctly.
-            Stem = new Stem(this, beamContinues);
+            Stem = new Stem(this);
 
             IsBeamStart = mnxEventDef.IsBeamStart;
+            IsBeamRestart = mnxEventDef.IsBeamRestart;
             IsBeamEnd = mnxEventDef.IsBeamEnd;
 
             OctaveShift = mnxEventDef.OctaveShift;
@@ -34,14 +35,14 @@ namespace Moritz.Symbols
         /// <summary>
         /// Old constructor, currently not used (03.05.2020), but retained for future inspection
         /// </summary>
-        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, double fontSize, bool beamContinues)
+        public ChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, double fontSize)
             : base(voice, msDuration, absMsPosition, minimumCrotchetDurationMS, fontSize)
         {
             M.Assert(false); // 03.05.2020: don't use this constructor (to be inspected once work on midi info begins).
 
             // note that all chord symbols have a stem! 
             // Even cautionary, semibreves and breves need a stem direction in order to set chord Metrics correctly.
-            Stem = new Stem(this, beamContinues);
+            Stem = new Stem(this);
 
             // Beam is currently null. Create when necessary.
         }
@@ -397,12 +398,12 @@ namespace Moritz.Symbols
             return useSharpsOrNull;
         }
 
-        internal void FinalizeBeamBlock()
+        internal void FinalizeBeamBlock(double rightBarlineX)
         {
             M.Assert(this.BeamBlock != null);
             M.Assert(this.BeamBlockDef != null);
 
-            BeamBlock.FinalizeBeamBlock(BeamBlockDef);
+            BeamBlock.FinalizeBeamBlock(BeamBlockDef, rightBarlineX);
         }
         #endregion private
 
@@ -471,6 +472,7 @@ namespace Moritz.Symbols
         }
 
         public readonly bool IsBeamStart;
+        public readonly bool IsBeamRestart;
         public readonly bool IsBeamEnd;
 
         public MNX.Common.BeamBlock BeamBlockDef { get; internal set; }

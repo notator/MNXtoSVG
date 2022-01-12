@@ -69,6 +69,21 @@ namespace MNX.Common
         }
         private bool _isBeamStart = false;
 
+        /// <summary>
+        /// Is true when the event is at the beginning of a sequence (=measure),
+        /// and a beamBlock continues from the previous measure.
+        /// </summary>
+        public bool IsBeamRestart
+        {
+            get { return _isBeamRestart; }
+            set
+            {
+                M.Assert(!_isBeamEnd);
+                _isBeamRestart = value;
+            }
+        }
+        private bool _isBeamRestart = false;
+
         public bool IsBeamEnd
         {
             get { return _isBeamEnd; }

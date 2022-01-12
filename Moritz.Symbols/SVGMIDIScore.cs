@@ -28,11 +28,13 @@ namespace Moritz.Symbols
 
             Notator = new Notator();
 
-            List<Bar> bars = GetBars(mnx);
+            List<MNX.Common.BeamBlock> allBeamBlocks = GetAllBeamBlocks(mnx);
+
+            List<Bar> bars = GetBars(mnx, allBeamBlocks);
 
             CheckBars(bars);
 
-            CreateSystems(bars, form1Data);
+            CreateSystems(allBeamBlocks, bars, form1Data);
 
             string filePath = null;
             if(form1Data.Options.WriteScrollScore)
@@ -51,10 +53,12 @@ namespace Moritz.Symbols
 
         }
 
-        private List<Bar> GetBars(MNX.Common.MNX mnxCommon)
+        private List<Bar> GetBars(MNX.Common.MNX mnxCommon, List<MNX.Common.BeamBlock> allBeamBlocks)
         {
             var bars = new List<Bar>();
             List<List<IUniqueDef>> globalIUDsPerMeasure = mnxCommon.Global.GetGlobalIUDsPerMeasure();
+
+            //List<MNX.Common.BeamBlock> allBeamBlocks = GetAllBeamBlocks(mnxCommon);
 
             var midiChannelsPerStaff = M.PageFormat.MIDIChannelsPerStaff;
             var nSystemStaves = midiChannelsPerStaff.Count;
@@ -82,16 +86,7 @@ namespace Moritz.Symbols
                             Sequence sequence = measure.Sequences[voiceIndex];
                             List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, M.PageFormat.MillisecondsPerTick);
 
-                            // SetBeamBlockBoundaryEvents(seqIUDs); ?Do this here?
-                            var cBeamBlocks = seqIUDs.FindAll(x => x is MNX.Common.BeamBlock);
-                            foreach(MNX.Common.BeamBlock bb in cBeamBlocks)
-                            {
-                                MNX.Common.Beam quaverbeam = bb.Components[0] as MNX.Common.Beam;
-                                Event beamStartEvent = (Event) seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[0]));
-                                beamStartEvent.IsBeamStart = true;
-                                Event beamEndEvent = (Event) seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[quaverbeam.EventIDs.Count -1]));
-                                beamEndEvent.IsBeamEnd = true;
-                            }
+                            SetEventBeamStartRestartEnd(allBeamBlocks, seqIUDs);
 
                             // TODO add Repeats as IUDs here
                             InsertDirectionsInSeqIUDs(seqIUDs, measureDirections, globalDirections);
@@ -114,6 +109,67 @@ namespace Moritz.Symbols
             AdjustNoteheadPitchesForOctaveShifts(bars);
 
             return bars;
+        }
+
+        private List<MNX.Common.BeamBlock> GetAllBeamBlocks(MNX.Common.MNX mnxCommon)
+        {
+            List<MNX.Common.BeamBlock> allBeamBlocks = new List<MNX.Common.BeamBlock>();
+
+            for(var measureIndex = 0; measureIndex < mnxCommon.NumberOfMeasures; measureIndex++)
+            {
+                foreach(var part in mnxCommon.Parts)
+                {
+                    var measure = part.Measures[measureIndex];
+                    var voicesPerStaff = part.VoicesPerStaff;
+                    var nPartStaves = voicesPerStaff.Count;
+                    for(var partStaffIndex = 0; partStaffIndex < nPartStaves; ++partStaffIndex)
+                    {
+                        var nVoices = voicesPerStaff[partStaffIndex];
+                        for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
+                        {
+                            Sequence sequence = measure.Sequences[voiceIndex];
+                            var beamBlocks = (MNX.Common.BeamBlocks) sequence.Components.Find(x => x is MNX.Common.BeamBlocks);
+                            if(beamBlocks != null)
+                            {
+                                foreach(var beamBlock in beamBlocks.Blocks)
+                                {
+                                    allBeamBlocks.Add(beamBlock);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return allBeamBlocks;
+        }
+
+        private static void SetEventBeamStartRestartEnd(List<MNX.Common.BeamBlock> allBeamBlocks, List<IUniqueDef> seqIUDs)
+        {
+            foreach(MNX.Common.BeamBlock bb in allBeamBlocks)
+            {
+                MNX.Common.Beam quaverbeam = bb.Components[0] as MNX.Common.Beam;
+                Event beamStartEvent = (Event)seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[0]));
+                Event beamEndEvent = (Event)seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[quaverbeam.EventIDs.Count - 1]));
+
+                if(beamStartEvent != null)
+                {
+                    beamStartEvent.IsBeamStart = true;
+                }
+                else
+                {
+                    Event firstEventInSequence = (Event)seqIUDs.Find(x => x is Event);
+                    if(quaverbeam.EventIDs.Contains(firstEventInSequence.ID) && firstEventInSequence.ID != beamEndEvent.ID)
+                    {
+                        firstEventInSequence.IsBeamRestart = true;
+                    }
+                }
+
+                if(beamEndEvent != null)
+                {
+                    beamEndEvent.IsBeamEnd = true;
+                }
+            }
         }
 
         /// <summary>
@@ -604,7 +660,7 @@ namespace Moritz.Symbols
             return frameHeight;
         }
 
-        private void CreateSystems(List<Bar> bars, Form1Data form1Data)
+        private void CreateSystems(List<MNX.Common.BeamBlock> allBeamBlocks, List<Bar> bars, Form1Data form1Data)
         {
             // TODO (see SetScoreRegionsData() function already implemented below)
             //if(form1Data.RegionStartBarIndices != null)
@@ -631,7 +687,7 @@ namespace Moritz.Symbols
             {
                 Notator.ConvertVoiceDefsToNoteObjects(this.Systems);
 
-                FinalizeSystemStructure(bars); // adds barlines, joins bars to create systems, etc.
+                FinalizeSystemStructure(bars, allBeamBlocks); // adds barlines, joins bars to create systems, etc.
 
                 using(Image image = new Bitmap(1, 1))
                 {

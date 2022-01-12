@@ -204,15 +204,15 @@ namespace Moritz.Symbols
         /// Sets Chord.Stem.Direction for each chord.
         /// BeamBlocks are created, beginning with a chord that has IsBeamStart == true, and ending with a chord that has IsBeamEnd == true.
         /// BeamBlocks only contain ChordSymbols, but these may be interspersed with other NoteObjects (barlines, clefs, rests, cautionaryChords etc...)
-        /// An exception is thrown, if a BeamBlock is open at the end of the voice.
         /// </summary>
         public void SetChordStemDirectionsAndCreateBeamBlocks(PageFormat pageFormat)
         {
             List<List<OutputChordSymbol>> beamedGroups = GetBeamedGroups();
 
-            Clef currentClef = null;
-            int groupIndex = 0;
+            Clef currentClef = null;            
             List<OutputChordSymbol> beamedGroup = null;
+            int groupIndex = 0;
+            OutputChordSymbol firstChordInVoice = ((OutputChordSymbol)NoteObjects.Find(x => x is OutputChordSymbol));
             foreach(var noteObject in NoteObjects)
             {
                 if(noteObject is OutputChordSymbol chord)
@@ -220,7 +220,11 @@ namespace Moritz.Symbols
                     if(chord.BeamBlockDef != null)
                     {
                         M.Assert(currentClef != null);
-                        beamedGroup = beamedGroups[groupIndex++];
+                        beamedGroup = beamedGroups[groupIndex];
+                        if(chord.IsBeamStart || chord.IsBeamRestart && chord == firstChordInVoice)
+                        {
+                            groupIndex++;
+                        }
                         double beamThickness = pageFormat.BeamThickness;
                         double beamStrokeThickness = pageFormat.StafflineStemStrokeWidthVBPX;
                         chord.BeamBlock = new BeamBlock(currentClef, beamedGroup, this.StemDirection, beamThickness, beamStrokeThickness);
@@ -248,7 +252,6 @@ namespace Moritz.Symbols
         {
             List<List<OutputChordSymbol>> beamedGroups = new List<List<OutputChordSymbol>>();
 
-
             bool inGroup = false;
             List<OutputChordSymbol> beamedGroup = null;
             for(var i = 0; i < NoteObjects.Count; i++)
@@ -265,25 +268,29 @@ namespace Moritz.Symbols
                             chordSymbol
                         };
                         beamedGroups.Add(beamedGroup);
-                        chordSymbol.Stem.BeamContinues = true;
+                    }
+                    else if(chordSymbol.IsBeamRestart && inGroup == false)
+                    {
+                        inGroup = true;
+                        beamedGroup = new List<OutputChordSymbol>
+                        {
+                            chordSymbol
+                        };
+                        beamedGroups.Add(beamedGroup);
                     }
                     else if(chordSymbol.IsBeamEnd)
                     {
                         M.Assert(inGroup == true);
                         beamedGroup.Add(chordSymbol);
-                        chordSymbol.Stem.BeamContinues = false;
                         inGroup = false;
                     }
                     else if(inGroup)
                     {
                         M.Assert(chordSymbol.DurationClass < DurationClass.crotchet);
                         beamedGroup.Add(chordSymbol);
-                        chordSymbol.Stem.BeamContinues = true;
                     }
                 }
             }
-
-            M.Assert(inGroup == false); // Beamblocks may extend across Barlines, but not across Systems.
 
             return beamedGroups;
         }
@@ -299,10 +306,14 @@ namespace Moritz.Symbols
         public void FinalizeBeamBlocks()
         {
             HashSet<ChordSymbol> chordSymbolsThatStartBeamBlocks = FindChordSymbolsThatStartBeamBlocks();
-            foreach(var chordSymbol in chordSymbolsThatStartBeamBlocks)
-            {
-                chordSymbol.FinalizeBeamBlock();
-            }
+            Barline rightBarline = NoteObjects[NoteObjects.Count - 1] as Barline;
+            M.Assert(rightBarline != null);
+
+                double rightBarlineX = rightBarline.Metrics.OriginX;
+                foreach(var chordSymbol in chordSymbolsThatStartBeamBlocks)
+                {
+                    chordSymbol.FinalizeBeamBlock(rightBarlineX);
+                }
         }
 
         public void RemoveBeamBlockBeams()
@@ -317,11 +328,24 @@ namespace Moritz.Symbols
         private HashSet<ChordSymbol> FindChordSymbolsThatStartBeamBlocks()
         {
             HashSet<ChordSymbol> chordSymbolsThatStartBeamBlocks = new HashSet<ChordSymbol>();
-            foreach(ChordSymbol chord in ChordSymbols)
+            var chordSymbols = new List<ChordSymbol>();
+            foreach(ChordSymbol symb in ChordSymbols)
             {
-                if(chord.BeamBlockDef != null)
-                    chordSymbolsThatStartBeamBlocks.Add(chord);
+                chordSymbols.Add(symb);
             }
+            for(int i = 0; i < chordSymbols.Count; i++)
+            {
+                ChordSymbol chord = chordSymbols[i];
+                if(chord.BeamBlockDef != null)
+                {
+                    if((chord.IsBeamStart)
+                    || (i == 0 && chord.IsBeamRestart))
+                    {
+                        chordSymbolsThatStartBeamBlocks.Add(chord);
+                    }
+                }
+            }
+
             return chordSymbolsThatStartBeamBlocks;
         }
 

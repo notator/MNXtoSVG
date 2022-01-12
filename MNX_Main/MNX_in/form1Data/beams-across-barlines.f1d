@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--file created: Friday 22.05.2020, 16:05:56-->
+<!--file created: Wednesday 12.01.2022, 23:25:49-->
 <form1Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="SchemasBaseFolder/form1Data.xsd">
 	<page
@@ -15,7 +15,7 @@
 		gapSize="10"
 		minGapsBetweenStaves="8"
 		minGapsBetweenSystems="3"
-		systemStartBars="1"
+		systemStartBars="1,  2"
 		crotchetsPerMinute="60" />
 	<metadata
 		title="beams"

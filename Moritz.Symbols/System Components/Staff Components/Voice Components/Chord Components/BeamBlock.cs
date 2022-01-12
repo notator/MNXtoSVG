@@ -147,7 +147,7 @@ namespace Moritz.Symbols
         ///  4. moves the stem tips and related objects (dynamics, ornament numbers) to their correct positions wrt the outer beam.
         /// Especially note that neither this beam Block or its contained beams ever move _horizontally_.
         /// </summary>
-        public void FinalizeBeamBlock(MNX.Common.BeamBlock beamBlockDef)
+        public void FinalizeBeamBlock(MNX.Common.BeamBlock beamBlockDef, double rightBarlineX)
         {
             #region create the individual beams all with top edge horizontal at 0F.
             HashSet<DurationClass> durationClasses = new HashSet<DurationClass>()
@@ -161,7 +161,7 @@ namespace Moritz.Symbols
 
             foreach(DurationClass durationClass in durationClasses)
             {
-                List<Beam> beams = CreateBeams(durationClass, beamBlockDef);
+                List<Beam> beams = CreateBeams(durationClass, beamBlockDef, rightBarlineX);
                 _left = double.MaxValue;
                 _right = double.MinValue;
                 foreach(Beam beam in beams)
@@ -179,7 +179,7 @@ namespace Moritz.Symbols
             Dictionary<DurationClass, double> durationClassBeamThicknesses = GetBeamThicknessesPerDurationClass(durationClasses);
             List<ChordMetrics> chordsMetrics = GetChordsMetrics();
             ExpandVerticallyAtNoteheads(chordsMetrics, durationClassBeamThicknesses);
-            Shear(chordsMetrics);
+            Shear(chordsMetrics, rightBarlineX);
             FinalAdjustmentReNoteheads(chordsMetrics, durationClassBeamThicknesses[DurationClass.quaver]);
             FinalAdjustmentReAccidentals(chordsMetrics, durationClassBeamThicknesses[DurationClass.quaver]);
             MoveStemTips();
@@ -432,7 +432,7 @@ namespace Moritz.Symbols
         /// <param name="durationClass"></param>
         /// <param name="beamBlockDef"></param>
         /// <returns></returns>
-        private List<Beam> CreateBeams(DurationClass durationClass, MNX.Common.BeamBlock beamBlockDef)
+        private List<Beam> CreateBeams(DurationClass durationClass, MNX.Common.BeamBlock beamBlockDef, double rightBarlineX)
         {
             List<Beam> newBeams = new List<Beam>();
 
@@ -452,6 +452,15 @@ namespace Moritz.Symbols
 
                     beamLeftX = (beamLeftX < stemX) ? beamLeftX : stemX;
                     beamRightX = (beamRightX > stemX) ? beamRightX : stemX;
+                }
+
+                if(chordsInBeam[0].IsBeamRestart == true)
+                {
+                    beamLeftX = ((ChordMetrics)chordsInBeam[0].Metrics).StemMetrics.OriginX - _gap;
+                }
+                if(durationClass == DurationClass.quaver && chordsInBeam[chordsInBeam.Count - 1].IsBeamEnd == false)
+                {
+                    beamRightX = rightBarlineX + (_gap / 2);
                 }
 
                 // BeamHooks are initially created as Beams having LeftX == RightX == stemX.
@@ -497,16 +506,9 @@ namespace Moritz.Symbols
 
         private List<MNX.Common.IBeamBlockComponent> GetBeamDefs(MNX.Common.BeamBlock beamBlockDef, DurationClass durationClass)
         {
-            List<MNX.Common.IBeamBlockComponent> beamDefs = new List<MNX.Common.IBeamBlockComponent>();
             int depth = GetDepth(durationClass);
 
-            foreach(var component in beamBlockDef.Components)
-            {
-                if(component.Depth == depth)
-                {
-                    beamDefs.Add(component);
-                }
-            }
+            List<MNX.Common.IBeamBlockComponent> beamDefs = beamBlockDef.Components.FindAll(x => x.Depth == depth); 
 
             return beamDefs;
         }
@@ -792,7 +794,7 @@ namespace Moritz.Symbols
             return btpdc;
         }
 
-        private void Shear(List<ChordMetrics> chordsMetrics)
+        private void Shear(List<ChordMetrics> chordsMetrics, double rightBarlineX)
         {
             double tanAlpha = ShearAngle(chordsMetrics);
             double shearAxis = ShearAxis(chordsMetrics, tanAlpha);
@@ -818,7 +820,7 @@ namespace Moritz.Symbols
                     {
                         if(beam.LeftX == stemX)
                             beam.MoveYs(dy, 0F);
-                        else if(beam.RightX == stemX)
+                        else if(beam.RightX == stemX || beam.RightX > rightBarlineX)
                             beam.MoveYs(0, dy);
                     }
                 }

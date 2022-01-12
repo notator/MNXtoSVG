@@ -209,7 +209,6 @@ namespace Moritz.Spec
 				Patch = this.Patch,
 				PitchWheelDeviation = this.PitchWheelDeviation,
 				HasChordOff = this.HasChordOff,
-				BeamContinues = this.BeamContinues,
 				Lyric = this.Lyric,
 				MinimumBasicMidiChordMsDuration = MinimumBasicMidiChordMsDuration, // required when changing a midiChord's duration
 				NotatedMidiPitches = _notatedMidiPitches, // a clone of the displayed notehead pitches
@@ -1168,7 +1167,6 @@ namespace Moritz.Spec
         }
         private byte? _pitchWheelDeviation = null;
 		public bool HasChordOff { get; set; } = true;
-		public bool BeamContinues { get; set; } = true;
 		public string Lyric { get; set; } = null;
 		public int MinimumBasicMidiChordMsDuration { get; set; } = 1;
 

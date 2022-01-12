@@ -13,7 +13,7 @@ namespace Moritz.Symbols
     public class OutputChordSymbol : ChordSymbol
     {
         public OutputChordSymbol(Voice voice, MNX.Common.Event mnxEventDef, int absMsPosition, PageFormat pageFormat)
-            : base(voice, mnxEventDef.MsDuration, absMsPosition, mnxEventDef, pageFormat.MusicFontHeight, true)
+            : base(voice, mnxEventDef.MsDuration, absMsPosition, mnxEventDef, pageFormat.MusicFontHeight)
         {
             SetHeads(mnxEventDef);
         }
@@ -32,7 +32,7 @@ namespace Moritz.Symbols
         /// Old constructor, currently not used (03.05.2020), but retained for future inspection
         /// </summary>
         public OutputChordSymbol(Voice voice, MidiChordDef umcd, int absMsPosition, PageFormat pageFormat)
-            : base(voice, umcd.MsDuration, absMsPosition, pageFormat.MinimumCrotchetDuration, pageFormat.MusicFontHeight, umcd.BeamContinues)
+            : base(voice, umcd.MsDuration, absMsPosition, pageFormat.MinimumCrotchetDuration, pageFormat.MusicFontHeight)
         {
             M.Assert(false); // 03.05.2020: don't use this constructor (to be inspected once work on midi info begins).
 
@@ -69,7 +69,7 @@ namespace Moritz.Symbols
         /// used by CautionaryOutputChordSymbol
         /// </summary>
         public OutputChordSymbol(Voice voice, int msDuration, int absMsPosition, int minimumCrotchetDurationMS, double fontSize)
-            : base(voice, msDuration, absMsPosition, minimumCrotchetDurationMS, fontSize, false)
+            : base(voice, msDuration, absMsPosition, minimumCrotchetDurationMS, fontSize)
         {
 
         }

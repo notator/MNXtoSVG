@@ -58,6 +58,24 @@ namespace MNX.Common
             }
         }
 
+        public int MsPosInScore { get; set; } = -1;
+
+        public int MsDuration
+        {
+            get
+            {
+                return _msDuration;
+            }
+            set
+            {
+                M.Assert(value > 0);
+                _msDuration = value;
+            }
+        }
+        private int _msDuration;
+
+        public List<IHasTicksDuration> IEventsAndGraces { get { M.Assert(false, "This function should never be called."); return null; } }
+
         public bool IsBeamStart
         {
             get { return _isBeamStart; }
@@ -118,21 +136,6 @@ namespace MNX.Common
             MsDuration = (int)(MsDuration * factor);
             M.Assert(MsDuration > 0, "An Event's MsDuration may not be set to zero!");
         }
-
-        public int MsDuration
-        {
-            get
-            {
-                return _msDuration;
-            }
-            set
-            {
-                M.Assert(value > 0);
-                _msDuration = value;
-            }
-        }
-        private int _msDuration;
-        public int MsPosInScore = -1;
 
         public int MsPositionReFirstUD
         {

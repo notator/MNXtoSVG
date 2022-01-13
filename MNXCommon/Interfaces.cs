@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace MNX.Common
 {
     /// <summary>
@@ -71,6 +73,9 @@ namespace MNX.Common
         /// set the TicksDuration of their individual Components.
         /// </summary>
         int TicksDuration { get; set; }
+        int MsDuration { get; set; }
+        int MsPosInScore { get; set; }
+        List<IHasTicksDuration> IEventsAndGraces { get; }
     }
 
     /// <summary>

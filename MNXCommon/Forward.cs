@@ -31,19 +31,7 @@ namespace MNX.Common
             }
         }
 
-        public int MsPosInScore = -1;
-        public override string ToString() => $"Forward: TicksDuration={TicksDuration} TicksPosInScore={TicksPosInScore} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
-
-
-        #region IUniqueDef
-        /// <summary>
-        /// (?) ISeqComponent objects are already unique, so no Clone is required. (?)
-        /// </summary>
-        /// <returns></returns>
-        public object Clone()
-        {
-            return this;
-        }
+        public int MsPosInScore { get; set; } = -1;
 
         public int MsDuration
         {
@@ -58,6 +46,21 @@ namespace MNX.Common
             }
         }
         private int _msDuration;
+
+        public List<IHasTicksDuration> IEventsAndGraces { get { M.Assert(false, "This function should never be called."); return null; } }
+
+        public override string ToString() => $"Forward: TicksDuration={TicksDuration} TicksPosInScore={TicksPosInScore} MsPosInScore={MsPosInScore} MsDuration={MsDuration}";
+
+
+        #region IUniqueDef
+        /// <summary>
+        /// (?) ISeqComponent objects are already unique, so no Clone is required. (?)
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            return this;
+        }
 
         public int MsPositionReFirstUD
         {

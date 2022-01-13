@@ -143,6 +143,23 @@ namespace MNX.Common
             {
                 SetTicksDurationsForStealingGraces(tickPosStealingGraces);
             }
+
+            for(int i = 0; i < this.NumberOfMeasures; i++)
+            {
+                int previousTicksDuration = 0;
+                foreach(var part in this.Parts)
+                {
+                    var sequences = part.Measures[i].Sequences;
+                    previousTicksDuration = sequences[0].TicksDuration; // sums the TicksDurations of the content
+                    for(int j = 1; j < sequences.Count; j++)
+                    {
+                        var thisTicksDuration = sequences[j].TicksDuration; // sums the TicksDurations of the content
+                        M.Assert(thisTicksDuration == previousTicksDuration);
+                        previousTicksDuration = thisTicksDuration;
+                    }
+                }
+                Global.GlobalMeasures[i].TicksDuration = previousTicksDuration;
+            }
         }
 
         /// All IEvents and Graces currently have TicksPosInScore=0.

@@ -172,6 +172,7 @@ namespace MNX.Common
                     }
                 }
             }
+
         }
 
         private static IHasTicksDuration FindPreviousEventOrForward(List<IHasTicksDuration> eventsAndEventGroups, int graceIndex)
@@ -235,6 +236,7 @@ namespace MNX.Common
                 }
                 graceTicksPostion += obj.TicksDuration;
             }
+
             foreach(var sequence in this.Sequences)
             {
                 int ticksPos = 0;

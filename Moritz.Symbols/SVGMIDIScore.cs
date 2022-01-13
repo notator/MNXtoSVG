@@ -69,9 +69,11 @@ namespace Moritz.Symbols
                 var midiChannelIndexPerOutputVoice = new List<int>();
                 List<Trk> trks = new List<Trk>();
                 List<IUniqueDef> globalDirections = globalIUDsPerMeasure[measureIndex];
+                var globalMeasure = mnxCommon.Global.GlobalMeasures[measureIndex];
                 var systemStaffIndex = 0;
-                foreach(var part in mnxCommon.Parts)
+                for(int partIndex = 0; partIndex < mnxCommon.Parts.Count; partIndex++)
                 {
+                    var part = mnxCommon.Parts[partIndex];
                     var measure = part.Measures[measureIndex];
                     List<IUniqueDef> measureDirections = GetMeasureDirections(measure.PartDirections);
                     var voicesPerStaff = part.VoicesPerStaff;
@@ -84,7 +86,20 @@ namespace Moritz.Symbols
                         for(var voiceIndex = 0; voiceIndex < nVoices; voiceIndex++)
                         {
                             Sequence sequence = measure.Sequences[voiceIndex];
-                            List<IUniqueDef> seqIUDs = sequence.SetMsDurationsAndGetIUniqueDefs(seqMsPositionInScore, M.PageFormat.MillisecondsPerTick);
+
+                            sequence.SetMsDurations(seqMsPositionInScore, M.PageFormat.MillisecondsPerTick);
+                            if(partIndex == 0 && partStaffIndex == 0 && voiceIndex == 0)
+                            {                                
+                                globalMeasure.MsPosInScore = seqMsPositionInScore;
+                                globalMeasure.MsDuration = sequence.MsDuration;
+                            }
+                            else
+                            {
+                                M.Assert(globalMeasure.MsPosInScore == seqMsPositionInScore);
+                                M.Assert(globalMeasure.MsDuration == sequence.MsDuration);
+                            }
+
+                            List<IUniqueDef> seqIUDs = sequence.GetIUniqueDefs();
 
                             SetEventBeamStartRestartEnd(allBeamBlocks, seqIUDs);
 

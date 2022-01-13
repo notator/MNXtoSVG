@@ -460,7 +460,7 @@ namespace Moritz.Symbols
                 }
                 if(durationClass == DurationClass.quaver && chordsInBeam[chordsInBeam.Count - 1].IsBeamEnd == false)
                 {
-                    beamRightX = rightBarlineX + (_gap / 2);
+                    beamRightX = rightBarlineX + (_gap * 0.75);
                 }
 
                 // BeamHooks are initially created as Beams having LeftX == RightX == stemX.

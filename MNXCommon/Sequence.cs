@@ -25,8 +25,6 @@ namespace MNX.Common
         /// </summary>
         public int IndexID;
 
-        public int MsPositionInScore { get; private set; }
-
         public Sequence(XmlReader r, TimeSignature currentTimeSig, int measureindex, int sequenceIndex)
         {
             M.Assert(r.Name == "sequence");
@@ -101,12 +99,8 @@ namespace MNX.Common
             M.Assert(r.Name == "sequence"); // end of sequence content
         }
 
-        public List<IUniqueDef> SetMsDurationsAndGetIUniqueDefs(int seqMsPositionInScore, double millisecondsPerTick)
+        public List<IUniqueDef> GetIUniqueDefs()
         {
-            MsPositionInScore = seqMsPositionInScore;
-
-            SetMsDurations(seqMsPositionInScore, millisecondsPerTick);
-
             var rval = new List<IUniqueDef>();
             OctaveShift octaveShift = null;
 
@@ -238,6 +232,8 @@ namespace MNX.Common
 
         public void SetMsDurations(int seqMsPositionInScore, double millisecondsPerTick)
         {
+            MsPosInScore = seqMsPositionInScore;
+
             var tickPositions = new List<int>();
             int currentTickPosition = 0;
             foreach(var evt in IEventsAndGraces)
@@ -253,27 +249,48 @@ namespace MNX.Common
                 msPositions.Add((int)Math.Round(tickPosition * millisecondsPerTick));
             }
 
-            int seqMsDuration = 0;
-            int evtMsPositionInScore = this.MsPosInScore;
-            List<IHasTicksDuration> events = this.IEventsAndGraces;
+            int totalMsDuration = 0;
+            int evtMsPositionInScore = MsPosInScore;
+            List<IHasTicksDuration> iEventsAndGraces = IEventsAndGraces;
             for(var i = 1; i < msPositions.Count; i++)
             {
+                IHasTicksDuration ihtd = iEventsAndGraces[i - 1];
                 int msDuration = msPositions[i] - msPositions[i - 1];
-                if(events[i - 1] is Event e)
+                if(ihtd is Event e)
                 {
                     e.MsDuration = msDuration;
                     e.MsPosInScore = evtMsPositionInScore;
                 }
-                else if(events[i - 1] is Forward f)
+                else if(ihtd is Forward f)
                 {
                     f.MsDuration = msDuration;
                     f.MsPosInScore = evtMsPositionInScore;
                 }
+                else if(ihtd is Grace g)
+                {
+                    g.MsDuration = msDuration;
+                    g.MsPosInScore = evtMsPositionInScore;
+                    List<IHasTicksDuration> graceEvents = g.IEventsAndGraces;
+                    List<int> tickDurations = new List<int>();
+                    foreach(var ge in graceEvents)
+                    {
+                        tickDurations.Add(ge.TicksDuration);
+                    }
+                    List<int> msDurations = M.IntDivisionSizes(msDuration, tickDurations);
+                    int localMsPosInScore = g.MsPosInScore;
+                    for(int j = 0; j < msDurations.Count; j++)
+                    {
+                        int msDur = msDurations[j];
+                        graceEvents[j].MsPosInScore = localMsPosInScore;
+                        graceEvents[j].MsDuration = msDur;
+                        localMsPosInScore += msDur;
+                    }
+                }
                 evtMsPositionInScore += msDuration;
-                seqMsDuration += msDuration;
+                totalMsDuration += msDuration;
             }
 
-            MsDuration = seqMsDuration;
+            MsDuration = totalMsDuration;
         }
     }
 }

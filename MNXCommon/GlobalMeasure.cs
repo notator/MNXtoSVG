@@ -26,6 +26,10 @@ namespace MNX.Common
         public readonly GlobalDirections GlobalDirections = null;
 
         public int TicksDuration { get; set; } // The TicksDuration changes if there are make-time Grace notes present.
+        public int MsDuration { get; set; } // The MsDuration changes if there are make-time Grace notes present.
+        public int MsPosInScore { get; set; }
+
+        public List<IHasTicksDuration> IEventsAndGraces { get { M.Assert(false, "This function should never be called."); return null; } }
 
         public GlobalMeasure(XmlReader r, int measureIndex, TimeSignature currentTimeSig)
         {

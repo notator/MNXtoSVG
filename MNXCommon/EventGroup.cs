@@ -38,7 +38,19 @@ namespace MNX.Common
             }
         }
         private int _msDuration;
-        public int MsPosInScore = -1;
+        public int MsPosInScore
+        {
+            get
+            {
+                return _msPosInScore;
+            }
+            set
+            {
+                M.Assert(value >= 0);
+                _msPosInScore = value;
+            }
+        }
+        private int _msPosInScore;
 
         public int MsPositionReFirstUD
         {

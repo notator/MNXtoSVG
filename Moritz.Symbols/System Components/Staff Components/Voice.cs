@@ -221,7 +221,7 @@ namespace Moritz.Symbols
                     {
                         M.Assert(currentClef != null);
                         beamedGroup = beamedGroups[groupIndex];
-                        if(chord.IsBeamStart || chord.IsBeamRestart && chord == firstChordInVoice)
+                        if(chord.IsBeamStart || (chord == firstChordInVoice && (chord.IsBeamRestart || chord.IsBeamEnd)))
                         {
                             groupIndex++;
                         }
@@ -263,24 +263,24 @@ namespace Moritz.Symbols
                     {
                         M.Assert(inGroup == false);
                         inGroup = true;
-                        beamedGroup = new List<OutputChordSymbol>
-                        {
-                            chordSymbol
-                        };
+                        beamedGroup = new List<OutputChordSymbol>() { chordSymbol };
                         beamedGroups.Add(beamedGroup);
                     }
                     else if(chordSymbol.IsBeamRestart && inGroup == false)
                     {
                         inGroup = true;
-                        beamedGroup = new List<OutputChordSymbol>
-                        {
-                            chordSymbol
-                        };
+                        beamedGroup = new List<OutputChordSymbol>() { chordSymbol };
                         beamedGroups.Add(beamedGroup);
                     }
                     else if(chordSymbol.IsBeamEnd)
                     {
-                        M.Assert(inGroup == true);
+                        if(inGroup == false)
+                        { 
+                            // Happens when the chordSymbol is the only chord in the beam
+                            // that is to the right of a barline.
+                            beamedGroup = new List<OutputChordSymbol>();
+                            beamedGroups.Add(beamedGroup);
+                        }
                         beamedGroup.Add(chordSymbol);
                         inGroup = false;
                     }
@@ -339,7 +339,7 @@ namespace Moritz.Symbols
                 if(chord.BeamBlockDef != null)
                 {
                     if((chord.IsBeamStart)
-                    || (i == 0 && chord.IsBeamRestart))
+                    || (i == 0 && (chord.IsBeamRestart || chord.IsBeamEnd)))
                     {
                         chordSymbolsThatStartBeamBlocks.Add(chord);
                     }

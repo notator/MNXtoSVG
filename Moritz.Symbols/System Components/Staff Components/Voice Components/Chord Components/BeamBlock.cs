@@ -41,7 +41,8 @@ namespace Moritz.Symbols
         /// <param name="chordsBeamedTogether"></param>
         private void SetBeamedGroupStemDirection(Clef currentClef, List<OutputChordSymbol> chordsBeamedTogether, VerticalDir voiceStemDirection)
         {
-            M.Assert(chordsBeamedTogether.Count > 1);
+            // chordsBeamedtogether.Count can be 1
+            // (when a solitary chord has a continued beam at the beginning of a staff)
             VerticalDir groupStemDirection = voiceStemDirection;
             if(voiceStemDirection == VerticalDir.none)
             {   // here, there is only one voice in the staff, so the direction depends on the height of the noteheads.
@@ -454,7 +455,7 @@ namespace Moritz.Symbols
                     beamRightX = (beamRightX > stemX) ? beamRightX : stemX;
                 }
 
-                if(chordsInBeam[0].IsBeamRestart == true)
+                if(chordsInBeam[0].BeamBlockDef != null && (chordsInBeam[0].IsBeamRestart || chordsInBeam[0].IsBeamEnd))
                 {
                     beamLeftX = ((ChordMetrics)chordsInBeam[0].Metrics).StemMetrics.OriginX - _gap;
                 }
@@ -831,19 +832,23 @@ namespace Moritz.Symbols
 
         private double ShearAngle(List<ChordMetrics> chordsMetrics)
         {
-            ChordMetrics leftChordMetrics = chordsMetrics[0];
-            ChordMetrics rightChordMetrics = chordsMetrics[chordsMetrics.Count - 1];
-            double height =
-                    (((rightChordMetrics.TopHeadMetrics.OriginY + rightChordMetrics.BottomHeadMetrics.OriginY) / 2)
-                   - ((leftChordMetrics.TopHeadMetrics.OriginY + leftChordMetrics.BottomHeadMetrics.OriginY) / 2));
+            double tanAlpha = 0;
+            if(chordsMetrics.Count > 1)
+            {
+                ChordMetrics leftChordMetrics = chordsMetrics[0];
+                ChordMetrics rightChordMetrics = chordsMetrics[chordsMetrics.Count - 1];
+                double height =
+                        (((rightChordMetrics.TopHeadMetrics.OriginY + rightChordMetrics.BottomHeadMetrics.OriginY) / 2)
+                       - ((leftChordMetrics.TopHeadMetrics.OriginY + leftChordMetrics.BottomHeadMetrics.OriginY) / 2));
 
-            double width = rightChordMetrics.StemMetrics.OriginX - leftChordMetrics.StemMetrics.OriginX;
-            double tanAlpha = (height / width) / 3;
+                double width = rightChordMetrics.StemMetrics.OriginX - leftChordMetrics.StemMetrics.OriginX;
+                tanAlpha = (height / width) / 3;
 
-            if(tanAlpha > 0.10)
-                tanAlpha = 0.10;
-            if(tanAlpha < -0.10)
-                tanAlpha = -0.10;
+                if(tanAlpha > 0.10)
+                    tanAlpha = 0.10;
+                if(tanAlpha < -0.10)
+                    tanAlpha = -0.10;
+            }
 
             return tanAlpha;
         }

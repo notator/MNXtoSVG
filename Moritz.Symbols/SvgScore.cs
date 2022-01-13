@@ -1439,8 +1439,11 @@ namespace Moritz.Symbols
                                     MNX.Common.BeamBlock bb = ((MNX.Common.BeamBlock)allBeamBlockDefs.Find(x => x is MNX.Common.BeamBlock bbk && ((MNX.Common.Beam)bbk.Components[0]).EventIDs.Contains(ocs.EventID)));
                                     if(bb != null)
                                     {
-                                        if(((ocs.IsBeamStart) && ocs.EventID == ((MNX.Common.Beam)bb.Components[0]).EventIDs[0])
-                                        || (ocs == firstChord && ocs.IsBeamRestart && ((MNX.Common.Beam)bb.Components[0]).EventIDs.Contains(ocs.EventID)))
+                                        var quaverBeamEventIDs = ((MNX.Common.Beam)bb.Components[0]).EventIDs;
+
+                                        if((ocs.IsBeamStart) && ocs.EventID == quaverBeamEventIDs[0]
+                                        || (ocs == firstChord && ocs.IsBeamRestart && quaverBeamEventIDs.Contains(ocs.EventID))
+                                        || (ocs == firstChord && ocs.IsBeamEnd && quaverBeamEventIDs[quaverBeamEventIDs.Count - 1] == ocs.EventID))
                                         {
                                             ocs.BeamBlockDef = bb;
                                         }

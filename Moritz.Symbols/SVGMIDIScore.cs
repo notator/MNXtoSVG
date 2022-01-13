@@ -164,6 +164,8 @@ namespace Moritz.Symbols
             foreach(MNX.Common.BeamBlock bb in allBeamBlocks)
             {
                 MNX.Common.Beam quaverbeam = bb.Components[0] as MNX.Common.Beam;
+                M.Assert(quaverbeam.EventIDs.Count > 1);
+
                 Event beamStartEvent = (Event)seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[0]));
                 Event beamEndEvent = (Event)seqIUDs.Find(x => (x is Event e && e.ID == quaverbeam.EventIDs[quaverbeam.EventIDs.Count - 1]));
 

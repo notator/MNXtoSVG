@@ -16,9 +16,12 @@ namespace Moritz.Symbols
             // Even cautionary, semibreves and breves need a stem direction in order to set chord Metrics correctly.
             Stem = new Stem(this);
 
+            EventID = mnxEventDef.ID;
+
             IsBeamStart = mnxEventDef.IsBeamStart;
             IsBeamRestart = mnxEventDef.IsBeamRestart;
             IsBeamEnd = mnxEventDef.IsBeamEnd;
+            IsGrace = mnxEventDef.IsGrace;
 
             OctaveShift = mnxEventDef.OctaveShift;
             EndOctaveShift = mnxEventDef.EndOctaveShift;
@@ -27,9 +30,11 @@ namespace Moritz.Symbols
 
             SlurDefs = mnxEventDef.SlurDefs; // can be null
             TupletDefs = mnxEventDef.TupletDefs; // can be null
-            EventID = mnxEventDef.ID;
 
-            // Beam is currently null. Create when necessary.
+            if(IsGrace)
+            {
+                FontHeight *= M.PageFormat.SmallSizeFactor;
+            }
         }
 
         /// <summary>
@@ -474,6 +479,7 @@ namespace Moritz.Symbols
         public readonly bool IsBeamStart;
         public readonly bool IsBeamRestart;
         public readonly bool IsBeamEnd;
+        public readonly bool IsGrace;
 
         public MNX.Common.BeamBlock BeamBlockDef { get; internal set; }
         public BeamBlock BeamBlock = null; // defaults

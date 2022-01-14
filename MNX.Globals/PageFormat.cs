@@ -11,7 +11,7 @@ namespace MNX.Globals
         #region constants
         public readonly int ViewBoxMagnification = 10;
 
-        // The relatve size of cautionary and small objects
+        // The relative size of cautionary and small objects
         public double SmallSizeFactor { get { return 0.8; } }
         // The opacity of opaque beams
         // (Opaque beams are written between the beam and stafflines to make the stafflines appear grey.)

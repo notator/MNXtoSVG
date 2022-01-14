@@ -381,7 +381,7 @@ namespace Moritz.Symbols
 	}
 	internal class HeadMetrics : CLichtCharacterMetrics
 	{
-		public HeadMetrics(ChordSymbol chord, Head head, double gapVBPX, CSSObjectClass headClass)
+		public HeadMetrics(ChordSymbol chord, Head head, CSSObjectClass headClass)
 			: base(chord.DurationClass, chord.FontHeight, headClass)
 		{
 			Move((Left - Right) / 2, 0F); // centre horizontally

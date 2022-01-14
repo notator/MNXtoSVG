@@ -338,7 +338,7 @@ namespace Moritz.Symbols
                 fontStyles.Append(fontSizeStyle);
             }
 
-            // .smallClef, .cautionaryNotehead, .cautionaryAccidental
+            // .smallClef, .cautionaryNotehead, .cautionaryAccidental, cautionaryDot, cautionaryFlag
             StringBuilder smallClasses = GetSmallClasses(usedCSSObjectClasses, usedClefIDs);
             if(smallClasses.Length > 0)
             {
@@ -496,12 +496,6 @@ namespace Moritz.Symbols
 
         private StringBuilder GetExistingClichtClasses(List<CSSObjectClass> usedCSSClasses, List<ClefID> usedClefIDs)
         {
-            //.rest, .notehead, .accidental,
-            //.cautionaryNotehead, .cautionaryAccidental,
-            //.clef, .smallClef,
-            //.dynamic,
-            //.clefOctaveNumber, .smallClefOctaveNumber
-
             StringBuilder rval = new StringBuilder();
             ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.rest);
             ExtendRvalWith(rval, usedCSSClasses, CSSObjectClass.notehead);
@@ -750,6 +744,21 @@ namespace Moritz.Symbols
             ");
             }
 
+            if(usedCSSClasses.Contains(CSSObjectClass.cautionaryStem))
+            {
+                //".cautionaryStem, .cautionaryBeam, .cautionarySlash"
+                StringBuilder cautionaryLineClasses = GetCautionaryLineClasses(usedCSSClasses);
+                strokeWidth = M.DoubleToShortString(pageFormat.CautionaryStemStrokeWidth);
+                lineStyles.Append($@"{cautionaryLineClasses.ToString()}
+            {{
+                stroke:black;
+                stroke-width:{strokeWidth}px;
+                stroke-linecap:round;
+                fill:black
+            }}
+            ");
+            }
+
             if(usedCSSClasses.Contains(CSSObjectClass.normalBarline))
             {
                 strokeWidth = M.DoubleToShortString(pageFormat.NormalBarlineStrokeWidth);
@@ -908,6 +917,26 @@ namespace Moritz.Symbols
             }
 
             return lineStyles;
+        }
+
+        private StringBuilder GetCautionaryLineClasses(List<CSSObjectClass> usedCSSClasses)
+        {
+            //".cautionaryStem, .cautionaryBeam, .cautionarySlash"
+            StringBuilder rval = new StringBuilder();
+            if(usedCSSClasses.Contains(CSSObjectClass.cautionaryStem))
+            {
+                ExtendRval(rval, ".cautionaryStem");
+            }
+            if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBeam))
+            {
+                ExtendRval(rval, ".cautionaryBeam");
+            }
+            if(usedCSSClasses.Contains(CSSObjectClass.cautionarySlash))
+            {
+                ExtendRval(rval, ".cautionarySlash");
+            }
+
+            return rval;
         }
 
         private StringBuilder GetStandardLineClasses(List<CSSObjectClass> usedCSSClasses, bool defineFlagStyle)

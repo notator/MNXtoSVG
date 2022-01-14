@@ -32,13 +32,16 @@
                             <note pitch="C5"/>
                         </event>
                         <grace type="steal-following">
-                            <event value="/8">
+                            <event value="/16">
                                 <note pitch="D5"/>
                             </event>
-                            <event value="/8">
+                            <event value="/32">
                                 <note pitch="D5"/>
                             </event>
-                            <event value="/8">
+                            <event value="/64">
+                                <note pitch="D5"/>
+                            </event>
+                            <event value="/128">
                                 <note pitch="D5"/>
                             </event>
                         </grace>

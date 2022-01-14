@@ -12,7 +12,7 @@ namespace MNX.Globals
         public readonly int ViewBoxMagnification = 10;
 
         // The relative size of cautionary and small objects
-        public double SmallSizeFactor { get { return 0.8; } }
+        public double SmallSizeFactor { get { return 0.7; } }
         // The opacity of opaque beams
         // (Opaque beams are written between the beam and stafflines to make the stafflines appear grey.)
         public double OpaqueBeamOpacity { get { return 0.65; } }
@@ -62,6 +62,7 @@ namespace MNX.Globals
         #endregion
 
         #region stroke widths
+        public double CautionaryStemStrokeWidth { get { return StafflineStemStrokeWidthVBPX * SmallSizeFactor; } }
         public double NormalBarlineStrokeWidth { get { return StafflineStemStrokeWidthVBPX * 2; } }
         public double ThinBarlineStrokeWidth { get { return NormalBarlineStrokeWidth / 2; } } // a component of double barlines.
         public double ThickBarlineStrokeWidth { get { return NormalBarlineStrokeWidth * 2; } } // a component of double barlines.

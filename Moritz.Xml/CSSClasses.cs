@@ -92,9 +92,10 @@ namespace Moritz.Xml
 		#endregion chord classes
 
 		#region chord components
-		stem, // used and recorded. Defined if they exist. Container:chord
+		stem, cautionaryStem, // used and recorded. Defined if they exist. Container:chord
+		cautionarySlash,
 						 // flags whose ID has been recorded in FlagIDs will be written to the defs.
-		flag, // path classes used in defs. Defined if flags exist. Container:chord
+		flag, cautionaryFlag, // path classes used in defs. Defined if flags exist. Container:chord
 		notehead, cautionaryNotehead, // Container:chord/cautionaryChord
         accidental, cautionaryAccidental, // Container:chord/cautionaryChord
         dot, cautionaryDot, // Container:chord/cautionaryChord
@@ -112,6 +113,7 @@ namespace Moritz.Xml
 		#endregion rest
 
 		#region beams
+		cautionaryBeam,
 		beamBlock,      // Used, recorded, not defined. Container:voice
 		beam,           // Used, not recorded. Defined if beamBlock exists. Container:beamBlock
 		opaqueBeam,     // Used, not recorded. Defined if beamBlock exists. Container:beamBlock

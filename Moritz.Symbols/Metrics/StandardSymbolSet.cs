@@ -298,58 +298,85 @@ namespace Moritz.Symbols
         {
             List<FlagID> usedIDs = new List<FlagID>(FlagsMetrics.UsedFlagIDs);
             List<string> usedFlagIDs = new List<string>();
+            List<string> usedCautionaryFlagIDs = new List<string>();            
+
             foreach(FlagID flagID in usedIDs)
             {
-                usedFlagIDs.Add(flagID.ToString());
+                string strFlagID = flagID.ToString();
+                if(strFlagID.Contains("cautionary"))
+                {
+                    usedCautionaryFlagIDs.Add(strFlagID);
+                }
+                else
+                {
+                    usedFlagIDs.Add(strFlagID);
+                }
             }
 
-            double normalHeight = pageFormat.MusicFontHeight;
+            double fontHeight = pageFormat.MusicFontHeight;
 
-            for(int i = 1; i < 6; i++)
+            if(usedFlagIDs.Count > 0)
             {
-                WriteLeftFlagBlock(w, i, normalHeight, usedFlagIDs);
+                WriteFlagBlocks(w, usedFlagIDs, fontHeight);
             }
-            for(int i = 1; i < 6; i++)
+            
+            if(usedCautionaryFlagIDs.Count > 0)
             {
-                WriteRightFlagBlock(w, i, normalHeight, usedFlagIDs);
+                fontHeight *= pageFormat.SmallSizeFactor;
+                WriteFlagBlocks(w, usedCautionaryFlagIDs, fontHeight);
             }
         }
 
-        private void WriteRightFlagBlock(SvgWriter w, int nFlags, double fontHeight, List<string> usedFlagIDs)
+        #region write normal flags
+        private void WriteFlagBlocks(SvgWriter w, List<string> usedFlagIDs, double fontHeight)
         {
-            StringBuilder id = GetFlagID(true, nFlags);
-            if(usedFlagIDs.Contains(id.ToString()))
+            int getNFlags(string flagID, int nLeadingCharacters)
             {
-                w.WriteFlagBlock(id, nFlags, true, fontHeight);
+                string numStr = flagID.Remove(0, nLeadingCharacters);
+                numStr = numStr.Remove(1, 4);
+                if(numStr.Length == 2)
+                {
+                    numStr = numStr.Remove(1, 1);
+                }
+                int nFlags;
+                int.TryParse(numStr, out nFlags);
+
+                return nFlags;
+            }
+
+            foreach(var flagID in usedFlagIDs)
+            {
+                if(flagID.Contains("cautionary"))
+                {
+                    if(flagID.Contains("Left"))
+                    {
+                        int nFlags = getNFlags(flagID, 14);
+                        w.WriteFlagBlock(flagID, nFlags, false, fontHeight);
+                    }
+                    else // right
+                    {
+                        int nFlags = getNFlags(flagID, 15);
+                        w.WriteFlagBlock(flagID, nFlags, true, fontHeight);
+                    }
+                }
+                else // normal
+                {
+                    if(flagID.Contains("left"))
+                    {
+                        int nFlags = getNFlags(flagID, 4);
+                        w.WriteFlagBlock(flagID, nFlags, false, fontHeight);
+                    }
+                    else // right
+                    {
+                        int nFlags = getNFlags(flagID, 5);
+                        w.WriteFlagBlock(flagID, nFlags, true, fontHeight);
+                    }
+                }
             }
         }
 
-        private void WriteLeftFlagBlock(SvgWriter w, int nFlags, double fontHeight, List<string> usedFlagIDs)
-        {
-            StringBuilder id = GetFlagID(false, nFlags);
-            if(usedFlagIDs.Contains(id.ToString()))
-            {
-                w.WriteFlagBlock(id, nFlags, false, fontHeight);
-            }
-        }
+        #endregion
 
-        private StringBuilder GetFlagID(bool isRight, int nFlags)
-        {
-            StringBuilder type = new StringBuilder();
-
-            if(isRight)
-                type.Append("right");
-            else
-                type.Append("left");
-
-            type.Append(nFlags);
-            if(nFlags == 1)
-                type.Append("Flag");
-            else
-                type.Append("Flags");
-
-            return type;
-        }
         #endregion symbol definitions
 
         public override Metrics NoteObjectMetrics(Graphics graphics, NoteObject noteObject, VerticalDir voiceStemDirection, double gap, PageFormat pageFormat, string currentClefType)
@@ -399,11 +426,20 @@ namespace Moritz.Symbols
 			}
 			else if(cautionaryChordSymbol != null)
 			{
+                // just noteheads and accidentals
 				returnMetrics = new ChordMetrics(graphics, cautionaryChordSymbol, voiceStemDirection, gap, strokeWidth, CSSObjectClass.cautionaryChord);
 			}
 			else if(chordSymbol != null)
 			{
-				returnMetrics = new ChordMetrics(graphics, chordSymbol, voiceStemDirection, gap, strokeWidth, CSSObjectClass.chord);
+                // ordinary chords and grace notes (with stems and beams)
+                if(chordSymbol.IsGrace)
+                {
+                    returnMetrics = new ChordMetrics(graphics, chordSymbol, voiceStemDirection, gap, strokeWidth, CSSObjectClass.cautionaryChord);
+                }
+                else
+                {
+                    returnMetrics = new ChordMetrics(graphics, chordSymbol, voiceStemDirection, gap, strokeWidth, CSSObjectClass.chord);
+                }
 			}
 			else if(rest != null)
 			{

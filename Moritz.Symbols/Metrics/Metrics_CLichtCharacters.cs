@@ -96,7 +96,6 @@ namespace Moritz.Symbols
 			_right = (m.Right - m.Left) * fontHeight;
 			_originX = -m.Left * fontHeight; // overridden in AugDotMetrics constructor
 
-			_fontHeight = fontHeight;
 			_textHorizAlign = textHorizAlign;
 		}
 
@@ -119,8 +118,6 @@ namespace Moritz.Symbols
 			_left = 0;
 			_right = (m.Right - m.Left) * fontHeight;
 			_originX = -m.Left * fontHeight;
-
-			_fontHeight = fontHeight;
 		}
 
         /// <summary>
@@ -143,8 +140,6 @@ namespace Moritz.Symbols
 			_left = 0;
 			_right = (m.Right - m.Left) * fontHeight;
 			_originX = -m.Left * fontHeight;
-
-			_fontHeight = fontHeight;
 		}
 
         public override void WriteSVG(SvgWriter w)
@@ -247,7 +242,6 @@ namespace Moritz.Symbols
 
         public string CharacterString { get { return _characterString; } }
         protected string _characterString = "";
-		protected double _fontHeight;
 		protected TextHorizAlign _textHorizAlign = TextHorizAlign.left;
     }
     internal class RestMetrics : CLichtCharacterMetrics
@@ -425,7 +419,7 @@ namespace Moritz.Symbols
 		public bool OverlapsHead(HeadMetrics otherHeadMetrics)
 		{
 			// See the above constructor. Sorry, I didnt want to save the value in every Head!
-			double thisHorizontalPadding = this._fontHeight * 0.04;
+			double thisHorizontalPadding = this.FontHeight * 0.04;
 			double thisRealLeft = _left + thisHorizontalPadding;
 			double thisRealRight = _right - thisHorizontalPadding;
 
@@ -445,7 +439,7 @@ namespace Moritz.Symbols
 		public bool OverlapsStem(StemMetrics stemMetrics)
 		{
 			// See the above constructor. Sorry, I didnt want to save the value in every Head!
-			double thisHorizontalPadding = this._fontHeight * 0.04;
+			double thisHorizontalPadding = this.FontHeight * 0.04;
 			double thisRealLeft = _left + thisHorizontalPadding;
 			double thisRealRight = _right - thisHorizontalPadding;
 

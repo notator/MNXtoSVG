@@ -278,9 +278,9 @@ namespace Moritz.Xml
         ///     [path d="M 0,1    0,1.12096 0.31809,1.2467 Q 0.299,1.20 0.31809,1.1257" /]
         /// [/g]
         /// </summary>
-        public void WriteFlagBlock(StringBuilder type, int nFlags, bool rightFlag, double fontHeight)
+        public void WriteFlagBlock(string type, int nFlags, bool rightFlag, double fontHeight)
         {
-            string id = type.ToString();       
+            string id = type;       
             string x1 = "0";
             string x2 = "0";
             string x3 = M.DoubleToShortString(0.31809F * fontHeight);

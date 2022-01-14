@@ -26,7 +26,7 @@ namespace Moritz.Symbols
             CSSLineCap lineCap = CSSLineCap.butt)
             : base(csslineClass)
         {
-            StrokeWidthPixels = strokeWidthPixels;
+            StrokeWidth = strokeWidthPixels;
             Stroke = stroke.ToString();
             Fill = fill.ToString();
             LineCap = lineCap.ToString();
@@ -37,7 +37,7 @@ namespace Moritz.Symbols
             throw new NotImplementedException();
         }
 
-        public readonly double StrokeWidthPixels = 0;
+        public readonly double StrokeWidth = 0;
         public readonly string Stroke = "none"; // "none", "black", "white", "#333" etc
         public readonly string Fill = "none"; // "none", "black", "white", "#333" etc
         public readonly string LineCap = "butt"; // "butt", "round", "square" 
@@ -45,8 +45,8 @@ namespace Moritz.Symbols
  
 	internal class StemMetrics : LineMetrics
 	{
-		public StemMetrics(double top, double x, double bottom, double strokeWidth, VerticalDir verticalDir)
-			: base(CSSObjectClass.stem, strokeWidth, "black")
+		public StemMetrics(CSSObjectClass stemType, double top, double x, double bottom, double strokeWidth, VerticalDir verticalDir)
+			: base(stemType, strokeWidth, "black")
 		{
 			_originX = x;
 			_originY = top;
@@ -55,7 +55,6 @@ namespace Moritz.Symbols
 			_bottom = bottom;
 			_left = x - strokeWidth;
 			VerticalDir = verticalDir;
-			StrokeWidth = strokeWidth;
 		}
 
         public override void WriteSVG(SvgWriter w)
@@ -69,7 +68,6 @@ namespace Moritz.Symbols
 		}
 
 		public readonly VerticalDir VerticalDir;
-		public readonly double StrokeWidth;
 	}
 	internal class LedgerlineBlockMetrics : LineMetrics, ICloneable
 	{      

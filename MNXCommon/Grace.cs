@@ -105,7 +105,7 @@ namespace MNX.Common
                     switch(r.Name)
                     {
                         case "event":
-                            Event e = new Event(r);
+                            Event e = new Event(r, true);
                             e.TicksDuration = 0; // Set correctly when the complete file has been parsed.
                             Components.Add(e);
                             break;

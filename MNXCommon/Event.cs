@@ -37,6 +37,7 @@ namespace MNX.Common
         public readonly List<Note> Notes = null;
         // Either Notes or Rest must be non-null;
         public readonly Rest Rest = null;
+        public readonly bool IsGrace = false;
         public readonly List<SlurDef> SlurDefs = null;
 
         /// <summary>
@@ -161,7 +162,7 @@ namespace MNX.Common
 
         #endregion IUniqueDef
 
-        public Event(XmlReader r)
+        public Event(XmlReader r, bool isGrace = false)
         {
             M.Assert(r.Name == "event");
 
@@ -170,6 +171,7 @@ namespace MNX.Common
             // read, to accomodate Grace notes.
             // TicksPosInScore is set correctly when the complete file has been parsed.
             TicksPosInScore = 0;
+            IsGrace = isGrace;
 
             int count = r.AttributeCount;
             for(int i = 0; i < count; i++)

@@ -384,11 +384,15 @@ namespace MNX.Globals
         /// Throws an ApplicationException if condition is false
         /// </summary>
         /// <param name="v"></param>
-        public static void Assert(bool condition)
+        public static void Assert(bool condition,
+                        [CallerFilePath] string file = "",
+                        [CallerMemberName] string member = "",
+                        [CallerLineNumber] int line = 0)
         {
             if(condition == false)
             {
-                throw new ApplicationException($"Condition failed.");
+                string errorMsg = $"Assert failed:\n" + Path.GetFileName(file) + ", line: " + line + " (function: " + member + ")";
+                throw new ApplicationException(errorMsg);
             }
         }
         /// <summary>

@@ -637,17 +637,6 @@ namespace Moritz.Symbols
             DurationClass durationClass = chord.DurationClass;
             stemThickness = (chord.IsGrace == false) ? stemThickness : stemThickness * M.PageFormat.SmallSizeFactor;
 
-            if(durationClass == DurationClass.minim
-            || durationClass == DurationClass.crotchet
-            || durationClass == DurationClass.quaver
-            || durationClass == DurationClass.semiquaver
-            || durationClass == DurationClass.threeFlags
-            || durationClass == DurationClass.fourFlags
-            || durationClass == DurationClass.fiveFlags)
-            {                
-                _stemMetrics = NewStemMetrics(topDownHeadsMetrics, chord, _flagsMetrics, stemThickness);
-            }
-            
             _flagsMetrics = null;
             if(chord.BeamBlock == null
             && (durationClass == DurationClass.quaver
@@ -662,6 +651,17 @@ namespace Moritz.Symbols
                                                 chord.FontHeight,
                                                 chord.Stem.Direction,
                                                 stemThickness);
+            }
+
+            if(durationClass == DurationClass.minim
+            || durationClass == DurationClass.crotchet
+            || durationClass == DurationClass.quaver
+            || durationClass == DurationClass.semiquaver
+            || durationClass == DurationClass.threeFlags
+            || durationClass == DurationClass.fourFlags
+            || durationClass == DurationClass.fiveFlags)
+            {                
+                _stemMetrics = NewStemMetrics(topDownHeadsMetrics, chord, _flagsMetrics, stemThickness);
             }
         }
 

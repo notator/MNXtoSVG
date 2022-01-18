@@ -76,6 +76,7 @@
     <None Include="MNX_in\form1Data\beams.f1d" />
     <None Include="MNX_in\form1Data\dotted-notes.f1d" />
     <None Include="MNX_in\form1Data\grace-note.f1d" />
+    <None Include="MNX_in\form1Data\_beamedGraceNotesTest.f1d" />
     <None Include="MNX_in\form1Data\grace-notes-beamed.f1d" />
     <None Include="MNX_in\form1Data\hello-world.f1d" />
     <None Include="MNX_in\form1Data\jumps-dal-segno.f1d" />
@@ -108,6 +109,7 @@
     <None Include="MNX_in\mnx\beams-secondary-beam-breaks.mnx" />
     <None Include="MNX_in\mnx\dotted-notes.mnx" />
     <None Include="MNX_in\mnx\grace-note.mnx" />
+    <None Include="MNX_in\mnx\_beamedGraceNotesTest.mnx" />
     <None Include="MNX_in\mnx\grace-notes-beamed.mnx" />
     <None Include="MNX_in\mnx\hello-world.mnx" />
     <None Include="MNX_in\mnx\jumps-dal-segno.mnx" />

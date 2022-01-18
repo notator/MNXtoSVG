@@ -113,14 +113,13 @@ namespace Moritz.Xml
 		#endregion rest
 
 		#region beams
-		cautionaryBeam,
-		beamBlock,      // Used, recorded, not defined. Container:voice
-		beam,           // Used, not recorded. Defined if beamBlock exists. Container:beamBlock
-		opaqueBeam,     // Used, not recorded. Defined if beamBlock exists. Container:beamBlock
-        #endregion
+		beamBlock, cautionaryBeamBlock, // Used, recorded, not defined in SVG. Container:voice
+		beam, cautionaryBeam, // Used, not recorded. Defined in SVG if beamBlock/cautionaryBeamBlock exists. Container:beamBlock
+		opaqueBeam, cautionaryOpaqueBeam, // Used, not recorded. Defined in SVG if beamBlock/cautionaryBeamBlock exists. Container:beamBlock
+		#endregion
 
-        #region extenders
-        octaveShiftExtender,     // Used, recorded, not defined as style. Container:staff
+		#region extenders
+		octaveShiftExtender,     // Used, recorded, not defined as style. Container:staff
         octaveShiftExtenderText, // Used, not recorded. Defined if octaveShiftExtender exists. Container:octaveShiftExtender
         octaveShiftExtenderHLine,// Used, not recorded. Defined if octaveShiftExtender exists. Container:octaveShiftExtender
         octaveShiftExtenderVLine,// Used, not recorded. Defined if octaveShiftExtender exists. Container:octaveShiftExtender

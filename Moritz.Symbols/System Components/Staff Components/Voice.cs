@@ -225,9 +225,17 @@ namespace Moritz.Symbols
                         {
                             groupIndex++;
                         }
-                        double beamThickness = pageFormat.BeamThickness;
                         double beamStrokeThickness = pageFormat.StafflineStemStrokeWidthVBPX;
-                        chord.BeamBlock = new BeamBlock(currentClef, beamedGroup, this.StemDirection, beamThickness, beamStrokeThickness);
+                        if(chord.IsGrace)
+                        {
+                            beamStrokeThickness *= pageFormat.SmallSizeFactor;
+                            chord.BeamBlock = new BeamBlock(CSSObjectClass.cautionaryBeamBlock, currentClef, beamedGroup, this.StemDirection, beamStrokeThickness, pageFormat, chord.IsGrace);
+                        }
+                        else
+                        {
+                            chord.BeamBlock = new BeamBlock(CSSObjectClass.beamBlock, currentClef, beamedGroup, this.StemDirection, beamStrokeThickness, pageFormat, chord.IsGrace);
+                        }
+
                     }
                     else if(chord.IsBeamEnd)
                     {
@@ -309,11 +317,11 @@ namespace Moritz.Symbols
             Barline rightBarline = NoteObjects[NoteObjects.Count - 1] as Barline;
             M.Assert(rightBarline != null);
 
-                double rightBarlineX = rightBarline.Metrics.OriginX;
-                foreach(var chordSymbol in chordSymbolsThatStartBeamBlocks)
-                {
-                    chordSymbol.FinalizeBeamBlock(rightBarlineX);
-                }
+            double rightBarlineX = rightBarline.Metrics.OriginX;
+            foreach(var chordSymbol in chordSymbolsThatStartBeamBlocks)
+            {
+                chordSymbol.FinalizeBeamBlock(rightBarlineX);
+            }
         }
 
         public void RemoveBeamBlockBeams()

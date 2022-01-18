@@ -880,6 +880,19 @@ namespace Moritz.Symbols
             ");
             }
 
+            strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX * pageFormat.SmallSizeFactor);
+            if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBeamBlock))
+            {
+                lineStyles.Append($@".cautionaryOpaqueBeam
+            {{
+                stroke:white;
+                stroke-width:{strokeWidth}px;
+                fill:white;
+                opacity:0.65                
+            }}
+            ");
+            }
+
             if(usedCSSClasses.Contains(CSSObjectClass.slurTemplate))
             {
                 strokeWidth = M.DoubleToShortString(pageFormat.StafflineStemStrokeWidthVBPX / 3);
@@ -921,13 +934,13 @@ namespace Moritz.Symbols
 
         private StringBuilder GetCautionaryLineClasses(List<CSSObjectClass> usedCSSClasses)
         {
-            //".cautionaryStem, .cautionaryBeam, .cautionarySlash"
+            //".cautionaryStem, .cautionaryBeamBlock, .cautionarySlash"
             StringBuilder rval = new StringBuilder();
             if(usedCSSClasses.Contains(CSSObjectClass.cautionaryStem))
             {
                 ExtendRval(rval, ".cautionaryStem");
             }
-            if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBeam))
+            if(usedCSSClasses.Contains(CSSObjectClass.cautionaryBeamBlock))
             {
                 ExtendRval(rval, ".cautionaryBeam");
             }

@@ -8,9 +8,9 @@ using MNX.Globals;
 namespace Moritz.Symbols
 {
     public class BeamBlock : LineMetrics
-    {
-        public BeamBlock(Clef clef, List<OutputChordSymbol> chordsBeamedTogether, VerticalDir voiceStemDirection, double beamThickness, double strokeThickness)
-            : base(CSSObjectClass.beamBlock, strokeThickness, "black", "black")
+    {       
+        public BeamBlock(CSSObjectClass beamBlockClass, Clef clef, List<OutputChordSymbol> chordsBeamedTogether, VerticalDir voiceStemDirection, double strokeThickness, PageFormat pageFormat, bool isCautionary)
+            : base(beamBlockClass, strokeThickness, "black", "black")
         {
             Chords = new List<ChordSymbol>(chordsBeamedTogether);
             SetBeamedGroupStemDirection(clef, chordsBeamedTogether, voiceStemDirection);
@@ -18,8 +18,13 @@ namespace Moritz.Symbols
                 chord.BeamBlock = this; // prevents an isolated flag from being created
 
             _gap = Chords[0].Voice.Staff.Gap;
-            _beamSeparation = _gap;
-            _beamThickness = beamThickness;
+            _beamThickness = pageFormat.BeamThickness;
+            if(isCautionary)
+            {
+                _gap *= pageFormat.SmallSizeFactor;
+                _beamThickness *= pageFormat.SmallSizeFactor;
+            }
+            _beamSeparation = _gap;            
             _strokeThickness = strokeThickness;
             _stemDirection = Chords[0].Stem.Direction;
 
@@ -676,6 +681,12 @@ namespace Moritz.Symbols
         {
             double staffOriginY = Chords[0].Voice.Staff.Metrics.OriginY;
 
+            double localGap = _gap;
+            if(CSSObjectClass == CSSObjectClass.cautionaryBeamBlock)
+            {
+                localGap *= 1.35;
+            }
+
             if(_stemDirection == VerticalDir.down)
             {
                 double lowestBottomReStaff = double.MinValue;
@@ -686,31 +697,31 @@ namespace Moritz.Symbols
                     double bottomNoteOriginYReStaff = bottomHeadMetrics.OriginY - staffOriginY;
                     double beamBottomReStaff = 0;
                     double beamThickness = durationClassBeamThicknesses[Chords[i].DurationClass];
-                    if(bottomNoteOriginYReStaff < (_gap * -1)) // above the staff
+                    if(bottomNoteOriginYReStaff < (localGap * -1)) // above the staff
                     {
                         if(Chords[i].DurationClass == DurationClass.quaver)
                         {
-                            beamBottomReStaff = (_gap * 2) + beamThickness;
+                            beamBottomReStaff = (localGap * 2) + beamThickness;
                         }
                         else
                         {
-                            beamBottomReStaff = _gap + beamThickness;
+                            beamBottomReStaff = localGap + beamThickness;
                         }
                     }
-                    else if(bottomNoteOriginYReStaff <= (_gap * 2)) // above the mid line
+                    else if(bottomNoteOriginYReStaff <= (localGap * 2)) // above the mid line
                     {
                         if(Chords[i].DurationClass == DurationClass.quaver)
                         {
-                            beamBottomReStaff = bottomNoteOriginYReStaff + (_gap * 3.5F) + beamThickness;
+                            beamBottomReStaff = bottomNoteOriginYReStaff + (localGap * 3.5F) + beamThickness;
                         }
                         else
                         {
-                            beamBottomReStaff = bottomNoteOriginYReStaff + (_gap * 2.5F) + beamThickness;
+                            beamBottomReStaff = bottomNoteOriginYReStaff + (localGap * 2.5F) + beamThickness;
                         }
                     }
                     else
                     {
-                        beamBottomReStaff = bottomNoteOriginYReStaff + (_gap * 3F) + beamThickness;
+                        beamBottomReStaff = bottomNoteOriginYReStaff + (localGap * 3F) + beamThickness;
                     }
 
                     lowestBottomReStaff = lowestBottomReStaff > beamBottomReStaff ? lowestBottomReStaff : beamBottomReStaff;
@@ -729,31 +740,31 @@ namespace Moritz.Symbols
                     double beamTopReStaff = 0;
                     double beamThickness = durationClassBeamThicknesses[Chords[i].DurationClass];
 
-                    if(topNoteOriginYReStaff > (_gap * 5)) // below the staff
+                    if(topNoteOriginYReStaff > (localGap * 5)) // below the staff
                     {
                         if(Chords[i].DurationClass == DurationClass.quaver)
                         {
-                            beamTopReStaff = (_gap * 2) - beamThickness;
+                            beamTopReStaff = (localGap * 2) - beamThickness;
                         }
                         else
                         {
-                            beamTopReStaff = (_gap * 3) - beamThickness;
+                            beamTopReStaff = (localGap * 3) - beamThickness;
                         }
                     }
-                    else if(topNoteOriginYReStaff >= (_gap * 2)) // below the mid line
+                    else if(topNoteOriginYReStaff >= (localGap * 2)) // below the mid line
                     {
                         if(Chords[i].DurationClass == DurationClass.quaver)
                         {
-                            beamTopReStaff = topNoteOriginYReStaff - (_gap * 3.5F) - beamThickness;
+                            beamTopReStaff = topNoteOriginYReStaff - (localGap * 3.5F) - beamThickness;
                         }
                         else
                         {
-                            beamTopReStaff = topNoteOriginYReStaff - (_gap * 2.5F) - beamThickness;
+                            beamTopReStaff = topNoteOriginYReStaff - (localGap * 2.5F) - beamThickness;
                         }
                     }
                     else // above the mid-line
                     {
-                        beamTopReStaff = topNoteOriginYReStaff - (_gap * 3F) - beamThickness;
+                        beamTopReStaff = topNoteOriginYReStaff - (localGap * 3F) - beamThickness;
                     }
 
                     highestTopReStaff = highestTopReStaff < beamTopReStaff ? highestTopReStaff : beamTopReStaff;
@@ -1179,11 +1190,14 @@ namespace Moritz.Symbols
 
         public override void WriteSVG(SvgWriter w)
         {
+            bool isCautionary = (CSSObjectClass == CSSObjectClass.cautionaryBeamBlock);
+
             w.SvgStartGroup(CSSObjectClass.ToString());
             foreach(Beam beam in Beams)
             {
                 if(!(beam is QuaverBeam))
                 {
+                    // draw an opaque beam between the other beams
                     double topLeft = 0;
                     double topRight = 0;
                     if(_stemDirection == VerticalDir.down)
@@ -1197,9 +1211,9 @@ namespace Moritz.Symbols
                         topRight = beam.RightTopY - _beamThickness;
                     }
                     
-                    w.SvgBeam(beam.LeftX, beam.RightX, topLeft, topRight, _beamThickness * 1.5, true);
+                    w.SvgBeam(beam.LeftX, beam.RightX, topLeft, topRight, _beamThickness * 1.5, true, isCautionary);
                 }
-                w.SvgBeam(beam.LeftX, beam.RightX, beam.LeftTopY, beam.RightTopY, _beamThickness, false);
+                w.SvgBeam(beam.LeftX, beam.RightX, beam.LeftTopY, beam.RightTopY, _beamThickness, false, isCautionary);
             }
             w.SvgEndGroup();
         }

@@ -71,10 +71,19 @@ namespace Moritz.Symbols
             else
                 halfHeight = (topDownHeadOriginYs[topDownHeadOriginYs.Count - 1] + topDownHeadOriginYs[0]) / 2;
 
-            if(halfHeight <= heightOfMiddleStaffLine)
-                return VerticalDir.down;
-            else
-                return VerticalDir.up;
+            VerticalDir rval = VerticalDir.down;
+            if(halfHeight > heightOfMiddleStaffLine)
+                rval = VerticalDir.up;
+
+            if(IsGrace)
+            {
+                if(rval == VerticalDir.down)
+                    rval = VerticalDir.up;
+                else
+                    rval = VerticalDir.down;
+            }
+
+            return rval;
         }
 
         /// <summary>

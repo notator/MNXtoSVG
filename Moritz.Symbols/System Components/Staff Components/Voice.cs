@@ -207,48 +207,21 @@ namespace Moritz.Symbols
         /// </summary>
         public void SetChordStemDirectionsAndCreateBeamBlocks(PageFormat pageFormat)
         {
-            List<List<OutputChordSymbol>> beamedGroups = GetBeamedGroups();
+            List<List<OutputChordSymbol>> normalBeamedGroups = GetBeamedGroups(false);
+            List<List<OutputChordSymbol>> graceBeamedGroups = GetBeamedGroups(true);
 
-            Clef currentClef = null;            
-            List<OutputChordSymbol> beamedGroup = null;
-            int groupIndex = 0;
+            Clef currentClef = null;
+            int normalGroupIndex = 0;
+            int graceGroupIndex = 0;
             OutputChordSymbol firstChordInVoice = ((OutputChordSymbol)NoteObjects.Find(x => x is OutputChordSymbol));
             foreach(var noteObject in NoteObjects)
             {
                 if(noteObject is OutputChordSymbol chord)
                 {
-                    if(chord.BeamBlockDef != null)
-                    {
-                        M.Assert(currentClef != null);
-                        beamedGroup = beamedGroups[groupIndex];
-                        if(chord.IsBeamStart || (chord == firstChordInVoice && (chord.IsBeamRestart || chord.IsBeamEnd)))
-                        {
-                            groupIndex++;
-                        }
-                        double beamStrokeThickness = pageFormat.StafflineStemStrokeWidthVBPX;
-                        if(chord.IsGrace)
-                        {
-                            beamStrokeThickness *= pageFormat.SmallSizeFactor;
-                            chord.BeamBlock = new BeamBlock(CSSObjectClass.cautionaryBeamBlock, currentClef, beamedGroup, this.StemDirection, beamStrokeThickness, pageFormat, chord.IsGrace);
-                        }
-                        else
-                        {
-                            chord.BeamBlock = new BeamBlock(CSSObjectClass.beamBlock, currentClef, beamedGroup, this.StemDirection, beamStrokeThickness, pageFormat, chord.IsGrace);
-                        }
-
-                    }
-                    else if(chord.IsBeamEnd)
-                    {
-                        beamedGroup = null;
-                    }
-                    else if(beamedGroup == null)
-                    {
-                        M.Assert(currentClef != null);
-                        if(this.StemDirection == VerticalDir.none)
-                            chord.Stem.Direction = chord.DefaultStemDirection(currentClef);
-                        else
-                            chord.Stem.Direction = this.StemDirection;
-                    }
+                    if(chord.IsGrace == false && normalBeamedGroups.Count > normalGroupIndex)
+                        GetBeams(pageFormat, currentClef, normalBeamedGroups, ref normalGroupIndex, firstChordInVoice, chord);
+                    else if(chord.IsGrace == true && graceBeamedGroups.Count > graceGroupIndex)
+                        GetBeams(pageFormat, currentClef, graceBeamedGroups, ref graceGroupIndex, firstChordInVoice, chord);
                 }
 
                 if(noteObject is Clef clef)
@@ -256,7 +229,73 @@ namespace Moritz.Symbols
             }
         }
 
-        private List<List<OutputChordSymbol>> GetBeamedGroups()
+        private void GetBeams(PageFormat pageFormat, Clef currentClef, List<List<OutputChordSymbol>> beamedGroups, ref int groupIndex, OutputChordSymbol firstChordInVoice, OutputChordSymbol chord)
+        {
+            List<OutputChordSymbol> beamedGroup = beamedGroups[groupIndex];
+            if(chord.BeamBlockDef != null)
+            {
+                M.Assert(currentClef != null);
+
+                if(chord.IsBeamStart || (chord == firstChordInVoice && (chord.IsBeamRestart || chord.IsBeamEnd)))
+                {
+                    groupIndex++;
+                }
+                double beamStrokeThickness = pageFormat.StafflineStemStrokeWidthVBPX;
+                if(chord.IsGrace)
+                {
+                    beamStrokeThickness *= pageFormat.SmallSizeFactor;
+                    chord.BeamBlock = new BeamBlock(CSSObjectClass.cautionaryBeamBlock, currentClef, beamedGroup, this.StemDirection, beamStrokeThickness, pageFormat, chord.IsGrace);
+                }
+                else
+                {
+                    chord.BeamBlock = new BeamBlock(CSSObjectClass.beamBlock, currentClef, beamedGroup, this.StemDirection, beamStrokeThickness, pageFormat, chord.IsGrace);
+                }
+            }
+            else if(chord.IsBeamEnd)
+            {
+                beamedGroup = null;
+            }
+            else if(beamedGroup == null)
+            {
+                M.Assert(currentClef != null);
+                if(this.StemDirection == VerticalDir.none)
+                    chord.Stem.Direction = chord.DefaultStemDirection(currentClef);
+                else
+                    chord.Stem.Direction = this.StemDirection;
+            }
+        }
+
+        private List<List<OutputChordSymbol>> GetAllBeamedGroupsSorted(List<List<OutputChordSymbol>> normalBeamedGroups, List<List<OutputChordSymbol>> graceBeamedGroups)
+        {
+            List<List<OutputChordSymbol>> rval = new List<List<OutputChordSymbol>>();
+            int nIndex = 0;
+            int gIndex = 0;
+            while(nIndex < normalBeamedGroups.Count && gIndex < graceBeamedGroups.Count)
+            {
+                int nTicksPos = normalBeamedGroups[nIndex][0].TicksPosInScore;
+                int gTicksPos = graceBeamedGroups[nIndex][0].TicksPosInScore;
+                M.Assert(nTicksPos != gTicksPos);
+                if(nTicksPos < gTicksPos)
+                {
+                    rval.Add(normalBeamedGroups[nIndex++]);
+                }
+                else
+                {
+                    rval.Add(graceBeamedGroups[nIndex++]);
+                }
+            }
+            while(nIndex < normalBeamedGroups.Count)
+            {
+                rval.Add(normalBeamedGroups[nIndex++]);
+            }
+            while(gIndex < graceBeamedGroups.Count)
+            {
+                rval.Add(graceBeamedGroups[gIndex++]);
+            }
+            return rval;
+        }
+
+        private List<List<OutputChordSymbol>> GetBeamedGroups(bool getGraceBeamedGroups)
         {
             List<List<OutputChordSymbol>> beamedGroups = new List<List<OutputChordSymbol>>();
 
@@ -265,7 +304,7 @@ namespace Moritz.Symbols
             for(var i = 0; i < NoteObjects.Count; i++)
             {
                 var noteObject = NoteObjects[i];
-                if(noteObject is OutputChordSymbol chordSymbol)
+                if(noteObject is OutputChordSymbol chordSymbol && chordSymbol.IsGrace == getGraceBeamedGroups)
                 {
                     if(chordSymbol.IsBeamStart)
                     {
@@ -283,7 +322,7 @@ namespace Moritz.Symbols
                     else if(chordSymbol.IsBeamEnd)
                     {
                         if(inGroup == false)
-                        { 
+                        {
                             // Happens when the chordSymbol is the only chord in the beam
                             // that is to the right of a barline.
                             beamedGroup = new List<OutputChordSymbol>();

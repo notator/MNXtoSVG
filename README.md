@@ -1,4 +1,6 @@
-# MNXtoSVG
+# MNXtoSVG (Archive)
+
+#### 2nd May 2022: This repository has been archived, and is now read-only.
 This is a desktop application, written in C#, that converts MNX files to SVG (and embedded MIDI data).
 
 MNX is a set of emerging music notation standards being developed by the [W3C Music Notation Community Group](https://www.w3.org/community/music-notation/).<br />
